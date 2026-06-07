@@ -1,10 +1,10 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { MdLock, MdVpnKey } from "react-icons/md";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
-export default function ResetPassword() {
+function ResetPasswordForm() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const emailParam = searchParams.get("email") || "";
@@ -150,5 +150,13 @@ export default function ResetPassword() {
                 </p>
             </div>
         </div>
+    );
+}
+
+export default function ResetPassword() {
+    return (
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+            <ResetPasswordForm />
+        </Suspense>
     );
 }
