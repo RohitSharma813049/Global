@@ -15,7 +15,7 @@ function Navbar() {
         { name: "Contact", href: "/contact" },
     ];
 
-    const isActive = (path) => pathname === path;
+    const isActive = (path: string) => pathname === path;
 
     return (
         <nav className="sticky top-0 z-50 bg-gradient-to-r from-gray-900 to-gray-800 shadow-lg">
