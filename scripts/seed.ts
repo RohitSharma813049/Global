@@ -1,12 +1,14 @@
 import { createClient } from '@supabase/supabase-js';
 import dotenv from 'dotenv';
 
+import path from 'path';
+
 // Load environment variables from .env.local
-dotenv.config({ path: '.env.local' });
+dotenv.config({ path: path.join(__dirname, '../.env.local') });
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://smqlnrkhyhnrklqblmyz.supabase.co',
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'your-anon-key'
+  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
 );
 
 async function seed() {
@@ -14,7 +16,7 @@ async function seed() {
 
   // 1. Create a super_admin
   const { data: superAdmin, error: superAdminErr } = await supabase.auth.admin.createUser({
-    email: "superadmin@example.com",
+    email: "superadmin_test_123@gmail.com",
     password: "password123",
     email_confirm: true,
     user_metadata: { name: "System Super Admin", role: "super_admin" }
@@ -23,24 +25,23 @@ async function seed() {
   if (superAdminErr) {
     console.error("Failed to create super_admin:", superAdminErr.message);
   } else {
-    console.log("Created Super Admin:", superAdmin?.user.email);
+    console.log("Created Super Admin:", superAdmin?.user?.email);
   }
 
   // 2. Create a standard admin
   const dummyUsers = [
-    { name: 'John Doe', email: 'john@example.com', password: 'password123', role: 'user' },
-    { name: 'Jane Smith', email: 'jane@example.com', password: 'password123', role: 'user' },
+    { name: 'John Doe', email: 'john_test_123@gmail.com', password: 'password123', role: 'user' },
+    { name: 'Jane Smith', email: 'jane_test_123@gmail.com', password: 'password123', role: 'user' },
   ];
 
   for (const user of dummyUsers) {
-    const { data, error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.admin.createUser({
       email: user.email,
       password: user.password,
-      options: {
-        data: {
-          name: user.name,
-          role: user.role,
-        },
+      email_confirm: true,
+      user_metadata: {
+        name: user.name,
+        role: user.role,
       },
     });
 
