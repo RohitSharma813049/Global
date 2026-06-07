@@ -12,9 +12,24 @@ const supabase = createClient(
 async function seed() {
   console.log('Seeding users...');
 
+  // 1. Create a super_admin
+  const { data: superAdmin, error: superAdminErr } = await supabase.auth.admin.createUser({
+    email: "superadmin@example.com",
+    password: "password123",
+    email_confirm: true,
+    user_metadata: { name: "System Super Admin", role: "super_admin" }
+  });
+
+  if (superAdminErr) {
+    console.error("Failed to create super_admin:", superAdminErr.message);
+  } else {
+    console.log("Created Super Admin:", superAdmin?.user.email);
+  }
+
+  // 2. Create a standard admin
   const dummyUsers = [
-    { name: 'John Doe', email: 'john@example.com', password: 'password123' },
-    { name: 'Jane Smith', email: 'jane@example.com', password: 'password123' },
+    { name: 'John Doe', email: 'john@example.com', password: 'password123', role: 'user' },
+    { name: 'Jane Smith', email: 'jane@example.com', password: 'password123', role: 'user' },
   ];
 
   for (const user of dummyUsers) {
@@ -24,6 +39,7 @@ async function seed() {
       options: {
         data: {
           name: user.name,
+          role: user.role,
         },
       },
     });

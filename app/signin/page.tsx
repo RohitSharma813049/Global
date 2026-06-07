@@ -5,6 +5,7 @@ import { FaGithub } from "react-icons/fa";
 import { MdEmail, MdLock, MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 function Login() {
     const router = useRouter();
@@ -146,9 +147,9 @@ function Login() {
                         </div>
 
                         <div className="text-sm">
-                            <a href="/forgot-password" className="font-medium text-indigo-600 hover:text-indigo-500">
+                            <Link href="/forgot-password" className="font-medium text-indigo-600 hover:text-indigo-500">
                                 Forgot password?
-                            </a>
+                            </Link>
                         </div>
                     </div>
 
@@ -191,9 +192,9 @@ function Login() {
                 {/* Sign Up Link */}
                 <p className="mt-4 text-center text-sm text-gray-600">
                     Don't have an account?{" "}
-                    <a href="/signup" className="font-medium text-indigo-600 hover:text-indigo-500">
-                        Sign up
-                    </a>
+                    <Link href="/signup" className="font-medium text-indigo-600 hover:text-indigo-500">
+                        Sign up (Reader or Scholar)
+                    </Link>
                 </p>
             </div>
         </div>

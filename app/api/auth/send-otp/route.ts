@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
     // Save OTP to Redis with a 5-minute expiration (300 seconds)
-    await redis.set(`otp:${email}`, otp, 'EX', 300);
+    await redis.set(`otp:${email}`, otp, { ex: 300 });
 
     // Setup Nodemailer transporter
     const transporter = nodemailer.createTransport({
