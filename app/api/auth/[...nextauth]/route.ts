@@ -62,7 +62,7 @@ const handler = NextAuth({
         const { redis } = await import("@/lib/redis");
         const storedOtp = await redis.get(`otp:${credentials.email}`);
 
-        if (!storedOtp || storedOtp !== credentials.otp) {
+        if (!storedOtp || String(storedOtp) !== String(credentials.otp)) {
           throw new Error("Invalid or expired OTP");
         }
 

@@ -18,7 +18,7 @@ export async function POST(req: Request) {
     // 1. Verify OTP from Redis
     const storedOtp = await redis.get(`reset_otp:${email}`);
 
-    if (!storedOtp || storedOtp !== otp) {
+    if (!storedOtp || String(storedOtp) !== String(otp)) {
       return NextResponse.json({ error: "Invalid or expired reset code" }, { status: 400 });
     }
 
