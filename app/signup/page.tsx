@@ -6,6 +6,7 @@ import { MdEmail, MdLock, MdPerson, MdVisibility, MdVisibilityOff, MdCheckCircle
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import toast from "react-hot-toast";
 
 export default function Signup() {
     const router = useRouter();
@@ -13,8 +14,6 @@ export default function Signup() {
     const [role, setRole] = useState<"reader" | "scholar" | null>(null);
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
-    const [success, setSuccess] = useState("");
     const [otp, setOtp] = useState("");
     
     const [formData, setFormData] = useState({
@@ -34,10 +33,9 @@ export default function Signup() {
 
     const handleSendOTP = async (e: React.FormEvent) => {
         e.preventDefault();
-        setError("");
         
         if (!formData.name || !formData.email || !formData.password) {
-            setError("Please fill in all fields");
+            toast.error("Please fill in all fields");
             return;
         }
 
@@ -52,13 +50,13 @@ export default function Signup() {
 
             const data = await res.json();
             if (res.ok) {
-                setSuccess("OTP sent to your email!");
+                toast.success("OTP sent to your email!");
                 setStep(3);
             } else {
-                setError(data.message || "Failed to send OTP");
+                toast.error(data.message || "Failed to send OTP");
             }
         } catch (err) {
-            setError("An error occurred. Please try again.");
+            toast.error("An error occurred. Please try again.");
         } finally {
             setLoading(false);
         }
@@ -66,7 +64,6 @@ export default function Signup() {
 
     const handleVerifyAndSignup = async (e: React.FormEvent) => {
         e.preventDefault();
-        setError("");
         setLoading(true);
 
         try {
@@ -93,15 +90,15 @@ export default function Signup() {
             const data = await response.json();
 
             if (response.ok) {
-                setSuccess("Account created successfully! Redirecting...");
+                toast.success("Account created successfully! Redirecting...");
                 setTimeout(() => {
                     router.push("/signin");
                 }, 2000);
             } else {
-                setError(data.message || "Invalid OTP or Signup Failed");
+                toast.error(data.message || "Invalid OTP or Signup Failed");
             }
         } catch (err) {
-            setError("Failed to create account. Please try again.");
+            toast.error("Failed to create account. Please try again.");
         } finally {
             setLoading(false);
         }
@@ -172,8 +169,6 @@ export default function Signup() {
                                 Join as {role}
                             </h2>
                         </div>
-
-                        {error && <div className="bg-red-50 text-red-700 p-3 rounded-lg mb-6 text-sm">{error}</div>}
 
                         <form onSubmit={handleSendOTP} className="space-y-5">
                             <div>
@@ -251,9 +246,6 @@ export default function Signup() {
                             <h2 className="text-3xl font-extrabold text-gray-900">Verify Email</h2>
                             <p className="text-sm text-gray-600 mt-2">We sent a 6-digit code to <strong>{formData.email}</strong></p>
                         </div>
-
-                        {success && <div className="bg-green-50 text-green-700 p-3 rounded-lg mb-6 text-sm">{success}</div>}
-                        {error && <div className="bg-red-50 text-red-700 p-3 rounded-lg mb-6 text-sm">{error}</div>}
 
                         <form onSubmit={handleVerifyAndSignup} className="space-y-6">
                             <div>

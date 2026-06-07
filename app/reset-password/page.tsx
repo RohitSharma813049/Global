@@ -3,6 +3,7 @@ import React, { useState, useEffect, Suspense } from "react";
 import { MdLock, MdVpnKey } from "react-icons/md";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import toast from "react-hot-toast";
 
 function ResetPasswordForm() {
     const searchParams = useSearchParams();
@@ -13,8 +14,6 @@ function ResetPasswordForm() {
     const [otp, setOtp] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
-    const [message, setMessage] = useState("");
-    const [error, setError] = useState("");
 
     useEffect(() => {
         if (emailParam) {
@@ -25,11 +24,9 @@ function ResetPasswordForm() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        setError("");
-        setMessage("");
 
         if (!email || !otp || !password) {
-            setError("All fields are required.");
+            toast.error("All fields are required.");
             setLoading(false);
             return;
         }
@@ -47,14 +44,14 @@ function ResetPasswordForm() {
                 throw new Error(data.error || "Failed to reset password");
             }
 
-            setMessage("Password reset successfully! Redirecting to login...");
+            toast.success("Password reset successfully! Redirecting to login...");
             
             setTimeout(() => {
                 router.push("/signin");
             }, 2000);
 
         } catch (err: any) {
-            setError(err.message);
+            toast.error(err.message);
         } finally {
             setLoading(false);
         }
@@ -74,18 +71,6 @@ function ResetPasswordForm() {
                         Enter the 6-digit code sent to your email and choose a new password.
                     </p>
                 </div>
-
-                {message && (
-                    <div className="bg-green-50 border border-green-400 text-green-700 px-4 py-3 rounded relative animate-fade-in-up">
-                        <span className="block sm:inline">{message}</span>
-                    </div>
-                )}
-
-                {error && (
-                    <div className="bg-red-50 border border-red-400 text-red-700 px-4 py-3 rounded relative animate-fade-in-up">
-                        <span className="block sm:inline">{error}</span>
-                    </div>
-                )}
 
                 <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
                     <div className="space-y-4">

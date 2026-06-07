@@ -3,19 +3,16 @@ import React, { useState } from "react";
 import { MdEmail, MdLock } from "react-icons/md";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function ForgotPassword() {
     const [email, setEmail] = useState("");
     const [loading, setLoading] = useState(false);
-    const [message, setMessage] = useState("");
-    const [error, setError] = useState("");
     const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        setError("");
-        setMessage("");
 
         try {
             const res = await fetch("/api/auth/forgot-password", {
@@ -30,7 +27,7 @@ export default function ForgotPassword() {
                 throw new Error(data.error || "Failed to send reset email");
             }
 
-            setMessage("Reset code sent! Redirecting...");
+            toast.success("Reset code sent! Redirecting...");
             
             // Redirect to reset password page with email as query param
             setTimeout(() => {
@@ -38,7 +35,7 @@ export default function ForgotPassword() {
             }, 1500);
 
         } catch (err: any) {
-            setError(err.message);
+            toast.error(err.message);
         } finally {
             setLoading(false);
         }
@@ -58,18 +55,6 @@ export default function ForgotPassword() {
                         Enter your email to receive a 6-digit reset code
                     </p>
                 </div>
-
-                {message && (
-                    <div className="bg-green-50 border border-green-400 text-green-700 px-4 py-3 rounded relative animate-fade-in-up">
-                        <span className="block sm:inline">{message}</span>
-                    </div>
-                )}
-
-                {error && (
-                    <div className="bg-red-50 border border-red-400 text-red-700 px-4 py-3 rounded relative animate-fade-in-up">
-                        <span className="block sm:inline">{error}</span>
-                    </div>
-                )}
 
                 <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
                     <div>
