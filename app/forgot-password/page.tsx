@@ -2,13 +2,14 @@
 import React, { useState } from "react";
 import { MdEmail, MdLock } from "react-icons/md";
 import Link from "next/link";
-import { supabase } from "@/lib/superbaseconfig";
+import { useRouter } from "next/navigation";
 
 export default function ForgotPassword() {
     const [email, setEmail] = useState("");
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
     const [error, setError] = useState("");
+    const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -16,16 +17,31 @@ export default function ForgotPassword() {
         setError("");
         setMessage("");
 
-        const { error } = await supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: `${window.location.origin}/reset-password`,
-        });
+        try {
+            const res = await fetch("/api/auth/forgot-password", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email }),
+            });
 
-        if (error) {
-            setError(error.message);
-        } else {
-            setMessage("Check your email for a password reset link!");
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.error || "Failed to send reset email");
+            }
+
+            setMessage("Reset code sent! Redirecting...");
+            
+            // Redirect to reset password page with email as query param
+            setTimeout(() => {
+                router.push(`/reset-password?email=${encodeURIComponent(email)}`);
+            }, 1500);
+
+        } catch (err: any) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     return (
@@ -39,18 +55,18 @@ export default function ForgotPassword() {
                         Forgot Password
                     </h2>
                     <p className="mt-2 text-sm text-gray-600">
-                        Enter your email to reset your password
+                        Enter your email to receive a 6-digit reset code
                     </p>
                 </div>
 
                 {message && (
-                    <div className="bg-green-50 border border-green-400 text-green-700 px-4 py-3 rounded relative">
+                    <div className="bg-green-50 border border-green-400 text-green-700 px-4 py-3 rounded relative animate-fade-in-up">
                         <span className="block sm:inline">{message}</span>
                     </div>
                 )}
 
                 {error && (
-                    <div className="bg-red-50 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+                    <div className="bg-red-50 border border-red-400 text-red-700 px-4 py-3 rounded relative animate-fade-in-up">
                         <span className="block sm:inline">{error}</span>
                     </div>
                 )}
@@ -81,16 +97,16 @@ export default function ForgotPassword() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+                            className="w-full flex justify-center py-3 px-4 border border-transparent text-sm font-bold rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 transition-all"
                         >
-                            {loading ? "Sending..." : "Send Reset Link"}
+                            {loading ? "Sending Code..." : "Send Reset Code"}
                         </button>
                     </div>
                 </form>
 
                 <p className="mt-4 text-center text-sm text-gray-600">
                     Remembered your password?{" "}
-                    <Link href="/signin" className="font-medium text-indigo-600 hover:text-indigo-500">
+                    <Link href="/signin" className="font-bold text-indigo-600 hover:text-indigo-500 transition-colors">
                         Sign in
                     </Link>
                 </p>
