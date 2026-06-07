@@ -17,7 +17,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ message: "OTP expired or invalid" }, { status: 400 });
         }
 
-        if (storedOtp !== otp) {
+        if (String(storedOtp) !== String(otp)) {
             return NextResponse.json({ message: "Incorrect OTP" }, { status: 400 });
         }
 
