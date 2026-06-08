@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { supabase } from "@/lib/superbaseconfig";
+import { authOptions } from "../[...nextauth]/route";
 
 export async function POST(req: Request) {
     try {
         // 1. Verify the requester is a super_admin
-        const session = await getServerSession();
+        const session = await getServerSession(authOptions);
         
         if (!session || !session.user || (session.user as any).role !== "super_admin") {
             return NextResponse.json(
