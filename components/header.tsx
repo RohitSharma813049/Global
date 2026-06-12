@@ -50,7 +50,7 @@ export default function Header() {
 
         <div className="hidden md:flex items-center gap-6">
           <Link href="/category" className="text-sm text-foreground/70 transition hover:text-foreground">
-            Discover
+            Explore
           </Link>
           {session && (
             <>
@@ -181,7 +181,7 @@ export default function Header() {
             <div className={`p-1 rounded-full ${pathname === '/category' ? "bg-indigo-100/50" : ""}`}>
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-6 w-6 ${pathname === '/category' ? 'scale-110' : ''}`}><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
             </div>
-            <span className={`text-[10px] mt-0.5 font-medium truncate w-full text-center ${pathname === '/category' ? "text-indigo-700" : ""}`}>Discover</span>
+            <span className={`text-[10px] mt-0.5 font-medium truncate w-full text-center ${pathname === '/category' ? "text-indigo-700" : ""}`}>Explore</span>
           </Link>
 
           {session && (
@@ -233,7 +233,7 @@ export default function Header() {
                 <div className="flex flex-col space-y-4">
                   <h4 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Main</h4>
                   <SheetClose asChild><Link href="/" className="text-lg font-medium hover:text-indigo-600 transition-colors">Home</Link></SheetClose>
-                  <SheetClose asChild><Link href="/category" className="text-lg font-medium hover:text-indigo-600 transition-colors">Discover</Link></SheetClose>
+                  <SheetClose asChild><Link href="/category" className="text-lg font-medium hover:text-indigo-600 transition-colors">Explore</Link></SheetClose>
                   {session && (
                     <>
                       <SheetClose asChild><Link href="/library" className="text-lg font-medium hover:text-indigo-600 transition-colors">My Library</Link></SheetClose>
