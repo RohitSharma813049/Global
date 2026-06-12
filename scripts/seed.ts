@@ -52,6 +52,36 @@ async function seed() {
     }
   }
 
+  console.log('Seeding categories...');
+  const mainCategories = [
+    { name: 'Engineering', slug: 'engineering' },
+    { name: 'Medical Sciences', slug: 'medical-sciences' },
+    { name: 'Computer Science', slug: 'computer-science' }
+  ];
+
+  for (const cat of mainCategories) {
+    const { data: insertedCat, error: catError } = await supabase
+      .from('categories')
+      .insert({ name: cat.name, slug: cat.slug })
+      .select()
+      .single();
+
+    if (catError) {
+      console.error(`Failed to insert category ${cat.name}:`, catError.message);
+    } else if (insertedCat) {
+      console.log(`Inserted category: ${cat.name}`);
+      
+      // Add a subcategory for each
+      const subName = `${cat.name} Sub-field`;
+      const subSlug = `${cat.slug}-sub`;
+      await supabase.from('categories').insert({
+        name: subName,
+        slug: subSlug,
+        parent_id: insertedCat.id
+      });
+    }
+  }
+
   console.log('Seeding completed.');
 }
 

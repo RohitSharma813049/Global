@@ -63,59 +63,76 @@ export default function FeaturedContent() {
   const current = featuredContent[currentIndex]
 
   return (
-    <section className="px-6 py-16 sm:py-24">
-      <div className="mx-auto max-w-7xl">
-        <div className="mb-12">
-          <p className="text-sm font-semibold tracking-wide text-primary uppercase">
+    <section className="bg-white px-6 py-20 sm:py-32 relative">
+      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.03]"></div>
+      <div className="mx-auto max-w-7xl relative z-10">
+        <div className="mb-16">
+          <p className="text-sm font-bold tracking-widest text-indigo-600 uppercase">
             Featured Content
           </p>
-          <h2 className="mt-2 text-balance text-3xl font-bold text-foreground sm:text-4xl">
+          <h2 className="mt-3 text-balance text-4xl font-extrabold text-gray-900 sm:text-5xl">
             Discover Trending Research
           </h2>
         </div>
 
-        <div className="grid gap-8 lg:grid-cols-2">
-          <div className="relative overflow-hidden rounded-lg bg-white">
+        <div className="grid gap-12 lg:grid-cols-2 items-center">
+          {/* Image Container with Hover Animation */}
+          <div className="group relative overflow-hidden rounded-3xl bg-gray-100 shadow-xl transition-all duration-700 hover:shadow-2xl hover:shadow-indigo-200 cursor-pointer">
             <Image
               src={current.image}
               alt={current.title}
-              width={500}
-              height={400}
-              className="h-80 w-full object-cover"
+              width={600}
+              height={500}
+              className="h-96 w-full object-cover transition-transform duration-700 group-hover:scale-105"
               unoptimized
             />
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-6">
-              <span className="inline-block rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground capitalize">
+            <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-gray-900/20 to-transparent"></div>
+            <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between">
+              <span className="inline-block rounded-full bg-emerald-500/90 backdrop-blur-md px-4 py-1.5 text-xs font-bold text-white uppercase tracking-wider shadow-sm">
                 {current.type}
               </span>
             </div>
           </div>
 
-          <div className="flex flex-col justify-between">
+          <div className="flex flex-col justify-between h-full py-4">
             <div>
-              <h3 className="text-3xl font-bold text-foreground">{current.title}</h3>
-              <p className="mt-2 text-sm text-foreground/60">By {current.author}</p>
-              <p className="mt-6 text-lg leading-relaxed text-foreground/70">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="h-1 w-10 bg-indigo-600 rounded-full"></div>
+                <p className="text-sm font-semibold text-indigo-600 uppercase tracking-widest">Highlight</p>
+              </div>
+              <h3 className="text-4xl font-extrabold text-gray-900 leading-tight tracking-tight hover:text-indigo-700 transition-colors cursor-pointer">
+                {current.title}
+              </h3>
+              <p className="mt-4 text-base font-medium text-gray-500 uppercase tracking-wide">
+                By <span className="text-gray-900">{current.author}</span>
+              </p>
+              <p className="mt-6 text-xl leading-relaxed text-gray-600">
                 {current.description}
               </p>
+              
+              <div className="mt-10">
+                <Button className="h-12 px-8 bg-indigo-50 text-indigo-700 hover:bg-indigo-600 hover:text-white font-semibold rounded-xl transition-all duration-300">
+                  Read Full Publication
+                </Button>
+              </div>
             </div>
 
-            <div className="mt-8 flex items-center gap-3">
+            <div className="mt-12 flex items-center gap-4">
               <Button
                 onClick={previous}
                 variant="outline"
                 size="icon"
-                className="border-primary/30 hover:bg-primary/5"
+                className="h-12 w-12 rounded-full border-gray-200 text-gray-600 hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-200 transition-all"
               >
-                <ChevronLeft className="h-4 w-4" />
+                <ChevronLeft className="h-5 w-5" />
               </Button>
-              <div className="flex gap-2">
+              <div className="flex gap-3">
                 {featuredContent.map((_, idx) => (
                   <button
                     key={idx}
                     onClick={() => setCurrentIndex(idx)}
-                    className={`h-2 w-2 rounded-full transition ${
-                      idx === currentIndex ? 'bg-primary' : 'bg-border'
+                    className={`h-2.5 rounded-full transition-all duration-300 ${
+                      idx === currentIndex ? 'w-8 bg-indigo-600' : 'w-2.5 bg-gray-300 hover:bg-gray-400'
                     }`}
                   />
                 ))}
@@ -124,9 +141,9 @@ export default function FeaturedContent() {
                 onClick={next}
                 variant="outline"
                 size="icon"
-                className="border-primary/30 hover:bg-primary/5"
+                className="h-12 w-12 rounded-full border-gray-200 text-gray-600 hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-200 transition-all"
               >
-                <ChevronRight className="h-4 w-4" />
+                <ChevronRight className="h-5 w-5" />
               </Button>
             </div>
           </div>

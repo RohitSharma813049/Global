@@ -1,34 +1,316 @@
-import React from "react";
-import { MdScience, MdComputer, MdLocalHospital, MdGavel } from "react-icons/md";
+"use client"
 
-export default function Category() {
-  const categories = [
-    { name: "Science & Nature", icon: <MdScience className="text-4xl" />, color: "bg-blue-100 text-blue-600" },
-    { name: "Computer Science", icon: <MdComputer className="text-4xl" />, color: "bg-indigo-100 text-indigo-600" },
-    { name: "Medicine", icon: <MdLocalHospital className="text-4xl" />, color: "bg-red-100 text-red-600" },
-    { name: "Law & Ethics", icon: <MdGavel className="text-4xl" />, color: "bg-amber-100 text-amber-600" },
-  ];
+import { useState, useEffect, useMemo } from "react"
+import { supabase } from "@/lib/superbaseconfig"
+import Header from "@/components/header"
+import Footer from "@/components/footer"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Search, Filter, User, Grid, List as ListIcon } from "lucide-react"
+import Link from "next/link"
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetTitle,
+} from '@/components/ui/sheet'
+import CategoryClient from "@/components/explore/category-client"
+import { getPublishedPublications, getAllCategories } from "@/app/actions/publications"
+import { getContentTypes } from "@/app/actions/taxonomy"
+import FilterSidebar from '@/components/explore/filter-sidebar'
+
+interface Publication {
+  id: string
+  title: string
+  abstract: string
+  content_type: string
+  doi: string | null
+  views: number
+  downloads: number
+  created_at: string
+  scholars: {
+    id: string
+    users: {
+      raw_user_meta_data: { full_name?: string, name?: string }
+    } | null
+  } | null
+  categories: {
+    name: string
+  } | null
+  subcategory_ids: string[]
+}
+
+export default function CategoryPage() {
+  const [searchQuery, setSearchQuery] = useState("")
+  const [filters, setFilters] = useState<{
+    subjects: string[]
+    subcategories: string[]
+    authors: string[]
+    types: string[]
+    yearRange: [number, number]
+  }>({
+    subjects: [],
+    subcategories: [],
+    authors: [],
+    types: [],
+    yearRange: [2000, new Date().getFullYear()],
+  })
+  
+  const [publications, setPublications] = useState<Publication[]>([])
+  const [allCategories, setAllCategories] = useState<{id: string, name: string}[]>([])
+  const [contentTypes, setContentTypes] = useState<{name: string, slug: string}[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [viewMode, setViewMode] = useState<'list' | 'grid'>('list')
+  const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest')
+
+  // Fetch taxonomy and publications on mount
+  useEffect(() => {
+    async function fetchData() {
+      setIsLoading(true)
+
+      try {
+        const [pubResult, cats, types] = await Promise.all([
+          getPublishedPublications(),
+          getAllCategories(),
+          getContentTypes()
+        ])
+        if (pubResult && pubResult.publications) {
+          setPublications(pubResult.publications as any as Publication[])
+        }
+        if (cats) setAllCategories(cats)
+        if (types) setContentTypes(types)
+      } catch (e) {
+        console.error(e)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchData()
+  }, [])
+
+  const availableSubjects = useMemo(() => {
+    return Array.from(new Set(publications.map(p => p.categories?.name))).filter(Boolean).sort() as string[]
+  }, [publications])
+  
+  const availableSubcategories = useMemo(() => {
+    const subCats = publications.flatMap(p => p.subcategory_ids || []).map(id => allCategories.find(c => c.id === id)?.name)
+    return Array.from(new Set(subCats)).filter(Boolean).sort() as string[]
+  }, [publications, allCategories])
+  
+  const availableAuthors = useMemo(() => Array.from(new Set(publications.map(p => p.scholars?.users?.raw_user_meta_data?.full_name || p.scholars?.users?.raw_user_meta_data?.name))).filter(Boolean).sort() as string[], [publications])
+
+  const availableTypes = useMemo(() => {
+    return contentTypes.map(ct => ({ value: ct.slug, label: ct.name }))
+  }, [contentTypes])
+
+  // Client-side filtering
+  const filteredPublications = useMemo(() => {
+    return publications.filter(p => {
+      const pubYear = new Date(p.created_at).getFullYear()
+      const authorName = p.scholars?.users?.raw_user_meta_data?.full_name || p.scholars?.users?.raw_user_meta_data?.name || "Unknown Author"
+      const categoryName = p.categories?.name || "General"
+
+      const matchesSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                            p.abstract?.toLowerCase().includes(searchQuery.toLowerCase())
+
+      const pubSubCats = (p.subcategory_ids || []).map(id => allCategories.find(c => c.id === id)?.name).filter(Boolean) as string[]
+      
+      const matchesSubject = filters.subjects.length === 0 || filters.subjects.includes(categoryName)
+      
+      const matchesSubcategory = filters.subcategories.length === 0 || 
+                                 pubSubCats.some(sub => filters.subcategories.includes(sub))
+                                 
+      const matchesAuthor = filters.authors.length === 0 || filters.authors.includes(authorName)
+      const matchesType = filters.types.length === 0 || filters.types.includes(p.content_type)
+      const matchesYear = pubYear >= filters.yearRange[0] && pubYear <= filters.yearRange[1]
+
+      return matchesSearch && matchesSubject && matchesSubcategory && matchesAuthor && matchesType && matchesYear
+    }).sort((a, b) => {
+      const dateA = new Date(a.created_at).getTime();
+      const dateB = new Date(b.created_at).getTime();
+      return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
+    })
+  }, [publications, searchQuery, filters, allCategories, sortOrder])
 
   return (
-    <div className="min-h-screen bg-gray-50 py-24">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h1 className="text-4xl font-extrabold text-gray-900 mb-4">Browse by Category</h1>
-          <p className="text-lg text-gray-600">Discover papers and articles across disciplines.</p>
-        </div>
-        
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {categories.map((cat) => (
-            <div key={cat.name} className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 text-center hover:shadow-lg transition-all cursor-pointer transform hover:-translate-y-1">
-              <div className={`mx-auto h-20 w-20 rounded-full flex items-center justify-center mb-6 ${cat.color}`}>
-                {cat.icon}
-              </div>
-              <h2 className="text-xl font-bold text-gray-900">{cat.name}</h2>
-              <p className="mt-2 text-sm text-gray-500">Explore collection →</p>
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      {/* ── TOP SEARCH BANNER ── */}
+      <div className="bg-white border-b border-gray-200 py-12 px-6">
+        <div className="max-w-5xl mx-auto">
+          <h1 className="text-4xl font-extrabold text-gray-900 mb-6 text-center">Global Publication Engine</h1>
+          <div className="relative max-w-3xl mx-auto group">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <Search className="h-6 w-6 text-gray-400 group-focus-within:text-indigo-600 transition-colors" />
             </div>
-          ))}
+            <Input
+              type="text"
+              className="w-full h-16 pl-12 pr-4 text-lg rounded-2xl border-gray-300 shadow-sm focus-visible:ring-indigo-600 focus-visible:border-indigo-600 transition-all bg-gray-50 hover:bg-white"
+              placeholder="Search by title, author, DOI, or keyword..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
         </div>
       </div>
+
+      <main className="flex-1 max-w-7xl mx-auto w-full px-6 py-12 flex flex-col md:flex-row gap-8">
+        
+        {/* ── SIDEBAR FILTERS (DESKTOP) ── */}
+        <aside className="hidden md:block w-full md:w-64 shrink-0 space-y-8 rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+          <FilterSidebar
+            filters={filters}
+            setFilters={setFilters}
+            availableSubjects={availableSubjects}
+            availableSubcategories={availableSubcategories}
+            availableAuthors={availableAuthors}
+            availableTypes={availableTypes}
+          />
+        </aside>
+
+        {/* ── RESULTS FEED ── */}
+        <div className="flex-1">
+          <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <h2 className="text-xl font-bold text-gray-900">
+              {isLoading ? "Searching..." : `${filteredPublications.length} Results Found`}
+            </h2>
+            
+            {/* Grid/List View Toggles & Sort */}
+            <div className="flex items-center space-x-4">
+              <select
+                className="text-sm border-none bg-transparent text-muted-foreground focus:ring-0 cursor-pointer"
+                value={sortOrder}
+                onChange={(e) => setSortOrder(e.target.value as 'newest' | 'oldest')}
+              >
+                <option value="newest">Newest to Oldest</option>
+                <option value="oldest">Oldest to Newest</option>
+              </select>
+              
+              <div className="flex items-center space-x-2 bg-background p-1 rounded-md border border-border">
+                <Button 
+                  variant={viewMode === 'list' ? 'secondary' : 'ghost'} 
+                  size="sm" 
+                  className="h-8 w-8 p-0"
+                  onClick={() => setViewMode('list')}
+                >
+                  <ListIcon className="h-4 w-4" />
+                </Button>
+                <Button 
+                  variant={viewMode === 'grid' ? 'secondary' : 'ghost'} 
+                  size="sm" 
+                  className="h-8 w-8 p-0"
+                  onClick={() => setViewMode('grid')}
+                >
+                  <Grid className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+            
+            {/* Mobile Filter Button */}
+            <div className="md:hidden">
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="outline" className="w-full flex items-center justify-center gap-2">
+                    <Filter className="w-4 h-4" /> Filters
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="left" className="w-[300px] sm:w-[400px] overflow-y-auto pt-12">
+                  <SheetTitle className="mb-6 font-bold text-xl">Filters</SheetTitle>
+                  <FilterSidebar
+                    filters={filters}
+                    setFilters={setFilters}
+                    availableSubjects={availableSubjects}
+                    availableSubcategories={availableSubcategories}
+                    availableAuthors={availableAuthors}
+                    availableTypes={availableTypes}
+                  />
+                </SheetContent>
+              </Sheet>
+            </div>
+          </div>
+
+          {isLoading ? (
+            <div className="space-y-4">
+              {[1, 2, 3].map((n) => (
+                <div key={n} className="bg-white rounded-2xl border border-gray-100 p-6 h-40 animate-pulse flex flex-col justify-between">
+                  <div>
+                    <div className="h-4 w-24 bg-gray-200 rounded mb-4"></div>
+                    <div className="h-6 w-3/4 bg-gray-200 rounded mb-2"></div>
+                    <div className="h-4 w-1/2 bg-gray-200 rounded"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : filteredPublications.length === 0 ? (
+            <div className="bg-white rounded-2xl border border-gray-100 p-12 text-center shadow-sm">
+              <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Search className="w-8 h-8 text-gray-400" />
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">No publications found</h3>
+              <p className="text-gray-500">Try adjusting your search or filters to find what you're looking for.</p>
+              <Button 
+                variant="outline" 
+                className="mt-6 border-indigo-200 text-indigo-600 hover:bg-indigo-50"
+                onClick={() => {
+                  setSearchQuery("")
+                  setFilters({
+                    subjects: [],
+                    subcategories: [],
+                    authors: [],
+                    types: [],
+                    yearRange: [2000, new Date().getFullYear()],
+                  })
+                }}
+              >
+                Clear all filters
+              </Button>
+            </div>
+          ) : (
+            <div className={viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 gap-6" : "space-y-4"}>
+              {filteredPublications.map((pub) => (
+                <Link href={`/publications/${pub.id}`} key={pub.id} className="block group h-full">
+                  <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-lg hover:border-indigo-100 transition-all duration-300 h-full flex flex-col">
+                    <div className="flex items-start justify-between gap-4 mb-3">
+                      <div>
+                        <Badge variant="outline" className="mb-3 bg-gray-50 border-gray-200 text-gray-600 uppercase text-[10px] tracking-wider">
+                          {pub.content_type}
+                        </Badge>
+                        <h3 className="text-xl font-bold text-gray-900 group-hover:text-indigo-600 transition-colors leading-snug">
+                          {pub.title}
+                        </h3>
+                      </div>
+                      {pub.doi && viewMode === 'list' && (
+                        <span className="shrink-0 text-xs text-gray-400 bg-gray-50 px-2 py-1 rounded">DOI: {pub.doi}</span>
+                      )}
+                    </div>
+                    
+                    <p className={`text-gray-600 text-sm leading-relaxed mb-4 flex-1 ${viewMode === 'grid' ? 'line-clamp-3' : 'line-clamp-2'}`}>
+                      {pub.abstract || "No abstract available for this publication."}
+                    </p>
+
+                    <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-4 border-t border-gray-50 mt-auto">
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600">
+                          <User className="w-3 h-3" />
+                        </div>
+                        <span className="text-sm font-semibold text-gray-900">{pub.scholars?.users?.raw_user_meta_data?.full_name || pub.scholars?.users?.raw_user_meta_data?.name || "Unknown"}</span>
+                      </div>
+                      
+                      <div className="flex items-center gap-4 text-xs font-medium text-gray-500">
+                        <span className="bg-gray-100 px-2 py-1 rounded truncate max-w-[150px]">{pub.categories?.name || "General"}</span>
+                        <span>{new Date(pub.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+      </main>
+
+      <Footer />
     </div>
-  );
+  )
 }

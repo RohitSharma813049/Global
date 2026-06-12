@@ -21,6 +21,37 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: clientId,
       clientSecret: clientSecret,
+      async profile(profile) {
+        const { createClient } = await import("@supabase/supabase-js");
+        const supabaseAdmin = createClient(
+          process.env.NEXT_PUBLIC_SUPABASE_URL || "",
+          process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ""
+        );
+
+        // Find or create user in Supabase to get a valid UUID
+        const { data: { users } } = await supabaseAdmin.auth.admin.listUsers();
+        let supabaseUser = users.find(u => u.email === profile.email);
+
+        if (!supabaseUser) {
+          const { data } = await supabaseAdmin.auth.admin.createUser({
+            email: profile.email,
+            email_confirm: true,
+            user_metadata: {
+              name: profile.name,
+              role: "user",
+            }
+          });
+          if (data.user) supabaseUser = data.user;
+        }
+
+        return {
+          id: supabaseUser?.id || profile.sub,
+          name: profile.name,
+          email: profile.email,
+          image: profile.picture,
+          role: supabaseUser?.user_metadata?.role || "user"
+        };
+      }
     }),
     CredentialsProvider({
       name: "Credentials",
@@ -66,16 +97,10 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Invalid or expired OTP");
         }
 
-        // OTP is valid. Now we need to fetch or create the user in Supabase.
-        // For simplicity, we just look up the user by email or let them in.
-        // NextAuth will handle creating the session token.
-        // To keep it strictly tied to Supabase, we could use the service role key to get the user ID,
-        // but returning the email is enough for NextAuth session.
-        
         await redis.del(`otp:${credentials.email}`); // Consume OTP
         
         return {
-          id: credentials.email, // using email as ID if user not in Supabase yet, or we could fetch it.
+          id: credentials.email, 
           email: credentials.email,
         };
       }

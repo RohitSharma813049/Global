@@ -2,9 +2,9 @@ import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { Providers } from './providers'
-import './globals.css'
+import '../styles/globals.css'
 import Header from '@/components/header'
-import MobileNav from '@/components/mobile-nav'
+import { Toaster } from 'react-hot-toast'
 
 const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
@@ -26,13 +26,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="bg-background">
-      <body className="font-sans antialiased text-foreground pb-16 md:pb-0">
-        <Header/>
+      <body className="font-sans antialiased text-foreground">
         <Providers>
-          {children}
+          <Header/>
+          <main className="pb-16 md:pb-0 flex-1 flex flex-col">
+            {children}
+          </main>
           {process.env.NODE_ENV === 'production' && <Analytics />}
+          <Toaster position="bottom-right" />
         </Providers>
-        <MobileNav />
       </body>
     </html>
   )

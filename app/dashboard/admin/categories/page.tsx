@@ -1,0 +1,357 @@
+'use client'
+
+import React, { useState, useEffect } from 'react'
+import { getCategories, createCategory, updateCategory, deleteCategory, getContentTypes } from '@/app/actions/taxonomy'
+import { MdEdit, MdDelete, MdGridView, MdViewList, MdSearch } from 'react-icons/md'
+import toast from 'react-hot-toast'
+
+interface Category {
+  id: string
+  name: string
+  slug: string
+  parent_id: string | null
+  content_types?: string[]
+}
+
+interface ContentType {
+  id: string
+  name: string
+  slug: string
+}
+
+export default function CategoriesAdminPage() {
+  const [categories, setCategories] = useState<Category[]>([])
+  const [contentTypes, setContentTypes] = useState<ContentType[]>([])
+  const [loading, setLoading] = useState(true)
+
+  const [isEditing, setIsEditing] = useState<string | null>(null)
+  
+  // New States
+  const [categoryType, setCategoryType] = useState<'parent' | 'sub'>('parent')
+  const [viewMode, setViewMode] = useState<'list' | 'grid'>('list')
+  const [searchQuery, setSearchQuery] = useState('')
+
+  const [formData, setFormData] = useState({ name: '', slug: '', parent_id: '', content_types: [] as string[] })
+  const [isCustomSlug, setIsCustomSlug] = useState(false)
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newName = e.target.value
+    if (!isCustomSlug) {
+      const newSlug = newName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '')
+      setFormData({ ...formData, name: newName, slug: newSlug })
+    } else {
+      setFormData({ ...formData, name: newName })
+    }
+  }
+
+  const fetchCategories = async () => {
+    try {
+      setLoading(true)
+      const [data, ctData] = await Promise.all([getCategories(), getContentTypes()])
+      setCategories(data || [])
+      setContentTypes(ctData || [])
+    } catch (e: any) {
+      toast.error(e.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchCategories()
+  }, [])
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    // If it's a parent category, we force parent_id to be empty
+    const finalParentId = categoryType === 'parent' ? undefined : (formData.parent_id || undefined)
+
+    if (categoryType === 'sub' && !finalParentId) {
+      toast.error('Please select a parent category for the sub-category.')
+      return
+    }
+
+    try {
+      if (isEditing) {
+        await updateCategory(isEditing, formData.name, formData.slug, finalParentId, formData.content_types)
+        toast.success("Category updated!")
+      } else {
+        await createCategory(formData.name, formData.slug, finalParentId, formData.content_types)
+        toast.success("Category created!")
+      }
+      setFormData({ name: '', slug: '', parent_id: '', content_types: [] })
+      setIsEditing(null)
+      setIsCustomSlug(false)
+      fetchCategories()
+    } catch (e: any) {
+      toast.error(e.message)
+    }
+  }
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this category?')) return
+    try {
+      await deleteCategory(id)
+      toast.success("Category deleted!")
+      fetchCategories()
+    } catch (e: any) {
+      toast.error(e.message)
+    }
+  }
+
+  const handleEdit = (cat: Category) => {
+    setIsEditing(cat.id)
+    setCategoryType(cat.parent_id ? 'sub' : 'parent')
+    setFormData({ name: cat.name, slug: cat.slug, parent_id: cat.parent_id || '', content_types: cat.content_types || [] })
+    setIsCustomSlug(true)
+  }
+
+  const filteredCategories = categories.filter(c => 
+    c.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    c.slug.toLowerCase().includes(searchQuery.toLowerCase())
+  )
+
+  const parentCategories = categories.filter(c => !c.parent_id)
+
+  return (
+    <div className="p-6 max-w-7xl mx-auto space-y-8">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold mb-2 text-gray-900">Manage Categories</h1>
+          <p className="text-gray-600">Create, edit, and organize domains and sub-domains.</p>
+        </div>
+        
+        <div className="flex items-center gap-4">
+          <div className="relative">
+            <MdSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+            <input 
+              type="text" 
+              placeholder="Search categories..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none w-full md:w-64"
+            />
+          </div>
+          <div className="flex bg-gray-100 p-1 rounded-lg border border-gray-200">
+            <button 
+              onClick={() => setViewMode('list')}
+              className={`p-1.5 rounded ${viewMode === 'list' ? 'bg-white shadow text-indigo-600' : 'text-gray-500 hover:text-gray-700'}`}
+            >
+              <MdViewList size={20} />
+            </button>
+            <button 
+              onClick={() => setViewMode('grid')}
+              className={`p-1.5 rounded ${viewMode === 'grid' ? 'bg-white shadow text-indigo-600' : 'text-gray-500 hover:text-gray-700'}`}
+            >
+              <MdGridView size={20} />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Form */}
+        <div className="lg:col-span-1 bg-white p-6 rounded-xl shadow border border-gray-100 h-fit">
+          <h2 className="text-xl font-bold mb-4">{isEditing ? 'Edit Category' : 'Create Category'}</h2>
+          
+          <div className="flex bg-gray-100 p-1 rounded-lg mb-6">
+            <button 
+              onClick={() => setCategoryType('parent')}
+              className={`flex-1 py-1.5 text-sm font-medium rounded-md transition-colors ${categoryType === 'parent' ? 'bg-white shadow text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}
+            >
+              Parent Category
+            </button>
+            <button 
+              onClick={() => setCategoryType('sub')}
+              className={`flex-1 py-1.5 text-sm font-medium rounded-md transition-colors ${categoryType === 'sub' ? 'bg-white shadow text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}
+            >
+              Sub Category
+            </button>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+              <input 
+                type="text" 
+                value={formData.name} 
+                onChange={handleNameChange}
+                required 
+                className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-indigo-500 outline-none"
+              />
+            </div>
+            <div>
+              <div className="flex justify-between items-center mb-1">
+                <label className="block text-sm font-medium text-gray-700">Slug</label>
+                <button 
+                  type="button" 
+                  onClick={() => setIsCustomSlug(!isCustomSlug)}
+                  className={`text-xs px-2 py-1 rounded transition-colors ${isCustomSlug ? 'bg-indigo-100 text-indigo-700' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                >
+                  {isCustomSlug ? 'Custom' : 'Auto'}
+                </button>
+              </div>
+              <input 
+                type="text" 
+                value={formData.slug} 
+                onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                readOnly={!isCustomSlug}
+                required 
+                className={`w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-indigo-500 outline-none ${!isCustomSlug ? 'bg-gray-50 text-gray-500' : ''}`}
+              />
+            </div>
+            
+            {categoryType === 'sub' && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Parent Category</label>
+                <select 
+                  value={formData.parent_id} 
+                  onChange={(e) => setFormData({ ...formData, parent_id: e.target.value })}
+                  className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-indigo-500 outline-none bg-white"
+                  required
+                >
+                  <option value="" disabled>Select a Parent Category</option>
+                  {parentCategories.filter(c => c.id !== isEditing).map(c => (
+                    <option key={c.id} value={c.id}>{c.name}</option>
+                  ))}
+                </select>
+              </div>
+            )}
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Allowed Content Types (Optional)</label>
+              <select 
+                multiple
+                value={formData.content_types} 
+                onChange={(e) => {
+                  const options = Array.from(e.target.selectedOptions, option => option.value);
+                  setFormData({ ...formData, content_types: options });
+                }}
+                className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-indigo-500 outline-none h-32"
+              >
+                {contentTypes.map(ct => (
+                  <option key={ct.id} value={ct.slug}>{ct.name}</option>
+                ))}
+              </select>
+              <p className="text-xs text-gray-500 mt-1">Hold Ctrl/Cmd to select multiple. These types will be available when scholars upload to this category.</p>
+            </div>
+            
+            <div className="flex gap-2 pt-2">
+              <button type="submit" className="flex-1 bg-indigo-600 text-white py-2 rounded font-medium hover:bg-indigo-700 transition-colors">
+                {isEditing ? 'Save Changes' : (categoryType === 'parent' ? 'Create Parent Category' : 'Create Sub Category')}
+              </button>
+              {isEditing && (
+                <button type="button" onClick={() => { setIsEditing(null); setFormData({ name: '', slug: '', parent_id: '', content_types: [] }); setIsCustomSlug(false); }} className="flex-1 bg-gray-200 text-gray-800 py-2 rounded font-medium hover:bg-gray-300 transition-colors">
+                  Cancel
+                </button>
+              )}
+            </div>
+          </form>
+        </div>
+
+        {/* List/Grid View */}
+        <div className="lg:col-span-2">
+          {loading ? (
+            <div className="bg-white rounded-xl shadow border border-gray-100 p-8 text-center text-gray-500">Loading categories...</div>
+          ) : filteredCategories.length === 0 ? (
+            <div className="bg-white rounded-xl shadow border border-gray-100 p-8 text-center text-gray-500">
+              {searchQuery ? 'No categories found matching your search.' : 'No categories found. Create one to get started!'}
+            </div>
+          ) : viewMode === 'list' ? (
+            // LIST VIEW
+            <div className="bg-white rounded-xl shadow border border-gray-100 overflow-hidden divide-y divide-gray-100">
+              {filteredCategories.map(cat => (
+                <div key={cat.id} className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                  <div>
+                    <div className="font-semibold text-gray-900 text-lg flex items-center gap-2">
+                      {cat.name}
+                      {!cat.parent_id ? (
+                        <span className="text-[10px] uppercase tracking-wider font-bold bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full">Parent</span>
+                      ) : (
+                        <span className="text-[10px] uppercase tracking-wider font-bold bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">Sub-category</span>
+                      )}
+                    </div>
+                    
+                    {cat.parent_id && (
+                      <div className="text-sm text-indigo-600 font-medium mt-1">
+                        ↳ Inside: {categories.find(c => c.id === cat.parent_id)?.name || 'Unknown'}
+                      </div>
+                    )}
+
+                    <div className="text-sm text-gray-500 mt-2 flex flex-wrap items-center gap-2">
+                      <span className="bg-gray-100 px-2 py-0.5 rounded text-gray-600 font-mono text-xs">/{cat.slug}</span>
+                      {cat.content_types && cat.content_types.length > 0 && (
+                        <span className="text-gray-400">|</span>
+                      )}
+                      {cat.content_types?.map(ct => (
+                        <span key={ct} className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">
+                          {contentTypes.find(t => t.slug === ct)?.name || ct}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <button onClick={() => handleEdit(cat)} className="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded transition-colors" title="Edit Category">
+                      <MdEdit size={20} />
+                    </button>
+                    <button onClick={() => handleDelete(cat.id)} className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors" title="Delete Category">
+                      <MdDelete size={20} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            // GRID VIEW
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {filteredCategories.map(cat => (
+                <div key={cat.id} className="bg-white p-5 rounded-xl shadow-sm border border-gray-200 hover:border-indigo-300 hover:shadow-md transition-all group relative">
+                  <div className="absolute top-4 right-4 flex opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button onClick={() => handleEdit(cat)} className="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded transition-colors">
+                      <MdEdit size={18} />
+                    </button>
+                    <button onClick={() => handleDelete(cat.id)} className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors">
+                      <MdDelete size={18} />
+                    </button>
+                  </div>
+
+                  {!cat.parent_id ? (
+                    <span className="text-[10px] uppercase tracking-wider font-bold bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full inline-block mb-2">Parent Category</span>
+                  ) : (
+                    <span className="text-[10px] uppercase tracking-wider font-bold bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full inline-block mb-2">Sub Category</span>
+                  )}
+                  
+                  <h3 className="text-xl font-bold text-gray-900 mb-1 pr-12 truncate">{cat.name}</h3>
+                  <div className="text-xs text-gray-500 font-mono bg-gray-50 px-2 py-1 rounded inline-block mb-3 truncate max-w-full">
+                    /{cat.slug}
+                  </div>
+
+                  {cat.parent_id && (
+                    <div className="text-sm text-indigo-600 font-medium mb-3 flex items-center gap-1">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>
+                      {categories.find(c => c.id === cat.parent_id)?.name || 'Unknown'}
+                    </div>
+                  )}
+
+                  {cat.content_types && cat.content_types.length > 0 && (
+                    <div className="mt-4 pt-4 border-t border-gray-100">
+                      <p className="text-xs font-semibold text-gray-500 mb-2 uppercase">Allowed Types</p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {cat.content_types.map(ct => (
+                          <span key={ct} className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">
+                            {contentTypes.find(t => t.slug === ct)?.name || ct}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}

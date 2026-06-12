@@ -6,28 +6,28 @@ import { Separator } from '@/components/ui/separator'
 
 const footerLinks = {
   Product: [
-    { name: 'Explore', href: '#' },
-    { name: 'For Scholars', href: '#' },
-    { name: 'Pricing', href: '#' },
-    { name: 'Features', href: '#' },
+    { name: 'Discover', href: '/category' },
+    { name: 'For Scholars', href: '/signin' },
+    { name: 'Pricing', href: '/pricing' },
+    { name: 'Features', href: '/features' },
   ],
   Company: [
-    { name: 'About', href: '#' },
-    { name: 'Blog', href: '#' },
-    { name: 'Careers', href: '#' },
-    { name: 'Contact', href: '#' },
+    { name: 'About', href: '/about' },
+    { name: 'Blog', href: '/blog' },
+    { name: 'Careers', href: '/about' },
+    { name: 'Contact', href: '/contact' },
   ],
   Resources: [
-    { name: 'Help Center', href: '#' },
-    { name: 'Documentation', href: '#' },
-    { name: 'API', href: '#' },
-    { name: 'Community', href: '#' },
+    { name: 'Help Center', href: '/help' },
+    { name: 'Documentation', href: '/help' },
+    { name: 'API', href: '/help' },
+    { name: 'Community', href: '/category' },
   ],
   Legal: [
-    { name: 'Privacy Policy', href: '#' },
-    { name: 'Terms of Service', href: '#' },
-    { name: 'Cookie Policy', href: '#' },
-    { name: 'Accessibility', href: '#' },
+    { name: 'Privacy Policy', href: '/privacy' },
+    { name: 'Terms of Service', href: '/terms' },
+    { name: 'Cookie Policy', href: '/privacy' },
+    { name: 'Accessibility', href: '/privacy' },
   ],
 }
 
@@ -94,3 +94,4 @@ export default function Footer() {
     </footer>
   )
 }
+

@@ -10,8 +10,8 @@ import toast from "react-hot-toast";
 
 export default function Signup() {
     const router = useRouter();
-    const [step, setStep] = useState<1 | 2 | 3>(1); // 1: Role, 2: Form, 3: OTP
-    const [role, setRole] = useState<"reader" | "scholar" | null>(null);
+    const [step, setStep] = useState<1 | 2 | 3>(2); // 1: Role, 2: Form, 3: OTP
+    const [role, setRole] = useState<"reader" | "scholar" | null>("reader");
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const [otp, setOtp] = useState("");
@@ -105,7 +105,7 @@ export default function Signup() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 py-6 sm:py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-4xl w-full">
                 
                 {/* STEP 1: Role Selection */}
@@ -124,7 +124,7 @@ export default function Signup() {
                             {/* Reader Card */}
                             <div 
                                 onClick={() => handleRoleSelect("reader")}
-                                className="group relative bg-white rounded-2xl shadow-lg border border-gray-100 p-8 cursor-pointer hover:shadow-2xl hover:border-indigo-500 transition-all duration-300 transform hover:-translate-y-1"
+                                className="group relative bg-white rounded-2xl shadow-lg border border-gray-100 p-6 sm:p-8 cursor-pointer hover:shadow-2xl hover:border-indigo-500 transition-all duration-300 transform hover:-translate-y-1"
                             >
                                 <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full opacity-10 group-hover:opacity-20 transition-opacity blur-xl"></div>
                                 <div className="h-16 w-16 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
@@ -139,7 +139,7 @@ export default function Signup() {
                             {/* Scholar Card */}
                             <div 
                                 onClick={() => handleRoleSelect("scholar")}
-                                className="group relative bg-white rounded-2xl shadow-lg border border-gray-100 p-8 cursor-pointer hover:shadow-2xl hover:border-emerald-500 transition-all duration-300 transform hover:-translate-y-1"
+                                className="group relative bg-white rounded-2xl shadow-lg border border-gray-100 p-6 sm:p-8 cursor-pointer hover:shadow-2xl hover:border-emerald-500 transition-all duration-300 transform hover:-translate-y-1"
                             >
                                 <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full opacity-10 group-hover:opacity-20 transition-opacity blur-xl"></div>
                                 <div className="h-16 w-16 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
@@ -160,14 +160,12 @@ export default function Signup() {
 
                 {/* STEP 2: Form Input */}
                 {step === 2 && (
-                    <div className="max-w-md mx-auto bg-white p-10 rounded-2xl shadow-2xl animate-fade-in-up">
+                    <div className="max-w-md mx-auto bg-white p-6 sm:p-10 rounded-2xl shadow-2xl animate-fade-in-up">
                         <div className="text-center mb-8">
-                            <button onClick={() => setStep(1)} className="text-sm text-gray-500 hover:text-gray-800 mb-4 flex items-center justify-center w-full">
-                                ← Change Role
-                            </button>
                             <h2 className="text-3xl font-extrabold text-gray-900 capitalize">
-                                Join as {role}
+                                Create an Account
                             </h2>
+                            <p className="text-gray-500 mt-2">Join Global Scholar to access research.</p>
                         </div>
 
                         <form onSubmit={handleSendOTP} className="space-y-5">
@@ -241,7 +239,7 @@ export default function Signup() {
 
                 {/* STEP 3: OTP Verification */}
                 {step === 3 && (
-                    <div className="max-w-md mx-auto bg-white p-10 rounded-2xl shadow-2xl animate-fade-in-up">
+                    <div className="max-w-md mx-auto bg-white p-6 sm:p-10 rounded-2xl shadow-2xl animate-fade-in-up">
                         <div className="text-center mb-8">
                             <h2 className="text-3xl font-extrabold text-gray-900">Verify Email</h2>
                             <p className="text-sm text-gray-600 mt-2">We sent a 6-digit code to <strong>{formData.email}</strong></p>

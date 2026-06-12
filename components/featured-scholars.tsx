@@ -79,79 +79,69 @@ export default function FeaturedScholars() {
   }
 
   return (
-    <section className="border-y border-border bg-white px-6 py-16 sm:py-24">
+    <section className="bg-white px-6 py-20 sm:py-32">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-12 flex items-center justify-between">
+        <div className="mb-14 flex flex-col items-center sm:flex-row sm:justify-between">
           <div>
-            <p className="text-sm font-semibold tracking-wide text-primary uppercase">
+            <p className="text-sm font-bold tracking-widest text-indigo-600 uppercase">
               Top Contributors
             </p>
-            <h2 className="mt-2 text-balance text-3xl font-bold text-foreground sm:text-4xl">
+            <h2 className="mt-3 text-balance text-4xl font-extrabold text-gray-900 sm:text-5xl">
               Featured Scholars
             </h2>
           </div>
-          <div className="hidden gap-2 sm:flex">
+          <div className="mt-6 flex gap-3 sm:mt-0">
             <Button
               onClick={previous}
               variant="outline"
               size="icon"
-              className="border-primary/30 hover:bg-primary/5"
+              className="h-12 w-12 rounded-full border-gray-200 text-gray-600 hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-200 transition-all"
             >
-              <ChevronLeft className="h-4 w-4" />
+              <ChevronLeft className="h-5 w-5" />
             </Button>
             <Button
               onClick={next}
               variant="outline"
               size="icon"
-              className="border-primary/30 hover:bg-primary/5"
+              className="h-12 w-12 rounded-full border-gray-200 text-gray-600 hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-200 transition-all"
             >
-              <ChevronRight className="h-4 w-4" />
+              <ChevronRight className="h-5 w-5" />
             </Button>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {visibleScholars.map((scholar) => (
             <div
               key={scholar.id}
-              className="group rounded-lg border border-border bg-background p-6 text-center transition hover:border-primary hover:bg-primary/5"
+              className="group relative rounded-3xl border border-gray-100 bg-white p-8 text-center shadow-sm transition-all duration-500 hover:shadow-2xl hover:shadow-indigo-100/50 hover:-translate-y-2 overflow-hidden cursor-pointer"
             >
-              <div className="relative mb-4 flex justify-center">
-                <Image
-                  src={scholar.image}
-                  alt={scholar.name}
-                  width={120}
-                  height={120}
-                  className="h-24 w-24 rounded-full object-cover"
-                  unoptimized
-                />
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent to-indigo-50/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              
+              <div className="relative mb-6 flex justify-center">
+                <div className="relative h-28 w-28 rounded-full p-1 bg-gradient-to-tr from-indigo-500 to-emerald-400">
+                  <div className="h-full w-full rounded-full border-4 border-white bg-white overflow-hidden">
+                    <Image
+                      src={scholar.image}
+                      alt={scholar.name}
+                      width={120}
+                      height={120}
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      unoptimized
+                    />
+                  </div>
+                </div>
               </div>
-              <h3 className="font-semibold text-foreground">{scholar.name}</h3>
-              <p className="mt-1 text-xs text-primary">{scholar.domain}</p>
-              <p className="mt-3 text-sm font-medium text-foreground/60">
-                {scholar.publications} publications
-              </p>
+              <h3 className="relative z-10 text-xl font-bold text-gray-900 group-hover:text-indigo-700 transition-colors">{scholar.name}</h3>
+              <p className="relative z-10 mt-2 text-xs font-bold uppercase tracking-widest text-indigo-500">{scholar.domain}</p>
+              
+              <div className="relative z-10 mt-6 inline-flex items-center rounded-full bg-gray-50 px-4 py-1.5 border border-gray-100 group-hover:bg-white group-hover:border-indigo-100 transition-colors">
+                <span className="text-sm font-semibold text-gray-700 group-hover:text-indigo-700">
+                  {scholar.publications} <span className="font-medium text-gray-500">Publications</span>
+                </span>
+              </div>
             </div>
           ))}
-        </div>
-
-        <div className="mt-8 flex gap-2 sm:hidden">
-          <Button
-            onClick={previous}
-            variant="outline"
-            size="icon"
-            className="border-primary/30 hover:bg-primary/5"
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
-          <Button
-            onClick={next}
-            variant="outline"
-            size="icon"
-            className="border-primary/30 hover:bg-primary/5"
-          >
-            <ChevronRight className="h-4 w-4" />
-          </Button>
         </div>
       </div>
     </section>

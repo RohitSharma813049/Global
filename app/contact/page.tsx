@@ -1,8 +1,10 @@
 import React from "react";
+import { BackButton } from "@/components/back-button";
 
 export default function Contact() {
   return (
     <div className="min-h-screen bg-white py-24">
+      <BackButton />
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-extrabold text-gray-900 mb-4">Contact Us</h1>
