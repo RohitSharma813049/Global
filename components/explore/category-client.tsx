@@ -10,11 +10,13 @@ export default function CategoryClient({ initialData }: { initialData: any[] }) 
   const [searchQuery, setSearchQuery] = useState('')
   const [filters, setFilters] = useState<{
     subjects: string[]
+    subcategories: string[]
     authors: string[]
     types: string[]
     yearRange: [number, number]
   }>({
     subjects: [],
+    subcategories: [],
     authors: [],
     types: [],
     yearRange: [2000, new Date().getFullYear()],
@@ -80,6 +82,7 @@ export default function CategoryClient({ initialData }: { initialData: any[] }) 
             filters={filters}
             setFilters={setFilters}
             availableSubjects={availableSubjects}
+            availableSubcategories={[]}
             availableAuthors={availableAuthors}
             availableTypes={availableTypes}
           />
