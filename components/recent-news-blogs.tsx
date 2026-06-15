@@ -9,7 +9,7 @@ interface ContentItem {
   title: string
   slug: string
   cover_image: string | null
-  created_at: Date
+  created_at: Date | null
   type: 'blog' | 'news'
 }
 
@@ -91,7 +91,7 @@ export default function RecentNewsBlogs({ items }: { items: ContentItem[] }) {
               <div className="p-5 flex flex-col flex-grow">
                 <div className="flex items-center text-xs text-gray-500 mb-2">
                   <Calendar className="w-3 h-3 mr-1" />
-                  {new Date(item.created_at).toLocaleDateString()}
+                  {item.created_at ? new Date(item.created_at).toLocaleDateString() : 'Recently'}
                 </div>
                 <h3 className="font-bold text-gray-900 text-lg leading-tight group-hover:text-indigo-600 transition-colors line-clamp-2">
                   {item.title}
