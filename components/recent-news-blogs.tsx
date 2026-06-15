@@ -1,7 +1,8 @@
 'use client'
 
+import { useRef } from 'react'
 import Link from 'next/link'
-import { Calendar } from 'lucide-react'
+import { Calendar, ChevronLeft, ChevronRight } from 'lucide-react'
 
 interface ContentItem {
   id: string
@@ -13,11 +14,24 @@ interface ContentItem {
 }
 
 export default function RecentNewsBlogs({ items }: { items: ContentItem[] }) {
+  const scrollRef = useRef<HTMLDivElement>(null)
+
   if (!items || items.length === 0) return null
+
+  const scroll = (direction: 'left' | 'right') => {
+    if (scrollRef.current) {
+      const { scrollLeft, clientWidth } = scrollRef.current
+      const scrollAmount = clientWidth * 0.8
+      scrollRef.current.scrollTo({
+        left: direction === 'left' ? scrollLeft - scrollAmount : scrollLeft + scrollAmount,
+        behavior: 'smooth'
+      })
+    }
+  }
 
   return (
     <section className="px-6 py-16 sm:py-24 bg-white border-t border-gray-100">
-      <div className="mx-auto max-w-7xl">
+      <div className="mx-auto max-w-7xl relative">
         <div className="mb-10 flex justify-between items-end">
           <div>
             <p className="text-sm font-semibold tracking-wide text-indigo-600 uppercase">
@@ -27,12 +41,35 @@ export default function RecentNewsBlogs({ items }: { items: ContentItem[] }) {
               Blogs & News
             </h2>
           </div>
-          <Link href="/blog" className="text-indigo-600 font-semibold hover:underline hidden sm:block">
-            View All Updates &rarr;
-          </Link>
+          <div className="hidden sm:flex items-center gap-4">
+            <div className="flex gap-2">
+              <button 
+                onClick={() => scroll('left')}
+                className="p-2 rounded-full border border-gray-200 bg-white text-gray-600 hover:text-indigo-600 hover:border-indigo-600 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                aria-label="Scroll left"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <button 
+                onClick={() => scroll('right')}
+                className="p-2 rounded-full border border-gray-200 bg-white text-gray-600 hover:text-indigo-600 hover:border-indigo-600 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                aria-label="Scroll right"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
+            <Link href="/updates" className="text-indigo-600 font-semibold hover:underline">
+              View All Updates &rarr;
+            </Link>
+          </div>
         </div>
 
-        <div className="flex overflow-x-auto pb-8 snap-x snap-mandatory gap-6 hide-scrollbar">
+        <div className="relative">
+          <div 
+            ref={scrollRef}
+            className="flex overflow-x-auto pb-8 snap-x snap-mandatory gap-6 scrollbar-hide"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          >
           {items.map((item) => (
             <Link 
               href={`/${item.type}/${item.slug}`} 
@@ -62,9 +99,10 @@ export default function RecentNewsBlogs({ items }: { items: ContentItem[] }) {
               </div>
             </Link>
           ))}
+          </div>
         </div>
         <div className="mt-4 sm:hidden text-center">
-          <Link href="/blog" className="text-indigo-600 font-semibold hover:underline">
+          <Link href="/updates" className="text-indigo-600 font-semibold hover:underline">
             View All Updates &rarr;
           </Link>
         </div>
