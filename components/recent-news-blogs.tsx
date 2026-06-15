@@ -2,6 +2,7 @@
 
 import { useRef } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Calendar, ChevronLeft, ChevronRight } from 'lucide-react'
 
 interface ContentItem {
@@ -78,7 +79,7 @@ export default function RecentNewsBlogs({ items }: { items: ContentItem[] }) {
             >
               <div className="h-48 bg-gray-200 relative overflow-hidden">
                 {item.cover_image ? (
-                  <img src={item.cover_image} alt={item.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                  <Image src={item.cover_image} alt={item.title} fill sizes="(max-width: 640px) 85vw, 320px" className="object-cover transition-transform duration-500 group-hover:scale-105" />
                 ) : (
                   <div className="w-full h-full bg-indigo-100 flex items-center justify-center">
                     <span className="text-indigo-500 font-bold text-4xl">{item.title.charAt(0)}</span>

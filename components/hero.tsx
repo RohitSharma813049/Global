@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Search, Sparkles, BookOpen } from 'lucide-react'
 import Link from 'next/link'
+import Image from 'next/image'
 
 interface HeroProps {
   title?: string;
@@ -20,9 +21,21 @@ export default function Hero({ title, subtitle, imageUrl }: HeroProps) {
   const displaySubtitle = subtitle || "The ultimate unified platform for academic publishing and scholar identity. Discover thesis, research papers, eBooks, and build your verified Wikipedia-style profile.";
 
   return (
-    <section className="relative overflow-hidden bg-white px-6 py-24 sm:py-32" style={imageUrl ? { backgroundImage: `linear-gradient(rgba(255,255,255,0.8), rgba(255,255,255,0.9)), url(${imageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}>
+    <section className="relative overflow-hidden bg-white px-6 py-24 sm:py-32">
+      {imageUrl && (
+        <div className="absolute inset-0 z-0">
+          <Image 
+            src={imageUrl} 
+            alt="Hero Background" 
+            fill 
+            className="object-cover object-center" 
+            priority
+          />
+          <div className="absolute inset-0 bg-white/80 backdrop-blur-[2px]"></div>
+        </div>
+      )}
       {/* Premium Background Gradients */}
-      <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-50 via-white to-white"></div>
+      <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-50/50 via-white/50 to-transparent"></div>
       <div className="absolute top-0 right-0 -mr-20 -mt-20 h-96 w-96 rounded-full bg-emerald-100/50 blur-3xl mix-blend-multiply"></div>
       <div className="absolute bottom-0 left-0 -ml-20 -mb-20 h-96 w-96 rounded-full bg-indigo-100/50 blur-3xl mix-blend-multiply"></div>
 

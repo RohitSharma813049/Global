@@ -1,6 +1,7 @@
 'use client'
 
 import { Star } from 'lucide-react'
+import Image from 'next/image'
 
 
 
@@ -42,7 +43,9 @@ export default function Testimonials({ title, subtitle, testimonials = [] }: Tes
               </p>
               <div className="mt-6 flex items-center gap-4">
                 {testimonial.image && (
-                  <img src={testimonial.image} alt={testimonial.author} className="h-12 w-12 rounded-full object-cover" />
+                  <div className="relative h-12 w-12 rounded-full overflow-hidden shrink-0">
+                    <Image src={testimonial.image} alt={testimonial.author} fill sizes="48px" className="object-cover" />
+                  </div>
                 )}
                 <div>
                   <p className="font-semibold text-foreground">{testimonial.author}</p>

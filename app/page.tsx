@@ -1,15 +1,19 @@
+import dynamic from 'next/dynamic'
 import Hero from '@/components/hero'
-import Statistics from '@/components/statistics'
-import FeaturedContent from '@/components/featured-content'
-import ExploreCategories from '@/components/explore-categories'
-import HowItWorks from '@/components/how-it-works'
-import FeaturedScholars from '@/components/featured-scholars'
-import Testimonials from '@/components/testimonials'
-import Footer from '@/components/footer'
-import RecentNewsBlogs from '@/components/recent-news-blogs'
 
+// Lazy load below-the-fold components
+const Statistics = dynamic(() => import('@/components/statistics'))
+const FeaturedContent = dynamic(() => import('@/components/featured-content'))
+const ExploreCategories = dynamic(() => import('@/components/explore-categories'))
+const HowItWorks = dynamic(() => import('@/components/how-it-works'))
+const FeaturedScholars = dynamic(() => import('@/components/featured-scholars'))
+const Testimonials = dynamic(() => import('@/components/testimonials'))
+const Footer = dynamic(() => import('@/components/footer'))
+const RecentNewsBlogs = dynamic(() => import('@/components/recent-news-blogs'))
 import { getHomepageSettings, getBlogs, getNews, getTestimonials, getFeaturedScholars } from '@/app/actions/cms'
 import { getPlatformStats } from '@/app/actions/stats'
+
+export const revalidate = 60 // Enable ISR caching (60 seconds)
 
 export default async function Page() {
   const [settings, blogsData, newsData, statsData, testimonialsData, scholarsData] = await Promise.all([

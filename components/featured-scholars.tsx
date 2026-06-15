@@ -96,7 +96,6 @@ export default function FeaturedScholars({ title, subtitle, scholars = [] }: Fea
                       width={120}
                       height={120}
                       className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      unoptimized
                     />
                   </div>
                 </div>
