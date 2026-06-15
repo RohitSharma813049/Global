@@ -29,17 +29,23 @@ function Login() {
         setLoading(true);
         setError("");
         
-        const result = await signIn("credentials", {
-            email: formData.email,
-            password: formData.password,
-            redirect: false
-        });
+        try {
+            const result = await signIn("credentials", {
+                email: formData.email,
+                password: formData.password,
+                redirect: false
+            });
 
-        if (result?.error) {
-            setError("Invalid email or password");
+            if (result?.error) {
+                setError("Invalid email or password");
+                setLoading(false);
+            } else {
+                router.push("/dashboard");
+            }
+        } catch (err) {
+            console.error("Sign in error:", err);
+            setError("An error occurred during sign in. Please try again or check server logs.");
             setLoading(false);
-        } else {
-            router.push("/dashboard");
         }
     };
 
