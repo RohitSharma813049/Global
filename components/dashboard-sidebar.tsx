@@ -15,7 +15,12 @@ import {
   MdLogout,
   MdPendingActions,
   MdSchool,
-  MdPushPin
+  MdPushPin,
+  MdArticle,
+  MdNewspaper,
+  MdWeb,
+  MdStar,
+  MdPerson
 } from "react-icons/md";
 import { BecomeScholarModal } from "@/components/become-scholar-modal";
 import { useSidebar } from "./sidebar-context";
@@ -46,7 +51,11 @@ export default function DashboardSidebar() {
     { name: "Scholar Applications", href: "/dashboard/admin/scholar-applications", icon: MdPeople },
     { name: "Review Publications", href: "/dashboard/admin/publications", icon: MdPendingActions },
     { name: "Categories", href: "/dashboard/admin/categories", icon: MdBookmark },
-    { name: "Content Types", href: "/dashboard/admin/content-types", icon: MdSettings },
+    { name: "Homepage Settings", href: "/dashboard/admin/settings", icon: MdWeb },
+    { name: "Featured Scholars", href: "/dashboard/admin/featured-scholars", icon: MdPerson },
+    { name: "Testimonials", href: "/dashboard/admin/testimonials", icon: MdStar },
+    { name: "Blogs", href: "/dashboard/admin/blogs", icon: MdArticle },
+    { name: "News", href: "/dashboard/admin/news", icon: MdNewspaper },
   ];
 
   const links = role === "super_admin" || role === "admin" 

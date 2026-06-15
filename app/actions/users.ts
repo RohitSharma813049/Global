@@ -70,3 +70,33 @@ export async function updateUserRole(userId: string, newRole: string) {
   revalidatePath('/dashboard/admin/users')
   return data
 }
+
+export async function createAdminUser(email: string, name: string) {
+  const session = await checkAdmin()
+  if (session.user.role !== 'super_admin') {
+    throw new Error('Only Super Admins can create new administrators.')
+  }
+
+  // Generate a random secure password for the new admin (they will need to reset it via "forgot password")
+  const tempPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8) + "1!Aa"
+
+  const { data, error } = await supabaseAdmin.auth.admin.createUser({
+    email,
+    password: tempPassword,
+    email_confirm: true,
+    user_metadata: { name, role: 'admin' }
+  })
+
+  if (error) throw new Error(error.message)
+
+  // Add to profiles
+  if (data.user) {
+    await supabaseAdmin.from('profiles').insert({
+      id: data.user.id,
+      role: 'admin'
+    })
+  }
+
+  revalidatePath('/dashboard/admin/users')
+  return data.user
+}

@@ -5,9 +5,22 @@ import { Input } from '@/components/ui/input'
 import { Search, Sparkles, BookOpen } from 'lucide-react'
 import Link from 'next/link'
 
-export default function Hero() {
+interface HeroProps {
+  title?: string;
+  subtitle?: string;
+  imageUrl?: string;
+}
+
+export default function Hero({ title, subtitle, imageUrl }: HeroProps) {
+  const displayTitle = title || "Empowering Global\nResearch & Knowledge";
+  // Split title if it contains newline or just render as is. We'll render as is, but style it a bit.
+  const firstPart = displayTitle.split('\n')[0] || displayTitle;
+  const secondPart = displayTitle.split('\n')[1] || "";
+  
+  const displaySubtitle = subtitle || "The ultimate unified platform for academic publishing and scholar identity. Discover thesis, research papers, eBooks, and build your verified Wikipedia-style profile.";
+
   return (
-    <section className="relative overflow-hidden bg-white px-6 py-24 sm:py-32">
+    <section className="relative overflow-hidden bg-white px-6 py-24 sm:py-32" style={imageUrl ? { backgroundImage: `linear-gradient(rgba(255,255,255,0.8), rgba(255,255,255,0.9)), url(${imageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}>
       {/* Premium Background Gradients */}
       <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-50 via-white to-white"></div>
       <div className="absolute top-0 right-0 -mr-20 -mt-20 h-96 w-96 rounded-full bg-emerald-100/50 blur-3xl mix-blend-multiply"></div>
@@ -23,14 +36,16 @@ export default function Hero() {
         </div>
 
         <h1 className="text-balance text-5xl font-extrabold tracking-tight text-gray-900 sm:text-6xl lg:text-7xl">
-          Empowering Global
-          <span className="mt-2 block bg-gradient-to-r from-indigo-600 to-emerald-500 bg-clip-text text-transparent pb-2">
-            Research & Knowledge
-          </span>
+          {firstPart}
+          {secondPart && (
+            <span className="mt-2 block text-indigo-600 pb-2">
+              {secondPart}
+            </span>
+          )}
         </h1>
         
-        <p className="mx-auto mt-8 max-w-2xl text-lg text-gray-600 sm:text-xl leading-relaxed">
-          The ultimate unified platform for academic publishing and scholar identity. Discover thesis, research papers, eBooks, and build your verified Wikipedia-style profile.
+        <p className="mx-auto mt-8 max-w-2xl text-lg text-gray-800 font-medium sm:text-xl leading-relaxed">
+          {displaySubtitle}
         </p>
 
         <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
@@ -45,7 +60,7 @@ export default function Hero() {
         {/* PubMed-style Advanced Search Bar (Glassmorphism) */}
         <div className="mt-16 w-full mx-auto max-w-3xl transform transition-all hover:-translate-y-1">
           <div className="relative group">
-            <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-emerald-400 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
+            <div className="absolute -inset-1 bg-indigo-500 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
             <div className="relative flex flex-col sm:flex-row items-center bg-white/80 backdrop-blur-xl border border-gray-200 rounded-2xl shadow-xl p-2 gap-2">
               <div className="flex items-center w-full px-2 sm:px-0">
                 <Search className="ml-2 h-6 w-6 text-indigo-500 shrink-0" />

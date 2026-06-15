@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { getAllUsers, blockUser, updateUserRole } from '@/app/actions/users'
+import { getAllUsers, blockUser, updateUserRole, createAdminUser } from '@/app/actions/users'
 import toast from 'react-hot-toast'
 import { useSession } from 'next-auth/react'
 
@@ -9,6 +9,9 @@ export default function AdminUsersPage() {
   const { data: session } = useSession()
   const [users, setUsers] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  const [showAddAdmin, setShowAddAdmin] = useState(false)
+  const [newAdmin, setNewAdmin] = useState({ name: '', email: '' })
+  const [addingAdmin, setAddingAdmin] = useState(false)
 
   const fetchUsers = async () => {
     try {
@@ -51,6 +54,26 @@ export default function AdminUsersPage() {
   const isAdmin = session?.user?.role === 'admin'
   const canEditRoles = isSuperAdmin || isAdmin
 
+  const handleAddAdmin = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!newAdmin.name || !newAdmin.email) {
+      toast.error('Please provide name and email')
+      return
+    }
+    setAddingAdmin(true)
+    try {
+      await createAdminUser(newAdmin.email, newAdmin.name)
+      toast.success('Admin user created successfully!')
+      setShowAddAdmin(false)
+      setNewAdmin({ name: '', email: '' })
+      fetchUsers()
+    } catch (e: any) {
+      toast.error(e.message)
+    } finally {
+      setAddingAdmin(false)
+    }
+  }
+
   return (
     <div className="p-4 md:p-6 w-full max-w-full overflow-hidden">
       <div className="flex justify-between items-center mb-6">
@@ -58,7 +81,63 @@ export default function AdminUsersPage() {
           <h1 className="text-2xl font-bold">User Management</h1>
           <p className="text-gray-600 text-sm mt-1">Manage user access, block accounts, and assign roles.</p>
         </div>
+        {isSuperAdmin && (
+          <button
+            onClick={() => setShowAddAdmin(true)}
+            className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 font-medium text-sm transition-colors"
+          >
+            + Add Admin
+          </button>
+        )}
       </div>
+
+      {showAddAdmin && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
+            <h2 className="text-xl font-bold mb-4">Add New Administrator</h2>
+            <form onSubmit={handleAddAdmin} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                <input 
+                  type="text" 
+                  value={newAdmin.name} 
+                  onChange={(e) => setNewAdmin({ ...newAdmin, name: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg p-2"
+                  placeholder="Admin Name"
+                  required 
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <input 
+                  type="email" 
+                  value={newAdmin.email} 
+                  onChange={(e) => setNewAdmin({ ...newAdmin, email: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg p-2"
+                  placeholder="admin@example.com"
+                  required 
+                />
+              </div>
+              <div className="flex justify-end gap-3 pt-4">
+                <button 
+                  type="button" 
+                  onClick={() => setShowAddAdmin(false)}
+                  className="px-4 py-2 text-gray-600 hover:text-gray-800"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit"
+                  disabled={addingAdmin}
+                  className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 disabled:opacity-50"
+                >
+                  {addingAdmin ? 'Creating...' : 'Create Admin'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       <div className="bg-white rounded-lg shadow border border-gray-200 overflow-hidden">
         {loading ? (

@@ -8,12 +8,11 @@ interface Stat {
   suffix: string
 }
 
-const stats: Stat[] = [
-  { label: 'Active Scholars', value: 500, suffix: '+' },
-  { label: 'Thesis Published', value: 300, suffix: '+' },
-  { label: 'eBooks Available', value: 100, suffix: '+' },
-  { label: 'Research Articles', value: 600, suffix: '+' },
-]
+interface Stat {
+  label: string
+  value: number
+  suffix: string
+}
 
 function CountUp({ target, suffix }: { target: number; suffix: string }) {
   const [count, setCount] = useState(0)
@@ -36,19 +35,37 @@ function CountUp({ target, suffix }: { target: number; suffix: string }) {
   return <span>{count.toLocaleString()}{suffix}</span>
 }
 
-export default function Statistics() {
+interface StatisticsProps {
+  title?: string;
+  subtitle?: string;
+  statsData?: {
+    scholarsCount: number;
+    thesisCount: number;
+    ebookCount: number;
+    articleCount: number;
+  }
+}
+
+export default function Statistics({ title, subtitle, statsData }: StatisticsProps) {
+  const stats: Stat[] = [
+    { label: 'Verified Scholars', value: statsData?.scholarsCount || 500, suffix: '+' },
+    { label: 'Thesis Published', value: statsData?.thesisCount || 300, suffix: '+' },
+    { label: 'eBooks Available', value: statsData?.ebookCount || 100, suffix: '+' },
+    { label: 'Research Articles', value: statsData?.articleCount || 600, suffix: '+' },
+  ]
+
   return (
     <section className="relative overflow-hidden bg-gray-50 px-6 py-20 sm:py-28">
       {/* Subtle background patterns */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-px bg-gray-200"></div>
       
       <div className="mx-auto max-w-7xl relative z-10">
         <div className="mb-14 text-center transform transition-all hover:scale-105 duration-500">
           <p className="text-sm font-bold tracking-widest text-indigo-600 uppercase">
-            Platform Metrics
+            {subtitle || 'Platform Metrics'}
           </p>
           <h2 className="mt-3 text-balance text-4xl font-extrabold text-gray-900 sm:text-5xl">
-            Trusted by Scholars Worldwide
+            {title || 'Trusted by Scholars Worldwide'}
           </h2>
         </div>
 
@@ -59,9 +76,9 @@ export default function Statistics() {
               className="group relative flex flex-col items-center justify-center bg-white rounded-3xl p-8 shadow-sm border border-gray-100 transition-all duration-500 hover:shadow-2xl hover:shadow-indigo-100 hover:-translate-y-2 overflow-hidden"
             >
               {/* Hover gradient effect inside card */}
-              <div className="absolute inset-0 bg-gradient-to-b from-indigo-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="absolute inset-0 bg-indigo-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               
-              <p className="relative z-10 text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-emerald-500 sm:text-5xl lg:text-6xl tracking-tight">
+              <p className="relative z-10 text-4xl font-black text-indigo-600 sm:text-5xl lg:text-6xl tracking-tight">
                 <CountUp target={stat.value} suffix={stat.suffix} />
               </p>
               <p className="relative z-10 mt-3 text-sm font-semibold text-gray-500 sm:text-base uppercase tracking-wider group-hover:text-indigo-600 transition-colors">

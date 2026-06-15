@@ -23,16 +23,21 @@ const steps = [
   },
 ]
 
-export default function HowItWorks() {
+interface HowItWorksProps {
+  title?: string;
+  subtitle?: string;
+}
+
+export default function HowItWorks({ title, subtitle }: HowItWorksProps) {
   return (
     <section className="px-6 py-16 sm:py-24">
       <div className="mx-auto max-w-7xl">
         <div className="mb-16 text-center">
           <p className="text-sm font-semibold tracking-wide text-primary uppercase">
-            Simple Process
+            {subtitle || 'Simple Process'}
           </p>
           <h2 className="mt-2 text-balance text-3xl font-bold text-foreground sm:text-4xl">
-            How It Works
+            {title || 'How It Works'}
           </h2>
         </div>
 

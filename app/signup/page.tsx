@@ -10,8 +10,8 @@ import toast from "react-hot-toast";
 
 export default function Signup() {
     const router = useRouter();
-    const [step, setStep] = useState<1 | 2 | 3>(2); // 1: Role, 2: Form, 3: OTP
-    const [role, setRole] = useState<"reader" | "scholar" | null>("reader");
+    const [step, setStep] = useState<1 | 2 | 3>(1); // 1: Role, 2: Form, 3: OTP
+    const [role, setRole] = useState<"reader" | "scholar" | null>(null);
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const [otp, setOtp] = useState("");

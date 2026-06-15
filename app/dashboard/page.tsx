@@ -7,6 +7,7 @@ import { getMyApplicationStatus } from "@/app/actions/scholar-applications";
 import { BecomeScholarModal } from "@/components/become-scholar-modal";
 
 import { getReadingHistory } from "@/app/actions/history";
+import { getAdminStats, getScholarStats } from "@/app/actions/dashboard";
 import Link from "next/link";
 
 export default function Dashboard() {
@@ -14,6 +15,8 @@ export default function Dashboard() {
   const router = useRouter();
   const [applicationState, setApplicationState] = useState<any>(null);
   const [history, setHistory] = useState<any[]>([]);
+  const [adminStats, setAdminStats] = useState<any>(null);
+  const [scholarStats, setScholarStats] = useState<any>(null);
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -28,8 +31,15 @@ export default function Dashboard() {
       getReadingHistory().then(data => {
         setHistory(data || []);
       });
+      
+      const role = session?.user?.role;
+      if (role === 'admin' || role === 'super_admin') {
+        getAdminStats().then(setAdminStats).catch(console.error);
+      } else if (role === 'scholar') {
+        getScholarStats().then(setScholarStats).catch(console.error);
+      }
     }
-  }, [status]);
+  }, [status, session?.user?.role]);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -165,9 +175,11 @@ export default function Dashboard() {
             <h1 className="text-3xl font-bold mb-2">Scholar Dashboard</h1>
             <p className="text-indigo-100 text-lg">Manage your publications and track your impact.</p>
           </div>
-          <button className="px-6 py-3 bg-white text-indigo-600 font-bold rounded-xl shadow-md hover:shadow-lg transition-all hover:-translate-y-1 flex items-center">
-            <MdPublish className="mr-2" /> Submit Paper
-          </button>
+          <Link href="/dashboard/scholar/upload">
+            <button className="px-6 py-3 bg-white text-indigo-600 font-bold rounded-xl shadow-md hover:shadow-lg transition-all hover:-translate-y-1 flex items-center">
+              <MdPublish className="mr-2" /> Submit Paper
+            </button>
+          </Link>
         </div>
       </div>
 
@@ -178,7 +190,7 @@ export default function Dashboard() {
           </div>
           <div>
             <p className="text-sm text-gray-500 font-semibold uppercase">Published</p>
-            <p className="text-3xl font-extrabold text-gray-900">0</p>
+            <p className="text-3xl font-extrabold text-gray-900">{scholarStats?.published || 0}</p>
           </div>
         </div>
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center">
@@ -187,7 +199,7 @@ export default function Dashboard() {
           </div>
           <div>
             <p className="text-sm text-gray-500 font-semibold uppercase">Total Views</p>
-            <p className="text-3xl font-extrabold text-gray-900">0</p>
+            <p className="text-3xl font-extrabold text-gray-900">{scholarStats?.views || 0}</p>
           </div>
         </div>
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center">
@@ -195,17 +207,28 @@ export default function Dashboard() {
             <MdVerified />
           </div>
           <div>
-            <p className="text-sm text-gray-500 font-semibold uppercase">Citations</p>
-            <p className="text-3xl font-extrabold text-gray-900">0</p>
+            <p className="text-sm text-gray-500 font-semibold uppercase">Downloads</p>
+            <p className="text-3xl font-extrabold text-gray-900">{scholarStats?.downloads || 0}</p>
           </div>
         </div>
       </div>
 
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
         <h2 className="text-xl font-bold text-gray-900 mb-6">Recent Drafts</h2>
-        <div className="p-8 text-center bg-gray-50 rounded-xl border border-dashed border-gray-300">
-          <p className="text-gray-500">You don't have any drafts right now.</p>
-        </div>
+        {scholarStats?.drafts?.length > 0 ? (
+          <div className="space-y-4">
+            {scholarStats.drafts.map((draft: any) => (
+              <div key={draft.id} className="p-4 border rounded-xl flex justify-between items-center">
+                <span className="font-semibold">{draft.title}</span>
+                <Link href={`/dashboard/scholar/upload?id=${draft.id}`} className="text-indigo-600 hover:underline">Edit</Link>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="p-8 text-center bg-gray-50 rounded-xl border border-dashed border-gray-300">
+            <p className="text-gray-500">You don't have any drafts right now.</p>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -225,11 +248,11 @@ export default function Dashboard() {
           <div className="space-y-4">
             <div className="flex justify-between items-center p-4 bg-gray-50 rounded-xl">
               <span className="text-gray-600 font-semibold">Total Scholars</span>
-              <span className="text-xl font-bold text-indigo-600">42</span>
+              <span className="text-xl font-bold text-indigo-600">{adminStats?.totalScholars || 0}</span>
             </div>
             <div className="flex justify-between items-center p-4 bg-gray-50 rounded-xl">
               <span className="text-gray-600 font-semibold">Total Readers</span>
-              <span className="text-xl font-bold text-green-600">128</span>
+              <span className="text-xl font-bold text-green-600">{adminStats?.totalReaders || 0}</span>
             </div>
           </div>
         </div>
@@ -238,9 +261,20 @@ export default function Dashboard() {
           <h2 className="text-xl font-bold text-gray-900 flex items-center mb-6">
             <MdLibraryBooks className="text-indigo-600 mr-2" /> Pending Approvals
           </h2>
-          <div className="p-8 text-center bg-gray-50 rounded-xl border border-dashed border-gray-300">
-            <p className="text-gray-500">All caught up! No pending publications.</p>
-          </div>
+          {adminStats?.pendingPublications > 0 ? (
+            <div className="p-8 text-center bg-orange-50 rounded-xl border border-orange-200">
+              <p className="text-orange-800 font-semibold text-lg">{adminStats.pendingPublications} publications pending review</p>
+              <Link href="/dashboard/admin/publications">
+                <button className="mt-4 px-6 py-2 bg-orange-600 text-white font-semibold rounded-full hover:bg-orange-700 transition-colors">
+                  Review Now
+                </button>
+              </Link>
+            </div>
+          ) : (
+            <div className="p-8 text-center bg-gray-50 rounded-xl border border-dashed border-gray-300">
+              <p className="text-gray-500">All caught up! No pending publications.</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

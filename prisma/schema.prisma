@@ -453,6 +453,7 @@ model users {
   scholars                    scholars?
   notifications               notifications[]
   reading_history             reading_history[]
+  blogs                       blogs[]
 
   @@index([created_at(sort: Desc)], map: "idx_users_created_at_desc")
   @@index([email], map: "idx_users_email")
@@ -581,6 +582,7 @@ model scholars {
   qualification   String?
   specialization  String?
   verified        Boolean?       @default(true)
+  is_featured     Boolean?       @default(false)
   total_views     Int?           @default(0)
   total_downloads Int?           @default(0)
   publications    publications[]
@@ -685,5 +687,56 @@ model reading_history {
   publications   publications @relation(fields: [publication_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@unique([user_id, publication_id])
+  @@schema("public")
+}
+
+model homepage_settings {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  settings   Json
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at DateTime? @default(now()) @db.Timestamptz(6)
+
+  @@schema("public")
+}
+
+model blogs {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title       String
+  slug        String    @unique
+  content     String
+  author_id   String?   @db.Uuid
+  cover_image String?
+  status      String?   @default("draft")
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at  DateTime? @default(now()) @db.Timestamptz(6)
+  users       users?    @relation(fields: [author_id], references: [id], onDelete: SetNull, onUpdate: NoAction)
+
+  @@schema("public")
+}
+
+model news {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title        String
+  slug         String    @unique
+  content      String
+  cover_image  String?
+  status       String?   @default("draft")
+  published_at DateTime? @db.Timestamptz(6)
+  created_at   DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at   DateTime? @default(now()) @db.Timestamptz(6)
+
+  @@schema("public")
+}
+
+model testimonials {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  quote      String
+  author     String
+  role       String
+  rating     Int       @default(5)
+  image      String?
+  is_featured Boolean  @default(true)
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+
   @@schema("public")
 }

@@ -49,7 +49,12 @@ const featuredContent: ContentItem[] = [
   },
 ]
 
-export default function FeaturedContent() {
+interface FeaturedContentProps {
+  title?: string;
+  subtitle?: string;
+}
+
+export default function FeaturedContent({ title, subtitle }: FeaturedContentProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
 
   const previous = () => {
@@ -68,10 +73,10 @@ export default function FeaturedContent() {
       <div className="mx-auto max-w-7xl relative z-10">
         <div className="mb-16">
           <p className="text-sm font-bold tracking-widest text-indigo-600 uppercase">
-            Featured Content
+            {subtitle || 'Featured Content'}
           </p>
           <h2 className="mt-3 text-balance text-4xl font-extrabold text-gray-900 sm:text-5xl">
-            Discover Trending Research
+            {title || 'Discover Trending Research'}
           </h2>
         </div>
 
@@ -86,7 +91,7 @@ export default function FeaturedContent() {
               className="h-96 w-full object-cover transition-transform duration-700 group-hover:scale-105"
               unoptimized
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-gray-900/20 to-transparent"></div>
+            <div className="absolute inset-0 bg-gray-900/40"></div>
             <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between">
               <span className="inline-block rounded-full bg-emerald-500/90 backdrop-blur-md px-4 py-1.5 text-xs font-bold text-white uppercase tracking-wider shadow-sm">
                 {current.type}

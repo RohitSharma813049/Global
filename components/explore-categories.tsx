@@ -30,7 +30,12 @@ const categories = [
   },
 ]
 
-export default function ExploreCategories() {
+interface ExploreCategoriesProps {
+  title?: string;
+  subtitle?: string;
+}
+
+export default function ExploreCategories({ title, subtitle }: ExploreCategoriesProps) {
   return (
     <section className="relative overflow-hidden bg-gray-50 px-6 py-20 sm:py-32 border-y border-gray-100">
       {/* Decorative gradient blobs */}
@@ -40,10 +45,10 @@ export default function ExploreCategories() {
       <div className="mx-auto max-w-7xl relative z-10">
         <div className="mb-14 text-center">
           <p className="text-sm font-bold tracking-widest text-indigo-600 uppercase">
-            Browse Topics
+            {subtitle || 'Browse Topics'}
           </p>
           <h2 className="mt-3 text-balance text-4xl font-extrabold text-gray-900 sm:text-5xl">
-            Explore by Category
+            {title || 'Explore by Category'}
           </h2>
         </div>
 
@@ -56,7 +61,7 @@ export default function ExploreCategories() {
                 className="group relative flex-none w-[75vw] sm:w-auto snap-center rounded-3xl bg-white p-8 transition-all duration-500 hover:shadow-2xl hover:shadow-indigo-100/50 hover:-translate-y-2 text-left border border-gray-100 overflow-hidden"
               >
                 {/* Hover gradient fill */}
-                <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="absolute inset-0 bg-indigo-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 
                 <div className="relative z-10">
                   <div className="inline-flex p-3 rounded-2xl bg-indigo-50 group-hover:bg-indigo-600 transition-colors duration-500 mb-6 shadow-inner">

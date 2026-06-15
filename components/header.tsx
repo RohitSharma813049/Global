@@ -49,8 +49,14 @@ export default function Header() {
         </Link>
 
         <div className="hidden md:flex items-center gap-6">
+          <Link href="/" className="text-sm text-foreground/70 transition hover:text-foreground">
+            Home
+          </Link>
           <Link href="/category" className="text-sm text-foreground/70 transition hover:text-foreground">
             Explore
+          </Link>
+          <Link href="/updates" className="text-sm text-foreground/70 transition hover:text-foreground">
+            News & Blogs
           </Link>
           {session && (
             <>
@@ -234,6 +240,7 @@ export default function Header() {
                   <h4 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Main</h4>
                   <SheetClose asChild><Link href="/" className="text-lg font-medium hover:text-indigo-600 transition-colors">Home</Link></SheetClose>
                   <SheetClose asChild><Link href="/category" className="text-lg font-medium hover:text-indigo-600 transition-colors">Explore</Link></SheetClose>
+                  <SheetClose asChild><Link href="/updates" className="text-lg font-medium hover:text-indigo-600 transition-colors">News & Blogs</Link></SheetClose>
                   {session && (
                     <>
                       <SheetClose asChild><Link href="/library" className="text-lg font-medium hover:text-indigo-600 transition-colors">My Library</Link></SheetClose>
