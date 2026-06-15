@@ -5,7 +5,7 @@ import { getAllScholarsForAdmin, toggleScholarFeaturedStatus } from '@/app/actio
 import toast from 'react-hot-toast'
 
 export default function FeaturedScholarsManager() {
-  const [scholars, setScholars] = useState<any[]>([])
+  const [scholars, setScholars] = useState<Record<string, unknown>[]>([])
   const [loading, setLoading] = useState(true)
 
   const loadScholars = async () => {
@@ -13,14 +13,15 @@ export default function FeaturedScholarsManager() {
       setLoading(true)
       const data = await getAllScholarsForAdmin()
       setScholars(data)
-    } catch (e: any) {
+    } catch (e) {
       toast.error('Failed to load scholars')
     } finally {
       setLoading(false)
     }
   }
 
-  useEffect(() => { loadScholars() }, [])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { void loadScholars() }, [])
 
   const handleToggle = async (id: string, currentStatus: boolean) => {
     try {
@@ -28,8 +29,12 @@ export default function FeaturedScholarsManager() {
       toast.success(currentStatus ? 'Scholar un-featured' : 'Scholar featured!')
       // Optimistic UI update
       setScholars(scholars.map(s => s.id === id ? { ...s, is_featured: !currentStatus } : s))
-    } catch (e: any) {
-      toast.error(e.message)
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        toast.error(e.message)
+      } else {
+        toast.error('An error occurred')
+      }
     }
   }
 
@@ -56,7 +61,7 @@ export default function FeaturedScholarsManager() {
             <tbody className="bg-white divide-y divide-gray-200">
               {scholars.map(scholar => {
                 // Get name from raw_user_meta_data if available, else email
-                const name = (scholar.users?.raw_user_meta_data as any)?.name || scholar.users?.email || 'Unknown User'
+                const name = (scholar.users as { raw_user_meta_data?: { name?: string }, email?: string })?.raw_user_meta_data?.name || (scholar.users as { email?: string })?.email || 'Unknown User'
                 return (
                   <tr key={scholar.id}>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -68,7 +73,9 @@ export default function FeaturedScholarsManager() {
                     <td className="px-6 py-4 whitespace-nowrap text-right">
                       <button 
                         onClick={() => handleToggle(scholar.id, !!scholar.is_featured)}
-                        className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${scholar.is_featured ? 'bg-indigo-600' : 'bg-gray-200'}`}
+                        title={scholar.is_featured ? "Un-feature scholar" : "Feature scholar"}
+                        aria-label={scholar.is_featured ? "Un-feature scholar" : "Feature scholar"}
+                        className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${scholar.is_featured ? 'bg-indigo-600' : 'bg-gray-200'}`}
                       >
                         <span className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${scholar.is_featured ? 'translate-x-5' : 'translate-x-0'}`} />
                       </button>

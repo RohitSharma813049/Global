@@ -126,7 +126,7 @@ export default function Signup() {
                                 onClick={() => handleRoleSelect("reader")}
                                 className="group relative bg-white rounded-2xl shadow-lg border border-gray-100 p-6 sm:p-8 cursor-pointer hover:shadow-2xl hover:border-indigo-500 transition-all duration-300 transform hover:-translate-y-1"
                             >
-                                <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full opacity-10 group-hover:opacity-20 transition-opacity blur-xl"></div>
+                                <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-linear-to-br from-indigo-500 to-purple-600 rounded-full opacity-10 group-hover:opacity-20 transition-opacity blur-xl"></div>
                                 <div className="h-16 w-16 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                                     <MdMenuBook className="text-3xl" />
                                 </div>
@@ -141,7 +141,7 @@ export default function Signup() {
                                 onClick={() => handleRoleSelect("scholar")}
                                 className="group relative bg-white rounded-2xl shadow-lg border border-gray-100 p-6 sm:p-8 cursor-pointer hover:shadow-2xl hover:border-emerald-500 transition-all duration-300 transform hover:-translate-y-1"
                             >
-                                <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full opacity-10 group-hover:opacity-20 transition-opacity blur-xl"></div>
+                                <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-linear-to-br from-emerald-500 to-teal-600 rounded-full opacity-10 group-hover:opacity-20 transition-opacity blur-xl"></div>
                                 <div className="h-16 w-16 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                                     <MdSchool className="text-3xl" />
                                 </div>

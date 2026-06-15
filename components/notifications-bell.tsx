@@ -103,7 +103,7 @@ export default function NotificationsBell() {
                       {notification.title}
                     </h4>
                     {!notification.is_read && (
-                      <span className="h-2 w-2 rounded-full bg-indigo-600 mt-1.5 flex-shrink-0"></span>
+                      <span className="h-2 w-2 rounded-full bg-indigo-600 mt-1.5 shrink-0"></span>
                     )}
                   </div>
                   <p className="text-xs text-gray-600 line-clamp-2 leading-relaxed">

@@ -26,8 +26,8 @@ export default async function Page() {
   ]);
 
   const recentItems = [
-    ...(blogsData || []).map(b => ({ ...b, type: 'blog' as const })),
-    ...(newsData || []).map(n => ({ ...n, type: 'news' as const }))
+    ...(blogsData || []).map((b: any) => ({ ...b, type: 'blog' as const })),
+    ...(newsData || []).map((n: any) => ({ ...n, type: 'news' as const }))
   ].sort((a, b) => {
     const timeB = b.created_at ? new Date(b.created_at).getTime() : 0;
     const timeA = a.created_at ? new Date(a.created_at).getTime() : 0;

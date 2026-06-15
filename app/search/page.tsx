@@ -81,7 +81,7 @@ export default function SearchPage() {
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-12 flex flex-col md:flex-row gap-8">
         
         {/* Filters Sidebar */}
-        <aside className="w-full md:w-64 flex-shrink-0">
+        <aside className="w-full md:w-64 shrink-0">
           <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 sticky top-24">
             <div className="flex items-center gap-2 mb-6 pb-4 border-b border-gray-100">
               <Filter className="w-5 h-5 text-indigo-600" />

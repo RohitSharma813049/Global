@@ -80,7 +80,7 @@ export default function SettingsPage() {
 
         <div className="flex flex-col md:flex-row gap-6 sm:gap-8">
           {/* Tabs Sidebar */}
-          <div className="w-full md:w-64 flex-shrink-0">
+          <div className="w-full md:w-64 shrink-0">
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-2 space-y-1">
               {tabs.map((tab) => {
                 const Icon = tab.icon;
@@ -95,7 +95,7 @@ export default function SettingsPage() {
                         : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                     }`}
                   >
-                    <Icon className="mr-3 text-lg flex-shrink-0" /> {tab.label}
+                    <Icon className="mr-3 text-lg shrink-0" /> {tab.label}
                   </button>
                 );
               })}
@@ -105,7 +105,7 @@ export default function SettingsPage() {
                   onClick={() => signOut({ callbackUrl: '/' })}
                   className="w-full flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 text-red-600 hover:bg-red-50"
                 >
-                  <MdLogout className="mr-3 text-lg flex-shrink-0" /> Log Out
+                  <MdLogout className="mr-3 text-lg shrink-0" /> Log Out
                 </button>
               </div>
             </div>
@@ -121,7 +121,7 @@ export default function SettingsPage() {
                 </div>
                 <div className="p-4 sm:p-6 space-y-6">
                   <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 text-center sm:text-left">
-                    <div className="w-20 h-20 rounded-full bg-indigo-100 flex items-center justify-center text-3xl font-bold text-indigo-700 flex-shrink-0">
+                    <div className="w-20 h-20 rounded-full bg-indigo-100 flex items-center justify-center text-3xl font-bold text-indigo-700 shrink-0">
                       {name ? name.charAt(0).toUpperCase() : "U"}
                     </div>
                     <div>

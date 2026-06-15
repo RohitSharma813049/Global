@@ -66,7 +66,7 @@ export default function ContentCard({
             onClick={onBookmarkToggle}
             variant="ghost"
             size="icon"
-            className={`flex-shrink-0 ${isBookmarked ? 'text-primary' : 'text-foreground/40'}`}
+            className={`shrink-0 ${isBookmarked ? 'text-primary' : 'text-foreground/40'}`}
           >
             <Bookmark className={`h-5 w-5 ${isBookmarked ? 'fill-current' : ''}`} />
           </Button>
@@ -95,14 +95,14 @@ export default function ContentCard({
       {/* Header with badge and year */}
       <div className="p-4 sm:p-5 border-b border-border/50">
         <div className="flex items-start justify-between gap-2 mb-2">
-          <span className={`inline-block rounded-full px-2.5 py-1 text-xs font-semibold flex-shrink-0 ${typeInfo.color}`}>
+          <span className={`inline-block rounded-full px-2.5 py-1 text-xs font-semibold shrink-0 ${typeInfo.color}`}>
             {typeInfo.label}
           </span>
           <Button
             onClick={onBookmarkToggle}
             variant="ghost"
             size="icon"
-            className={`h-8 w-8 flex-shrink-0 ${isBookmarked ? 'text-primary' : 'text-foreground/40'}`}
+            className={`h-8 w-8 shrink-0 ${isBookmarked ? 'text-primary' : 'text-foreground/40'}`}
           >
             <Bookmark className={`h-4 w-4 ${isBookmarked ? 'fill-current' : ''}`} />
           </Button>

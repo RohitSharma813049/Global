@@ -66,7 +66,7 @@ export default function Dashboard() {
       {applicationState?.status === 'rejected' && (
         <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg shadow-sm">
           <div className="flex">
-            <div className="flex-shrink-0">
+            <div className="shrink-0">
               <MdWarning className="h-5 w-5 text-red-500" />
             </div>
             <div className="ml-3">
@@ -91,7 +91,7 @@ export default function Dashboard() {
       {applicationState?.status === 'pending' && (
         <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg shadow-sm">
           <div className="flex">
-            <div className="flex-shrink-0">
+            <div className="shrink-0">
               <MdVerified className="h-5 w-5 text-blue-500" />
             </div>
             <div className="ml-3">
@@ -106,7 +106,7 @@ export default function Dashboard() {
         </div>
       )}
 
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl p-8 text-white shadow-lg">
+      <div className="bg-linear-to-r from-blue-600 to-indigo-700 rounded-2xl p-8 text-white shadow-lg">
         <h1 className="text-3xl font-bold mb-2">Welcome back, {session?.user?.name}!</h1>
         <p className="text-blue-100 text-lg">Continue your learning journey today.</p>
       </div>
@@ -169,7 +169,7 @@ export default function Dashboard() {
 
   const renderScholarDashboard = () => (
     <div className="space-y-8 animate-fade-in-up">
-      <div className="bg-gradient-to-r from-indigo-600 to-purple-700 rounded-2xl p-8 text-white shadow-lg">
+      <div className="bg-linear-to-r from-indigo-600 to-purple-700 rounded-2xl p-8 text-white shadow-lg">
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold mb-2">Scholar Dashboard</h1>
@@ -235,7 +235,7 @@ export default function Dashboard() {
 
   const renderAdminDashboard = () => (
     <div className="space-y-8 animate-fade-in-up">
-      <div className="bg-gradient-to-r from-gray-800 to-gray-900 rounded-2xl p-8 text-white shadow-lg">
+      <div className="bg-linear-to-r from-gray-800 to-gray-900 rounded-2xl p-8 text-white shadow-lg">
         <h1 className="text-3xl font-bold mb-2">Admin Control Center</h1>
         <p className="text-gray-300 text-lg">Overview of platform health and moderation queue.</p>
       </div>

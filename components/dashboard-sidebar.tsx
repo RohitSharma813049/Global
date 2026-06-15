@@ -77,7 +77,7 @@ export default function DashboardSidebar() {
             <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{role}</span>
           </div>
         ) : (
-          <div className="w-10 h-10 bg-indigo-600 rounded-xl text-white flex items-center justify-center font-bold text-xl flex-shrink-0">
+          <div className="w-10 h-10 bg-indigo-600 rounded-xl text-white flex items-center justify-center font-bold text-xl shrink-0">
             GS
           </div>
         )}

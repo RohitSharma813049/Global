@@ -83,7 +83,7 @@ export function NotificationsDropdown() {
                   className={`p-4 border-b border-gray-50 hover:bg-gray-50 transition-colors cursor-pointer ${notification.is_read ? 'opacity-70' : 'bg-indigo-50/30'}`}
                 >
                   <Link href={notification.link || "#"} className="flex items-start gap-3 w-full">
-                    <div className={`mt-1 h-2 w-2 rounded-full flex-shrink-0 ${notification.is_read ? 'bg-transparent' : 'bg-indigo-600'}`} />
+                    <div className={`mt-1 h-2 w-2 rounded-full shrink-0 ${notification.is_read ? 'bg-transparent' : 'bg-indigo-600'}`} />
                     <div>
                       <p className={`text-sm ${notification.is_read ? 'text-gray-700 font-medium' : 'text-gray-900 font-semibold'}`}>
                         {notification.title}

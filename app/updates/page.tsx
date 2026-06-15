@@ -74,7 +74,7 @@ export default async function UpdatesPage() {
                   </div>
                 </div>
                 
-                <div className="p-6 flex flex-col flex-grow">
+                <div className="p-6 flex flex-col grow">
                   <div className="flex items-center text-sm text-gray-500 mb-3 gap-2">
                     <time dateTime={item.dateToSort ? new Date(item.dateToSort).toISOString() : ''}>
                       {item.dateToSort ? formatDistanceToNow(new Date(item.dateToSort), { addSuffix: true }) : 'Recently'}

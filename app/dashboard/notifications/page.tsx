@@ -80,7 +80,7 @@ export default function NotificationsPage() {
               key={notification.id} 
               className={`p-6 hover:bg-gray-50 transition-colors flex gap-4 ${notification.read ? 'bg-white' : 'bg-indigo-50/20'}`}
             >
-              <div className="flex-shrink-0 mt-1">
+              <div className="shrink-0 mt-1">
                 {getIcon(notification.type)}
               </div>
               <div className="flex-1">

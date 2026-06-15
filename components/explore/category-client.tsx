@@ -34,7 +34,7 @@ export default function CategoryClient({ initialData }: { initialData: any[] }) 
 
   // Filter and sort logic
   const filteredContent = useMemo(() => {
-    let result = initialData.filter((item) => {
+    const result = initialData.filter((item) => {
       const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         item.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
         item.description.toLowerCase().includes(searchQuery.toLowerCase())
