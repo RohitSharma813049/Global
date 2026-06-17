@@ -64,7 +64,7 @@ export default function FeaturedScholarsManager() {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const name = (scholar.users?.raw_user_meta_data as any)?.name || scholar.users?.email || 'Unknown User'
                 return (
-                  <tr key={scholar.id}>
+                  <tr key={String(scholar.id)}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="font-medium text-gray-900">{name}</div>
                       <div className="text-xs text-gray-500">{scholar.institution}</div>

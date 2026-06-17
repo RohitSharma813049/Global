@@ -17,5 +17,5 @@ export const uploadFile = async (fileKey: string, body: Buffer, contentType: str
     ContentType: contentType,
   });
 
-  return await s3Client.send(command);
+  return await s3Client.send(command as any);
 };
