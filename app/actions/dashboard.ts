@@ -14,7 +14,7 @@ export async function getAdminStats() {
 
   const [totalScholars, totalReaders, pendingPublications] = await Promise.all([
     prisma.scholars.count(),
-    prisma.profiles.count({ where: { role: 'reader' } }),
+    prisma.profiles.count({ where: { role: 'user' } }),
     prisma.publications.count({ where: { status: 'pending' } })
   ])
 

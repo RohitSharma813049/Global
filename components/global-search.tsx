@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { Search, Loader2 } from 'lucide-react'
 import { useDebounce } from '@/hooks/use-debounce'
 
-export default function GlobalSearch() {
+export default function GlobalSearch({ className }: { className?: string }) {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(false)
@@ -70,7 +70,7 @@ export default function GlobalSearch() {
   }
 
   return (
-    <div ref={wrapperRef} className="relative w-full max-w-md mx-4">
+    <div ref={wrapperRef} className={`relative w-full ${className || 'max-w-md mx-4'}`}>
       <div className="relative flex items-center">
         <div className="absolute left-3 text-gray-400">
           <Search className="h-4 w-4" />

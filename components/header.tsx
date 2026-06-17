@@ -79,8 +79,6 @@ export default function Header() {
             About
           </Link>
           
-          <GlobalSearch />
-          
           <div className="flex gap-3">
             {status === 'loading' ? (
               <div className="h-10 w-24 bg-gray-200 animate-pulse rounded-md"></div>

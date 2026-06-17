@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input'
 import { Search, Sparkles, BookOpen } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
+import GlobalSearch from './global-search'
 
 interface HeroProps {
   title?: string;
@@ -74,18 +75,8 @@ export default function Hero({ title, subtitle, imageUrl }: HeroProps) {
         <div className="mt-16 w-full mx-auto max-w-3xl transform transition-all hover:-translate-y-1">
           <div className="relative group">
             <div className="absolute -inset-1 bg-indigo-500 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
-            <div className="relative flex flex-col sm:flex-row items-center bg-white/80 backdrop-blur-xl border border-gray-200 rounded-2xl shadow-xl p-2 gap-2">
-              <div className="flex items-center w-full px-2 sm:px-0">
-                <Search className="ml-2 h-6 w-6 text-indigo-500 shrink-0" />
-                <Input
-                  type="text"
-                  placeholder="Search 50,000+ publications..."
-                  className="w-full border-0 bg-transparent px-4 py-4 sm:py-6 text-base sm:text-lg placeholder:text-gray-400 focus-visible:ring-0 shadow-none text-gray-900"
-                />
-              </div>
-              <Button className="w-full sm:w-auto h-12 px-8 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl shadow-md transition-colors">
-                Search
-              </Button>
+            <div className="relative flex justify-center items-center bg-white/80 backdrop-blur-xl border border-gray-200 rounded-2xl p-2 pb-6">
+              <GlobalSearch className="w-full max-w-2xl" />
             </div>
           </div>
           <div className="mt-6 flex flex-wrap justify-center gap-4 sm:gap-6 text-sm font-medium text-gray-500">

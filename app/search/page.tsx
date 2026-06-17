@@ -2,6 +2,7 @@ import Footer from "@/components/footer"
 import Header from "@/components/header"
 import { Search, Filter, BookOpen, Download, Eye } from "lucide-react"
 import Link from "next/link"
+import GlobalSearch from "@/components/global-search"
 
 export const metadata = {
   title: "Advanced Search - Global Scholar Publications",
@@ -61,18 +62,8 @@ export default function SearchPage() {
           </div>
           
           <div className="max-w-4xl mx-auto">
-            <div className="flex flex-col md:flex-row gap-4 bg-white/10 p-2 rounded-2xl backdrop-blur-md border border-white/20">
-              <div className="flex-1 relative">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-                <input aria-label="Input field" 
-                  type="text" 
-                  placeholder="Search by title, author, keyword, or DOI..." 
-                  className="w-full pl-12 pr-4 py-4 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-lg"
-                />
-              </div>
-              <button className="bg-indigo-500 hover:bg-indigo-600 text-white px-8 py-4 rounded-xl font-bold transition-colors text-lg whitespace-nowrap">
-                Search
-              </button>
+            <div className="flex justify-center items-center bg-white/10 p-2 pb-6 rounded-2xl backdrop-blur-md border border-white/20">
+              <GlobalSearch className="w-full" />
             </div>
           </div>
         </div>
