@@ -10,7 +10,7 @@ export default function AdminUsersPage() {
   const [users, setUsers] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [showAddAdmin, setShowAddAdmin] = useState(false)
-  const [newAdmin, setNewAdmin] = useState({ name: '', email: '' })
+  const [newAdmin, setNewAdmin] = useState({ name: '', email: '', password: '' })
   const [addingAdmin, setAddingAdmin] = useState(false)
 
   const fetchUsers = async () => {
@@ -67,16 +67,16 @@ export default function AdminUsersPage() {
 
   const handleAddAdmin = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!newAdmin.name || !newAdmin.email) {
-      toast.error('Please provide name and email')
+    if (!newAdmin.name || !newAdmin.email || !newAdmin.password) {
+      toast.error('Please provide name, email, and password')
       return
     }
     setAddingAdmin(true)
     try {
-      await createAdminUser(newAdmin.email, newAdmin.name)
+      await createAdminUser(newAdmin.email, newAdmin.name, newAdmin.password)
       toast.success('Admin user created successfully!')
       setShowAddAdmin(false)
-      setNewAdmin({ name: '', email: '' })
+      setNewAdmin({ name: '', email: '', password: '' })
       fetchUsers()
     } catch (e: any) {
       toast.error(e.message)
@@ -127,6 +127,18 @@ export default function AdminUsersPage() {
                   className="w-full border border-gray-300 rounded-lg p-2"
                   placeholder="admin@example.com"
                   required 
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                <input aria-label="Input field" 
+                  type="password" 
+                  value={newAdmin.password} 
+                  onChange={(e) => setNewAdmin({ ...newAdmin, password: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg p-2"
+                  placeholder="Secure password"
+                  required 
+                  minLength={6}
                 />
               </div>
               <div className="flex justify-end gap-3 pt-4">

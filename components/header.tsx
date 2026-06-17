@@ -23,6 +23,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { MdDashboard, MdSwapHoriz, MdLogout, MdSettings, MdAdminPanelSettings } from 'react-icons/md'
 import { Menu, BookMarked } from 'lucide-react'
 import { NotificationsDropdown } from './notifications-dropdown'
+import GlobalSearch from './global-search'
 
 export default function Header() {
   const { data: session, status } = useSession()
@@ -77,6 +78,8 @@ export default function Header() {
           <Link href="/about" className="text-sm text-foreground/70 transition hover:text-foreground">
             About
           </Link>
+          
+          <GlobalSearch />
           
           <div className="flex gap-3">
             {status === 'loading' ? (

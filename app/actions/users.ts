@@ -71,18 +71,18 @@ export async function updateUserRole(userId: string, newRole: string) {
   return data
 }
 
-export async function createAdminUser(email: string, name: string) {
+export async function createAdminUser(email: string, name: string, password?: string) {
   const session = await checkAdmin()
   if (session.user.role !== 'super_admin') {
     throw new Error('Only Super Admins can create new administrators.')
   }
 
-  // Generate a random secure password for the new admin (they will need to reset it via "forgot password")
-  const tempPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8) + "1!Aa"
+  // Use provided password or generate a random secure one
+  const finalPassword = password || Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8) + "1!Aa"
 
   const { data, error } = await supabaseAdmin.auth.admin.createUser({
     email,
-    password: tempPassword,
+    password: finalPassword,
     email_confirm: true,
     user_metadata: { name, role: 'admin' }
   })
