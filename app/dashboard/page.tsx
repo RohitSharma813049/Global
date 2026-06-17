@@ -20,24 +20,44 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (status === "authenticated") {
-      getMyApplicationStatus().then(data => {
-        if (data) {
-          setApplicationState((prev: any) => {
-            if (JSON.stringify(prev) !== JSON.stringify(data)) return data;
-            return prev;
-          });
+      const fetchData = async () => {
+        try {
+          const appData = await getMyApplicationStatus();
+          if (appData) {
+            setApplicationState((prev: any) => {
+              if (JSON.stringify(prev) !== JSON.stringify(appData)) return appData;
+              return prev;
+            });
+          }
+
+          const historyData = await getReadingHistory();
+          if (historyData) {
+            setHistory((prev) => JSON.stringify(prev) !== JSON.stringify(historyData) ? historyData : prev);
+          }
+
+          const role = session?.user?.role;
+          if (role === 'admin' || role === 'super_admin') {
+            const stats = await getAdminStats();
+            setAdminStats((prev: any) => JSON.stringify(prev) !== JSON.stringify(stats) ? stats : prev);
+          } else if (role === 'scholar') {
+            const stats = await getScholarStats();
+            setScholarStats((prev: any) => JSON.stringify(prev) !== JSON.stringify(stats) ? stats : prev);
+          }
+        } catch (err) {
+          console.error("Dashboard live update error:", err);
         }
-      });
-      getReadingHistory().then(data => {
-        setHistory(data || []);
-      });
-      
-      const role = session?.user?.role;
-      if (role === 'admin' || role === 'super_admin') {
-        getAdminStats().then(setAdminStats).catch(console.error);
-      } else if (role === 'scholar') {
-        getScholarStats().then(setScholarStats).catch(console.error);
-      }
+      };
+
+      fetchData(); // Initial fetch
+
+      // Set up polling interval every 10 seconds for "live" updates
+      const intervalId = setInterval(() => {
+        if (document.visibilityState === 'visible') {
+          fetchData();
+        }
+      }, 10000);
+
+      return () => clearInterval(intervalId);
     }
   }, [status, session?.user?.role]);
 

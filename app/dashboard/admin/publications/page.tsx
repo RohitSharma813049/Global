@@ -4,6 +4,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { redirect } from "next/navigation"
 import PublicationActionButtons from "./PublicationActionButtons"
 import Link from "next/link"
+import LiveRefresher from "@/components/live-refresher"
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
@@ -40,6 +41,8 @@ export default async function AdminPublications() {
   }
 
   return (
+    <>
+    <LiveRefresher />
     <div className="p-4 md:p-6 w-full max-w-full overflow-hidden">
       <div className="flex justify-between items-center mb-6">
         <div>
@@ -116,5 +119,6 @@ export default async function AdminPublications() {
         )}
       </div>
     </div>
+    </>
   )
 }
