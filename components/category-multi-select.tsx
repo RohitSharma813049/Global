@@ -44,7 +44,7 @@ export function CategoryMultiSelect({
     <div className="space-y-4">
       {/* Hidden inputs to submit with form */}
       {selectedIds.map(id => (
-        <input key={`hidden-${id}`} type="hidden" name="subcategory_ids[]" value={id} />
+        <input aria-label="Input field" key={`hidden-${id}`} type="hidden" name="subcategory_ids[]" value={id} />
       ))}
 
       <div className="flex flex-wrap gap-2">

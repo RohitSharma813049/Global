@@ -56,7 +56,7 @@ export function BecomeScholarModal({
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">Full Name</label>
-            <input 
+            <input aria-label="Input field" 
               name="full_name"
               type="text" 
               defaultValue={initialData?.full_name || ''}
@@ -67,7 +67,7 @@ export function BecomeScholarModal({
 
           <div>
             <label className="block text-sm font-medium text-gray-700">Highest Qualification</label>
-            <input 
+            <input aria-label="Input field" 
               name="qualification"
               type="text" 
               defaultValue={initialData?.qualification || ''}
@@ -79,7 +79,7 @@ export function BecomeScholarModal({
 
           <div>
             <label className="block text-sm font-medium text-gray-700">Institution</label>
-            <input 
+            <input aria-label="Input field" 
               name="institution"
               type="text" 
               defaultValue={initialData?.institution || ''}
@@ -90,7 +90,7 @@ export function BecomeScholarModal({
 
           <div>
             <label className="block text-sm font-medium text-gray-700">Specialization</label>
-            <input 
+            <input aria-label="Input field" 
               name="specialization"
               type="text" 
               defaultValue={initialData?.specialization || ''}
@@ -102,7 +102,7 @@ export function BecomeScholarModal({
 
           <div>
             <label className="block text-sm font-medium text-gray-700">Supporting Document</label>
-            <input 
+            <input aria-label="Input field" 
               name="document_file"
               type="file" 
               accept=".pdf,.doc,.docx"
@@ -117,7 +117,7 @@ export function BecomeScholarModal({
 
           <div>
             <label className="block text-sm font-medium text-gray-700">Additional Links (Optional)</label>
-            <input 
+            <input aria-label="Input field" 
               name="additional_link"
               type="url" 
               defaultValue={initialData?.documents?.additional_link || ''}

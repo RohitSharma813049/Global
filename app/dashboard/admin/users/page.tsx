@@ -98,7 +98,7 @@ export default function AdminUsersPage() {
             <form onSubmit={handleAddAdmin} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                <input 
+                <input aria-label="Input field" 
                   type="text" 
                   value={newAdmin.name} 
                   onChange={(e) => setNewAdmin({ ...newAdmin, name: e.target.value })}
@@ -109,7 +109,7 @@ export default function AdminUsersPage() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                <input 
+                <input aria-label="Input field" 
                   type="email" 
                   value={newAdmin.email} 
                   onChange={(e) => setNewAdmin({ ...newAdmin, email: e.target.value })}

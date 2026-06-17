@@ -64,7 +64,7 @@ export default function SearchPage() {
             <div className="flex flex-col md:flex-row gap-4 bg-white/10 p-2 rounded-2xl backdrop-blur-md border border-white/20">
               <div className="flex-1 relative">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-                <input 
+                <input aria-label="Input field" 
                   type="text" 
                   placeholder="Search by title, author, keyword, or DOI..." 
                   className="w-full pl-12 pr-4 py-4 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-lg"
@@ -94,7 +94,7 @@ export default function SearchPage() {
                 <div className="space-y-2">
                   {['All', 'Thesis', 'Research Papers', 'Articles', 'eBooks'].map(type => (
                     <label key={type} className="flex items-center gap-2 cursor-pointer">
-                      <input type="checkbox" className="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4" defaultChecked={type === 'All'} />
+                      <input aria-label="Input field" type="checkbox" className="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4" defaultChecked={type === 'All'} />
                       <span className="text-gray-700 text-sm">{type}</span>
                     </label>
                   ))}
@@ -106,7 +106,7 @@ export default function SearchPage() {
                 <div className="space-y-2">
                   {['Engineering', 'Medical', 'Management', 'Humanities', 'Law'].map(cat => (
                     <label key={cat} className="flex items-center gap-2 cursor-pointer">
-                      <input type="checkbox" className="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4" />
+                      <input aria-label="Input field" type="checkbox" className="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4" />
                       <span className="text-gray-700 text-sm">{cat}</span>
                     </label>
                   ))}
@@ -115,7 +115,7 @@ export default function SearchPage() {
 
               <div>
                 <h3 className="font-semibold text-gray-900 mb-3 text-sm uppercase tracking-wider">Year</h3>
-                <select className="w-full rounded-lg border-gray-300 text-sm focus:ring-indigo-500 focus:border-indigo-500">
+                <select aria-label="Select field" className="w-full rounded-lg border-gray-300 text-sm focus:ring-indigo-500 focus:border-indigo-500">
                   <option>Any Year</option>
                   <option>2026</option>
                   <option>2025</option>
@@ -133,7 +133,7 @@ export default function SearchPage() {
             <p className="text-gray-600 font-medium">Showing 1-3 of 124 results</p>
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-500">Sort by:</span>
-              <select className="rounded-lg border-gray-300 text-sm focus:ring-indigo-500 focus:border-indigo-500 py-1">
+              <select aria-label="Select field" className="rounded-lg border-gray-300 text-sm focus:ring-indigo-500 focus:border-indigo-500 py-1">
                 <option>Relevance</option>
                 <option>Newest First</option>
                 <option>Most Viewed</option>

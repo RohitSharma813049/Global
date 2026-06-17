@@ -34,7 +34,7 @@ export default function ScholarProfileForm({ scholar }: { scholar: any }) {
 
       <div>
         <label htmlFor="bio" className="block text-sm font-medium text-gray-700">Biography</label>
-        <textarea 
+        <textarea aria-label="Input field" 
           name="bio" 
           id="bio" 
           rows={4} 
@@ -47,7 +47,7 @@ export default function ScholarProfileForm({ scholar }: { scholar: any }) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label htmlFor="institution" className="block text-sm font-medium text-gray-700">Institution</label>
-          <input 
+          <input aria-label="Input field" 
             type="text" 
             name="institution" 
             id="institution" 
@@ -58,7 +58,7 @@ export default function ScholarProfileForm({ scholar }: { scholar: any }) {
 
         <div>
           <label htmlFor="qualification" className="block text-sm font-medium text-gray-700">Highest Qualification</label>
-          <input 
+          <input aria-label="Input field" 
             type="text" 
             name="qualification" 
             id="qualification" 
@@ -69,7 +69,7 @@ export default function ScholarProfileForm({ scholar }: { scholar: any }) {
 
         <div className="md:col-span-2">
           <label htmlFor="specialization" className="block text-sm font-medium text-gray-700">Specialization</label>
-          <input 
+          <input aria-label="Input field" 
             type="text" 
             name="specialization" 
             id="specialization" 

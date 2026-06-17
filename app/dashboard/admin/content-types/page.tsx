@@ -84,7 +84,7 @@ export default function ContentTypesAdminPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
-              <input 
+              <input aria-label="Input field" 
                 type="text" 
                 value={formData.name} 
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -95,7 +95,7 @@ export default function ContentTypesAdminPage() {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Slug</label>
-              <input 
+              <input aria-label="Input field" 
                 type="text" 
                 value={formData.slug} 
                 onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
@@ -106,7 +106,7 @@ export default function ContentTypesAdminPage() {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Icon Name (Lucide React)</label>
-              <input 
+              <input aria-label="Input field" 
                 type="text" 
                 value={formData.icon_name} 
                 onChange={(e) => setFormData({ ...formData, icon_name: e.target.value })}

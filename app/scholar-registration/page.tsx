@@ -68,7 +68,7 @@ export default function ScholarRegistration() {
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Full Legal Name</label>
                   <div className="relative">
                     <MdPerson className="absolute left-3 top-3 text-gray-400 text-xl" />
-                    <input 
+                    <input aria-label="Input field" 
                       type="text" name="fullName" value={formData.fullName} onChange={handleChange} required
                       className="pl-10 w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
                       placeholder="Dr. Jane Doe"
@@ -81,7 +81,7 @@ export default function ScholarRegistration() {
                     <label className="block text-sm font-semibold text-gray-700 mb-2">Highest Qualification</label>
                     <div className="relative">
                       <MdSchool className="absolute left-3 top-3 text-gray-400 text-xl" />
-                      <input 
+                      <input aria-label="Input field" 
                         type="text" name="qualification" value={formData.qualification} onChange={handleChange} required
                         className="pl-10 w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
                         placeholder="e.g. Ph.D. in Physics"
@@ -92,7 +92,7 @@ export default function ScholarRegistration() {
                     <label className="block text-sm font-semibold text-gray-700 mb-2">Institution/University</label>
                     <div className="relative">
                       <MdDomain className="absolute left-3 top-3 text-gray-400 text-xl" />
-                      <input 
+                      <input aria-label="Input field" 
                         type="text" name="institution" value={formData.institution} onChange={handleChange} required
                         className="pl-10 w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
                         placeholder="e.g. Harvard University"
@@ -103,7 +103,7 @@ export default function ScholarRegistration() {
 
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Specialization / Domain</label>
-                  <input 
+                  <input aria-label="Input field" 
                     type="text" name="specialization" value={formData.specialization} onChange={handleChange} required
                     className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
                     placeholder="e.g. Quantum Mechanics, Machine Learning"

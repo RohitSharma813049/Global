@@ -5,7 +5,8 @@ import { getAllScholarsForAdmin, toggleScholarFeaturedStatus } from '@/app/actio
 import toast from 'react-hot-toast'
 
 export default function FeaturedScholarsManager() {
-  const [scholars, setScholars] = useState<Record<string, unknown>[]>([])
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [scholars, setScholars] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
   const loadScholars = async () => {
@@ -60,8 +61,8 @@ export default function FeaturedScholarsManager() {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {scholars.map(scholar => {
-                // Get name from raw_user_meta_data if available, else email
-                const name = (scholar.users as { raw_user_meta_data?: { name?: string }, email?: string })?.raw_user_meta_data?.name || (scholar.users as { email?: string })?.email || 'Unknown User'
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const name = (scholar.users?.raw_user_meta_data as any)?.name || scholar.users?.email || 'Unknown User'
                 return (
                   <tr key={scholar.id}>
                     <td className="px-6 py-4 whitespace-nowrap">

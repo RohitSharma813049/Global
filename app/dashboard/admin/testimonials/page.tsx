@@ -117,20 +117,20 @@ export default function TestimonialsManager() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium mb-1">Author Name</label>
-                  <input type="text" value={newItem.author} onChange={e => setNewItem({...newItem, author: e.target.value})} className="w-full border rounded-lg p-2" required />
+                  <input aria-label="Input field" type="text" value={newItem.author} onChange={e => setNewItem({...newItem, author: e.target.value})} className="w-full border rounded-lg p-2" required />
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-1">Role / Designation</label>
-                  <input type="text" value={newItem.role} onChange={e => setNewItem({...newItem, role: e.target.value})} className="w-full border rounded-lg p-2" required />
+                  <input aria-label="Input field" type="text" value={newItem.role} onChange={e => setNewItem({...newItem, role: e.target.value})} className="w-full border rounded-lg p-2" required />
                 </div>
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1">Quote</label>
-                <textarea rows={3} value={newItem.quote} onChange={e => setNewItem({...newItem, quote: e.target.value})} className="w-full border rounded-lg p-2" required />
+                <textarea aria-label="Input field" rows={3} value={newItem.quote} onChange={e => setNewItem({...newItem, quote: e.target.value})} className="w-full border rounded-lg p-2" required />
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1">Rating (1-5)</label>
-                <input type="number" min="1" max="5" value={newItem.rating} onChange={e => setNewItem({...newItem, rating: parseInt(e.target.value)})} className="w-full border rounded-lg p-2" required />
+                <input aria-label="Input field" type="number" min="1" max="5" value={newItem.rating} onChange={e => setNewItem({...newItem, rating: parseInt(e.target.value)})} className="w-full border rounded-lg p-2" required />
               </div>
               <div>
                 <ImageUpload 

@@ -18,7 +18,7 @@ export function DashboardLayoutWrapper({ children }: { children: React.ReactNode
         {/* Top Header Placeholder */}
         <header className="h-16 bg-white border-b border-gray-200 flex items-center px-4 md:px-8 shadow-sm shrink-0">
           <div className="flex-1">
-            <input 
+            <input aria-label="Input field" 
               type="text" 
               placeholder="Search..." 
               className="w-full md:w-96 px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"

@@ -125,7 +125,7 @@ export default function CategoriesAdminPage() {
         <div className="flex items-center gap-4">
           <div className="relative">
             <MdSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-            <input 
+            <input aria-label="Input field" 
               type="text" 
               placeholder="Search categories..."
               value={searchQuery}
@@ -173,7 +173,7 @@ export default function CategoriesAdminPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
-              <input 
+              <input aria-label="Input field" 
                 type="text" 
                 value={formData.name} 
                 onChange={handleNameChange}
@@ -192,7 +192,7 @@ export default function CategoriesAdminPage() {
                   {isCustomSlug ? 'Custom' : 'Auto'}
                 </button>
               </div>
-              <input 
+              <input aria-label="Input field" 
                 type="text" 
                 value={formData.slug} 
                 onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
@@ -205,7 +205,7 @@ export default function CategoriesAdminPage() {
             {categoryType === 'sub' && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Parent Category</label>
-                <select 
+                <select aria-label="Select field" 
                   value={formData.parent_id} 
                   onChange={(e) => setFormData({ ...formData, parent_id: e.target.value })}
                   className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-indigo-500 outline-none bg-white"
@@ -221,7 +221,7 @@ export default function CategoriesAdminPage() {
             
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Allowed Content Types (Optional)</label>
-              <select 
+              <select aria-label="Select field" 
                 multiple
                 value={formData.content_types} 
                 onChange={(e) => {

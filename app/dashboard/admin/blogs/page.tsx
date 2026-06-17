@@ -108,11 +108,11 @@ export default function BlogsManager() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium mb-1">Title</label>
-                <input type="text" value={newBlog.title} onChange={e => setNewBlog({...newBlog, title: e.target.value})} className="w-full border rounded-lg p-2" required />
+                <input aria-label="Input field" type="text" value={newBlog.title} onChange={e => setNewBlog({...newBlog, title: e.target.value})} className="w-full border rounded-lg p-2" required />
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1">Slug (URL)</label>
-                <input type="text" value={newBlog.slug} onChange={e => setNewBlog({...newBlog, slug: e.target.value})} className="w-full border rounded-lg p-2" required />
+                <input aria-label="Input field" type="text" value={newBlog.slug} onChange={e => setNewBlog({...newBlog, slug: e.target.value})} className="w-full border rounded-lg p-2" required />
               </div>
               <div>
                 <ImageUpload 
@@ -123,7 +123,7 @@ export default function BlogsManager() {
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1">Content (Markdown/Text)</label>
-                <textarea rows={6} value={newBlog.content} onChange={e => setNewBlog({...newBlog, content: e.target.value})} className="w-full border rounded-lg p-2" required />
+                <textarea aria-label="Input field" rows={6} value={newBlog.content} onChange={e => setNewBlog({...newBlog, content: e.target.value})} className="w-full border rounded-lg p-2" required />
               </div>
               <div className="flex justify-end gap-3 pt-4">
                 <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 text-gray-600">Cancel</button>

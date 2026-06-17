@@ -173,7 +173,7 @@ export default function Signup() {
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
                                 <div className="relative">
                                     <MdPerson className="absolute left-3 top-3 text-gray-400 text-xl" />
-                                    <input 
+                                    <input aria-label="Input field" 
                                         type="text" name="name" value={formData.name} onChange={handleChange} required
                                         className="pl-10 w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
                                         placeholder="John Doe"
@@ -184,7 +184,7 @@ export default function Signup() {
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
                                 <div className="relative">
                                     <MdEmail className="absolute left-3 top-3 text-gray-400 text-xl" />
-                                    <input 
+                                    <input aria-label="Input field" 
                                         type="email" name="email" value={formData.email} onChange={handleChange} required
                                         className="pl-10 w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
                                         placeholder="you@example.com"
@@ -195,7 +195,7 @@ export default function Signup() {
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
                                 <div className="relative">
                                     <MdLock className="absolute left-3 top-3 text-gray-400 text-xl" />
-                                    <input 
+                                    <input aria-label="Input field" 
                                         type={showPassword ? "text" : "password"} name="password" value={formData.password} onChange={handleChange} required
                                         className="pl-10 w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
                                         placeholder="••••••••"
@@ -248,7 +248,7 @@ export default function Signup() {
                         <form onSubmit={handleVerifyAndSignup} className="space-y-6">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Enter OTP</label>
-                                <input 
+                                <input aria-label="Input field" 
                                     type="text" value={otp} onChange={(e) => setOtp(e.target.value)} required
                                     maxLength={6}
                                     className="w-full p-4 text-center text-2xl tracking-widest border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none font-mono"

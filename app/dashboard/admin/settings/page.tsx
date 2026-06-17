@@ -84,7 +84,7 @@ export default function HomepageSettings() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Hero Title</label>
-              <input type="text" name="hero_title" value={settings.hero_title} onChange={handleChange} className="w-full border border-gray-300 rounded-lg p-2" />
+              <input aria-label="Input field" type="text" name="hero_title" value={settings.hero_title} onChange={handleChange} className="w-full border border-gray-300 rounded-lg p-2" />
             </div>
             <div className="md:col-span-2">
               <ImageUpload 
@@ -95,7 +95,7 @@ export default function HomepageSettings() {
             </div>
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-1">Hero Subtitle</label>
-              <textarea name="hero_subtitle" value={settings.hero_subtitle} onChange={handleChange} rows={2} className="w-full border border-gray-300 rounded-lg p-2" />
+              <textarea aria-label="Input field" name="hero_subtitle" value={settings.hero_subtitle} onChange={handleChange} rows={2} className="w-full border border-gray-300 rounded-lg p-2" />
             </div>
           </div>
         </div>
@@ -109,11 +109,11 @@ export default function HomepageSettings() {
               <h3 className="font-medium text-gray-900 border-b pb-1">Platform Metrics</h3>
               <div>
                 <label className="block text-xs font-medium text-gray-500 mb-1">Subtitle (Small)</label>
-                <input type="text" name="stats_subtitle" value={settings.stats_subtitle} onChange={handleChange} className="w-full border border-gray-300 rounded-md p-1.5 text-sm" />
+                <input aria-label="Input field" type="text" name="stats_subtitle" value={settings.stats_subtitle} onChange={handleChange} className="w-full border border-gray-300 rounded-md p-1.5 text-sm" />
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-500 mb-1">Main Title</label>
-                <input type="text" name="stats_title" value={settings.stats_title} onChange={handleChange} className="w-full border border-gray-300 rounded-md p-1.5 text-sm font-semibold" />
+                <input aria-label="Input field" type="text" name="stats_title" value={settings.stats_title} onChange={handleChange} className="w-full border border-gray-300 rounded-md p-1.5 text-sm font-semibold" />
               </div>
             </div>
 
@@ -121,11 +121,11 @@ export default function HomepageSettings() {
               <h3 className="font-medium text-gray-900 border-b pb-1">Featured Content</h3>
               <div>
                 <label className="block text-xs font-medium text-gray-500 mb-1">Subtitle (Small)</label>
-                <input type="text" name="featured_subtitle" value={settings.featured_subtitle} onChange={handleChange} className="w-full border border-gray-300 rounded-md p-1.5 text-sm" />
+                <input aria-label="Input field" type="text" name="featured_subtitle" value={settings.featured_subtitle} onChange={handleChange} className="w-full border border-gray-300 rounded-md p-1.5 text-sm" />
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-500 mb-1">Main Title</label>
-                <input type="text" name="featured_title" value={settings.featured_title} onChange={handleChange} className="w-full border border-gray-300 rounded-md p-1.5 text-sm font-semibold" />
+                <input aria-label="Input field" type="text" name="featured_title" value={settings.featured_title} onChange={handleChange} className="w-full border border-gray-300 rounded-md p-1.5 text-sm font-semibold" />
               </div>
             </div>
 
@@ -133,11 +133,11 @@ export default function HomepageSettings() {
               <h3 className="font-medium text-gray-900 border-b pb-1">Categories</h3>
               <div>
                 <label className="block text-xs font-medium text-gray-500 mb-1">Subtitle (Small)</label>
-                <input type="text" name="categories_subtitle" value={settings.categories_subtitle} onChange={handleChange} className="w-full border border-gray-300 rounded-md p-1.5 text-sm" />
+                <input aria-label="Input field" type="text" name="categories_subtitle" value={settings.categories_subtitle} onChange={handleChange} className="w-full border border-gray-300 rounded-md p-1.5 text-sm" />
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-500 mb-1">Main Title</label>
-                <input type="text" name="categories_title" value={settings.categories_title} onChange={handleChange} className="w-full border border-gray-300 rounded-md p-1.5 text-sm font-semibold" />
+                <input aria-label="Input field" type="text" name="categories_title" value={settings.categories_title} onChange={handleChange} className="w-full border border-gray-300 rounded-md p-1.5 text-sm font-semibold" />
               </div>
             </div>
 
@@ -145,11 +145,11 @@ export default function HomepageSettings() {
               <h3 className="font-medium text-gray-900 border-b pb-1">How It Works</h3>
               <div>
                 <label className="block text-xs font-medium text-gray-500 mb-1">Subtitle (Small)</label>
-                <input type="text" name="how_it_works_subtitle" value={settings.how_it_works_subtitle} onChange={handleChange} className="w-full border border-gray-300 rounded-md p-1.5 text-sm" />
+                <input aria-label="Input field" type="text" name="how_it_works_subtitle" value={settings.how_it_works_subtitle} onChange={handleChange} className="w-full border border-gray-300 rounded-md p-1.5 text-sm" />
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-500 mb-1">Main Title</label>
-                <input type="text" name="how_it_works_title" value={settings.how_it_works_title} onChange={handleChange} className="w-full border border-gray-300 rounded-md p-1.5 text-sm font-semibold" />
+                <input aria-label="Input field" type="text" name="how_it_works_title" value={settings.how_it_works_title} onChange={handleChange} className="w-full border border-gray-300 rounded-md p-1.5 text-sm font-semibold" />
               </div>
             </div>
 
@@ -157,11 +157,11 @@ export default function HomepageSettings() {
               <h3 className="font-medium text-gray-900 border-b pb-1">Featured Scholars</h3>
               <div>
                 <label className="block text-xs font-medium text-gray-500 mb-1">Subtitle (Small)</label>
-                <input type="text" name="scholars_subtitle" value={settings.scholars_subtitle} onChange={handleChange} className="w-full border border-gray-300 rounded-md p-1.5 text-sm" />
+                <input aria-label="Input field" type="text" name="scholars_subtitle" value={settings.scholars_subtitle} onChange={handleChange} className="w-full border border-gray-300 rounded-md p-1.5 text-sm" />
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-500 mb-1">Main Title</label>
-                <input type="text" name="scholars_title" value={settings.scholars_title} onChange={handleChange} className="w-full border border-gray-300 rounded-md p-1.5 text-sm font-semibold" />
+                <input aria-label="Input field" type="text" name="scholars_title" value={settings.scholars_title} onChange={handleChange} className="w-full border border-gray-300 rounded-md p-1.5 text-sm font-semibold" />
               </div>
             </div>
 
@@ -169,11 +169,11 @@ export default function HomepageSettings() {
               <h3 className="font-medium text-gray-900 border-b pb-1">Testimonials</h3>
               <div>
                 <label className="block text-xs font-medium text-gray-500 mb-1">Subtitle (Small)</label>
-                <input type="text" name="testimonials_subtitle" value={settings.testimonials_subtitle} onChange={handleChange} className="w-full border border-gray-300 rounded-md p-1.5 text-sm" />
+                <input aria-label="Input field" type="text" name="testimonials_subtitle" value={settings.testimonials_subtitle} onChange={handleChange} className="w-full border border-gray-300 rounded-md p-1.5 text-sm" />
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-500 mb-1">Main Title</label>
-                <input type="text" name="testimonials_title" value={settings.testimonials_title} onChange={handleChange} className="w-full border border-gray-300 rounded-md p-1.5 text-sm font-semibold" />
+                <input aria-label="Input field" type="text" name="testimonials_title" value={settings.testimonials_title} onChange={handleChange} className="w-full border border-gray-300 rounded-md p-1.5 text-sm font-semibold" />
               </div>
             </div>
 
@@ -185,23 +185,23 @@ export default function HomepageSettings() {
           <h2 className="text-lg font-semibold border-b pb-2 mb-4">Section Visibility</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <label className="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
-              <input type="checkbox" name="show_stats_section" checked={settings.show_stats_section} onChange={handleChange} className="w-5 h-5 text-indigo-600 rounded" />
+              <input aria-label="Input field" type="checkbox" name="show_stats_section" checked={settings.show_stats_section} onChange={handleChange} className="w-5 h-5 text-indigo-600 rounded" />
               <span className="font-medium">Show Statistics Section</span>
             </label>
             <label className="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
-              <input type="checkbox" name="show_categories_section" checked={settings.show_categories_section} onChange={handleChange} className="w-5 h-5 text-indigo-600 rounded" />
+              <input aria-label="Input field" type="checkbox" name="show_categories_section" checked={settings.show_categories_section} onChange={handleChange} className="w-5 h-5 text-indigo-600 rounded" />
               <span className="font-medium">Show Icons/Categories Section</span>
             </label>
             <label className="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
-              <input type="checkbox" name="show_featured_content" checked={settings.show_featured_content} onChange={handleChange} className="w-5 h-5 text-indigo-600 rounded" />
+              <input aria-label="Input field" type="checkbox" name="show_featured_content" checked={settings.show_featured_content} onChange={handleChange} className="w-5 h-5 text-indigo-600 rounded" />
               <span className="font-medium">Show Featured Content</span>
             </label>
             <label className="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
-              <input type="checkbox" name="show_featured_scholars" checked={settings.show_featured_scholars} onChange={handleChange} className="w-5 h-5 text-indigo-600 rounded" />
+              <input aria-label="Input field" type="checkbox" name="show_featured_scholars" checked={settings.show_featured_scholars} onChange={handleChange} className="w-5 h-5 text-indigo-600 rounded" />
               <span className="font-medium">Show Featured Scholars</span>
             </label>
             <label className="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
-              <input type="checkbox" name="show_testimonials" checked={settings.show_testimonials} onChange={handleChange} className="w-5 h-5 text-indigo-600 rounded" />
+              <input aria-label="Input field" type="checkbox" name="show_testimonials" checked={settings.show_testimonials} onChange={handleChange} className="w-5 h-5 text-indigo-600 rounded" />
               <span className="font-medium">Show Testimonials</span>
             </label>
           </div>

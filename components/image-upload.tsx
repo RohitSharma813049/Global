@@ -45,7 +45,7 @@ export default function ImageUpload({ value, onChange, label = 'Image URL' }: Im
     <div className="space-y-2">
       <label className="block text-sm font-medium text-gray-700">{label}</label>
       <div className="flex gap-2 items-center">
-        <input 
+        <input aria-label="Input field" 
           type="text" 
           value={value} 
           onChange={(e) => onChange(e.target.value)} 
@@ -54,7 +54,7 @@ export default function ImageUpload({ value, onChange, label = 'Image URL' }: Im
         />
         <span className="text-sm text-gray-500 font-medium">OR</span>
         <div className="relative">
-          <input 
+          <input aria-label="Input field" 
             type="file" 
             accept="image/*"
             onChange={handleUpload}

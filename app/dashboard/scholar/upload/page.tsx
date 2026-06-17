@@ -50,7 +50,7 @@ export default function ScholarUploadPage() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="title" className="block text-sm font-medium text-gray-700">Publication Title</label>
-              <input 
+              <input aria-label="Input field" 
                 type="text" 
                 name="title" 
                 id="title" 
@@ -61,7 +61,7 @@ export default function ScholarUploadPage() {
 
             <div>
               <label htmlFor="content_type" className="block text-sm font-medium text-gray-700">Content Type</label>
-              <select 
+              <select aria-label="Select field" 
                 name="content_type" 
                 id="content_type" 
                 required
@@ -76,7 +76,7 @@ export default function ScholarUploadPage() {
 
             <div>
               <label htmlFor="category_id" className="block text-sm font-medium text-gray-700">Category</label>
-              <select 
+              <select aria-label="Select field" 
                 name="category_id" 
                 id="category_id" 
                 required
@@ -99,7 +99,7 @@ export default function ScholarUploadPage() {
 
             <div>
               <label htmlFor="abstract" className="block text-sm font-medium text-gray-700">Abstract / Summary</label>
-              <textarea 
+              <textarea aria-label="Input field" 
                 name="abstract" 
                 id="abstract" 
                 rows={6} 
@@ -119,7 +119,7 @@ export default function ScholarUploadPage() {
                   <div className="flex text-sm text-gray-600 justify-center">
                     <label htmlFor="file" className="relative cursor-pointer bg-white rounded-md font-medium text-emerald-600 hover:text-emerald-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-emerald-500 px-1">
                       <span>Upload a file</span>
-                      <input id="file" name="file" type="file" accept=".pdf" required className="sr-only" />
+                      <input aria-label="Input field" id="file" name="file" type="file" accept=".pdf" required className="sr-only" />
                     </label>
                   </div>
                   <p className="text-xs text-gray-500">PDF up to 50MB</p>

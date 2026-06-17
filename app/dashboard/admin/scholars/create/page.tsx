@@ -73,35 +73,35 @@ export default function CreateScholarPage() {
           <CardContent className="grid md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Full Name</Label>
-              <Input name="name" placeholder="Dr. Amira Al-Rashidi" required />
+              <input aria-label="Input field" name="name" placeholder="Dr. Amira Al-Rashidi" required />
             </div>
             <div className="space-y-2">
               <Label>Initials</Label>
-              <Input name="initials" placeholder="AR" required maxLength={3} />
+              <input aria-label="Input field" name="initials" placeholder="AR" required maxLength={3} />
             </div>
             <div className="space-y-2 md:col-span-2">
               <Label>Professional Role</Label>
-              <Input name="professional_role" placeholder="MD, Al-Rashidi Capital" required />
+              <input aria-label="Input field" name="professional_role" placeholder="MD, Al-Rashidi Capital" required />
             </div>
             <div className="space-y-2">
               <Label>Domain / Industry</Label>
-              <Input name="domain" placeholder="Investment & Finance" required />
+              <input aria-label="Input field" name="domain" placeholder="Investment & Finance" required />
             </div>
             <div className="space-y-2">
               <Label>Country Full Name</Label>
-              <Input name="country" placeholder="United Arab Emirates" required />
+              <input aria-label="Input field" name="country" placeholder="United Arab Emirates" required />
             </div>
             <div className="space-y-2">
               <Label>Country Code</Label>
-              <Input name="country_code" placeholder="UAE" required />
+              <input aria-label="Input field" name="country_code" placeholder="UAE" required />
             </div>
             <div className="space-y-2">
               <Label>Flag Emoji</Label>
-              <Input name="flag_emoji" placeholder="🇦🇪" required />
+              <input aria-label="Input field" name="flag_emoji" placeholder="🇦🇪" required />
             </div>
             <div className="space-y-2 md:col-span-2">
               <Label>Description / Bio</Label>
-              <Textarea name="description" placeholder="A brief biography of the scholar..." rows={4} required />
+              <textarea aria-label="Input field" name="description" placeholder="A brief biography of the scholar..." rows={4} required />
             </div>
           </CardContent>
         </Card>
@@ -139,17 +139,17 @@ export default function CreateScholarPage() {
             {videos.map((vid, idx) => (
               <div key={idx} className="flex items-start gap-4 border p-4 rounded-md">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1">
-                  <Input 
+                  <input aria-label="Input field" 
                     placeholder="Video Title" 
                     value={vid.title} 
                     onChange={e => { const v = [...videos]; v[idx].title = e.target.value; setVideos(v) }} 
                   />
-                  <Input 
+                  <input aria-label="Input field" 
                     placeholder="URL (YouTube/Vimeo)" 
                     value={vid.video_url} 
                     onChange={e => { const v = [...videos]; v[idx].video_url = e.target.value; setVideos(v) }} 
                   />
-                  <Input 
+                  <input aria-label="Input field" 
                     placeholder="Metadata (e.g. 14:32 · Recorded 2024)" 
                     value={vid.metadata} 
                     onChange={e => { const v = [...videos]; v[idx].metadata = e.target.value; setVideos(v) }} 
@@ -183,22 +183,22 @@ export default function CreateScholarPage() {
             {publications.map((pub, idx) => (
               <div key={idx} className="flex items-start gap-4 border p-4 rounded-md">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1">
-                  <Input 
+                  <input aria-label="Input field" 
                     placeholder="Publication Title" 
                     value={pub.title} 
                     onChange={e => { const p = [...publications]; p[idx].title = e.target.value; setPublications(p) }} 
                   />
-                  <Input 
+                  <input aria-label="Input field" 
                     placeholder="Metadata (e.g. GSP · 2024)" 
                     value={pub.metadata} 
                     onChange={e => { const p = [...publications]; p[idx].metadata = e.target.value; setPublications(p) }} 
                   />
-                  <Input 
+                  <input aria-label="Input field" 
                     placeholder="Tag (e.g. Article, eBook)" 
                     value={pub.tag} 
                     onChange={e => { const p = [...publications]; p[idx].tag = e.target.value; setPublications(p) }} 
                   />
-                  <Input 
+                  <input aria-label="Input field" 
                     placeholder="External URL (Optional)" 
                     value={pub.url} 
                     onChange={e => { const p = [...publications]; p[idx].url = e.target.value; setPublications(p) }} 

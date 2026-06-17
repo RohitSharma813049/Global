@@ -133,7 +133,7 @@ export default function SettingsPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                     <div className="space-y-2">
                       <label className="text-xs sm:text-sm font-medium text-gray-700">Full Name</label>
-                      <input 
+                      <input aria-label="Input field" 
                         type="text" 
                         value={name}
                         onChange={(e) => setName(e.target.value)}
@@ -142,7 +142,7 @@ export default function SettingsPage() {
                     </div>
                     <div className="space-y-2">
                       <label className="text-xs sm:text-sm font-medium text-gray-700">Email Address</label>
-                      <input 
+                      <input aria-label="Input field" 
                         type="email" 
                         value={email}
                         disabled
@@ -154,7 +154,7 @@ export default function SettingsPage() {
 
                   <div className="space-y-2">
                     <label className="text-xs sm:text-sm font-medium text-gray-700">Bio</label>
-                    <textarea 
+                    <textarea aria-label="Input field" 
                       rows={4}
                       value={bio}
                       onChange={(e) => setBio(e.target.value)}
@@ -184,7 +184,7 @@ export default function SettingsPage() {
                 <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
                   <div className="space-y-2">
                     <label className="text-xs sm:text-sm font-medium text-gray-700">New Password</label>
-                    <input 
+                    <input aria-label="Input field" 
                       type="password" 
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
@@ -193,7 +193,7 @@ export default function SettingsPage() {
                   </div>
                   <div className="space-y-2">
                     <label className="text-xs sm:text-sm font-medium text-gray-700">Confirm New Password</label>
-                    <input 
+                    <input aria-label="Input field" 
                       type="password" 
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
@@ -226,7 +226,7 @@ export default function SettingsPage() {
                       <p className="text-xs sm:text-sm text-gray-500">Receive an email when your application status changes.</p>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
-                      <input type="checkbox" className="sr-only peer" defaultChecked />
+                      <input aria-label="Input field" type="checkbox" className="sr-only peer" defaultChecked />
                       <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
                     </label>
                   </div>
@@ -236,7 +236,7 @@ export default function SettingsPage() {
                       <p className="text-xs sm:text-sm text-gray-500">Show a badge when new content is published in your domain.</p>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
-                      <input type="checkbox" className="sr-only peer" defaultChecked />
+                      <input aria-label="Input field" type="checkbox" className="sr-only peer" defaultChecked />
                       <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
                     </label>
                   </div>
@@ -260,7 +260,7 @@ export default function SettingsPage() {
                       <p className="text-xs sm:text-sm text-gray-500">Keep the sidebar expanded by default on large screens.</p>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
-                      <input 
+                      <input aria-label="Input field" 
                         type="checkbox" 
                         className="sr-only peer" 
                         checked={isPinned}
