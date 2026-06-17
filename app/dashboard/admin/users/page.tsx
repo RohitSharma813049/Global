@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { getAllUsers, blockUser, updateUserRole, createAdminUser } from '@/app/actions/users'
+import { getAllUsers, blockUser, updateUserRole, createAdminUser, deleteUser } from '@/app/actions/users'
 import toast from 'react-hot-toast'
 import { useSession } from 'next-auth/react'
 
@@ -44,6 +44,17 @@ export default function AdminUsersPage() {
     try {
       await updateUserRole(userId, newRole)
       toast.success(`User role updated to ${newRole}`)
+      fetchUsers()
+    } catch (e: any) {
+      toast.error(e.message)
+    }
+  }
+
+  const handleDeleteUser = async (userId: string, targetRole: string) => {
+    if (!confirm('Are you sure you want to delete this user? This action cannot be undone.')) return
+    try {
+      await deleteUser(userId, targetRole)
+      toast.success('User deleted successfully')
       fetchUsers()
     } catch (e: any) {
       toast.error(e.message)
@@ -199,12 +210,22 @@ export default function AdminUsersPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       {session?.user?.id !== user.id && (
-                        <button
-                          onClick={() => handleToggleBlock(user.id, user.is_blocked)}
-                          className={`px-3 py-1 rounded text-white ${user.is_blocked ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'}`}
-                        >
-                          {user.is_blocked ? 'Unblock' : 'Block'}
-                        </button>
+                        <div className="flex justify-end gap-2">
+                          <button
+                            onClick={() => handleToggleBlock(user.id, user.is_blocked)}
+                            className={`px-3 py-1 rounded text-white ${user.is_blocked ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'}`}
+                          >
+                            {user.is_blocked ? 'Unblock' : 'Block'}
+                          </button>
+                          {((isSuperAdmin) || (isAdmin && user.role !== 'admin' && user.role !== 'super_admin')) && (
+                            <button
+                              onClick={() => handleDeleteUser(user.id, user.role)}
+                              className="px-3 py-1 rounded text-white bg-gray-600 hover:bg-gray-700"
+                            >
+                              Delete
+                            </button>
+                          )}
+                        </div>
                       )}
                     </td>
                   </tr>

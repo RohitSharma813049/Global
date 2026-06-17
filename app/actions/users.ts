@@ -100,3 +100,28 @@ export async function createAdminUser(email: string, name: string) {
   revalidatePath('/dashboard/admin/users')
   return data.user
 }
+
+export async function deleteUser(userId: string, targetRole: string) {
+  const session = await checkAdmin()
+  
+  if (session.user.role === 'admin') {
+    if (targetRole === 'admin' || targetRole === 'super_admin') {
+      throw new Error('Unauthorized. Admins cannot delete admins or super admins.')
+    }
+  } else if (session.user.role !== 'super_admin') {
+    throw new Error('Unauthorized.')
+  }
+
+  if (session.user.id === userId) {
+    throw new Error('You cannot delete your own account.')
+  }
+
+  const { data, error } = await supabaseAdmin.auth.admin.deleteUser(userId)
+  if (error) throw new Error(error.message)
+
+  // Clean up profile as well just in case there's no cascade deletion
+  await supabaseAdmin.from('profiles').delete().eq('id', userId)
+  
+  revalidatePath('/dashboard/admin/users')
+  return data
+}
