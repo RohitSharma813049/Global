@@ -94,7 +94,7 @@ export async function searchPublications(params: SearchParams) {
   }
 
   // Transform results for UI
-  const formattedResults = results.map(p => {
+  const formattedResults = results.map((p: any) => {
     let authorName = 'Unknown Scholar';
     if (p.scholars && p.scholars.users) {
       const meta = p.scholars.users.raw_user_meta_data as any;
