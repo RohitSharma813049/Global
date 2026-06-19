@@ -45,28 +45,72 @@ export async function uploadPublication(formData: FormData) {
     const abstract = formData.get('abstract') as string
     const contentType = formData.get('content_type') as string
     const categoryId = formData.get('category_id') as string
-    const subcategoryIds = formData.getAll('subcategory_ids[]') as string[]
-    const file = formData.get('file') as File
+    const authorName = formData.get('author_name') as string
+    const institution = formData.get('institution') as string
+    const emailAddress = formData.get('email_address') as string
+    const originalityDeclaration = formData.get('originality_declaration') === 'true'
+    const copyrightDeclaration = formData.get('copyright_declaration') === 'true'
+    const termsAcceptance = formData.get('terms_acceptance') === 'true'
+    const file = formData.get('file') as File | null
+    const coverImage = formData.get('cover_image') as File | null
+    const bannerImage = formData.get('banner_image') as File | null
+    const galleryImages = formData.getAll('gallery_images') as File[]
+    const doi = formData.get('doi') as string | null
+    const videoUrl = formData.get('video_url') as string | null
 
-    if (!file || file.size === 0) {
-      return { error: 'Please upload a valid file.' }
+    if ((!file || file.size === 0) && !videoUrl) {
+      return { error: 'Please upload a valid document file or provide a video URL.' }
     }
 
-    const fileExt = file.name.split('.').pop()
-    const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
-    
-    // We need to convert the File to an ArrayBuffer to upload
-    const arrayBuffer = await file.arrayBuffer()
-    const buffer = Buffer.from(arrayBuffer)
+    let fileUrl = ''
+    let localFilePath: string | null = null;
+    if (file && file.size > 0) {
+      const fileExt = file.name.split('.').pop()
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
+      
+      const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'publications', contentType)
+      await mkdir(uploadDir, { recursive: true })
+      localFilePath = path.join(uploadDir, fileName)
+      await writeFile(localFilePath, Buffer.from(await file.arrayBuffer()))
+      fileUrl = `/uploads/publications/${contentType}/${fileName}`
+    } else if (videoUrl) {
+      fileUrl = videoUrl;
+    }
 
-    // Save locally to public/uploads folder
-    const publicUploadDir = path.join(process.cwd(), 'public', 'uploads', 'publications', contentType)
-    await mkdir(publicUploadDir, { recursive: true })
-    const localFilePath = path.join(publicUploadDir, fileName)
-    
-    await writeFile(localFilePath, buffer)
-    
-    const fileUrl = `/uploads/publications/${contentType}/${fileName}`
+    // Handle Cover Image
+    let coverImageUrl = null;
+    if (coverImage && coverImage.size > 0) {
+      const imgExt = coverImage.name.split('.').pop();
+      const imgName = `cover-${Date.now()}-${Math.random().toString(36).substring(7)}.${imgExt}`;
+      const imgPath = path.join(process.cwd(), 'public', 'uploads', 'images');
+      await mkdir(imgPath, { recursive: true });
+      await writeFile(path.join(imgPath, imgName), Buffer.from(await coverImage.arrayBuffer()));
+      coverImageUrl = `/uploads/images/${imgName}`;
+    }
+
+    // Handle Banner Image
+    let bannerImageUrl = null;
+    if (bannerImage && bannerImage.size > 0) {
+      const imgExt = bannerImage.name.split('.').pop();
+      const imgName = `banner-${Date.now()}-${Math.random().toString(36).substring(7)}.${imgExt}`;
+      const imgPath = path.join(process.cwd(), 'public', 'uploads', 'images');
+      await mkdir(imgPath, { recursive: true });
+      await writeFile(path.join(imgPath, imgName), Buffer.from(await bannerImage.arrayBuffer()));
+      bannerImageUrl = `/uploads/images/${imgName}`;
+    }
+
+    // Handle Gallery Images
+    const galleryImageUrls: string[] = [];
+    for (const gImg of galleryImages) {
+      if (gImg && gImg.size > 0) {
+        const imgExt = gImg.name.split('.').pop();
+        const imgName = `gallery-${Date.now()}-${Math.random().toString(36).substring(7)}.${imgExt}`;
+        const imgPath = path.join(process.cwd(), 'public', 'uploads', 'images');
+        await mkdir(imgPath, { recursive: true });
+        await writeFile(path.join(imgPath, imgName), Buffer.from(await gImg.arrayBuffer()));
+        galleryImageUrls.push(`/uploads/images/${imgName}`);
+      }
+    }
 
     // Insert into publications table
     const { error: dbError } = await supabaseAdmin
@@ -74,17 +118,27 @@ export async function uploadPublication(formData: FormData) {
       .insert({
         scholar_id: scholar.id,
         category_id: categoryId || null,
-        subcategory_ids: subcategoryIds || [],
         title,
         abstract,
         content_type: contentType,
         file_url: fileUrl,
+        cover_image: coverImageUrl,
+        banner_image: bannerImageUrl,
+        gallery_images: galleryImageUrls,
+        doi: doi,
+        video_url: videoUrl,
+        author_name: authorName,
+        institution,
+        email_address: emailAddress,
+        originality_declaration: originalityDeclaration,
+        copyright_declaration: copyrightDeclaration,
+        terms_acceptance: termsAcceptance,
         status: 'submitted' // Submitting it for admin review
       })
 
     if (dbError) {
       // Cleanup the uploaded file if DB insert fails
-      await unlink(localFilePath).catch(console.error)
+      if (localFilePath) await unlink(localFilePath).catch(console.error)
       throw dbError
     }
 
@@ -106,39 +160,68 @@ export async function updatePublicationStatus(id: string, status: string, doi?: 
   }
 
   try {
-    const updateData: any = { status }
-    
-    // If we are publishing, and a DOI was provided, save it
-    if (status === 'published' && doi) {
-      updateData.doi = doi
-    }
+    if (status === 'rejected') {
+      // Fetch the publication details to delete files
+      const { data: pubToReject, error: fetchError } = await supabaseAdmin
+        .from('publications')
+        .select('title, file_url, cover_image, banner_image, gallery_images, scholars(user_id)')
+        .eq('id', id)
+        .single()
+        
+      if (!fetchError && pubToReject) {
+        // Delete physical files
+        const filesToDelete = [
+          pubToReject.file_url,
+          pubToReject.cover_image,
+          pubToReject.banner_image,
+          ...(pubToReject.gallery_images || [])
+        ].filter(Boolean) as string[];
 
-    const { data: pubData, error } = await supabaseAdmin
-      .from('publications')
-      .update(updateData)
-      .eq('id', id)
-      .select('title, scholars(user_id)')
-      .single()
+        for (const file of filesToDelete) {
+          try {
+            // Remove the leading slash to get the relative path inside public
+            const localPath = path.join(process.cwd(), 'public', file.replace(/^\//, ''))
+            await unlink(localPath)
+          } catch (e) {
+            console.error(`Failed to delete file ${file}:`, e)
+          }
+        }
 
-    if (error) throw error
+        // Send notification
+        const scholarData = pubToReject.scholars as any;
+        if (scholarData?.user_id) {
+          await createNotification(
+            scholarData.user_id,
+            'Publication Rejected',
+            `Your publication "${pubToReject.title}" was not approved by the admin. ${reason ? `Reason: ${reason}` : ''}`,
+            'publication_rejected',
+            '/dashboard/scholar/publications'
+          )
+        }
 
-    // Create a notification for the scholar
-    const scholarData = pubData?.scholars as any;
-    if (pubData && scholarData?.user_id) {
-      if (status === 'published') {
+        // Delete from database
+        await supabaseAdmin.from('publications').delete().eq('id', id)
+      }
+    } else {
+      const updateData: any = { status }
+
+      const { data: pubData, error } = await supabaseAdmin
+        .from('publications')
+        .update(updateData)
+        .eq('id', id)
+        .select('title, scholars(user_id)')
+        .single()
+
+      if (error) throw error
+
+      // Create a notification for the scholar
+      const scholarData = pubData?.scholars as any;
+      if (pubData && scholarData?.user_id && status === 'published') {
         await createNotification(
           scholarData.user_id,
           'Publication Approved!',
           `Your publication "${pubData.title}" has been approved and published.`,
           'publication_approved',
-          '/dashboard/scholar/publications'
-        )
-      } else if (status === 'rejected') {
-        await createNotification(
-          scholarData.user_id,
-          'Publication Rejected',
-          `Your publication "${pubData.title}" was not approved by the admin. ${reason ? `Reason: ${reason}` : ''}`,
-          'publication_rejected',
           '/dashboard/scholar/publications'
         )
       }
@@ -164,7 +247,7 @@ export async function getPublishedPublications(categorySlug?: string) {
       data = await prisma.$queryRaw`
         SELECT 
           p.id, p.title, p.abstract, p.content_type, p.created_at,
-          p.views, p.downloads, p.doi, p.file_url, p.status, p.subcategory_ids,
+          p.views, p.downloads, p.file_url, p.cover_image, p.author_name, p.institution, p.email_address, p.status,
           c.name as category_name, c.slug as category_slug,
           s.id as scholar_id, s.user_id as scholar_user_id,
           u.raw_user_meta_data
@@ -179,7 +262,7 @@ export async function getPublishedPublications(categorySlug?: string) {
       data = await prisma.$queryRaw`
         SELECT 
           p.id, p.title, p.abstract, p.content_type, p.created_at,
-          p.views, p.downloads, p.doi, p.file_url, p.status, p.subcategory_ids,
+          p.views, p.downloads, p.file_url, p.cover_image, p.author_name, p.institution, p.email_address, p.status,
           c.name as category_name, c.slug as category_slug,
           s.id as scholar_id, s.user_id as scholar_user_id,
           u.raw_user_meta_data
@@ -200,10 +283,16 @@ export async function getPublishedPublications(categorySlug?: string) {
       created_at: p.created_at?.toISOString() || new Date().toISOString(),
       views: p.views || 0,
       downloads: p.downloads || 0,
-      doi: p.doi,
       file_url: p.file_url,
+      cover_image: p.cover_image,
+      banner_image: p.banner_image,
+      gallery_images: p.gallery_images,
+      doi: p.doi,
+      video_url: p.video_url,
+      author_name: p.author_name,
+      institution: p.institution,
+      email_address: p.email_address,
       status: p.status,
-      subcategory_ids: p.subcategory_ids || [],
       categories: p.category_name ? { name: p.category_name, slug: p.category_slug } : null,
       scholars: p.scholar_id ? {
         id: p.scholar_id,
@@ -262,27 +351,48 @@ export async function updatePublicationContent(id: string, updates: { title?: st
 }
 
 export async function deletePublication(id: string) {
-  const session = await getServerSession(authOptions)
-  
-  if (!session || !['admin', 'super_admin'].includes(session.user?.role as string)) {
-    return { error: 'Unauthorized.' }
-  }
-
   try {
-    const { error } = await supabaseAdmin
+    const session = await getServerSession(authOptions)
+    if (!session || (session.user.role !== 'admin' && session.user.role !== 'scholar')) {
+      return { error: 'Unauthorized' }
+    }
+
+    const { data: pub, error: fetchError } = await supabaseAdmin
+      .from('publications')
+      .select('scholar_id')
+      .eq('id', id)
+      .single()
+
+    if (fetchError || !pub) {
+      return { error: 'Publication not found' }
+    }
+
+    if (session.user.role === 'scholar') {
+      const { data: scholar } = await supabaseAdmin
+        .from('scholars')
+        .select('id')
+        .eq('user_id', session.user.id)
+        .single()
+        
+      if (!scholar || pub.scholar_id !== scholar.id) {
+        return { error: 'You do not have permission to delete this publication' }
+      }
+    }
+
+    const { error: deleteError } = await supabaseAdmin
       .from('publications')
       .delete()
       .eq('id', id)
 
-    if (error) throw error
+    if (deleteError) throw deleteError
 
-    revalidatePath('/dashboard/admin/publications')
     revalidatePath('/dashboard/scholar/publications')
+    revalidatePath('/dashboard/admin/publications')
     revalidatePath('/category')
+
     return { success: true }
   } catch (error: any) {
     console.error('Error deleting publication:', error)
     return { error: error.message || 'Failed to delete publication' }
   }
 }
-

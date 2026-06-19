@@ -76,7 +76,7 @@ export default function FeaturedContent({ title, subtitle }: FeaturedContentProp
             {subtitle || 'Featured Content'}
           </p>
           <h2 className="mt-3 text-balance text-4xl font-extrabold text-gray-900 sm:text-5xl">
-            {title || 'Discover Trending Research'}
+            {title || 'Explore Trending Research'}
           </h2>
         </div>
 

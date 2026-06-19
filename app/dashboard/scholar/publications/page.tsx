@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { redirect } from "next/navigation"
 import Link from "next/link"
+import { deletePublication } from "@/app/actions/publications"
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
@@ -52,7 +53,7 @@ export default async function ScholarPublications() {
 
       <div className="bg-white rounded-lg shadow border border-gray-200 overflow-hidden">
         {publications && publications.length > 0 ? (
-          <div className="max-h-[600px] overflow-auto">
+          <div className="max-h-[600px] w-full overflow-x-auto overflow-y-auto">
             <table className="min-w-full divide-y divide-gray-200 relative">
               <thead className="bg-gray-50 sticky top-0 z-10 shadow-sm">
                 <tr>
@@ -86,7 +87,7 @@ export default async function ScholarPublications() {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {pub.doi || 'Pending'}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex justify-end items-center gap-4">
                     {pub.status === 'published' ? (
                       <Link 
                         href={`/dashboard/scholar/certificate/${pub.id}`}
@@ -98,6 +99,15 @@ export default async function ScholarPublications() {
                     ) : (
                       <span className="text-gray-400">Not Available</span>
                     )}
+                    
+                    <form action={async () => {
+                      "use server"
+                      await deletePublication(pub.id)
+                    }}>
+                      <button type="submit" className="text-red-600 hover:text-red-800 font-semibold bg-red-50 px-3 py-1 rounded-md hover:bg-red-100 transition-colors">
+                        Delete
+                      </button>
+                    </form>
                   </td>
                 </tr>
               ))}

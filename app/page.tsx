@@ -13,6 +13,8 @@ const RecentNewsBlogs = dynamic(() => import('@/components/recent-news-blogs'))
 import { getHomepageSettings, getBlogs, getNews, getTestimonials, getFeaturedScholars } from '@/app/actions/cms'
 import { getPlatformStats } from '@/app/actions/stats'
 
+import ScrollAnimation from '@/components/scroll-animation'
+
 export const revalidate = 60 // Enable ISR caching (60 seconds)
 
 export default async function Page() {
@@ -41,13 +43,13 @@ export default async function Page() {
         subtitle={settings.hero_subtitle}
         imageUrl={settings.hero_image_url}
       />
-      {settings.show_stats_section && <Statistics title={settings.stats_title} subtitle={settings.stats_subtitle} statsData={statsData} />}
-      {settings.show_featured_content && <FeaturedContent title={settings.featured_title} subtitle={settings.featured_subtitle} />}
-      {settings.show_categories_section && <ExploreCategories title={settings.categories_title} subtitle={settings.categories_subtitle} />}
-      <HowItWorks title={settings.how_it_works_title} subtitle={settings.how_it_works_subtitle} />
-      {recentItems.length > 0 && <RecentNewsBlogs items={recentItems} />}
-      {settings.show_featured_scholars && <FeaturedScholars title={settings.scholars_title} subtitle={settings.scholars_subtitle} scholars={scholarsData} />}
-      {settings.show_testimonials && <Testimonials title={settings.testimonials_title} subtitle={settings.testimonials_subtitle} testimonials={testimonialsData} />}
+      {settings.show_stats_section && <ScrollAnimation><Statistics title={settings.stats_title} subtitle={settings.stats_subtitle} statsData={statsData} /></ScrollAnimation>}
+      {settings.show_featured_content && <ScrollAnimation><FeaturedContent title={settings.featured_title} subtitle={settings.featured_subtitle} /></ScrollAnimation>}
+      {settings.show_categories_section && <ScrollAnimation><ExploreCategories title={settings.categories_title} subtitle={settings.categories_subtitle} /></ScrollAnimation>}
+      <ScrollAnimation><HowItWorks title={settings.how_it_works_title} subtitle={settings.how_it_works_subtitle} /></ScrollAnimation>
+      {recentItems.length > 0 && <ScrollAnimation><RecentNewsBlogs items={recentItems} /></ScrollAnimation>}
+      {settings.show_featured_scholars && <ScrollAnimation><FeaturedScholars title={settings.scholars_title} subtitle={settings.scholars_subtitle} scholars={scholarsData} /></ScrollAnimation>}
+      {settings.show_testimonials && <ScrollAnimation><Testimonials title={settings.testimonials_title} subtitle={settings.testimonials_subtitle} testimonials={testimonialsData} /></ScrollAnimation>}
       <Footer />
     </main>
   )

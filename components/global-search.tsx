@@ -54,7 +54,7 @@ export default function GlobalSearch({ className }: { className?: string }) {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && query.trim()) {
       setIsOpen(false)
-      router.push(`/search?q=${encodeURIComponent(query.trim())}`)
+      router.push(`/search?q=${encodeURIComponent(query.trim())}&type=All`)
     }
   }
 
@@ -72,8 +72,8 @@ export default function GlobalSearch({ className }: { className?: string }) {
   return (
     <div ref={wrapperRef} className={`relative w-full ${className || 'max-w-md mx-4'}`}>
       <div className="relative flex items-center">
-        <div className="absolute left-3 text-gray-400">
-          <Search className="h-4 w-4" />
+        <div className="absolute left-4 text-indigo-500">
+          <Search className="h-5 w-5" />
         </div>
         <input aria-label="Search" 
           type="text"
@@ -87,17 +87,17 @@ export default function GlobalSearch({ className }: { className?: string }) {
           }}
           onKeyDown={handleKeyDown}
           placeholder="Search publications, scholars, news..."
-          className="w-full pl-10 pr-10 py-2 text-sm border border-gray-300 rounded-full bg-gray-50/50 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all placeholder:text-gray-400"
+          className="w-full pl-12 pr-12 py-4 text-base font-medium border-2 border-indigo-100 rounded-full bg-white text-gray-900 shadow-xl focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all placeholder:text-gray-500"
         />
         {isLoading && (
-          <div className="absolute right-3 text-gray-400">
-            <Loader2 className="h-4 w-4 animate-spin" />
+          <div className="absolute right-4 text-indigo-500">
+            <Loader2 className="h-5 w-5 animate-spin" />
           </div>
         )}
       </div>
 
       {isOpen && (debouncedQuery.length >= 2) && (
-        <div className="absolute top-full mt-3 w-full bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-50 max-h-[28rem] overflow-y-auto z-10">
+        <div className="absolute top-full mt-3 w-full bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden z-50 max-h-[40rem] overflow-y-auto">
           {results.length > 0 ? (
             <div className="py-2">
               <div className="px-4 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
@@ -123,7 +123,7 @@ export default function GlobalSearch({ className }: { className?: string }) {
               ))}
               <div className="p-3 bg-gray-50/80 border-t border-gray-100 mt-2">
                 <Link 
-                  href={`/search?q=${encodeURIComponent(query)}`}
+                  href={`/search?q=${encodeURIComponent(query)}&type=All`}
                   onClick={() => setIsOpen(false)}
                   className="text-sm font-semibold text-indigo-600 hover:text-indigo-700 flex items-center justify-center w-full py-2 rounded-lg hover:bg-indigo-50 transition-colors"
                 >

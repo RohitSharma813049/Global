@@ -17,13 +17,21 @@ export default function Signup() {
     const [otp, setOtp] = useState("");
     
     const [formData, setFormData] = useState({
-        name: "",
+        firstName: "",
+        lastName: "",
         email: "",
-        password: ""
+        mobileNumber: "",
+        country: "",
+        institution: "",
+        username: "",
+        password: "",
+        confirmPassword: "",
+        termsAccepted: false
     });
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const value = e.target.type === 'checkbox' ? (e.target as HTMLInputElement).checked : e.target.value;
+        setFormData({ ...formData, [e.target.name]: value });
     };
 
     const handleRoleSelect = (selectedRole: "reader" | "scholar") => {
@@ -34,8 +42,16 @@ export default function Signup() {
     const handleSendOTP = async (e: React.FormEvent) => {
         e.preventDefault();
         
-        if (!formData.name || !formData.email || !formData.password) {
+        if (!formData.firstName || !formData.lastName || !formData.email || !formData.mobileNumber || !formData.country || !formData.institution || !formData.username || !formData.password || !formData.confirmPassword) {
             toast.error("Please fill in all fields");
+            return;
+        }
+        if (formData.password !== formData.confirmPassword) {
+            toast.error("Passwords do not match");
+            return;
+        }
+        if (!formData.termsAccepted) {
+            toast.error("You must accept the terms and privacy policy");
             return;
         }
 
@@ -79,8 +95,13 @@ export default function Signup() {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    name: formData.name,
+                    firstName: formData.firstName,
+                    lastName: formData.lastName,
                     email: formData.email,
+                    mobileNumber: formData.mobileNumber,
+                    country: formData.country,
+                    institution: formData.institution,
+                    username: formData.username,
                     password: formData.password,
                     role: role,
                     otp: otp
@@ -169,38 +190,128 @@ export default function Signup() {
                         </div>
 
                         <form onSubmit={handleSendOTP} className="space-y-5">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                                    <div className="relative">
+                                        <input aria-label="First Name" 
+                                            type="text" name="firstName" value={formData.firstName} onChange={handleChange} required
+                                            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                                            placeholder="John"
+                                        />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                                    <div className="relative">
+                                        <input aria-label="Last Name" 
+                                            type="text" name="lastName" value={formData.lastName} onChange={handleChange} required
+                                            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                                            placeholder="Doe"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                                    <div className="relative">
+                                        <MdEmail className="absolute left-3 top-3 text-gray-400 text-xl" />
+                                        <input aria-label="Email" 
+                                            type="email" name="email" value={formData.email} onChange={handleChange} required
+                                            className="pl-10 w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                                            placeholder="you@example.com"
+                                        />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Mobile Number</label>
+                                    <div className="relative">
+                                        <input aria-label="Mobile Number" 
+                                            type="text" name="mobileNumber" value={formData.mobileNumber} onChange={handleChange} required
+                                            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                                            placeholder="+1 234 567 890"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
+                                    <div className="relative">
+                                        <input aria-label="Country" 
+                                            type="text" name="country" value={formData.country} onChange={handleChange} required
+                                            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                                            placeholder="USA"
+                                        />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Institution / University</label>
+                                    <div className="relative">
+                                        <input aria-label="Institution" 
+                                            type="text" name="institution" value={formData.institution} onChange={handleChange} required
+                                            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                                            placeholder="Harvard University"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
                                 <div className="relative">
                                     <MdPerson className="absolute left-3 top-3 text-gray-400 text-xl" />
-                                    <input aria-label="Input field" 
-                                        type="text" name="name" value={formData.name} onChange={handleChange} required
+                                    <input aria-label="Username" 
+                                        type="text" name="username" value={formData.username} onChange={handleChange} required
                                         className="pl-10 w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-                                        placeholder="John Doe"
+                                        placeholder="johndoe123"
                                     />
                                 </div>
                             </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                                <div className="relative">
-                                    <MdEmail className="absolute left-3 top-3 text-gray-400 text-xl" />
-                                    <input aria-label="Input field" 
-                                        type="email" name="email" value={formData.email} onChange={handleChange} required
-                                        className="pl-10 w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-                                        placeholder="you@example.com"
-                                    />
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                                    <div className="relative">
+                                        <MdLock className="absolute left-3 top-3 text-gray-400 text-xl" />
+                                        <input aria-label="Password" 
+                                            type={showPassword ? "text" : "password"} name="password" value={formData.password} onChange={handleChange} required
+                                            className="pl-10 w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                                            placeholder="••••••••"
+                                        />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+                                    <div className="relative">
+                                        <MdLock className="absolute left-3 top-3 text-gray-400 text-xl" />
+                                        <input aria-label="Confirm Password" 
+                                            type={showPassword ? "text" : "password"} name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required
+                                            className="pl-10 w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                                            placeholder="••••••••"
+                                        />
+                                    </div>
                                 </div>
                             </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                                <div className="relative">
-                                    <MdLock className="absolute left-3 top-3 text-gray-400 text-xl" />
-                                    <input aria-label="Input field" 
-                                        type={showPassword ? "text" : "password"} name="password" value={formData.password} onChange={handleChange} required
-                                        className="pl-10 w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-                                        placeholder="••••••••"
+
+                            <div className="flex items-start">
+                                <div className="flex items-center h-5">
+                                    <input
+                                        id="termsAccepted"
+                                        name="termsAccepted"
+                                        type="checkbox"
+                                        checked={formData.termsAccepted}
+                                        onChange={handleChange}
+                                        required
+                                        className="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 focus:ring-2"
                                     />
                                 </div>
+                                <label htmlFor="termsAccepted" className="ms-2 text-sm font-medium text-gray-900">
+                                    I agree to the <a href="#" className="text-indigo-600 hover:underline">Terms & Conditions</a> and <a href="#" className="text-indigo-600 hover:underline">Privacy Policy</a>.
+                                </label>
                             </div>
 
                             <button 

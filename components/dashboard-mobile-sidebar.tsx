@@ -26,7 +26,7 @@ export default function DashboardMobileSidebar() {
   const [open, setOpen] = useState(false);
 
   const readerLinks = [
-    { name: "Discover", href: "/category", icon: MdExplore },
+    { name: "Explore", href: "/category", icon: MdExplore },
     { name: "My Library", href: "/library", icon: MdLibraryBooks },
     { name: "Saved Papers", href: "/library/saved", icon: MdBookmark },
   ];

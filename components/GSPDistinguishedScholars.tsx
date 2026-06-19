@@ -1,11 +1,6 @@
 "use client";
-
 import { useState } from "react";
 import Link from "next/link";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { BookOpen, FileText, PlayCircle, BookMarked, Download, Share2, Award, CheckCircle2 } from "lucide-react";
 
 export interface Scholar {
   id: string;
@@ -20,6 +15,10 @@ export interface Scholar {
   is_honorary: boolean;
   is_verified: boolean;
   is_featured: boolean;
+  total_views?: number;
+  total_downloads?: number;
+  avatar_url?: string;
+  banner_url?: string;
 }
 
 export interface ScholarVideo {
@@ -45,229 +44,227 @@ interface Props {
   videos?: ScholarVideo[];
   publications?: ScholarPublication[];
   allScholars?: Scholar[];
+  isOwner?: boolean;
 }
 
-export default function GSPDistinguishedScholars({ scholar, videos = [], publications = [], allScholars = [] }: Props) {
+// ── THEME COLORS ──────────────────────────────────────────────
+const theme = {
+  bgWhite: "#FFFFFF",
+  bgLightPurple: "#EDE9FA",       
+  bgLightPurple2: "#F5F3FD",     
+  bgLightPurple3: "#DDD8F7",     
+  darkPurple: "#4A2D8F",          
+  darkPurpleHover: "#3A2070",
+  textBlack: "#111111",
+  textGray: "#555555",
+  textMuted: "#888888",
+  border: "#D9D3F0",
+  borderLight: "#EDE9FA",
+};
+
+// ── BADGE VARIANTS ────────────────────────────────────────────
+const badgeStyles = {
+  honorary: { background: "#EDE9FA", color: "#4A2D8F" },
+  verified: { background: "#E1F5EE", color: "#085041" },
+  featured: { background: "#DDD8F7", color: "#4A2D8F" },
+  country: { background: "#EDE9FA", color: "#4A2D8F" },
+  domain: { background: "#F1EFE8", color: "#444441" },
+};
+
+export default function GSPDistinguishedScholars({ scholar, videos = [], publications = [], allScholars = [], isOwner = false }: Props) {
+  const [activeSection] = useState("profile");
+
   if (!scholar) return null;
 
-  const mainVideo = videos.find(v => v.is_main_video) || videos[0];
-  const otherVideos = videos.filter(v => v.id !== mainVideo?.id);
-  
-  const thesisPubs = publications.filter(p => p.tag.toLowerCase().includes("thesis"));
-  const articlePubs = publications.filter(p => p.tag.toLowerCase().includes("article"));
-  const ebookPubs = publications.filter(p => p.tag.toLowerCase().includes("ebook"));
-
   return (
-    <div className="bg-gray-50 min-h-screen pb-20">
-      {/* ── HEADER BANNER ── */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-6xl mx-auto px-6 py-12 lg:flex lg:items-start lg:justify-between lg:gap-12">
-          
-          <div className="flex flex-col sm:flex-row gap-8 items-start flex-1">
+    <div style={{ fontFamily: "'Georgia', 'Times New Roman', serif", background: theme.bgWhite, minHeight: "100vh", color: theme.textBlack }}>
+      {/* ── GLOBAL STYLES ── */}
+      <style>{`
+        @media (max-width: 640px) {
+          .stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
+          .scholar-grid { grid-template-columns: repeat(2, 1fr) !important; }
+          .video-thumb-row { grid-template-columns: 1fr !important; }
+          .step-grid { grid-template-columns: repeat(2, 1fr) !important; }
+          .prof-top { flex-direction: column !important; align-items: center !important; text-align: center; }
+          .action-row { justify-content: center !important; }
+          .badge-row { justify-content: center !important; }
+          .country-row { justify-content: center !important; }
+          .pub-item { flex-direction: column !important; gap: 6px !important; }
+        }
+        @media (max-width: 480px) {
+          .scholar-grid { grid-template-columns: repeat(2, 1fr) !important; }
+          .step-grid { grid-template-columns: repeat(1, 1fr) !important; }
+        }
+        .btn-primary:hover { background: #3A2070 !important; }
+        .btn-video:hover { background: #3A2070 !important; border-color: #3A2070 !important; }
+        .btn-outline:hover { background: #EDE9FA !important; }
+        .pub-title-link:hover { text-decoration: underline; }
+        .scholar-card:hover { border-color: #4A2D8F !important; box-shadow: 0 2px 12px rgba(74,45,143,0.10); transform: translateY(-2px); transition: all 0.2s; }
+        .c-pill:hover { border-color: #4A2D8F !important; }
+      `}</style>
+
+      {/* ── MAIN CONTENT WRAPPER ── */}
+      <div style={{ maxWidth: 820, margin: "0 auto", padding: "1.5rem 1rem 3rem" }}>
+        
+        <Link href="/" style={{ display: "inline-block", marginBottom: 20, fontSize: 13, color: theme.darkPurple, textDecoration: "none", fontWeight: 600 }}>&larr; Back to Home</Link>
+
+        {/* ── PROFILE CARD ── */}
+        <Card style={{ marginBottom: 12 }}>
+          <div className="prof-top" style={{ display: "flex", gap: 18, alignItems: "flex-start" }}>
             {/* Avatar */}
-            <div className="relative shrink-0">
-              <div className="h-32 w-32 rounded-full bg-indigo-50 border-4 border-white shadow-xl flex items-center justify-center text-4xl font-black text-indigo-700">
-                {scholar.initials}
-              </div>
-              <div className="absolute bottom-0 right-0 h-10 w-10 bg-white rounded-full border-4 border-gray-50 shadow-sm flex items-center justify-center text-xl">
-                {scholar.flag_emoji}
-              </div>
-              {scholar.is_verified && (
-                <div className="absolute top-0 right-0 h-8 w-8 bg-emerald-500 rounded-full border-2 border-white shadow-sm flex items-center justify-center" title="Verified Scholar">
-                  <CheckCircle2 className="h-5 w-5 text-white" />
+            <div style={{ position: "relative", flexShrink: 0 }}>
+              {scholar.avatar_url ? (
+                <div style={{ width: 84, height: 84, borderRadius: "50%", border: `2px solid ${theme.border}`, overflow: "hidden" }}>
+                  <img src={scholar.avatar_url} alt={scholar.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                 </div>
-              )}
-            </div>
-
-            {/* Profile Info */}
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-2">
-                <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">{scholar.name}</h1>
-                {scholar.is_honorary && (
-                  <Badge variant="secondary" className="bg-indigo-100 text-indigo-800 hover:bg-indigo-200 border border-indigo-200">
-                    <Award className="w-3 h-3 mr-1" /> Honorary
-                  </Badge>
-                )}
-              </div>
-              <p className="text-xl text-gray-600 font-medium mb-4">
-                {scholar.professional_role} <span className="text-gray-300 mx-2">|</span> {scholar.domain}
-              </p>
-              
-              <div className="flex flex-wrap gap-2 mb-6">
-                <Badge variant="outline" className="text-gray-600 border-gray-200 bg-gray-50">{scholar.flag_emoji} {scholar.country}</Badge>
-                {scholar.is_featured && <Badge variant="outline" className="text-amber-700 border-amber-200 bg-amber-50">Featured Scholar</Badge>}
-              </div>
-
-              <div className="flex flex-wrap gap-3">
-                <Button className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-full px-6">
-                  Follow Scholar
-                </Button>
-                <Button variant="outline" className="rounded-full px-6 border-gray-300">
-                  <Download className="w-4 h-4 mr-2" /> Download CV
-                </Button>
-                <Button variant="outline" size="icon" className="rounded-full border-gray-300">
-                  <Share2 className="w-4 h-4 text-gray-600" />
-                </Button>
-              </div>
-            </div>
-          </div>
-
-          {/* Quick Stats Bar (Desktop Right) */}
-          <div className="mt-10 lg:mt-0 shrink-0 w-full lg:w-72 bg-white rounded-3xl border border-gray-100 shadow-sm p-6 flex flex-col gap-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Publications</p>
-                <p className="text-3xl font-black text-gray-900">{publications.length}</p>
-              </div>
-              <div className="h-12 w-12 rounded-2xl bg-indigo-50 flex items-center justify-center">
-                <FileText className="w-6 h-6 text-indigo-600" />
-              </div>
-            </div>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Total Views</p>
-                <p className="text-3xl font-black text-gray-900">12.4k</p>
-              </div>
-              <div className="h-12 w-12 rounded-2xl bg-emerald-50 flex items-center justify-center">
-                <PlayCircle className="w-6 h-6 text-emerald-600" />
-              </div>
-            </div>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Downloads</p>
-                <p className="text-3xl font-black text-gray-900">3,492</p>
-              </div>
-              <div className="h-12 w-12 rounded-2xl bg-amber-50 flex items-center justify-center">
-                <Download className="w-6 h-6 text-amber-600" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ── MAIN CONTENT TABS ── */}
-      <div className="max-w-6xl mx-auto px-6 mt-12">
-        <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="h-auto min-h-14 w-full justify-start gap-2 bg-transparent border-b border-gray-200 rounded-none p-0 overflow-x-auto flex-nowrap pb-px">
-            <TabsTrigger value="overview" className="data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:border-gray-200 border border-transparent h-10 px-6 rounded-t-xl rounded-b-none text-base font-medium">Overview</TabsTrigger>
-            <TabsTrigger value="thesis" className="data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:border-gray-200 border border-transparent h-10 px-6 rounded-t-xl rounded-b-none text-base font-medium">
-              <BookOpen className="w-4 h-4 mr-2" /> Thesis ({thesisPubs.length})
-            </TabsTrigger>
-            <TabsTrigger value="articles" className="data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:border-gray-200 border border-transparent h-10 px-6 rounded-t-xl rounded-b-none text-base font-medium">
-              <FileText className="w-4 h-4 mr-2" /> Articles ({articlePubs.length})
-            </TabsTrigger>
-            <TabsTrigger value="ebooks" className="data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:border-gray-200 border border-transparent h-10 px-6 rounded-t-xl rounded-b-none text-base font-medium">
-              <BookMarked className="w-4 h-4 mr-2" /> eBooks ({ebookPubs.length})
-            </TabsTrigger>
-            <TabsTrigger value="videos" className="data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:border-gray-200 border border-transparent h-10 px-6 rounded-t-xl rounded-b-none text-base font-medium">
-              <PlayCircle className="w-4 h-4 mr-2" /> Videos ({videos.length})
-            </TabsTrigger>
-          </TabsList>
-
-          <div className="bg-white border border-t-0 border-gray-200 rounded-b-2xl rounded-tr-2xl shadow-sm min-h-[400px]">
-            {/* OVERVIEW TAB */}
-            <TabsContent value="overview" className="p-8 m-0 outline-none">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Biography & Career Overview</h2>
-              <div className="prose prose-lg text-gray-600 max-w-none">
-                <p className="leading-relaxed">{scholar.description}</p>
-                {scholar.is_honorary && (
-                  <div className="mt-8 bg-indigo-50 border-l-4 border-indigo-600 p-6 rounded-r-xl">
-                    <h4 className="text-indigo-900 font-bold flex items-center gap-2 mb-2">
-                      <Award className="w-5 h-5" /> Honorary Doctorate — Professional Excellence Recognition
-                    </h4>
-                    <p className="text-indigo-800 text-sm">
-                      This profile recognises a distinguished professional awarded an honorary doctorate for exceptional real-world contribution to their field. This is an honorary award distinct from a research qualification, conferred in recognition of professional achievement and industry leadership.
-                    </p>
-                  </div>
-                )}
-              </div>
-            </TabsContent>
-
-            {/* THESIS TAB */}
-            <TabsContent value="thesis" className="p-8 m-0 outline-none">
-              <div className="space-y-4">
-                {thesisPubs.length === 0 ? (
-                  <p className="text-gray-500 italic">No thesis published yet.</p>
-                ) : (
-                  thesisPubs.map(pub => (
-                    <PublicationCard key={pub.id} pub={pub} />
-                  ))
-                )}
-              </div>
-            </TabsContent>
-
-            {/* ARTICLES TAB */}
-            <TabsContent value="articles" className="p-8 m-0 outline-none">
-              <div className="space-y-4">
-                {articlePubs.length === 0 ? (
-                  <p className="text-gray-500 italic">No articles published yet.</p>
-                ) : (
-                  articlePubs.map(pub => (
-                    <PublicationCard key={pub.id} pub={pub} />
-                  ))
-                )}
-              </div>
-            </TabsContent>
-
-            {/* EBOOKS TAB */}
-            <TabsContent value="ebooks" className="p-8 m-0 outline-none">
-              <div className="space-y-4">
-                {ebookPubs.length === 0 ? (
-                  <p className="text-gray-500 italic">No eBooks published yet.</p>
-                ) : (
-                  ebookPubs.map(pub => (
-                    <PublicationCard key={pub.id} pub={pub} />
-                  ))
-                )}
-              </div>
-            </TabsContent>
-
-            {/* VIDEOS TAB */}
-            <TabsContent value="videos" className="p-8 m-0 outline-none">
-              {videos.length === 0 ? (
-                <p className="text-gray-500 italic">No videos published yet.</p>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {videos.map(video => (
-                    <div key={video.id} className="group relative rounded-2xl bg-gray-900 overflow-hidden cursor-pointer aspect-video shadow-md hover:shadow-xl transition-all">
-                      <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors z-10"></div>
-                      <div className="absolute inset-0 flex items-center justify-center z-20">
-                        <PlayCircle className="w-12 h-12 text-white opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all" />
-                      </div>
-                      <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/90 to-transparent z-20">
-                        <p className="text-white font-semibold text-sm line-clamp-2">{video.title}</p>
-                        <p className="text-gray-300 text-xs mt-1">{video.metadata}</p>
-                      </div>
-                    </div>
-                  ))}
+                <div style={{ width: 84, height: 84, borderRadius: "50%", background: theme.bgLightPurple, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 26, fontWeight: 700, color: theme.darkPurple, border: `2px solid ${theme.border}` }}>
+                  {scholar.initials}
                 </div>
               )}
-            </TabsContent>
+              <div style={{ position: "absolute", bottom: 0, right: 0, width: 24, height: 24, borderRadius: "50%", background: "#FAEEDA", border: "2px solid white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13 }}>{scholar.flag_emoji}</div>
+            </div>
 
+            {/* Info */}
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <h1 style={{ fontSize: 19, fontWeight: 700, color: theme.textBlack, marginBottom: 3 }}>{scholar.name}</h1>
+              <p style={{ fontSize: 13, color: theme.textGray, marginBottom: 10 }}>{scholar.professional_role} · {scholar.country}</p>
+
+              <div className="badge-row" style={{ display: "flex", flexWrap: "wrap", gap: 5, marginBottom: 12 }}>
+                {scholar.is_honorary && <Badge style={badgeStyles.honorary}>Honorary</Badge>}
+                {scholar.is_verified && <Badge style={badgeStyles.verified}>✓ Verified</Badge>}
+                {scholar.is_featured && <Badge style={badgeStyles.featured}>Featured</Badge>}
+                <Badge style={badgeStyles.country}>{scholar.flag_emoji} {scholar.country}</Badge>
+                <Badge style={badgeStyles.domain}>{scholar.domain}</Badge>
+              </div>
+
+              <div className="action-row" style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                <button className="btn-primary" style={{ fontSize: 12, padding: "7px 14px", borderRadius: 7, border: "none", background: theme.darkPurple, color: "white", fontWeight: 600 }}>+ Add to LinkedIn</button>
+                {videos.length > 0 && (
+                  <button className="btn-video" style={{ fontSize: 12, padding: "7px 14px", borderRadius: 7, border: "none", background: theme.darkPurple, color: "white", display: "flex", alignItems: "center", gap: 5 }}>
+                    <svg width="11" height="11" viewBox="0 0 12 12"><polygon points="3,1 11,6 3,11" fill="white"/></svg>
+                    Watch video
+                  </button>
+                )}
+                {isOwner && (
+                  <Link href="/dashboard/settings" style={{ textDecoration: "none" }}>
+                    <button className="btn-outline" style={{ fontSize: 12, padding: "7px 14px", borderRadius: 7, border: `1px solid ${theme.border}`, background: "white", color: theme.textGray }}>Edit Profile</button>
+                  </Link>
+                )}
+              </div>
+            </div>
           </div>
-        </Tabs>
+
+          <p style={{ fontSize: 13, color: theme.textGray, lineHeight: 1.7, marginTop: 14, paddingTop: 14, borderTop: `1px solid ${theme.borderLight}` }}>
+            {scholar.description}
+          </p>
+        </Card>
+
+        {/* ── DISTINCTION NOTICE ── */}
+        {scholar.is_honorary && (
+          <div style={{ display: "flex", gap: 12, alignItems: "flex-start", background: theme.bgLightPurple, borderRadius: 10, padding: "12px 16px", marginBottom: 12, borderLeft: `3px solid ${theme.darkPurple}` }}>
+            <svg width="18" height="18" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0, marginTop: 1 }}>
+              <circle cx="8" cy="8" r="7" stroke={theme.darkPurple} strokeWidth="1.3"/>
+              <text x="8" y="12" textAnchor="middle" fontSize="10" fill={theme.darkPurple} fontFamily="Georgia">★</text>
+            </svg>
+            <p style={{ fontSize: 12.5, color: "#2E1A60", lineHeight: 1.6 }}>
+              <strong>Honorary Doctorate — Professional Excellence Recognition.</strong> This profile recognises a distinguished professional awarded an honorary doctorate for exceptional real-world contribution to their field. This is an honorary award distinct from a research qualification, conferred in recognition of professional achievement and industry leadership.
+            </p>
+          </div>
+        )}
+
+        {/* ── STATS GRID ── */}
+        <div className="stats-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 12 }}>
+          {[
+            { n: (scholar.total_views || 0).toLocaleString(), l: "Profile views" },
+            { n: publications.length.toString(), l: "Publications" },
+            { n: (scholar.total_downloads || 0).toLocaleString(), l: "Downloads" },
+          ].map((s) => (
+            <div key={s.l} style={{ background: theme.bgLightPurple, borderRadius: 10, padding: "14px 10px", textAlign: "center" }}>
+              <div style={{ fontSize: 22, fontWeight: 700, color: theme.darkPurple }}>{s.n}</div>
+              <div style={{ fontSize: 11, color: theme.textGray, marginTop: 3 }}>{s.l}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* ── VIDEO SECTION ── */}
+        {videos.length > 0 && (
+          <Card style={{ marginBottom: 12 }}>
+            <SectionTitle>Scholar video — experience & insights</SectionTitle>
+            <div style={{ background: "#0D1117", borderRadius: 10, aspectRatio: "16/9", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", cursor: "pointer", position: "relative", overflow: "hidden", marginBottom: 10 }}>
+              <div style={{ width: 58, height: 58, borderRadius: "50%", background: "rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center", border: "2px solid rgba(255,255,255,0.3)", marginBottom: 10 }}>
+                <svg width="20" height="20" viewBox="0 0 24 24"><polygon points="5,3 22,12 5,21" fill="rgba(255,255,255,0.9)"/></svg>
+              </div>
+              <div style={{ fontSize: 13, color: "rgba(255,255,255,0.7)" }}>{videos[0].title}</div>
+              <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "10px 14px", background: "linear-gradient(transparent, rgba(0,0,0,0.75))" }}>
+                <div style={{ fontSize: 11.5, color: "rgba(255,255,255,0.6)", marginTop: 2 }}>{videos[0].metadata}</div>
+              </div>
+            </div>
+          </Card>
+        )}
+
+        {/* ── CREDENTIAL & LOCATION ── */}
+        <Card style={{ marginBottom: 12 }}>
+          <SectionTitle>Credential & location</SectionTitle>
+          {[
+            { k: "Domain", v: scholar.domain },
+            { k: "Country", v: `${scholar.flag_emoji} ${scholar.country}` },
+            { k: "Profile verified", v: scholar.is_verified ? "Verified by Global Scholar Publications" : "Unverified", highlight: scholar.is_verified },
+          ].map((row, i) => (
+            <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", padding: "8px 0", borderBottom: i < 2 ? `1px solid ${theme.borderLight}` : "none", gap: 12, flexWrap: "wrap" }}>
+              <span style={{ fontSize: 13, color: theme.textGray, flexShrink: 0 }}>{row.k}</span>
+              <span style={{ fontSize: 13, fontWeight: 600, color: row.highlight ? "#085041" : theme.textBlack, textAlign: "right" }}>{row.v}</span>
+            </div>
+          ))}
+        </Card>
+
+        {/* ── PUBLICATIONS ── */}
+        {publications.length > 0 && (
+          <Card style={{ marginBottom: 12 }}>
+            <SectionTitle>Published works on Global Scholar Publications</SectionTitle>
+            {publications.map((p, i) => (
+              <div key={i} className="pub-item" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", padding: "10px 0", borderBottom: i < publications.length - 1 ? `1px solid ${theme.borderLight}` : "none", gap: 12 }}>
+                <div>
+                  <Link href={`/publications/${p.id}`} style={{ textDecoration: "none" }}>
+                    <p className="pub-title-link" style={{ fontSize: 13, fontWeight: 600, color: theme.darkPurple, marginBottom: 3, cursor: "pointer" }}>{p.title}</p>
+                  </Link>
+                  <p style={{ fontSize: 11.5, color: theme.textMuted }} dangerouslySetInnerHTML={{ __html: p.metadata }} />
+                </div>
+                <span style={{ fontSize: 10.5, padding: "3px 9px", borderRadius: 12, background: "#E1F5EE", color: "#085041", whiteSpace: "nowrap", flexShrink: 0, fontWeight: 600 }}>{p.tag}</span>
+              </div>
+            ))}
+          </Card>
+        )}
+
       </div>
     </div>
   );
 }
 
-function PublicationCard({ pub }: { pub: ScholarPublication }) {
+// ── REUSABLE COMPONENTS ────────────────────────────────────────
+
+function SectionLabel({ children, style }: any) {
   return (
-    <div className="group border border-gray-100 rounded-2xl p-6 hover:shadow-md hover:border-indigo-100 transition-all bg-white flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-      <div>
-        <Link href={pub.url || "#"} className="text-lg font-bold text-gray-900 group-hover:text-indigo-600 transition-colors">
-          {pub.title}
-        </Link>
-        <p className="text-gray-500 text-sm mt-2">{pub.metadata}</p>
-      </div>
-      <div className="flex items-center gap-3">
-        <Badge variant="outline" className="bg-gray-50 uppercase tracking-wider text-[10px]">{pub.tag}</Badge>
-        <Link href={pub.url || "#"}>
-          <Button variant="ghost" size="icon" className="h-8 w-8 text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-full">
-            <Download className="w-4 h-4" />
-          </Button>
-        </Link>
-      </div>
+    <p style={{ fontSize: 11, fontWeight: 600, color: "#888", letterSpacing: "0.07em", textTransform: "uppercase", marginBottom: 7, ...style }}>{children}</p>
+  );
+}
+
+function Card({ children, style }: any) {
+  return (
+    <div style={{ background: "#FFFFFF", border: "1px solid #D9D3F0", borderRadius: 14, padding: "1.25rem", ...style }}>
+      {children}
     </div>
+  );
+}
+
+function SectionTitle({ children }: any) {
+  return (
+    <p style={{ fontSize: 14, fontWeight: 700, color: "#111", marginBottom: 12, paddingBottom: 9, borderBottom: "1px solid #EDE9FA" }}>{children}</p>
+  );
+}
+
+function Badge({ children, style }: any) {
+  return (
+    <span style={{ fontSize: 11, fontWeight: 600, padding: "3px 9px", borderRadius: 20, ...style }}>{children}</span>
   );
 }

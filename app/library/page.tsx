@@ -16,11 +16,10 @@ export default function LibraryPage() {
           Your personal collection of saved papers, thesis, and eBooks will appear here. Start exploring to build your library.
         </p>
         <Link href="/category" className="inline-flex items-center px-8 py-4 text-lg font-bold rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 transition-all shadow-md">
-          <Search className="w-5 h-5 mr-2" /> Discover Papers
+          <Search className="w-5 h-5 mr-2" /> Explore Papers
         </Link>
       </main>
       <Footer />
     </div>
   )
 }
-

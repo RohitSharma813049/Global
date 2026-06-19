@@ -1,12 +1,12 @@
 'use client'
 
-import { Bookmark, Eye, Download } from 'lucide-react'
+import { Bookmark, Eye, Download, Star } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 
-interface ContentItem {
+export interface ContentItem {
   id: number | string
   title: string
   author: string
@@ -17,6 +17,7 @@ interface ContentItem {
   downloads: number
   publishedYear: number
   subject: string
+  imageUrl?: string // Added support for an image
 }
 
 interface ContentCardProps {
@@ -26,12 +27,12 @@ interface ContentCardProps {
   onBookmarkToggle: () => void
 }
 
-const typeConfig: Record<string, { label: string; color: string }> = {
-  thesis: { label: 'Thesis', color: 'bg-blue-100 text-blue-800' },
-  article: { label: 'Article', color: 'bg-green-100 text-green-800' },
-  ebook: { label: 'eBook', color: 'bg-purple-100 text-purple-800' },
-  magazine: { label: 'Magazine', color: 'bg-orange-100 text-orange-800' },
-  blog: { label: 'Blog', color: 'bg-pink-100 text-pink-800' },
+const typeConfig: Record<string, { label: string }> = {
+  thesis: { label: 'THESIS' },
+  article: { label: 'ARTICLE' },
+  ebook: { label: 'EBOOK' },
+  magazine: { label: 'MAGAZINE' },
+  blog: { label: 'BLOG' },
 }
 
 function formatNumber(num: number): string {
@@ -39,6 +40,11 @@ function formatNumber(num: number): string {
     return (num / 1000).toFixed(1) + 'K'
   }
   return num.toString()
+}
+
+function stripHtml(html: string): string {
+  if (!html) return '';
+  return html.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ');
 }
 
 export default function ContentCard({
@@ -49,9 +55,10 @@ export default function ContentCard({
 }: ContentCardProps) {
   const { data: session } = useSession()
   const router = useRouter()
-  const typeInfo = typeConfig[item.type] || { label: item.type, color: 'bg-gray-100 text-gray-800' }
+  const typeInfo = typeConfig[item.type] || { label: item.type.toUpperCase() }
 
-  const handleBookmarkClick = () => {
+  const handleBookmarkClick = (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent navigating if clicking the whole card
     if (!session) {
       router.push(`/signin?callbackUrl=/category`)
       return
@@ -59,68 +66,79 @@ export default function ContentCard({
     onBookmarkToggle()
   }
 
+  // Generate a very subtle placeholder gradient based on ID if no image is present
+  const placeholderGradient = `linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)`
+
   if (viewMode === 'list') {
     return (
-      <div className="flex flex-col gap-4 rounded-lg border border-border bg-white p-4 sm:p-6 transition hover:border-primary hover:shadow-md">
-        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-2 flex-wrap">
-              <span className={`inline-block rounded-full px-2.5 py-1 text-xs font-semibold ${typeInfo.color}`}>
-                {typeInfo.label}
-              </span>
-              <span className="text-xs text-foreground/60">{item.publishedYear}</span>
+      <Link href={`/publications/${item.id}`} className="group flex flex-col sm:flex-row gap-6 bg-white border border-gray-100 rounded-[2rem] p-4 transition-all duration-300 hover:shadow-xl hover:border-gray-200">
+        {/* List View Image */}
+        <div className="relative h-48 sm:h-auto sm:w-64 rounded-[1.5rem] overflow-hidden shrink-0">
+           {item.imageUrl ? (
+             <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+           ) : (
+             <div className="w-full h-full transition-transform duration-700 group-hover:scale-105" style={{ background: placeholderGradient }} />
+           )}
+           <div className="absolute top-4 left-4">
+             <span className="bg-black text-white text-[10px] font-extrabold tracking-widest uppercase px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-md">
+               <Star className="w-3 h-3 fill-white" /> {typeInfo.label}
+             </span>
+           </div>
+        </div>
+
+        {/* List View Content */}
+        <div className="flex-1 flex flex-col justify-center min-w-0 pr-4 sm:pr-8 py-2">
+          <h3 className="text-2xl sm:text-3xl font-black text-indigo-600 leading-tight mb-3 line-clamp-2 tracking-tight group-hover:text-indigo-800 transition-colors">
+            {item.title}
+          </h3>
+          <p className="text-sm font-semibold text-slate-500 leading-relaxed line-clamp-2 mb-4 text-justify">
+            {item.author} — {stripHtml(item.description)}
+          </p>
+          
+          <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-50">
+            <div className="flex items-center gap-4 text-xs font-bold text-slate-400 tracking-wider uppercase">
+              <span className="flex items-center gap-1.5"><Eye className="w-4 h-4" /> {formatNumber(item.views)}</span>
+              <span className="flex items-center gap-1.5"><Download className="w-4 h-4" /> {formatNumber(item.downloads)}</span>
             </div>
-            <Link href={`/publications/${item.id}`}>
-              <h3 className="text-base sm:text-lg font-bold text-foreground line-clamp-2 break-words hover:text-indigo-600 transition-colors">{item.title}</h3>
-            </Link>
-            <p className="mt-1 text-sm text-foreground/70">{item.author}</p>
-            <p className="mt-3 text-sm text-foreground/60 line-clamp-2">{item.description}</p>
-          </div>
-
-          <Button
-            onClick={handleBookmarkClick}
-            variant="ghost"
-            size="icon"
-            className={`shrink-0 ${isBookmarked ? 'text-primary' : 'text-foreground/40'}`}
-            title={session ? "Save to Library" : "Login to Save"}
-          >
-            <Bookmark className={`h-5 w-5 ${isBookmarked ? 'fill-current' : ''}`} />
-          </Button>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-4 pt-4 border-t border-border/50 text-xs sm:text-sm text-foreground/60">
-          <div className="flex items-center gap-1">
-            <Eye className="h-4 w-4" />
-            {formatNumber(item.views)} views
-          </div>
-          <div className="flex items-center gap-1">
-            <Download className="h-4 w-4" />
-            {formatNumber(item.downloads)} downloads
-          </div>
-          <Link href={`/publications/${item.id}`} className="ml-auto">
-            <Button className="bg-primary text-primary-foreground hover:bg-primary/90 text-xs sm:text-sm py-1 sm:py-2 px-3 sm:px-4">
-              Read Online
+            <Button
+              onClick={handleBookmarkClick}
+              variant="ghost"
+              size="icon"
+              className={`rounded-full h-10 w-10 transition-colors ${isBookmarked ? 'bg-black text-white hover:bg-gray-800' : 'bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-black'}`}
+            >
+              <Bookmark className={`h-4 w-4 ${isBookmarked ? 'fill-current' : ''}`} />
             </Button>
-          </Link>
+          </div>
         </div>
-      </div>
+      </Link>
     )
   }
 
-  // Grid view
+  // Grid view (Matches the jls.limo screenshot perfectly)
   return (
-    <div className="flex flex-col rounded-lg border border-border bg-white overflow-hidden transition hover:border-primary hover:shadow-md h-full">
-      {/* Header with badge and year */}
-      <div className="p-4 sm:p-5 border-b border-border/50">
-        <div className="flex items-start justify-between gap-2 mb-2">
-          <span className={`inline-block rounded-full px-2.5 py-1 text-xs font-semibold shrink-0 ${typeInfo.color}`}>
-            {typeInfo.label}
+    <Link href={`/publications/${item.id}`} className="group flex flex-col bg-white border border-gray-100 rounded-[2rem] overflow-hidden transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:border-gray-200 h-full">
+      {/* Top Image Section */}
+      <div className="relative h-56 w-full bg-gray-50 overflow-hidden shrink-0">
+        {item.imageUrl ? (
+           <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+        ) : (
+           <div className="w-full h-full transition-transform duration-700 group-hover:scale-105" style={{ background: placeholderGradient }} />
+        )}
+        
+        {/* Featured Pill */}
+        <div className="absolute top-4 left-4">
+          <span className="bg-black text-white text-[10px] font-extrabold tracking-widest uppercase px-3.5 py-1.5 rounded-full flex items-center gap-1.5 shadow-md">
+            <Star className="w-3 h-3 fill-white" /> {typeInfo.label}
           </span>
+        </div>
+
+        {/* Bookmark Button Floating */}
+        <div className="absolute top-4 right-4">
           <Button
             onClick={handleBookmarkClick}
             variant="ghost"
             size="icon"
-            className={`h-8 w-8 shrink-0 ${isBookmarked ? 'text-primary' : 'text-foreground/40'}`}
+            className={`rounded-full h-9 w-9 backdrop-blur-md transition-all shadow-sm ${isBookmarked ? 'bg-black text-white hover:bg-gray-800' : 'bg-white/80 text-gray-700 hover:bg-white hover:text-black'}`}
             title={session ? "Save to Library" : "Login to Save"}
           >
             <Bookmark className={`h-4 w-4 ${isBookmarked ? 'fill-current' : ''}`} />
@@ -128,38 +146,21 @@ export default function ContentCard({
         </div>
       </div>
 
-      {/* Content */}
-      <div className="flex flex-col flex-1 p-4 sm:p-5 gap-3">
-        <Link href={`/publications/${item.id}`}>
-          <div>
-            <h3 className="font-bold text-foreground text-sm line-clamp-3 break-words hover:text-indigo-600 transition-colors">{item.title}</h3>
-            <p className="mt-1 text-xs text-foreground/70 truncate">{item.author}</p>
-          </div>
-        </Link>
-
-        <p className="text-xs text-foreground/60 line-clamp-2 flex-1">{item.description}</p>
-
-        {/* Stats */}
-        <div className="flex items-center gap-3 text-xs text-foreground/60 pt-3 border-t border-border/50">
-          <div className="flex items-center gap-1">
-            <Eye className="h-3 w-3" />
-            {formatNumber(item.views)}
-          </div>
-          <div className="flex items-center gap-1">
-            <Download className="h-3 w-3" />
-            {formatNumber(item.downloads)}
-          </div>
+      {/* Bottom Content Section */}
+      <div className="p-6 sm:p-8 flex flex-col flex-1">
+        <h3 className="font-black text-indigo-600 text-2xl leading-tight mb-3 line-clamp-2 tracking-tight group-hover:text-indigo-800 transition-colors">
+          {item.title}
+        </h3>
+        <p className="text-[15px] font-semibold text-slate-500 leading-relaxed line-clamp-2 text-justify">
+          {item.author} — {stripHtml(item.description)}
+        </p>
+        
+        {/* Subtle bottom stats */}
+        <div className="mt-auto pt-6 flex items-center gap-4 text-xs font-bold text-slate-400 tracking-wider uppercase">
+          <span className="flex items-center gap-1.5"><Eye className="w-4 h-4" /> {formatNumber(item.views)}</span>
+          <span className="flex items-center gap-1.5"><Download className="w-4 h-4" /> {formatNumber(item.downloads)}</span>
         </div>
       </div>
-
-      {/* Button */}
-      <div className="p-4 sm:p-5 border-t border-border/50">
-        <Link href={`/publications/${item.id}`} className="w-full">
-          <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90 text-xs sm:text-sm py-2">
-            Read Online
-          </Button>
-        </Link>
-      </div>
-    </div>
+    </Link>
   )
 }

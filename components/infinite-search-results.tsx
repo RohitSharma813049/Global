@@ -6,6 +6,7 @@ import { searchPublications, SearchParams } from '@/app/actions/search'
 import Link from 'next/link'
 import { BookOpen, Download, Eye, Loader2 } from 'lucide-react'
 import { useSession } from 'next-auth/react'
+import SaveButton from '@/components/save-button'
 
 interface ResultItem {
   id: string
@@ -135,9 +136,16 @@ export default function InfiniteSearchResults({ initialParams }: Props) {
               </p>
             </div>
             {session ? (
-              <button className="text-gray-400 hover:text-indigo-600 transition-colors" title="Save to Library">
-                <BookMarkedIcon className="w-5 h-5" />
-              </button>
+              <SaveButton 
+                publication={{
+                  id: result.id,
+                  title: result.title,
+                  type: result.type,
+                  author: result.author,
+                  url: `/publications/${result.id}`
+                }} 
+                variant="icon" 
+              />
             ) : (
               <Link href={`/signin?callbackUrl=/search`} className="text-gray-300 hover:text-gray-500 transition-colors" title="Login to Save">
                 <BookMarkedIcon className="w-5 h-5" />

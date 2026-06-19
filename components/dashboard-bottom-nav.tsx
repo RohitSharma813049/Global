@@ -21,13 +21,13 @@ export default function DashboardBottomNav() {
   const role = session?.user?.role || "user";
 
   const readerLinks = [
-    { name: "Discover", href: "/category", icon: MdExplore },
+    { name: "Explore", href: "/category", icon: MdExplore },
     { name: "Library", href: "/library", icon: MdLibraryBooks },
     { name: "Apply", href: "/dashboard/scholar", icon: MdDescription },
   ];
 
   const scholarLinks = [
-    { name: "Discover", href: "/category", icon: MdExplore },
+    { name: "Explore", href: "/category", icon: MdExplore },
     { name: "Upload", href: "/dashboard/scholar/upload", icon: MdLibraryBooks },
     { name: "Profile", href: "/dashboard/scholar", icon: MdDescription },
   ];

@@ -5,7 +5,7 @@ import { MdSettings, MdPerson, MdNotifications, MdSecurity, MdColorLens, MdLogou
 import { BackButton } from "@/components/back-button";
 import { Button } from "@/components/ui/button";
 import { useSidebar } from "@/components/sidebar-context";
-import { updateProfile, updatePassword } from "@/app/actions/settings";
+import { updateProfile, updatePassword, getScholarProfile } from "@/app/actions/settings";
 import toast from "react-hot-toast";
 
 export default function SettingsPage() {
@@ -17,13 +17,38 @@ export default function SettingsPage() {
   const [name, setName] = useState(session?.user?.name || "");
   const [email, setEmail] = useState(session?.user?.email || "");
   const [bio, setBio] = useState("");
+  const [country, setCountry] = useState("");
+  const [qualification, setQualification] = useState("");
+  const [institution, setInstitution] = useState("");
+  const [specialization, setSpecialization] = useState("");
+  const [videoUrl, setVideoUrl] = useState("");
+
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  React.useEffect(() => {
+    const fetchProfile = async () => {
+      const data = await getScholarProfile();
+      if (data) {
+        setName(data.name || "");
+        setEmail(data.email || "");
+        setBio(data.bio || "");
+        setCountry(data.country || "");
+        setQualification(data.qualification || "");
+        setInstitution(data.institution || "");
+        setSpecialization(data.specialization || "");
+        setVideoUrl(data.video_url || "");
+      }
+      setIsLoading(false);
+    };
+    fetchProfile();
+  }, []);
 
   const handleSaveProfile = async () => {
     setIsSaving(true);
-    const res = await updateProfile(name, bio);
+    const res = await updateProfile(name, bio, country, { institution, qualification, specialization, video_url: videoUrl });
     if (res.error) {
       toast.error(res.error);
     } else {
@@ -152,17 +177,71 @@ export default function SettingsPage() {
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <label className="text-xs sm:text-sm font-medium text-gray-700">Bio</label>
-                    <textarea aria-label="Input field" 
-                      rows={4}
-                      value={bio}
-                      onChange={(e) => setBio(e.target.value)}
-                      className="w-full px-3 py-2 sm:px-4 text-sm sm:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none resize-none"
-                      placeholder="Write a few sentences about yourself..."
-                    />
+                    <div className="space-y-2">
+                      <label className="text-xs sm:text-sm font-medium text-gray-700">Bio</label>
+                      <textarea aria-label="Input field" 
+                        rows={4}
+                        value={bio}
+                        onChange={(e) => setBio(e.target.value)}
+                        className="w-full px-3 py-2 sm:px-4 text-sm sm:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none resize-none"
+                        placeholder="Write a few sentences about yourself..."
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mt-4">
+                      <div className="space-y-2">
+                        <label className="text-xs sm:text-sm font-medium text-gray-700">Country</label>
+                        <input aria-label="Input field" 
+                          type="text" 
+                          value={country}
+                          onChange={(e) => setCountry(e.target.value)}
+                          placeholder="e.g. United Kingdom"
+                          className="w-full px-3 py-2 sm:px-4 text-sm sm:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-xs sm:text-sm font-medium text-gray-700">Professional Role / Qualification</label>
+                        <input aria-label="Input field" 
+                          type="text" 
+                          value={qualification}
+                          onChange={(e) => setQualification(e.target.value)}
+                          placeholder="e.g. Senior Financial Economist"
+                          className="w-full px-3 py-2 sm:px-4 text-sm sm:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-xs sm:text-sm font-medium text-gray-700">Institution / Company</label>
+                        <input aria-label="Input field" 
+                          type="text" 
+                          value={institution}
+                          onChange={(e) => setInstitution(e.target.value)}
+                          placeholder="e.g. Central Bank of Kuwait"
+                          className="w-full px-3 py-2 sm:px-4 text-sm sm:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-xs sm:text-sm font-medium text-gray-700">Specialization / Domain</label>
+                        <input aria-label="Input field" 
+                          type="text" 
+                          value={specialization}
+                          onChange={(e) => setSpecialization(e.target.value)}
+                          placeholder="e.g. Islamic Finance & Sustainable Investments"
+                          className="w-full px-3 py-2 sm:px-4 text-sm sm:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none"
+                        />
+                      </div>
+                      <div className="space-y-2 md:col-span-2">
+                        <label className="text-xs sm:text-sm font-medium text-gray-700">Featured Video URL (YouTube)</label>
+                        <input aria-label="Input field" 
+                          type="url" 
+                          value={videoUrl}
+                          onChange={(e) => setVideoUrl(e.target.value)}
+                          placeholder="e.g. https://www.youtube.com/embed/..."
+                          className="w-full px-3 py-2 sm:px-4 text-sm sm:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none"
+                        />
+                        <p className="text-xs text-gray-500">For best results, use a YouTube embed URL (e.g., https://www.youtube.com/embed/VIDEO_ID)</p>
+                      </div>
+                    </div>
                   </div>
-                </div>
                 <div className="p-4 sm:p-6 border-t border-gray-100 bg-gray-50/50 flex justify-end">
                   <Button 
                     onClick={handleSaveProfile} 

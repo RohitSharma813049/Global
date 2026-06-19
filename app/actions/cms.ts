@@ -24,13 +24,13 @@ export async function getHomepageSettings() {
   if (!settingsRow) {
     return {
       hero_title: 'Empowering Global Research & Knowledge Sharing',
-      hero_subtitle: 'Discover millions of peer-reviewed papers, thesis, articles, and eBooks.',
+      hero_subtitle: 'Explore millions of peer-reviewed papers, thesis, articles, and eBooks.',
       hero_image_url: 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=2070',
       
       stats_title: 'Trusted by Scholars Worldwide',
       stats_subtitle: 'Platform Metrics',
       
-      featured_title: 'Discover Trending Research',
+      featured_title: 'Explore Trending Research',
       featured_subtitle: 'Featured Content',
       
       categories_title: 'Explore by Category',

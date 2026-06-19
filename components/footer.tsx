@@ -5,23 +5,12 @@ import Link from 'next/link'
 import { Separator } from '@/components/ui/separator'
 
 const footerLinks = {
-  Product: [
-    { name: 'Discover', href: '/category' },
+  'Quick Links': [
+    { name: 'Explore', href: '/category' },
     { name: 'For Scholars', href: '/signin' },
-    { name: 'Pricing', href: '/pricing' },
     { name: 'Features', href: '/features' },
-  ],
-  Company: [
     { name: 'About', href: '/about' },
-    { name: 'Blog', href: '/blog' },
-    { name: 'Careers', href: '/about' },
     { name: 'Contact', href: '/contact' },
-  ],
-  Resources: [
-    { name: 'Help Center', href: '/help' },
-    { name: 'Documentation', href: '/help' },
-    { name: 'API', href: '/help' },
-    { name: 'Community', href: '/category' },
   ],
   Legal: [
     { name: 'Privacy Policy', href: '/privacy' },

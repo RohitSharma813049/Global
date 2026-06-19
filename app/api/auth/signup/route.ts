@@ -9,7 +9,9 @@ const supabaseAdmin = createClient(
 
 export async function POST(req: Request) {
     try {
-        const { name, email, password, role, otp } = await req.json();
+        const { firstName, lastName, email, mobileNumber, country, institution, username, password, role, otp } = await req.json();
+        
+        const fullName = `${firstName} ${lastName}`.trim();
 
         if (!otp) {
             return NextResponse.json({ message: "OTP is required" }, { status: 400 });
@@ -38,7 +40,13 @@ export async function POST(req: Request) {
             password,
             email_confirm: true,
             user_metadata: {
-                name: name,
+                name: fullName,
+                first_name: firstName,
+                last_name: lastName,
+                mobile_number: mobileNumber,
+                country: country,
+                institution: institution,
+                username: username,
                 role: finalRole,
             }
         });
@@ -51,7 +59,7 @@ export async function POST(req: Request) {
         }
 
         return NextResponse.json(
-            { message: "User created successfully", user: { id: data.user?.id, email, name } },
+            { message: "User created successfully", user: { id: data.user?.id, email, name: fullName } },
             { status: 201 }
         );
     } catch (error) {

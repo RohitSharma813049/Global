@@ -72,7 +72,8 @@ export default function BlogsManager() {
         {loading ? (
           <div className="p-8 text-center text-gray-500">Loading...</div>
         ) : blogs.length > 0 ? (
-          <table className="min-w-full divide-y divide-gray-200">
+          <div className="w-full overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Title</th>
@@ -95,7 +96,8 @@ export default function BlogsManager() {
                 </tr>
               ))}
             </tbody>
-          </table>
+            </table>
+          </div>
         ) : (
           <div className="p-8 text-center text-gray-500">No blogs found.</div>
         )}

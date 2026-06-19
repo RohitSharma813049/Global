@@ -177,7 +177,7 @@ export default function AdminUsersPage() {
         {loading ? (
           <div className="p-8 text-center text-gray-500">Loading users...</div>
         ) : users.length > 0 ? (
-          <div className="overflow-auto">
+          <div className="w-full overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
@@ -263,3 +263,4 @@ export default function AdminUsersPage() {
     </div>
   )
 }
+

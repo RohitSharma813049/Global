@@ -53,7 +53,7 @@ export default async function AdminPublications() {
 
       <div className="bg-white rounded-lg shadow border border-gray-200 overflow-hidden">
         {publications && publications.length > 0 ? (
-          <div className="max-h-[600px] overflow-auto">
+          <div className="max-h-[600px] w-full overflow-x-auto overflow-y-auto">
             <table className="min-w-full divide-y divide-gray-200 relative">
               <thead className="bg-gray-50 sticky top-0 z-10 shadow-sm">
                 <tr>

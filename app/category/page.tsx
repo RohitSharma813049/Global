@@ -19,6 +19,8 @@ import CategoryClient from "@/components/explore/category-client"
 import { getPublishedPublications, getAllCategories } from "@/app/actions/publications"
 import { getContentTypes } from "@/app/actions/taxonomy"
 import FilterSidebar from '@/components/explore/filter-sidebar'
+import ContentCard from '@/components/explore/content-card'
+import { motion } from 'framer-motion'
 
 interface Publication {
   id: string
@@ -39,6 +41,8 @@ interface Publication {
     name: string
   } | null
   subcategory_ids: string[]
+  cover_image?: string | null
+  banner_image?: string | null
 }
 
 export default function CategoryPage() {
@@ -91,8 +95,14 @@ export default function CategoryPage() {
   }, [])
 
   const availableSubjects = useMemo(() => {
-    return Array.from(new Set(publications.map(p => p.categories?.name))).filter(Boolean).sort() as string[]
-  }, [publications])
+    const sorted = allCategories.map(c => c.name).sort()
+    const otherIndex = sorted.findIndex(name => name.toLowerCase() === 'other' || name.toLowerCase() === 'others')
+    if (otherIndex !== -1) {
+      const otherItem = sorted.splice(otherIndex, 1)[0]
+      sorted.push(otherItem)
+    }
+    return sorted
+  }, [allCategories])
   
   const availableSubcategories = useMemo(() => {
     const subCats = publications.flatMap(p => p.subcategory_ids || []).map(id => allCategories.find(c => c.id === id)?.name)
@@ -139,7 +149,7 @@ export default function CategoryPage() {
       {/* ── TOP SEARCH BANNER ── */}
       <div className="bg-white border-b border-gray-200 py-12 px-6">
         <div className="max-w-5xl mx-auto">
-          <h1 className="text-4xl font-extrabold text-gray-900 mb-6 text-center">Global Publication Engine</h1>
+          <h1 className="text-4xl font-extrabold text-indigo-600 mb-6 text-center">Global Publication Engine</h1>
           <div className="relative max-w-3xl mx-auto group">
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
               <Search className="h-6 w-6 text-gray-400 group-focus-within:text-indigo-600 transition-colors" />
@@ -267,44 +277,40 @@ export default function CategoryPage() {
               </Button>
             </div>
           ) : (
-            <div className={viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 gap-6" : "space-y-4"}>
-              {filteredPublications.map((pub) => (
-                <Link href={`/publications/${pub.id}`} key={pub.id} className="block group h-full">
-                  <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-lg hover:border-indigo-100 transition-all duration-300 h-full flex flex-col">
-                    <div className="flex items-start justify-between gap-4 mb-3">
-                      <div>
-                        <Badge variant="outline" className="mb-3 bg-gray-50 border-gray-200 text-gray-600 uppercase text-[10px] tracking-wider">
-                          {pub.content_type}
-                        </Badge>
-                        <h3 className="text-xl font-bold text-gray-900 group-hover:text-indigo-600 transition-colors leading-snug">
-                          {pub.title}
-                        </h3>
-                      </div>
-                      {pub.doi && viewMode === 'list' && (
-                        <span className="shrink-0 text-xs text-gray-400 bg-gray-50 px-2 py-1 rounded">DOI: {pub.doi}</span>
-                      )}
-                    </div>
-                    
-                    <p className={`text-gray-600 text-sm leading-relaxed mb-4 flex-1 ${viewMode === 'grid' ? 'line-clamp-3' : 'line-clamp-2'}`}>
-                      {pub.abstract || "No abstract available for this publication."}
-                    </p>
+            <div className={viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 gap-6" : "space-y-6"}>
+              {filteredPublications.map((pub, index) => {
+                const authorName = pub.scholars?.users?.raw_user_meta_data?.full_name || pub.scholars?.users?.raw_user_meta_data?.name || "Unknown Author"
+                
+                const contentItem = {
+                  id: pub.id,
+                  title: pub.title,
+                  author: authorName,
+                  type: pub.content_type,
+                  category: pub.categories?.name || "General",
+                  description: pub.abstract?.replace(/<[^>]+>/g, '') || "No abstract available for this publication.",
+                  views: pub.views || 0,
+                  downloads: pub.downloads || 0,
+                  publishedYear: new Date(pub.created_at).getFullYear(),
+                  subject: pub.categories?.name || "General",
+                  imageUrl: pub.cover_image || undefined
+                }
 
-                    <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-4 border-t border-gray-50 mt-auto">
-                      <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600">
-                          <User className="w-3 h-3" />
-                        </div>
-                        <span className="text-sm font-semibold text-gray-900">{pub.scholars?.users?.raw_user_meta_data?.full_name || pub.scholars?.users?.raw_user_meta_data?.name || "Unknown"}</span>
-                      </div>
-                      
-                      <div className="flex items-center gap-4 text-xs font-medium text-gray-500">
-                        <span className="bg-gray-100 px-2 py-1 rounded truncate max-w-[150px]">{pub.categories?.name || "General"}</span>
-                        <span>{new Date(pub.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              ))}
+                return (
+                  <motion.div
+                    key={pub.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                  >
+                    <ContentCard 
+                      item={contentItem}
+                      viewMode={viewMode}
+                      isBookmarked={false} // Bookmarks can be integrated later via a context or state
+                      onBookmarkToggle={() => {}} 
+                    />
+                  </motion.div>
+                )
+              })}
             </div>
           )}
         </div>

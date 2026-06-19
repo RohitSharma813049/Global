@@ -73,15 +73,12 @@ export default function Statistics({ title, subtitle, statsData }: StatisticsPro
           {stats.map((stat) => (
             <div 
               key={stat.label} 
-              className="group relative flex flex-col items-center justify-center bg-white rounded-3xl p-8 shadow-sm border border-gray-100 transition-all duration-500 hover:shadow-2xl hover:shadow-indigo-100 hover:-translate-y-2 overflow-hidden"
+              className="group relative flex flex-col items-center justify-center bg-white rounded-3xl p-8 shadow-sm border border-gray-100 transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 overflow-hidden"
             >
-              {/* Hover gradient effect inside card */}
-              <div className="absolute inset-0 bg-indigo-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              
               <p className="relative z-10 text-4xl font-black text-indigo-600 sm:text-5xl lg:text-6xl tracking-tight">
                 <CountUp target={stat.value} suffix={stat.suffix} />
               </p>
-              <p className="relative z-10 mt-3 text-sm font-semibold text-gray-500 sm:text-base uppercase tracking-wider group-hover:text-indigo-600 transition-colors">
+              <p className="relative z-10 mt-3 text-sm font-semibold text-gray-500 sm:text-base uppercase tracking-wider transition-colors">
                 {stat.label}
               </p>
             </div>

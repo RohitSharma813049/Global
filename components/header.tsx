@@ -266,7 +266,6 @@ export default function Header() {
                   <h4 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Platform</h4>
                   <SheetClose asChild><Link href="/about" className="text-lg font-medium hover:text-indigo-600 transition-colors">About Us</Link></SheetClose>
                   <SheetClose asChild><Link href="/features" className="text-lg font-medium hover:text-indigo-600 transition-colors">Features</Link></SheetClose>
-                  <SheetClose asChild><Link href="/pricing" className="text-lg font-medium hover:text-indigo-600 transition-colors">Pricing</Link></SheetClose>
                 </div>
 
                 <div className="flex flex-col space-y-4 mt-4">

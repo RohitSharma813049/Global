@@ -544,7 +544,17 @@ model publications {
   abstract     String
   content_type String
   file_url     String
+  cover_image  String?
+  banner_image String?
+  gallery_images String[] @default([])
   doi          String?
+  video_url    String?
+  author_name  String?
+  institution  String?
+  email_address String?
+  originality_declaration Boolean? @default(false)
+  copyright_declaration Boolean? @default(false)
+  terms_acceptance Boolean? @default(false)
   status       String?     @default("draft")
   views        Int?        @default(0)
   downloads    Int?        @default(0)
