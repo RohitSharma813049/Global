@@ -1,52 +1,47 @@
 import Footer from "@/components/footer"
 import Header from "@/components/header"
 import { Search, Filter, BookOpen, Download, Eye } from "lucide-react"
-import Link from "next/link"
 import GlobalSearch from "@/components/global-search"
+import InfiniteSearchResults from "@/components/infinite-search-results"
+import Link from "next/link"
+import { SearchParams } from "@/app/actions/search"
 
 export const metadata = {
   title: "Advanced Search - Global Scholar Publications",
   description: "Search across thesis, research papers, articles, and eBooks.",
 }
 
-// This would typically fetch from Prisma, mocking it here for UI initially
-const MOCK_RESULTS = [
-  {
-    id: "1",
-    title: "The Impact of Quantum Computing on Cryptography",
-    author: "Dr. Sarah Chen",
-    type: "Thesis",
-    category: "Computer Science",
-    year: "2025",
-    abstract: "This thesis explores the theoretical and practical implications of quantum algorithms on modern cryptographic protocols, focusing on post-quantum solutions.",
-    views: 1240,
-    downloads: 342,
-  },
-  {
-    id: "2",
-    title: "Machine Learning Models for Early Cancer Detection",
-    author: "James Miller",
-    type: "Research Paper",
-    category: "Medical",
-    year: "2024",
-    abstract: "An analysis of deep learning networks applied to radiology scans to detect anomalies earlier than traditional methods.",
-    views: 890,
-    downloads: 215,
-  },
-  {
-    id: "3",
-    title: "Sustainable Urban Planning in the 21st Century",
-    author: "Elena Rodriguez",
-    type: "Article",
-    category: "Humanities",
-    year: "2026",
-    abstract: "A comprehensive review of sustainable urban design principles being adopted in major metropolitan areas.",
-    views: 450,
-    downloads: 112,
-  }
-]
+export default async function SearchPage({ searchParams }: { searchParams: Promise<any> | any }) {
+  // Await searchParams in Next.js 15+ if needed, but typically it is synchronously available in 14 or we can just access it.
+  // Next 15 recommends awaiting it.
+  const params = await searchParams;
+  
+  const query = params?.q || '';
+  const type = params?.type || 'All';
+  const category = params?.category || '';
+  const year = params?.year || 'Any Year';
+  const sortBy = params?.sort || 'Relevance';
 
-export default function SearchPage() {
+  const currentParams: SearchParams = {
+    query,
+    type,
+    category,
+    year,
+    sortBy,
+    limit: 10
+  }
+
+  // Helper for generating filter URLs
+  const createQueryString = (name: string, value: string) => {
+    const paramsObj = new URLSearchParams(params);
+    if (value && value !== 'All' && value !== 'Any Year') {
+      paramsObj.set(name, value);
+    } else {
+      paramsObj.delete(name);
+    }
+    return `?${paramsObj.toString()}`;
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
@@ -83,11 +78,13 @@ export default function SearchPage() {
               <div>
                 <h3 className="font-semibold text-gray-900 mb-3 text-sm uppercase tracking-wider">Content Type</h3>
                 <div className="space-y-2">
-                  {['All', 'Thesis', 'Research Papers', 'Articles', 'eBooks'].map(type => (
-                    <label key={type} className="flex items-center gap-2 cursor-pointer">
-                      <input aria-label="Input field" type="checkbox" className="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4" defaultChecked={type === 'All'} />
-                      <span className="text-gray-700 text-sm">{type}</span>
-                    </label>
+                  {['All', 'Thesis', 'Research Papers', 'Articles', 'eBooks'].map(t => (
+                    <Link href={`/search${createQueryString('type', t)}`} key={t} className="flex items-center gap-2 cursor-pointer group">
+                      <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${type === t ? 'bg-indigo-600 border-indigo-600' : 'border-gray-300 group-hover:border-indigo-500'}`}>
+                        {type === t && <div className="w-2 h-2 bg-white rounded-sm" />}
+                      </div>
+                      <span className="text-gray-700 text-sm group-hover:text-indigo-600 transition-colors">{t}</span>
+                    </Link>
                   ))}
                 </div>
               </div>
@@ -95,24 +92,24 @@ export default function SearchPage() {
               <div>
                 <h3 className="font-semibold text-gray-900 mb-3 text-sm uppercase tracking-wider">Category</h3>
                 <div className="space-y-2">
-                  {['Engineering', 'Medical', 'Management', 'Humanities', 'Law'].map(cat => (
-                    <label key={cat} className="flex items-center gap-2 cursor-pointer">
-                      <input aria-label="Input field" type="checkbox" className="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4" />
-                      <span className="text-gray-700 text-sm">{cat}</span>
-                    </label>
+                  {['All', 'Engineering', 'Medical', 'Management', 'Humanities', 'Law'].map(cat => (
+                    <Link href={`/search${createQueryString('category', cat === 'All' ? '' : cat)}`} key={cat} className="flex items-center gap-2 cursor-pointer group">
+                      <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${(category === cat || (category === '' && cat === 'All')) ? 'bg-indigo-600 border-indigo-600' : 'border-gray-300 group-hover:border-indigo-500'}`}>
+                        {((category === cat) || (category === '' && cat === 'All')) && <div className="w-2 h-2 bg-white rounded-sm" />}
+                      </div>
+                      <span className="text-gray-700 text-sm group-hover:text-indigo-600 transition-colors">{cat}</span>
+                    </Link>
                   ))}
                 </div>
               </div>
 
               <div>
                 <h3 className="font-semibold text-gray-900 mb-3 text-sm uppercase tracking-wider">Year</h3>
-                <select aria-label="Select field" className="w-full rounded-lg border-gray-300 text-sm focus:ring-indigo-500 focus:border-indigo-500">
-                  <option>Any Year</option>
-                  <option>2026</option>
-                  <option>2025</option>
-                  <option>2024</option>
-                  <option>2023 & Older</option>
-                </select>
+                <Link href={`/search${createQueryString('year', '2026')}`} className="block text-sm text-gray-700 hover:text-indigo-600 mb-2">2026</Link>
+                <Link href={`/search${createQueryString('year', '2025')}`} className="block text-sm text-gray-700 hover:text-indigo-600 mb-2">2025</Link>
+                <Link href={`/search${createQueryString('year', '2024')}`} className="block text-sm text-gray-700 hover:text-indigo-600 mb-2">2024</Link>
+                <Link href={`/search${createQueryString('year', '2023 & Older')}`} className="block text-sm text-gray-700 hover:text-indigo-600 mb-2">2023 & Older</Link>
+                <Link href={`/search${createQueryString('year', 'Any Year')}`} className="block text-sm text-indigo-600 hover:underline">Clear Year Filter</Link>
               </div>
             </div>
           </div>
@@ -121,97 +118,23 @@ export default function SearchPage() {
         {/* Search Results */}
         <div className="flex-1 space-y-6">
           <div className="flex justify-between items-center mb-4">
-            <p className="text-gray-600 font-medium">Showing 1-3 of 124 results</p>
+            <p className="text-gray-600 font-medium">Search Results {query ? `for "${query}"` : ''}</p>
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-500">Sort by:</span>
-              <select aria-label="Select field" className="rounded-lg border-gray-300 text-sm focus:ring-indigo-500 focus:border-indigo-500 py-1">
-                <option>Relevance</option>
-                <option>Newest First</option>
-                <option>Most Viewed</option>
-              </select>
+              <div className="flex gap-2 text-sm">
+                <Link href={`/search${createQueryString('sort', 'Relevance')}`} className={`hover:text-indigo-600 ${sortBy === 'Relevance' ? 'font-bold text-indigo-600' : 'text-gray-600'}`}>Relevance</Link>
+                <Link href={`/search${createQueryString('sort', 'Newest First')}`} className={`hover:text-indigo-600 ${sortBy === 'Newest First' ? 'font-bold text-indigo-600' : 'text-gray-600'}`}>Newest</Link>
+                <Link href={`/search${createQueryString('sort', 'Most Viewed')}`} className={`hover:text-indigo-600 ${sortBy === 'Most Viewed' ? 'font-bold text-indigo-600' : 'text-gray-600'}`}>Most Viewed</Link>
+              </div>
             </div>
           </div>
 
-          {MOCK_RESULTS.map((result) => (
-            <div key={result.id} className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
-              <div className="flex items-start justify-between gap-4 mb-3">
-                <div>
-                  <div className="flex flex-wrap gap-2 mb-2">
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-100">
-                      {result.type}
-                    </span>
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-100">
-                      {result.category}
-                    </span>
-                  </div>
-                  <Link href={`/publications/${result.id}`}>
-                    <h3 className="text-xl font-bold text-gray-900 hover:text-indigo-600 transition-colors mb-1">
-                      {result.title}
-                    </h3>
-                  </Link>
-                  <p className="text-sm text-gray-600">
-                    By <span className="font-semibold text-gray-900">{result.author}</span> • {result.year}
-                  </p>
-                </div>
-                <button className="text-gray-400 hover:text-indigo-600">
-                  <BookMarkedIcon className="w-5 h-5" />
-                </button>
-              </div>
-              
-              <p className="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-2">
-                {result.abstract}
-              </p>
-
-              <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                <div className="flex items-center gap-4 text-sm text-gray-500">
-                  <span className="flex items-center gap-1.5"><Eye className="w-4 h-4" /> {result.views}</span>
-                  <span className="flex items-center gap-1.5"><Download className="w-4 h-4" /> {result.downloads}</span>
-                </div>
-                <Link 
-                  href={`/publications/${result.id}`}
-                  className="inline-flex items-center text-sm font-semibold text-indigo-600 hover:text-indigo-700"
-                >
-                  <BookOpen className="w-4 h-4 mr-1.5" /> Read Online
-                </Link>
-              </div>
-            </div>
-          ))}
-          
-          {/* Pagination */}
-          <div className="flex justify-center pt-8">
-            <nav className="flex items-center gap-2">
-              <button className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50">Previous</button>
-              <button className="px-4 py-2 bg-indigo-600 rounded-lg text-sm font-medium text-white hover:bg-indigo-700">1</button>
-              <button className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">2</button>
-              <button className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">3</button>
-              <span className="text-gray-500">...</span>
-              <button className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">Next</button>
-            </nav>
-          </div>
+          <InfiniteSearchResults initialParams={currentParams} />
         </div>
 
       </main>
 
       <Footer />
     </div>
-  )
-}
-
-function BookMarkedIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z" />
-    </svg>
   )
 }
