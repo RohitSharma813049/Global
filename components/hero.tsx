@@ -35,10 +35,7 @@ export default function Hero({ title, subtitle, imageUrl }: HeroProps) {
           <div className="absolute inset-0 bg-white/80 backdrop-blur-[2px]"></div>
         </div>
       )}
-      {/* Premium Background Gradients */}
-      <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-50/50 via-white/50 to-transparent"></div>
-      <div className="absolute top-0 right-0 -mr-20 -mt-20 h-96 w-96 rounded-full bg-emerald-100/50 blur-3xl mix-blend-multiply"></div>
-      <div className="absolute bottom-0 left-0 -ml-20 -mb-20 h-96 w-96 rounded-full bg-indigo-100/50 blur-3xl mix-blend-multiply"></div>
+
 
       <div className="relative z-10 mx-auto max-w-5xl text-center">
         {/* Subtle top badge */}
@@ -74,7 +71,7 @@ export default function Hero({ title, subtitle, imageUrl }: HeroProps) {
         {/* PubMed-style Advanced Search Bar (Glassmorphism) */}
         <div className="mt-16 w-full mx-auto max-w-3xl transform transition-all hover:-translate-y-1">
           <div className="relative group">
-            <div className="absolute -inset-1 bg-indigo-500 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
+
             <div className="relative flex justify-center items-center  border border-gray-200 rounded-3xl">
               <GlobalSearch className="w-full max-w-full" />
             </div>
