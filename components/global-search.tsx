@@ -97,7 +97,7 @@ export default function GlobalSearch({ className }: { className?: string }) {
       </div>
 
       {isOpen && (debouncedQuery.length >= 2) && (
-        <div className="absolute top-full mt-3 w-full bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-50 max-h-[28rem] overflow-y-auto">
+        <div className="absolute top-full mt-3 w-full bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-50 max-h-[28rem] overflow-y-auto z-10">
           {results.length > 0 ? (
             <div className="py-2">
               <div className="px-4 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
