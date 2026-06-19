@@ -37,7 +37,7 @@ interface ExploreCategoriesProps {
 
 export default function ExploreCategories({ title, subtitle }: ExploreCategoriesProps) {
   return (
-    <section className="relative overflow-hidden bg-gray-50 px-6 py-20 sm:py-32 border-y border-gray-100">
+    <section className="relative overflow-hidden bg-gray-50 px-6 py-10 sm:py-16 border-y border-gray-100">
       {/* Decorative gradient blobs */}
       <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/3 w-96 h-96 bg-indigo-200 rounded-full blur-3xl opacity-30"></div>
       <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/3 w-96 h-96 bg-emerald-200 rounded-full blur-3xl opacity-30"></div>

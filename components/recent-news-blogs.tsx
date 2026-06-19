@@ -31,7 +31,7 @@ export default function RecentNewsBlogs({ items }: { items: ContentItem[] }) {
   }
 
   return (
-    <section className="px-6 py-16 sm:py-24 bg-white border-t border-gray-100">
+    <section className="px-6 py-8 sm:py-12 bg-white border-t border-gray-100">
       <div className="mx-auto max-w-7xl relative">
         <div className="mb-10 flex justify-between items-end">
           <div>

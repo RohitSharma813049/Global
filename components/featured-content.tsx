@@ -68,7 +68,7 @@ export default function FeaturedContent({ title, subtitle }: FeaturedContentProp
   const current = featuredContent[currentIndex]
 
   return (
-    <section className="bg-white px-6 py-20 sm:py-32 relative">
+    <section className="bg-white px-6 py-10 sm:py-16 relative">
       <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.03]"></div>
       <div className="mx-auto max-w-7xl relative z-10">
         <div className="mb-16">

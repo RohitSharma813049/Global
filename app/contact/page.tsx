@@ -3,7 +3,7 @@ import { BackButton } from "@/components/back-button";
 
 export default function Contact() {
   return (
-    <div className="min-h-screen bg-white py-24">
+    <div className="min-h-screen bg-white py-12">
       <BackButton />
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">

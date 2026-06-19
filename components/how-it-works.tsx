@@ -30,7 +30,7 @@ interface HowItWorksProps {
 
 export default function HowItWorks({ title, subtitle }: HowItWorksProps) {
   return (
-    <section className="px-6 py-16 sm:py-24">
+    <section className="px-6 py-8 sm:py-12">
       <div className="mx-auto max-w-7xl">
         <div className="mb-16 text-center">
           <p className="text-sm font-semibold tracking-wide text-primary uppercase">

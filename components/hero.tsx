@@ -22,7 +22,7 @@ export default function Hero({ title, subtitle, imageUrl }: HeroProps) {
   const displaySubtitle = subtitle || "The ultimate unified platform for academic publishing and scholar identity. Discover thesis, research papers, eBooks, and build your verified Wikipedia-style profile.";
 
   return (
-    <section className="relative overflow-hidden bg-white px-6 py-24 sm:py-32">
+    <section className="relative overflow-hidden bg-white px-6 py-12 sm:py-16">
       {imageUrl && (
         <div className="absolute inset-0 z-0">
           <Image 
@@ -75,8 +75,8 @@ export default function Hero({ title, subtitle, imageUrl }: HeroProps) {
         <div className="mt-16 w-full mx-auto max-w-3xl transform transition-all hover:-translate-y-1">
           <div className="relative group">
             <div className="absolute -inset-1 bg-indigo-500 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
-            <div className="relative flex justify-center items-center bg-white/80 backdrop-blur-xl border border-gray-200 rounded-2xl p-2 pb-6">
-              <GlobalSearch className="w-full max-w-2xl" />
+            <div className="relative flex justify-center items-center  border border-gray-200 rounded-3xl">
+              <GlobalSearch className="w-full max-w-full" />
             </div>
           </div>
           <div className="mt-6 flex flex-wrap justify-center gap-4 sm:gap-6 text-sm font-medium text-gray-500">

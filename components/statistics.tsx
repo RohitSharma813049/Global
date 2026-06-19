@@ -55,7 +55,7 @@ export default function Statistics({ title, subtitle, statsData }: StatisticsPro
   ]
 
   return (
-    <section className="relative overflow-hidden bg-gray-50 px-6 py-20 sm:py-28">
+    <section className="relative overflow-hidden bg-gray-50 px-6 py-10 sm:py-16">
       {/* Subtle background patterns */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-px bg-gray-200"></div>
       

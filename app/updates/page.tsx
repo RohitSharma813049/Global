@@ -42,7 +42,7 @@ export default async function UpdatesPage() {
         </div>
 
         {allItems.length === 0 ? (
-          <div className="text-center py-20 bg-white rounded-2xl shadow-sm border border-gray-100">
+          <div className="text-center py-10 bg-white rounded-2xl shadow-sm border border-gray-100">
             <h3 className="text-xl font-medium text-gray-900">No updates found</h3>
             <p className="mt-2 text-gray-500">Check back later for new blogs and news.</p>
           </div>

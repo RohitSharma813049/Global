@@ -3,7 +3,7 @@ import { BackButton } from "@/components/back-button";
 
 export default function About() {
   return (
-    <div className="min-h-screen bg-white py-24">
+    <div className="min-h-screen bg-white py-12">
       <BackButton />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 className="text-4xl font-extrabold text-gray-900 mb-8">About Us</h1>

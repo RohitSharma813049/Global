@@ -42,7 +42,7 @@ export default function FeaturedScholars({ title, subtitle, scholars = [] }: Fea
   }
 
   return (
-    <section className="bg-white px-6 py-20 sm:py-32">
+    <section className="bg-white px-6 py-10 sm:py-16">
       <div className="mx-auto max-w-7xl">
         <div className="mb-14 flex flex-col items-center sm:flex-row sm:justify-between">
           <div>
