@@ -1,10 +1,10 @@
 import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { PrismaClient } from '@prisma/client'
+
 import { formatDistanceToNow } from 'date-fns'
 
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/db'
 
 export const revalidate = 0 // always fetch fresh data
 

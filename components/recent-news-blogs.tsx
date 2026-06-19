@@ -92,7 +92,7 @@ export default function RecentNewsBlogs({ items }: { items: ContentItem[] }) {
               <div className="p-5 flex flex-col grow">
                 <div className="flex items-center text-xs text-gray-500 mb-2">
                   <Calendar className="w-3 h-3 mr-1" />
-                  {item.created_at ? new Date(item.created_at).toLocaleDateString() : 'Recently'}
+                  {item.created_at ? new Date(item.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'Recently'}
                 </div>
                 <h3 className="font-bold text-gray-900 text-lg leading-tight group-hover:text-indigo-600 transition-colors line-clamp-2">
                   {item.title}

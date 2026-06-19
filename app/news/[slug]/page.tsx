@@ -1,10 +1,10 @@
-import { PrismaClient } from '@prisma/client'
+
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { Calendar, ArrowLeft } from 'lucide-react'
 
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/db'
 
 export default async function NewsArticlePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
