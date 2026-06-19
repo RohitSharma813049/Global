@@ -221,11 +221,11 @@ export default function GSPDistinguishedScholars({ scholar, videos = [], publica
             <SectionTitle>Media Gallery</SectionTitle>
             
             {scholar.gallery_images?.length > 0 && (
-              <div style={{ marginBottom: scholar.gallery_videos?.length > 0 ? 12 : 0 }}>
-                <div style={{ fontSize: 13, fontWeight: 600, color: theme.darkPurple, marginBottom: 8 }}>Photos</div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8 }}>
+              <div style={{ marginBottom: scholar.gallery_videos?.length > 0 ? 16 : 0 }}>
+                <div style={{ fontSize: 14, fontWeight: 600, color: "#333", marginBottom: 10, borderBottom: `1px solid ${theme.borderLight}`, paddingBottom: 4 }}>Photos</div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10 }}>
                   {scholar.gallery_images.map((img: string, i: number) => (
-                    <div key={i} style={{ borderRadius: 8, overflow: 'hidden', aspectRatio: '1/1', border: `1px solid ${theme.borderLight}` }}>
+                    <div key={i} style={{ borderRadius: 10, overflow: 'hidden', aspectRatio: '4/3', border: `1px solid ${theme.borderLight}`, backgroundColor: '#f9f9f9' }}>
                       <img src={img} alt={`Gallery Image ${i+1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     </div>
                   ))}
@@ -235,14 +235,14 @@ export default function GSPDistinguishedScholars({ scholar, videos = [], publica
 
             {scholar.gallery_videos?.length > 0 && (
               <div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: theme.darkPurple, marginBottom: 8 }}>Videos</div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                <div style={{ fontSize: 14, fontWeight: 600, color: "#333", marginBottom: 10, borderBottom: `1px solid ${theme.borderLight}`, paddingBottom: 4 }}>Videos</div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 10 }}>
                   {scholar.gallery_videos.map((vid: string, i: number) => (
-                    <div key={i} style={{ background: "#000", borderRadius: 8, aspectRatio: "16/9", position: "relative", overflow: "hidden" }}>
+                    <div key={i} style={{ background: "#111", borderRadius: 10, overflow: "hidden", display: 'flex', justifyContent: 'center', alignItems: 'center', aspectRatio: '4/5' }}>
                       {vid.includes('youtube.com') || vid.includes('youtu.be') || vid.includes('vimeo.com') ? (
                         <iframe 
                           src={vid} 
-                          style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }} 
+                          style={{ width: '100%', height: '100%', border: 0 }} 
                           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                           allowFullScreen
                         />
@@ -250,7 +250,7 @@ export default function GSPDistinguishedScholars({ scholar, videos = [], publica
                         <video 
                           src={vid} 
                           controls 
-                          style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'contain' }}
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                         />
                       )}
                     </div>
