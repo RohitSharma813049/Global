@@ -166,13 +166,13 @@ export default function ScholarUploadPage() {
                 />
               </div>
               <div>
-                <label htmlFor="video_url" className="block text-sm font-medium text-gray-700">Video URL (Optional)</label>
-                <input aria-label="Video URL" 
-                  type="url" 
-                  name="video_url" 
-                  id="video_url" 
-                  placeholder="e.g. https://youtube.com/..."
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm" 
+                <label htmlFor="video_file" className="block text-sm font-medium text-gray-700">Main Video (Optional)</label>
+                <input aria-label="Main Video Upload" 
+                  type="file" 
+                  name="video_file" 
+                  id="video_file" 
+                  accept="video/mp4,video/webm,video/ogg"
+                  className="mt-1 block w-full px-3 py-1.5 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm text-gray-600 file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100" 
                 />
               </div>
             </div>
@@ -227,6 +227,24 @@ export default function ScholarUploadPage() {
                     </label>
                   </div>
                   <p className="text-xs text-gray-500">PNG, JPG up to 5MB each</p>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="gallery_videos" className="block text-sm font-medium text-gray-700">Additional Videos (Gallery)</label>
+              <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-emerald-500 transition-colors bg-gray-50">
+                <div className="space-y-1 text-center">
+                  <svg className="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                  <div className="flex text-sm text-gray-600 justify-center">
+                    <label htmlFor="gallery_videos" className="relative cursor-pointer bg-white rounded-md font-medium text-emerald-600 hover:text-emerald-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-emerald-500 px-1">
+                      <span>Add Videos</span>
+                      <input aria-label="Input field" id="gallery_videos" name="gallery_videos" type="file" accept="video/mp4,video/webm,video/ogg" multiple className="sr-only" />
+                    </label>
+                  </div>
+                  <p className="text-xs text-gray-500">MP4, WEBM up to 50MB each</p>
                 </div>
               </div>
             </div>

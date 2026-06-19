@@ -5,7 +5,7 @@ import { MdSettings, MdPerson, MdNotifications, MdSecurity, MdColorLens, MdLogou
 import { BackButton } from "@/components/back-button";
 import { Button } from "@/components/ui/button";
 import { useSidebar } from "@/components/sidebar-context";
-import { updateProfile, updatePassword, getScholarProfile } from "@/app/actions/settings";
+import { updateProfile, updatePassword, getScholarProfile, uploadVideoFile, uploadImageFile } from "@/app/actions/settings";
 import toast from "react-hot-toast";
 
 export default function SettingsPage() {
@@ -22,6 +22,8 @@ export default function SettingsPage() {
   const [institution, setInstitution] = useState("");
   const [specialization, setSpecialization] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
+  const [galleryImages, setGalleryImages] = useState<string[]>([]);
+  const [galleryVideos, setGalleryVideos] = useState<string[]>([]);
 
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -40,6 +42,8 @@ export default function SettingsPage() {
         setInstitution(data.institution || "");
         setSpecialization(data.specialization || "");
         setVideoUrl(data.video_url || "");
+        setGalleryImages(data.gallery_images || []);
+        setGalleryVideos(data.gallery_videos || []);
       }
       setIsLoading(false);
     };
@@ -48,7 +52,7 @@ export default function SettingsPage() {
 
   const handleSaveProfile = async () => {
     setIsSaving(true);
-    const res = await updateProfile(name, bio, country, { institution, qualification, specialization, video_url: videoUrl });
+    const res = await updateProfile(name, bio, country, { institution, qualification, specialization, video_url: videoUrl, gallery_images: galleryImages, gallery_videos: galleryVideos });
     if (res.error) {
       toast.error(res.error);
     } else {
@@ -230,16 +234,151 @@ export default function SettingsPage() {
                         />
                       </div>
                       <div className="space-y-2 md:col-span-2">
-                        <label className="text-xs sm:text-sm font-medium text-gray-700">Featured Video URL (YouTube)</label>
-                        <input aria-label="Input field" 
-                          type="url" 
-                          value={videoUrl}
-                          onChange={(e) => setVideoUrl(e.target.value)}
-                          placeholder="e.g. https://www.youtube.com/embed/..."
-                          className="w-full px-3 py-2 sm:px-4 text-sm sm:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none"
-                        />
-                        <p className="text-xs text-gray-500">For best results, use a YouTube embed URL (e.g., https://www.youtube.com/embed/VIDEO_ID)</p>
+                        <label className="text-xs sm:text-sm font-medium text-gray-700">Featured Video</label>
+                        <div className="flex flex-col sm:flex-row gap-3">
+                          <input aria-label="Input field" 
+                            type="url" 
+                            value={videoUrl}
+                            onChange={(e) => setVideoUrl(e.target.value)}
+                            placeholder="e.g. https://www.youtube.com/embed/... OR Upload a file"
+                            className="flex-1 px-3 py-2 sm:px-4 text-sm sm:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none"
+                          />
+                          <input 
+                            type="file" 
+                            accept="video/mp4,video/webm,video/ogg" 
+                            id="video-upload" 
+                            className="hidden" 
+                            onChange={async (e) => {
+                              const file = e.target.files?.[0];
+                              if (file) {
+                                const toastId = toast.loading("Uploading video...");
+                                const formData = new FormData();
+                                formData.append("video", file);
+                                const res = await uploadVideoFile(formData);
+                                if (res.error) {
+                                  toast.error(res.error, { id: toastId });
+                                } else if (res.url) {
+                                  setVideoUrl(res.url);
+                                  toast.success("Video uploaded! Don't forget to save changes.", { id: toastId });
+                                }
+                              }
+                            }}
+                          />
+                          <Button 
+                            variant="outline" 
+                            className="shrink-0"
+                            onClick={() => document.getElementById("video-upload")?.click()}
+                          >
+                            Upload Video File
+                          </Button>
+                        </div>
+                        <p className="text-xs text-gray-500">Provide a YouTube embed URL, or upload a standard video file (.mp4, .webm) up to 100MB.</p>
                       </div>
+
+                      {/* Media Gallery Section */}
+                      <div className="space-y-4 md:col-span-2 pt-4 border-t border-gray-100">
+                        <h3 className="text-sm sm:text-base font-bold text-gray-900">Scholar Media Gallery</h3>
+                        <p className="text-xs text-gray-500">Upload multiple photos and additional videos to showcase on your profile.</p>
+                        
+                        {/* Gallery Images */}
+                        <div className="space-y-2">
+                          <label className="text-xs sm:text-sm font-medium text-gray-700">Gallery Photos</label>
+                          <div className="flex flex-col sm:flex-row gap-3">
+                            <input 
+                              type="file" 
+                              accept="image/png,image/jpeg,image/gif,image/webp" 
+                              id="gallery-images-upload" 
+                              className="hidden" 
+                              multiple
+                              onChange={async (e) => {
+                                const files = Array.from(e.target.files || []);
+                                if (files.length > 0) {
+                                  const toastId = toast.loading(`Uploading ${files.length} photos...`);
+                                  const newUrls: string[] = [];
+                                  for (const file of files) {
+                                    const formData = new FormData();
+                                    formData.append("image", file);
+                                    const res = await uploadImageFile(formData);
+                                    if (res.url) newUrls.push(res.url);
+                                  }
+                                  setGalleryImages(prev => [...prev, ...newUrls]);
+                                  toast.success("Photos uploaded!", { id: toastId });
+                                }
+                              }}
+                            />
+                            <Button 
+                              variant="outline" 
+                              className="shrink-0"
+                              onClick={() => document.getElementById("gallery-images-upload")?.click()}
+                            >
+                              + Add Photos
+                            </Button>
+                          </div>
+                          {galleryImages.length > 0 && (
+                            <div className="flex flex-wrap gap-2 mt-2">
+                              {galleryImages.map((url, i) => (
+                                <div key={i} className="relative w-16 h-16 rounded-md overflow-hidden border border-gray-200">
+                                  <img src={url} alt={`Gallery ${i}`} className="w-full h-full object-cover" />
+                                  <button 
+                                    onClick={() => setGalleryImages(prev => prev.filter((_, idx) => idx !== i))}
+                                    className="absolute top-1 right-1 bg-white/80 rounded-full w-4 h-4 flex items-center justify-center text-[10px] text-red-500"
+                                  >✕</button>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Gallery Videos */}
+                        <div className="space-y-2 mt-4">
+                          <label className="text-xs sm:text-sm font-medium text-gray-700">Gallery Videos</label>
+                          <div className="flex flex-col sm:flex-row gap-3">
+                            <input 
+                              type="file" 
+                              accept="video/mp4,video/webm,video/ogg" 
+                              id="gallery-videos-upload" 
+                              className="hidden" 
+                              multiple
+                              onChange={async (e) => {
+                                const files = Array.from(e.target.files || []);
+                                if (files.length > 0) {
+                                  const toastId = toast.loading(`Uploading ${files.length} videos...`);
+                                  const newUrls: string[] = [];
+                                  for (const file of files) {
+                                    const formData = new FormData();
+                                    formData.append("video", file);
+                                    const res = await uploadVideoFile(formData);
+                                    if (res.url) newUrls.push(res.url);
+                                  }
+                                  setGalleryVideos(prev => [...prev, ...newUrls]);
+                                  toast.success("Videos uploaded!", { id: toastId });
+                                }
+                              }}
+                            />
+                            <Button 
+                              variant="outline" 
+                              className="shrink-0"
+                              onClick={() => document.getElementById("gallery-videos-upload")?.click()}
+                            >
+                              + Add Videos
+                            </Button>
+                          </div>
+                          {galleryVideos.length > 0 && (
+                            <div className="flex flex-wrap gap-2 mt-2">
+                              {galleryVideos.map((url, i) => (
+                                <div key={i} className="relative w-24 h-16 bg-gray-100 rounded-md overflow-hidden border border-gray-200 flex items-center justify-center">
+                                  <span className="text-[10px] text-gray-500 truncate px-1">{url.split('/').pop()}</span>
+                                  <button 
+                                    onClick={() => setGalleryVideos(prev => prev.filter((_, idx) => idx !== i))}
+                                    className="absolute top-1 right-1 bg-white/80 rounded-full w-4 h-4 flex items-center justify-center text-[10px] text-red-500"
+                                  >✕</button>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
                     </div>
                   </div>
                 <div className="p-4 sm:p-6 border-t border-gray-100 bg-gray-50/50 flex justify-end">

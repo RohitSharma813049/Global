@@ -191,15 +191,73 @@ export default function GSPDistinguishedScholars({ scholar, videos = [], publica
         {videos.length > 0 && (
           <Card style={{ marginBottom: 12 }}>
             <SectionTitle>Scholar video — experience & insights</SectionTitle>
-            <div style={{ background: "#0D1117", borderRadius: 10, aspectRatio: "16/9", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", cursor: "pointer", position: "relative", overflow: "hidden", marginBottom: 10 }}>
-              <div style={{ width: 58, height: 58, borderRadius: "50%", background: "rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center", border: "2px solid rgba(255,255,255,0.3)", marginBottom: 10 }}>
-                <svg width="20" height="20" viewBox="0 0 24 24"><polygon points="5,3 22,12 5,21" fill="rgba(255,255,255,0.9)"/></svg>
-              </div>
-              <div style={{ fontSize: 13, color: "rgba(255,255,255,0.7)" }}>{videos[0].title}</div>
-              <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "10px 14px", background: "linear-gradient(transparent, rgba(0,0,0,0.75))" }}>
-                <div style={{ fontSize: 11.5, color: "rgba(255,255,255,0.6)", marginTop: 2 }}>{videos[0].metadata}</div>
-              </div>
+            <div style={{ background: "#000", borderRadius: 10, aspectRatio: "16/9", position: "relative", overflow: "hidden", marginBottom: 10 }}>
+              {videos[0].video_url.includes('youtube.com') || videos[0].video_url.includes('youtu.be') || videos[0].video_url.includes('vimeo.com') ? (
+                <iframe 
+                  src={videos[0].video_url} 
+                  style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }} 
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                  allowFullScreen
+                />
+              ) : (
+                <video 
+                  src={videos[0].video_url} 
+                  controls 
+                  style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'contain' }}
+                />
+              )}
             </div>
+            {videos[0].metadata && (
+              <div style={{ fontSize: 13, color: theme.textGray }}>
+                {videos[0].metadata}
+              </div>
+            )}
+          </Card>
+        )}
+
+        {/* ── MEDIA GALLERY (IMAGES & MULTIPLE VIDEOS) ── */}
+        {(scholar.gallery_images?.length > 0 || scholar.gallery_videos?.length > 0) && (
+          <Card style={{ marginBottom: 12 }}>
+            <SectionTitle>Media Gallery</SectionTitle>
+            
+            {scholar.gallery_images?.length > 0 && (
+              <div style={{ marginBottom: scholar.gallery_videos?.length > 0 ? 12 : 0 }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: theme.darkPurple, marginBottom: 8 }}>Photos</div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8 }}>
+                  {scholar.gallery_images.map((img: string, i: number) => (
+                    <div key={i} style={{ borderRadius: 8, overflow: 'hidden', aspectRatio: '1/1', border: `1px solid ${theme.borderLight}` }}>
+                      <img src={img} alt={`Gallery Image ${i+1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {scholar.gallery_videos?.length > 0 && (
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: theme.darkPurple, marginBottom: 8 }}>Videos</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  {scholar.gallery_videos.map((vid: string, i: number) => (
+                    <div key={i} style={{ background: "#000", borderRadius: 8, aspectRatio: "16/9", position: "relative", overflow: "hidden" }}>
+                      {vid.includes('youtube.com') || vid.includes('youtu.be') || vid.includes('vimeo.com') ? (
+                        <iframe 
+                          src={vid} 
+                          style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }} 
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                          allowFullScreen
+                        />
+                      ) : (
+                        <video 
+                          src={vid} 
+                          controls 
+                          style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'contain' }}
+                        />
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </Card>
         )}
 
@@ -228,7 +286,7 @@ export default function GSPDistinguishedScholars({ scholar, videos = [], publica
                   <Link href={`/publications/${p.id}`} style={{ textDecoration: "none" }}>
                     <p className="pub-title-link" style={{ fontSize: 13, fontWeight: 600, color: theme.darkPurple, marginBottom: 3, cursor: "pointer" }}>{p.title}</p>
                   </Link>
-                  <p style={{ fontSize: 11.5, color: theme.textMuted }} dangerouslySetInnerHTML={{ __html: p.metadata }} />
+                  <div style={{ fontSize: 11.5, color: theme.textMuted }} dangerouslySetInnerHTML={{ __html: p.metadata }} />
                 </div>
                 <span style={{ fontSize: 10.5, padding: "3px 9px", borderRadius: 12, background: "#E1F5EE", color: "#085041", whiteSpace: "nowrap", flexShrink: 0, fontWeight: 600 }}>{p.tag}</span>
               </div>

@@ -55,11 +55,12 @@ export async function uploadPublication(formData: FormData) {
     const coverImage = formData.get('cover_image') as File | null
     const bannerImage = formData.get('banner_image') as File | null
     const galleryImages = formData.getAll('gallery_images') as File[]
+    const galleryVideos = formData.getAll('gallery_videos') as File[]
     const doi = formData.get('doi') as string | null
-    const videoUrl = formData.get('video_url') as string | null
-
-    if ((!file || file.size === 0) && !videoUrl) {
-      return { error: 'Please upload a valid document file or provide a video URL.' }
+    const videoFile = formData.get('video_file') as File | null
+    
+    if ((!file || file.size === 0) && (!videoFile || videoFile.size === 0)) {
+      return { error: 'Please upload a valid document file or a main video file.' }
     }
 
     let fileUrl = ''
@@ -73,8 +74,21 @@ export async function uploadPublication(formData: FormData) {
       localFilePath = path.join(uploadDir, fileName)
       await writeFile(localFilePath, Buffer.from(await file.arrayBuffer()))
       fileUrl = `/uploads/publications/${contentType}/${fileName}`
-    } else if (videoUrl) {
-      fileUrl = videoUrl;
+    }
+
+    let videoUrl = null;
+    if (videoFile && videoFile.size > 0) {
+      const vidExt = videoFile.name.split('.').pop()
+      const vidName = `video-${Date.now()}-${Math.random().toString(36).substring(7)}.${vidExt}`
+      const vidPath = path.join(process.cwd(), 'public', 'uploads', 'videos')
+      await mkdir(vidPath, { recursive: true })
+      await writeFile(path.join(vidPath, vidName), Buffer.from(await videoFile.arrayBuffer()))
+      videoUrl = `/uploads/videos/${vidName}`
+      
+      // If no other file was uploaded, make the video URL the main file_url
+      if (!fileUrl) {
+        fileUrl = videoUrl;
+      }
     }
 
     // Handle Cover Image
@@ -112,6 +126,19 @@ export async function uploadPublication(formData: FormData) {
       }
     }
 
+    // Handle Gallery Videos
+    const galleryVideoUrls: string[] = [];
+    for (const gVid of galleryVideos) {
+      if (gVid && gVid.size > 0) {
+        const vidExt = gVid.name.split('.').pop();
+        const vidName = `gallery-vid-${Date.now()}-${Math.random().toString(36).substring(7)}.${vidExt}`;
+        const vidPath = path.join(process.cwd(), 'public', 'uploads', 'videos');
+        await mkdir(vidPath, { recursive: true });
+        await writeFile(path.join(vidPath, vidName), Buffer.from(await gVid.arrayBuffer()));
+        galleryVideoUrls.push(`/uploads/videos/${vidName}`);
+      }
+    }
+
     // Insert into publications table
     const { error: dbError } = await supabaseAdmin
       .from('publications')
@@ -125,6 +152,7 @@ export async function uploadPublication(formData: FormData) {
         cover_image: coverImageUrl,
         banner_image: bannerImageUrl,
         gallery_images: galleryImageUrls,
+        gallery_videos: galleryVideoUrls,
         doi: doi,
         video_url: videoUrl,
         author_name: authorName,

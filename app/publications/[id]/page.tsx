@@ -151,23 +151,49 @@ export default async function PublicationDetailPage({ params }: Props) {
               </div>
 
               {/* Editorial Gallery */}
-              {publication.gallery_images && publication.gallery_images.length > 0 && (
+              {(publication.gallery_images?.length > 0 || publication.gallery_videos?.length > 0) && (
                 <div>
                   <h3 className="text-xs font-bold uppercase tracking-widest text-zinc-900 mb-8 flex items-center gap-2">
                     <span className="w-4 h-px bg-zinc-900"></span> Visual Appendix
                   </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {publication.gallery_images.map((imgUrl, index) => (
-                      <div key={index} className={`relative bg-zinc-100 overflow-hidden ${index % 3 === 0 ? 'md:col-span-2 aspect-[21/9]' : 'aspect-[4/5]'}`}>
-                        <Image 
-                          src={imgUrl} 
-                          alt={`Gallery Image ${index + 1}`} 
-                          fill 
-                          className="object-cover hover:scale-105 transition-transform duration-700 ease-out" 
-                        />
-                      </div>
-                    ))}
-                  </div>
+                  
+                  {publication.gallery_images && publication.gallery_images.length > 0 && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                      {publication.gallery_images.map((imgUrl, index) => (
+                        <div key={index} className={`relative bg-zinc-100 overflow-hidden ${index % 3 === 0 ? 'md:col-span-2 aspect-[21/9]' : 'aspect-[4/5]'}`}>
+                          <Image 
+                            src={imgUrl} 
+                            alt={`Gallery Image ${index + 1}`} 
+                            fill 
+                            className="object-cover hover:scale-105 transition-transform duration-700 ease-out" 
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {publication.gallery_videos && publication.gallery_videos.length > 0 && (
+                    <div className="flex flex-col gap-8">
+                      {publication.gallery_videos.map((vidUrl, index) => (
+                        <div key={index} className="relative bg-zinc-900 aspect-video overflow-hidden">
+                          {vidUrl.includes('youtube.com') || vidUrl.includes('youtu.be') || vidUrl.includes('vimeo.com') ? (
+                            <iframe 
+                              src={vidUrl} 
+                              className="w-full h-full absolute inset-0 border-0" 
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                              allowFullScreen
+                            />
+                          ) : (
+                            <video 
+                              src={vidUrl} 
+                              controls 
+                              className="w-full h-full absolute inset-0 object-contain"
+                            />
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
 

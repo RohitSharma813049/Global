@@ -547,6 +547,7 @@ model publications {
   cover_image  String?
   banner_image String?
   gallery_images String[] @default([])
+  gallery_videos String[] @default([])
   doi          String?
   video_url    String?
   author_name  String?
@@ -595,6 +596,9 @@ model scholars {
   is_featured     Boolean?       @default(false)
   total_views     Int?           @default(0)
   total_downloads Int?           @default(0)
+  video_url       String?
+  gallery_images  String[]       @default([])
+  gallery_videos  String[]       @default([])
   publications    publications[]
   users           users?         @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 

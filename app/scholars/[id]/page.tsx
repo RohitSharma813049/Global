@@ -71,12 +71,12 @@ export default async function ScholarProfilePage({ params }: Props) {
     avatar_url: rawMetaData.avatar_url || '',
   }
 
-  const videoUrl = rawMetaData.video_url;
+  const videoUrl = scholar.video_url || rawMetaData.video_url;
   const videos = videoUrl ? [{ 
     id: '1', 
     scholar_id: scholar.id, 
     title: 'Featured Video', 
-    metadata: '', 
+    metadata: 'Scholar introduction and insights', 
     video_url: videoUrl, 
     is_main_video: true 
   }] : [];
