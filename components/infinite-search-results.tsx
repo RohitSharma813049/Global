@@ -5,6 +5,7 @@ import { useInView } from 'react-intersection-observer'
 import { searchPublications, SearchParams } from '@/app/actions/search'
 import Link from 'next/link'
 import { BookOpen, Download, Eye, Loader2 } from 'lucide-react'
+import { useSession } from 'next-auth/react'
 
 interface ResultItem {
   id: string
@@ -42,6 +43,7 @@ function BookMarkedIcon(props: React.SVGProps<SVGSVGElement>) {
 }
 
 export default function InfiniteSearchResults({ initialParams }: Props) {
+  const { data: session } = useSession()
   const [results, setResults] = useState<ResultItem[]>([])
   const [nextCursor, setNextCursor] = useState<string | undefined>(undefined)
   const [isInitialLoading, setIsInitialLoading] = useState(true)
@@ -132,9 +134,15 @@ export default function InfiniteSearchResults({ initialParams }: Props) {
                 By <span className="font-semibold text-gray-900">{result.author}</span> • {result.year}
               </p>
             </div>
-            <button className="text-gray-400 hover:text-indigo-600">
-              <BookMarkedIcon className="w-5 h-5" />
-            </button>
+            {session ? (
+              <button className="text-gray-400 hover:text-indigo-600 transition-colors" title="Save to Library">
+                <BookMarkedIcon className="w-5 h-5" />
+              </button>
+            ) : (
+              <Link href={`/signin?callbackUrl=/search`} className="text-gray-300 hover:text-gray-500 transition-colors" title="Login to Save">
+                <BookMarkedIcon className="w-5 h-5" />
+              </Link>
+            )}
           </div>
           
           <p className="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-2">

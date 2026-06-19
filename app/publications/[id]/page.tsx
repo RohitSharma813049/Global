@@ -8,6 +8,8 @@ import { Download, Share2, BookMarked, ArrowLeft, User, Eye, FileText } from "lu
 import Link from "next/link"
 import { trackPublicationView } from "@/app/actions/history"
 import { prisma } from "@/lib/db"
+import { getServerSession } from "next-auth/next"
+import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 
 interface Props {
   params: {
@@ -16,6 +18,7 @@ interface Props {
 }
 
 export default async function PublicationDetailPage({ params }: Props) {
+  const session = await getServerSession(authOptions)
   const { id } = await params
 
   // Fetch publication
@@ -119,12 +122,29 @@ export default async function PublicationDetailPage({ params }: Props) {
             </div>
 
             <div className="pt-8 flex flex-wrap gap-4">
-              <Button size="lg" className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-md h-12 px-8">
-                <Download className="w-5 h-5 mr-2" /> Download {publication.content_type === 'video' ? 'Video' : 'PDF'}
-              </Button>
-              <Button size="lg" variant="outline" className="rounded-xl border-gray-300 h-12 px-6">
-                <BookMarked className="w-5 h-5 mr-2" /> Save to Library
-              </Button>
+              {session ? (
+                <>
+                  <Button size="lg" className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-md h-12 px-8">
+                    <Download className="w-5 h-5 mr-2" /> Download {publication.content_type === 'video' ? 'Video' : 'PDF'}
+                  </Button>
+                  <Button size="lg" variant="outline" className="rounded-xl border-gray-300 h-12 px-6">
+                    <BookMarked className="w-5 h-5 mr-2" /> Save to Library
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Link href={`/signin?callbackUrl=/publications/${publication.id}`}>
+                    <Button size="lg" className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-md h-12 px-8">
+                      <Download className="w-5 h-5 mr-2" /> Login to Download
+                    </Button>
+                  </Link>
+                  <Link href={`/signin?callbackUrl=/publications/${publication.id}`}>
+                    <Button size="lg" variant="outline" className="rounded-xl border-gray-300 h-12 px-6">
+                      <BookMarked className="w-5 h-5 mr-2" /> Login to Save
+                    </Button>
+                  </Link>
+                </>
+              )}
               <Button size="lg" variant="outline" className="rounded-xl border-gray-300 h-12 px-6">
                 <Share2 className="w-5 h-5 mr-2" /> Share
               </Button>

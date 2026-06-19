@@ -2,12 +2,15 @@
 
 import { Bookmark, Eye, Download } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import Link from 'next/link'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 
 interface ContentItem {
-  id: number
+  id: number | string
   title: string
   author: string
-  type: 'thesis' | 'article' | 'ebook' | 'magazine' | 'blog'
+  type: 'thesis' | 'article' | 'ebook' | 'magazine' | 'blog' | string
   category: string
   description: string
   views: number
@@ -23,7 +26,7 @@ interface ContentCardProps {
   onBookmarkToggle: () => void
 }
 
-const typeConfig = {
+const typeConfig: Record<string, { label: string; color: string }> = {
   thesis: { label: 'Thesis', color: 'bg-blue-100 text-blue-800' },
   article: { label: 'Article', color: 'bg-green-100 text-green-800' },
   ebook: { label: 'eBook', color: 'bg-purple-100 text-purple-800' },
@@ -44,7 +47,17 @@ export default function ContentCard({
   isBookmarked,
   onBookmarkToggle,
 }: ContentCardProps) {
-  const typeInfo = typeConfig[item.type]
+  const { data: session } = useSession()
+  const router = useRouter()
+  const typeInfo = typeConfig[item.type] || { label: item.type, color: 'bg-gray-100 text-gray-800' }
+
+  const handleBookmarkClick = () => {
+    if (!session) {
+      router.push(`/signin?callbackUrl=/category`)
+      return
+    }
+    onBookmarkToggle()
+  }
 
   if (viewMode === 'list') {
     return (
@@ -57,16 +70,19 @@ export default function ContentCard({
               </span>
               <span className="text-xs text-foreground/60">{item.publishedYear}</span>
             </div>
-            <h3 className="text-base sm:text-lg font-bold text-foreground line-clamp-2 break-words">{item.title}</h3>
+            <Link href={`/publications/${item.id}`}>
+              <h3 className="text-base sm:text-lg font-bold text-foreground line-clamp-2 break-words hover:text-indigo-600 transition-colors">{item.title}</h3>
+            </Link>
             <p className="mt-1 text-sm text-foreground/70">{item.author}</p>
             <p className="mt-3 text-sm text-foreground/60 line-clamp-2">{item.description}</p>
           </div>
 
           <Button
-            onClick={onBookmarkToggle}
+            onClick={handleBookmarkClick}
             variant="ghost"
             size="icon"
             className={`shrink-0 ${isBookmarked ? 'text-primary' : 'text-foreground/40'}`}
+            title={session ? "Save to Library" : "Login to Save"}
           >
             <Bookmark className={`h-5 w-5 ${isBookmarked ? 'fill-current' : ''}`} />
           </Button>
@@ -81,9 +97,11 @@ export default function ContentCard({
             <Download className="h-4 w-4" />
             {formatNumber(item.downloads)} downloads
           </div>
-          <Button className="ml-auto bg-primary text-primary-foreground hover:bg-primary/90 text-xs sm:text-sm py-1 sm:py-2 px-3 sm:px-4">
-            Read/Download
-          </Button>
+          <Link href={`/publications/${item.id}`} className="ml-auto">
+            <Button className="bg-primary text-primary-foreground hover:bg-primary/90 text-xs sm:text-sm py-1 sm:py-2 px-3 sm:px-4">
+              Read Online
+            </Button>
+          </Link>
         </div>
       </div>
     )
@@ -99,10 +117,11 @@ export default function ContentCard({
             {typeInfo.label}
           </span>
           <Button
-            onClick={onBookmarkToggle}
+            onClick={handleBookmarkClick}
             variant="ghost"
             size="icon"
             className={`h-8 w-8 shrink-0 ${isBookmarked ? 'text-primary' : 'text-foreground/40'}`}
+            title={session ? "Save to Library" : "Login to Save"}
           >
             <Bookmark className={`h-4 w-4 ${isBookmarked ? 'fill-current' : ''}`} />
           </Button>
@@ -111,10 +130,12 @@ export default function ContentCard({
 
       {/* Content */}
       <div className="flex flex-col flex-1 p-4 sm:p-5 gap-3">
-        <div>
-          <h3 className="font-bold text-foreground text-sm line-clamp-3 break-words">{item.title}</h3>
-          <p className="mt-1 text-xs text-foreground/70 truncate">{item.author}</p>
-        </div>
+        <Link href={`/publications/${item.id}`}>
+          <div>
+            <h3 className="font-bold text-foreground text-sm line-clamp-3 break-words hover:text-indigo-600 transition-colors">{item.title}</h3>
+            <p className="mt-1 text-xs text-foreground/70 truncate">{item.author}</p>
+          </div>
+        </Link>
 
         <p className="text-xs text-foreground/60 line-clamp-2 flex-1">{item.description}</p>
 
@@ -133,9 +154,11 @@ export default function ContentCard({
 
       {/* Button */}
       <div className="p-4 sm:p-5 border-t border-border/50">
-        <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90 text-xs sm:text-sm py-2">
-          Read/Download
-        </Button>
+        <Link href={`/publications/${item.id}`} className="w-full">
+          <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90 text-xs sm:text-sm py-2">
+            Read Online
+          </Button>
+        </Link>
       </div>
     </div>
   )
