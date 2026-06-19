@@ -46,33 +46,37 @@ const dummyScholars = [
 async function seedScholars() {
   console.log('Seeding scholars...')
   for (const s of dummyScholars) {
-    // 1. Create User
-    const userId = crypto.randomUUID()
-    const user = await prisma.users.create({
-      data: {
-        id: userId,
-        email: s.email,
-        raw_user_meta_data: {
-          name: s.name,
-          avatar_url: s.avatar,
-          role: 'scholar'
+    let user = await prisma.users.findFirst({ where: { email: s.email } })
+    if (!user) {
+      user = await prisma.users.create({
+        data: {
+          id: crypto.randomUUID(),
+          email: s.email,
+          raw_user_meta_data: {
+            name: s.name,
+            avatar_url: s.avatar,
+            role: 'scholar'
+          }
         }
-      }
-    })
+      })
+    }
 
     // 2. Create Scholar profile
-    const scholar = await prisma.scholars.create({
-      data: {
-        user_id: user.id,
-        institution: 'Global University',
-        bio: 'A distinguished researcher.',
-        specialization: s.domain,
-        verified: true,
-        is_featured: s.is_featured,
-        total_views: s.publications * 10,
-        total_downloads: s.publications * 2
-      }
-    })
+    let scholar = await prisma.scholars.findUnique({ where: { user_id: user.id } })
+    if (!scholar) {
+      scholar = await prisma.scholars.create({
+        data: {
+          user_id: user.id,
+          institution: 'Global University',
+          bio: 'A distinguished researcher.',
+          specialization: s.domain,
+          verified: true,
+          is_featured: s.is_featured,
+          total_views: s.publications * 10,
+          total_downloads: s.publications * 2
+        }
+      })
+    }
 
     console.log(`Created scholar: ${s.name}`)
   }
