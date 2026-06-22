@@ -20,7 +20,7 @@ export default function Hero({ title, subtitle, imageUrl }: HeroProps) {
   const firstPart = displayTitle.split('\n')[0] || displayTitle;
   const secondPart = displayTitle.split('\n')[1] || "";
 
-  const displaySubtitle = subtitle || "The ultimate unified platform for academic publishing and scholar identity. Explore thesis, research papers, eBooks, and build your verified Wikipedia-style profile.";
+  const displaySubtitle = subtitle || "";
 
   return (
     <section className="relative overflow-hidden bg-white px-6 py-12 sm:py-16 h-half">
@@ -40,9 +40,9 @@ export default function Hero({ title, subtitle, imageUrl }: HeroProps) {
 
       <div className="relative z-10 mx-auto max-w-5xl text-center">
         {/* Subtle top badge */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }} 
-          animate={{ opacity: 1, y: 0 }} 
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className="mb-8 flex justify-center"
         >
@@ -52,9 +52,9 @@ export default function Hero({ title, subtitle, imageUrl }: HeroProps) {
           </div>
         </motion.div>
 
-        <motion.h1 
-          initial={{ opacity: 0, y: 20 }} 
-          animate={{ opacity: 1, y: 0 }} 
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
           className="text-balance text-5xl font-extrabold tracking-tight text-white sm:text-6xl lg:text-7xl"
         >
@@ -66,18 +66,18 @@ export default function Hero({ title, subtitle, imageUrl }: HeroProps) {
           )}
         </motion.h1>
 
-        <motion.p 
-          initial={{ opacity: 0, y: 20 }} 
-          animate={{ opacity: 1, y: 0 }} 
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
           className="mx-auto mt-8 max-w-2xl text-lg text-gray-800 font-medium sm:text-xl leading-relaxed"
         >
           {displaySubtitle}
         </motion.p>
 
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }} 
-          animate={{ opacity: 1, y: 0 }} 
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
           className=" w-full mx-auto max-w-3xl transform transition-all hover:-translate-y-1"
         >

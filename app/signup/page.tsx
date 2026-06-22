@@ -323,7 +323,7 @@ export default function Signup() {
                         </form>
 
                         {/* Divider */}
-                        <div className="relative mt-6">
+                        {/* <div className="relative mt-6">
                             <div className="absolute inset-0 flex items-center">
                                 <div className="w-full border-t border-gray-300"></div>
                             </div>
@@ -332,7 +332,7 @@ export default function Signup() {
                                     Or sign up with
                                 </span>
                             </div>
-                        </div>
+                        </div> */}
 
                         {/* Social Signup Buttons */}
                         <div className="mt-6">
