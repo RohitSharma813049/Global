@@ -19,6 +19,8 @@ export interface Scholar {
   total_downloads?: number;
   avatar_url?: string;
   banner_url?: string;
+  gallery_images?: string[];
+  gallery_videos?: string[];
 }
 
 export interface ScholarVideo {
@@ -216,12 +218,12 @@ export default function GSPDistinguishedScholars({ scholar, videos = [], publica
         )}
 
         {/* ── MEDIA GALLERY (IMAGES & MULTIPLE VIDEOS) ── */}
-        {(scholar.gallery_images?.length > 0 || scholar.gallery_videos?.length > 0) && (
+        {((scholar.gallery_images && scholar.gallery_images.length > 0) || (scholar.gallery_videos && scholar.gallery_videos.length > 0)) && (
           <Card style={{ marginBottom: 12 }}>
             <SectionTitle>Media Gallery</SectionTitle>
             
-            {scholar.gallery_images?.length > 0 && (
-              <div style={{ marginBottom: scholar.gallery_videos?.length > 0 ? 16 : 0 }}>
+            {(scholar.gallery_images && scholar.gallery_images.length > 0) && (
+              <div style={{ marginBottom: (scholar.gallery_videos && scholar.gallery_videos.length > 0) ? 16 : 0 }}>
                 <div style={{ fontSize: 14, fontWeight: 600, color: "#333", marginBottom: 10, borderBottom: `1px solid ${theme.borderLight}`, paddingBottom: 4 }}>Photos</div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10 }}>
                   {scholar.gallery_images.map((img: string, i: number) => (
@@ -233,7 +235,7 @@ export default function GSPDistinguishedScholars({ scholar, videos = [], publica
               </div>
             )}
 
-            {scholar.gallery_videos?.length > 0 && (
+            {(scholar.gallery_videos && scholar.gallery_videos.length > 0) && (
               <div>
                 <div style={{ fontSize: 14, fontWeight: 600, color: "#333", marginBottom: 10, borderBottom: `1px solid ${theme.borderLight}`, paddingBottom: 4 }}>Videos</div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 10 }}>

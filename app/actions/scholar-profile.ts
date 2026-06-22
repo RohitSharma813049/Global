@@ -1,5 +1,6 @@
 'use server'
 
+import path from 'path'
 import { createClient } from "@supabase/supabase-js"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
