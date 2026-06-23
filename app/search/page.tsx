@@ -44,25 +44,19 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      <Header />
       
-      {/* Search Hero */}
-      <section className="bg-indigo-900 text-white py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-8">
-            <h1 className="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight">Advanced Academic Search</h1>
-            <p className="text-lg text-indigo-200">
-              Discover millions of peer-reviewed papers, thesis, articles, and eBooks.
-            </p>
-          </div>
-          
-          <div className="max-w-4xl mx-auto">
-            <div className="flex justify-center items-center bg-white/10 p-2 pb-6 rounded-2xl backdrop-blur-md border border-white/20">
-              <GlobalSearch className="w-full" />
-            </div>
+      {/* Search Hero (Explore-like UI) */}
+      <div className="bg-white border-b border-gray-200 py-12 px-6">
+        <div className="max-w-5xl mx-auto">
+          <h1 className="text-4xl font-extrabold text-indigo-600 mb-6 text-center">Advanced Academic Search</h1>
+          <p className="text-lg text-gray-500 text-center mb-8 max-w-2xl mx-auto">
+            Discover millions of peer-reviewed papers, thesis, articles, and eBooks.
+          </p>
+          <div className="relative max-w-3xl mx-auto group">
+            <GlobalSearch className="w-full" />
           </div>
         </div>
-      </section>
+      </div>
 
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-12 flex flex-col md:flex-row gap-8">
         

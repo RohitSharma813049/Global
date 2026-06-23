@@ -1,6 +1,7 @@
 'use client'
 
 import { Beaker, Stethoscope, Briefcase, BookOpen, Gavel } from 'lucide-react'
+import { motion } from 'framer-motion'
 
 const categories = [
   {
@@ -35,30 +36,55 @@ interface ExploreCategoriesProps {
   subtitle?: string;
 }
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+}
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
+}
+
 export default function ExploreCategories({ title, subtitle }: ExploreCategoriesProps) {
   return (
     <section className="relative overflow-hidden bg-gray-50 px-6 py-10 sm:py-16 border-y border-gray-100">
-      {/* Background removed for cleaner professional look */}
-
       <div className="mx-auto max-w-7xl relative z-10">
-        <div className="mb-14 text-center">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.6 }}
+          className="mb-14 text-center"
+        >
           <p className="text-sm font-bold tracking-widest text-indigo-600 uppercase">
             {subtitle || 'Browse Topics'}
           </p>
           <h2 className="mt-3 text-balance text-4xl font-extrabold text-gray-900 sm:text-5xl">
             {title || 'Explore by Category'}
           </h2>
-        </div>
+        </motion.div>
 
-        <div className="flex overflow-x-auto pb-8 snap-x snap-mandatory gap-6 sm:grid sm:grid-cols-3 lg:grid-cols-5 lg:gap-8 hide-scrollbar px-4 sm:px-0">
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          className="flex overflow-x-auto pb-8 snap-x snap-mandatory gap-6 sm:grid sm:grid-cols-3 lg:grid-cols-5 lg:gap-8 hide-scrollbar px-4 sm:px-0"
+        >
           {categories.map((category) => {
             const Icon = category.icon
             return (
-              <button
+              <motion.button
+                variants={itemVariants}
                 key={category.name}
                 className="group relative flex-none w-[75vw] sm:w-auto snap-center rounded-3xl bg-white p-8 transition-all duration-500 hover:shadow-2xl hover:shadow-indigo-100/50 hover:-translate-y-2 text-left border border-gray-100 overflow-hidden"
               >
-                {/* Hover gradient fill */}
                 <div className="absolute inset-0 bg-indigo-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 
                 <div className="relative z-10">
@@ -68,10 +94,10 @@ export default function ExploreCategories({ title, subtitle }: ExploreCategories
                   <h3 className="text-xl font-bold text-gray-900 group-hover:text-indigo-700 transition-colors duration-300">{category.name}</h3>
                   <p className="mt-2 text-sm font-medium text-gray-500 uppercase tracking-wide">{category.count} items</p>
                 </div>
-              </button>
+              </motion.button>
             )
           })}
-        </div>
+        </motion.div>
       </div>
     </section>
   )

@@ -12,6 +12,7 @@ import {
   CarouselPrevious,
   CarouselNext,
 } from "@/components/ui/carousel"
+import Autoplay from "embla-carousel-autoplay"
 
 interface Scholar {
   id: number
@@ -27,9 +28,10 @@ interface FeaturedScholarsProps {
   title?: string;
   subtitle?: string;
   scholars?: any[];
+  autoplay?: boolean;
 }
 
-export default function FeaturedScholars({ title, subtitle, scholars = [] }: FeaturedScholarsProps) {
+export default function FeaturedScholars({ title, subtitle, scholars = [], autoplay = true }: FeaturedScholarsProps) {
   return (
     <section className="bg-white px-6 py-10 sm:py-16">
       <div className="mx-auto max-w-7xl">
@@ -38,6 +40,16 @@ export default function FeaturedScholars({ title, subtitle, scholars = [] }: Fea
             align: "start",
             loop: true,
           }}
+          plugins={
+            autoplay
+              ? [
+                  Autoplay({
+                    delay: 4000,
+                    stopOnInteraction: true,
+                  }),
+                ]
+              : []
+          }
           className="w-full"
         >
           <div className="mb-14 flex flex-col items-center sm:flex-row sm:justify-between">

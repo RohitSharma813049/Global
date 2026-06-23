@@ -4,6 +4,7 @@ import { useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Calendar } from 'lucide-react'
+import Autoplay from "embla-carousel-autoplay"
 import {
   Carousel,
   CarouselContent,
@@ -21,7 +22,7 @@ interface ContentItem {
   type: 'blog' | 'news'
 }
 
-export default function RecentNewsBlogs({ items }: { items: ContentItem[] }) {
+export default function RecentNewsBlogs({ items, autoplay = true }: { items: ContentItem[], autoplay?: boolean }) {
   if (!items || items.length === 0) return null
 
   return (
@@ -32,6 +33,16 @@ export default function RecentNewsBlogs({ items }: { items: ContentItem[] }) {
             align: "start",
             loop: true,
           }}
+          plugins={
+            autoplay
+              ? [
+                  Autoplay({
+                    delay: 4000,
+                    stopOnInteraction: true,
+                  }),
+                ]
+              : []
+          }
           className="w-full"
         >
           <div className="mb-10 flex justify-between items-end">

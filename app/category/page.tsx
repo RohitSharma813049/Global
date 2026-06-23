@@ -70,6 +70,15 @@ export default function CategoryPage() {
 
   // Fetch taxonomy and publications on mount
   useEffect(() => {
+    // Read query parameter 'q' on mount
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search)
+      const q = urlParams.get('q')
+      if (q) {
+        setSearchQuery(q)
+      }
+    }
+
     async function fetchData() {
       setIsLoading(true)
 
@@ -162,6 +171,34 @@ export default function CategoryPage() {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
+          
+          {/* Quick Category Pills */}
+          <div className="mt-8 flex flex-wrap justify-center gap-2 sm:gap-3">
+            <button
+              onClick={() => setFilters({ ...filters, subjects: [] })}
+              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors shadow-sm ${
+                filters.subjects.length === 0 
+                  ? 'bg-indigo-600 text-white border border-indigo-600' 
+                  : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 hover:border-gray-300'
+              }`}
+            >
+              All Categories
+            </button>
+            {availableSubjects.map((subject) => (
+              <button
+                key={subject}
+                onClick={() => setFilters({ ...filters, subjects: [subject] })}
+                className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors shadow-sm ${
+                  filters.subjects.includes(subject) && filters.subjects.length === 1
+                    ? 'bg-indigo-600 text-white border border-indigo-600'
+                    : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 hover:border-gray-300'
+                }`}
+              >
+                {subject}
+              </button>
+            ))}
+          </div>
+
         </div>
       </div>
 

@@ -1,8 +1,8 @@
-
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { Calendar, ArrowLeft } from 'lucide-react'
+import { Calendar, ArrowLeft, ArrowRight } from 'lucide-react'
+import Footer from '@/components/footer'
 
 import { prisma } from '@/lib/db'
 
@@ -16,42 +16,117 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     notFound()
   }
 
+  // Fetch related blogs (excluding the current one)
+  const relatedBlogs = await prisma.blogs.findMany({
+    where: { 
+      status: 'published',
+      id: { not: blog.id }
+    },
+    orderBy: { created_at: 'desc' },
+    take: 3
+  });
+
   return (
-    <div className="min-h-screen bg-gray-50 pb-16">
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-4xl mx-auto px-6 py-8">
-          <Link href="/updates" className="inline-flex items-center text-indigo-600 hover:text-indigo-800 font-medium mb-6 transition-colors">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Updates
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+
+      {/* Hero Section of the Article */}
+      <div className="bg-white pt-12 pb-8">
+        <div className="max-w-3xl mx-auto px-6">
+          <Link href="/blog" className="inline-flex items-center text-sm text-indigo-600 hover:text-indigo-800 font-semibold mb-8 transition-colors group">
+            <ArrowLeft className="w-4 h-4 mr-2 transition-transform group-hover:-translate-x-1" />
+            Back to Blog
           </Link>
-          <div className="flex items-center text-sm text-gray-500 mb-4 font-medium uppercase tracking-wide">
-            <span className="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full mr-4">Blog</span>
-            <Calendar className="w-4 h-4 mr-2" />
-            {blog.created_at ? new Date(blog.created_at).toLocaleDateString() : 'Recently'}
+          <div className="flex items-center gap-3 text-sm text-gray-500 mb-6 font-semibold uppercase tracking-wider">
+            <span className="bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full border border-indigo-100">Article</span>
+            <span className="flex items-center">
+              <Calendar className="w-4 h-4 mr-2" />
+              {blog.created_at ? new Date(blog.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'Recently'}
+            </span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight leading-tight mb-6">
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight leading-tight mb-6">
             {blog.title}
           </h1>
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-6 mt-8">
-        {blog.cover_image && (
-          <div className="relative w-full h-[400px] sm:h-[500px] rounded-2xl overflow-hidden shadow-lg mb-10">
-            <Image 
-              src={blog.cover_image} 
-              alt={blog.title} 
-              fill 
-              className="object-cover"
-              priority
-            />
+      {/* Main Content */}
+      <main className="flex-1 w-full pb-16">
+        <div className="max-w-4xl mx-auto px-6">
+          {blog.cover_image && (
+            <div className="relative w-full aspect-[16/9] sm:aspect-[2/1] rounded-2xl overflow-hidden shadow-lg mb-12">
+              <Image 
+                src={blog.cover_image} 
+                alt={blog.title} 
+                fill 
+                className="object-cover"
+                priority
+              />
+            </div>
+          )}
+        </div>
+        <div className="max-w-3xl mx-auto px-6">
+          <div 
+            className="prose prose-lg prose-indigo md:prose-xl max-w-none text-gray-800 prose-img:rounded-xl prose-headings:font-bold prose-a:text-indigo-600 hover:prose-a:text-indigo-500"
+            dangerouslySetInnerHTML={{ __html: blog.content }}
+          />
+        </div>
+      </main>
+
+      {/* Related Blogs Section */}
+      {relatedBlogs.length > 0 && (
+        <section className="bg-white border-t border-gray-200 py-20 mt-8">
+          <div className="max-w-7xl mx-auto px-6 sm:px-8">
+            <div className="flex items-center justify-between mb-12">
+              <h2 className="text-3xl font-bold text-gray-900 tracking-tight">Read Next</h2>
+              <Link href="/blog" className="hidden sm:flex items-center text-indigo-600 hover:text-indigo-800 font-medium group">
+                View all articles <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
+              </Link>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {relatedBlogs.map((post) => (
+                <Link key={post.id} href={`/blog/${post.slug}`} className="group flex flex-col bg-gray-50 rounded-2xl border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                  <div className="relative h-48 w-full bg-gray-200 overflow-hidden">
+                    {post.cover_image ? (
+                      <Image 
+                        src={post.cover_image} 
+                        alt={post.title} 
+                        fill 
+                        className="object-cover transition-transform duration-500 group-hover:scale-105" 
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-indigo-50 text-indigo-300">
+                        No Image
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-6 flex flex-col flex-1">
+                    <div className="flex items-center text-xs text-gray-500 mb-3 font-medium">
+                      <Calendar className="w-3.5 h-3.5 mr-1.5" />
+                      {post.created_at ? new Date(post.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recent'}
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-indigo-600 transition-colors line-clamp-2 leading-tight">
+                      {post.title}
+                    </h3>
+                    <div 
+                      className="text-gray-600 line-clamp-2 text-sm leading-relaxed flex-1"
+                      dangerouslySetInnerHTML={{ __html: post.content.replace(/<[^>]*>?/gm, '') }}
+                    />
+                  </div>
+                </Link>
+              ))}
+            </div>
+            
+            <div className="mt-10 sm:hidden">
+              <Link href="/blog" className="flex items-center justify-center w-full py-3 px-4 bg-indigo-50 text-indigo-700 rounded-xl font-medium hover:bg-indigo-100 transition-colors">
+                View all articles
+              </Link>
+            </div>
           </div>
-        )}
-        <div 
-          className="prose prose-lg prose-indigo max-w-none bg-white p-8 sm:p-12 rounded-2xl shadow-sm border border-gray-100"
-          dangerouslySetInnerHTML={{ __html: blog.content }}
-        />
-      </div>
+        </section>
+      )}
+
+      <Footer />
     </div>
   )
 }

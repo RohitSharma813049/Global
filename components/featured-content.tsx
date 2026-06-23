@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -52,9 +52,10 @@ const featuredContent: ContentItem[] = [
 interface FeaturedContentProps {
   title?: string;
   subtitle?: string;
+  autoplay?: boolean;
 }
 
-export default function FeaturedContent({ title, subtitle }: FeaturedContentProps) {
+export default function FeaturedContent({ title, subtitle, autoplay = true }: FeaturedContentProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
 
   const previous = () => {
@@ -64,6 +65,16 @@ export default function FeaturedContent({ title, subtitle }: FeaturedContentProp
   const next = () => {
     setCurrentIndex((prev) => (prev === featuredContent.length - 1 ? 0 : prev + 1))
   }
+
+  useEffect(() => {
+    if (!autoplay) return
+
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev === featuredContent.length - 1 ? 0 : prev + 1))
+    }, 4000)
+
+    return () => clearInterval(interval)
+  }, [autoplay])
 
   const current = featuredContent[currentIndex]
 

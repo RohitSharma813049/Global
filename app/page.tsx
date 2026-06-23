@@ -10,6 +10,7 @@ const FeaturedScholars = dynamic(() => import('@/components/featured-scholars'))
 const Testimonials = dynamic(() => import('@/components/testimonials'))
 const Footer = dynamic(() => import('@/components/footer'))
 const RecentNewsBlogs = dynamic(() => import('@/components/recent-news-blogs'))
+const FaqSection = dynamic(() => import('@/components/faq-section'))
 import { getHomepageSettings, getBlogs, getNews, getTestimonials, getFeaturedScholars } from '@/app/actions/cms'
 import { getPlatformStats } from '@/app/actions/stats'
 
@@ -43,13 +44,14 @@ export default async function Page() {
         subtitle={settings.hero_subtitle}
         imageUrl={settings.hero_image_url}
       />
-      {settings.show_stats_section && <ScrollAnimation><Statistics title={settings.stats_title} subtitle={settings.stats_subtitle} statsData={statsData} /></ScrollAnimation>}
-      {settings.show_featured_content && <ScrollAnimation><FeaturedContent title={settings.featured_title} subtitle={settings.featured_subtitle} /></ScrollAnimation>}
-      {settings.show_categories_section && <ScrollAnimation><ExploreCategories title={settings.categories_title} subtitle={settings.categories_subtitle} /></ScrollAnimation>}
-      <ScrollAnimation><HowItWorks title={settings.how_it_works_title} subtitle={settings.how_it_works_subtitle} /></ScrollAnimation>
-      {recentItems.length > 0 && <ScrollAnimation><RecentNewsBlogs items={recentItems} /></ScrollAnimation>}
-      {settings.show_featured_scholars && <ScrollAnimation><FeaturedScholars title={settings.scholars_title} subtitle={settings.scholars_subtitle} scholars={scholarsData} /></ScrollAnimation>}
-      {settings.show_testimonials && <ScrollAnimation><Testimonials title={settings.testimonials_title} subtitle={settings.testimonials_subtitle} testimonials={testimonialsData} /></ScrollAnimation>}
+      {settings.show_stats_section && <Statistics title={settings.stats_title} subtitle={settings.stats_subtitle} statsData={statsData} />}
+      {settings.show_featured_content && <ScrollAnimation><FeaturedContent title={settings.featured_title} subtitle={settings.featured_subtitle} autoplay={settings.enable_carousel_autoplay} /></ScrollAnimation>}
+      {settings.show_categories_section && <ExploreCategories title={settings.categories_title} subtitle={settings.categories_subtitle} />}
+      <HowItWorks title={settings.how_it_works_title} subtitle={settings.how_it_works_subtitle} />
+      {recentItems.length > 0 && <ScrollAnimation><RecentNewsBlogs items={recentItems} autoplay={settings.enable_carousel_autoplay} /></ScrollAnimation>}
+      {settings.show_featured_scholars && <ScrollAnimation><FeaturedScholars title={settings.scholars_title} subtitle={settings.scholars_subtitle} scholars={scholarsData} autoplay={settings.enable_carousel_autoplay} /></ScrollAnimation>}
+      {settings.show_testimonials && <ScrollAnimation><Testimonials title={settings.testimonials_title} subtitle={settings.testimonials_subtitle} testimonials={testimonialsData} autoplay={settings.enable_carousel_autoplay} /></ScrollAnimation>}
+      {settings.show_faq_section && settings.faqs && settings.faqs.length > 0 && <ScrollAnimation><FaqSection title={settings.faq_title} subtitle={settings.faq_subtitle} faqs={settings.faqs} /></ScrollAnimation>}
       <Footer />
     </main>
   )

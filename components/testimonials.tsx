@@ -10,15 +10,16 @@ import {
   CarouselNext,
 } from "@/components/ui/carousel"
 
-
+import Autoplay from "embla-carousel-autoplay"
 
 interface TestimonialsProps {
   title?: string;
   subtitle?: string;
   testimonials?: any[];
+  autoplay?: boolean;
 }
 
-export default function Testimonials({ title, subtitle, testimonials = [] }: TestimonialsProps) {
+export default function Testimonials({ title, subtitle, testimonials = [], autoplay = true }: TestimonialsProps) {
   // Chunk testimonials into groups of 4 for the 2x2 grid
   const chunkedTestimonials = [];
   for (let i = 0; i < testimonials.length; i += 4) {
@@ -42,6 +43,16 @@ export default function Testimonials({ title, subtitle, testimonials = [] }: Tes
             align: "start",
             loop: true,
           }}
+          plugins={
+            autoplay
+              ? [
+                  Autoplay({
+                    delay: 4000,
+                    stopOnInteraction: true,
+                  }),
+                ]
+              : []
+          }
           className="w-full relative"
         >
           <div className="absolute top-0 right-0 hidden sm:flex gap-2">

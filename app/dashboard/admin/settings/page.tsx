@@ -30,6 +30,11 @@ export default function HomepageSettings() {
     show_featured_content: true,
     show_featured_scholars: true,
     show_testimonials: true,
+    show_faq_section: true,
+    enable_carousel_autoplay: true,
+    faq_title: '',
+    faq_subtitle: '',
+    faqs: [] as { question: string; answer: string }[],
   })
 
   useEffect(() => {
@@ -66,6 +71,24 @@ export default function HomepageSettings() {
     } else {
       setSettings(prev => ({ ...prev, [name]: value }))
     }
+  }
+
+  const handleFaqChange = (index: number, field: 'question' | 'answer', value: string) => {
+    const newFaqs = [...(settings.faqs || [])]
+    if (!newFaqs[index]) newFaqs[index] = { question: '', answer: '' }
+    newFaqs[index][field] = value
+    setSettings(prev => ({ ...prev, faqs: newFaqs }))
+  }
+
+  const addFaq = () => {
+    setSettings(prev => ({ ...prev, faqs: [...(prev.faqs || []), { question: '', answer: '' }] }))
+  }
+
+  const removeFaq = (index: number) => {
+    setSettings(prev => ({
+      ...prev,
+      faqs: (prev.faqs || []).filter((_, i) => i !== index)
+    }))
   }
 
   if (loading) return <div className="p-8 text-center text-gray-500">Loading settings...</div>
@@ -169,14 +192,59 @@ export default function HomepageSettings() {
               <h3 className="font-medium text-gray-900 border-b pb-1">Testimonials</h3>
               <div>
                 <label className="block text-xs font-medium text-gray-500 mb-1">Subtitle (Small)</label>
-                <input aria-label="Input field" type="text" name="testimonials_subtitle" value={settings.testimonials_subtitle} onChange={handleChange} className="w-full border border-gray-300 rounded-md p-1.5 text-sm" />
+                <input aria-label="Input field" type="text" name="testimonials_subtitle" value={settings.testimonials_subtitle || ''} onChange={handleChange} className="w-full border border-gray-300 rounded-md p-1.5 text-sm" />
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-500 mb-1">Main Title</label>
-                <input aria-label="Input field" type="text" name="testimonials_title" value={settings.testimonials_title} onChange={handleChange} className="w-full border border-gray-300 rounded-md p-1.5 text-sm font-semibold" />
+                <input aria-label="Input field" type="text" name="testimonials_title" value={settings.testimonials_title || ''} onChange={handleChange} className="w-full border border-gray-300 rounded-md p-1.5 text-sm font-semibold" />
               </div>
             </div>
 
+            <div className="space-y-3 bg-gray-50 p-4 rounded-xl border border-gray-100">
+              <h3 className="font-medium text-gray-900 border-b pb-1">FAQ Section</h3>
+              <div>
+                <label className="block text-xs font-medium text-gray-500 mb-1">Subtitle (Small)</label>
+                <input aria-label="Input field" type="text" name="faq_subtitle" value={settings.faq_subtitle || ''} onChange={handleChange} className="w-full border border-gray-300 rounded-md p-1.5 text-sm" />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-500 mb-1">Main Title</label>
+                <input aria-label="Input field" type="text" name="faq_title" value={settings.faq_title || ''} onChange={handleChange} className="w-full border border-gray-300 rounded-md p-1.5 text-sm font-semibold" />
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        {/* FAQs */}
+        <div>
+          <div className="flex justify-between items-center border-b pb-2 mb-4">
+            <h2 className="text-lg font-semibold">Frequently Asked Questions</h2>
+            <button type="button" onClick={addFaq} className="text-sm bg-indigo-50 text-indigo-600 px-3 py-1 rounded-md font-medium hover:bg-indigo-100">
+              + Add FAQ
+            </button>
+          </div>
+          
+          <div className="space-y-4">
+            {(settings.faqs || []).map((faq, index) => (
+              <div key={index} className="bg-gray-50 p-4 rounded-xl border border-gray-100 relative">
+                <button type="button" onClick={() => removeFaq(index)} className="absolute top-2 right-2 text-red-500 hover:text-red-700 text-sm font-medium">
+                  Remove
+                </button>
+                <div className="space-y-3 pr-12">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-500 mb-1">Question</label>
+                    <input aria-label="Input field" type="text" value={faq.question} onChange={(e) => handleFaqChange(index, 'question', e.target.value)} className="w-full border border-gray-300 rounded-md p-1.5 text-sm" placeholder="e.g. What is this?" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-500 mb-1">Answer</label>
+                    <textarea aria-label="Input field" value={faq.answer} onChange={(e) => handleFaqChange(index, 'answer', e.target.value)} className="w-full border border-gray-300 rounded-md p-1.5 text-sm min-h-[60px]" placeholder="Answer goes here..." />
+                  </div>
+                </div>
+              </div>
+            ))}
+            {!(settings.faqs?.length) && (
+              <p className="text-sm text-gray-500 italic">No FAQs added yet.</p>
+            )}
           </div>
         </div>
 
@@ -201,8 +269,16 @@ export default function HomepageSettings() {
               <span className="font-medium">Show Featured Scholars</span>
             </label>
             <label className="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
-              <input aria-label="Input field" type="checkbox" name="show_testimonials" checked={settings.show_testimonials} onChange={handleChange} className="w-5 h-5 text-indigo-600 rounded" />
+              <input aria-label="Input field" type="checkbox" name="show_testimonials" checked={settings.show_testimonials ?? true} onChange={handleChange} className="w-5 h-5 text-indigo-600 rounded" />
               <span className="font-medium">Show Testimonials</span>
+            </label>
+            <label className="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+              <input aria-label="Input field" type="checkbox" name="show_faq_section" checked={settings.show_faq_section ?? true} onChange={handleChange} className="w-5 h-5 text-indigo-600 rounded" />
+              <span className="font-medium">Show FAQ Section</span>
+            </label>
+            <label className="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50 bg-indigo-50/50 border-indigo-100">
+              <input aria-label="Input field" type="checkbox" name="enable_carousel_autoplay" checked={settings.enable_carousel_autoplay ?? true} onChange={handleChange} className="w-5 h-5 text-indigo-600 rounded" />
+              <span className="font-medium text-indigo-900">Enable Carousel Autoplay</span>
             </label>
           </div>
         </div>
