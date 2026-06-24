@@ -24,7 +24,7 @@
    SHARED SECTION SCAFFOLDING
 ════════════════════════════════ */
 .gsp-section {
-  padding: 88px 56px;
+  padding: 40px 56px;
   border-bottom: 1px solid var(--rule);
   background: #fff;
 }

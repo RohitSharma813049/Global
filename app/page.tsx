@@ -10,7 +10,7 @@ const HowItWorks = dynamic(() => import('@/components/how-it-works'))
 const FeaturedScholars = dynamic(() => import('@/components/featured-scholars'))
 const Testimonials = dynamic(() => import('@/components/testimonials'))
 const Footer = dynamic(() => import('@/components/footer'))
-const RecentNewsBlogs = dynamic(() => import('@/components/recent-news-blogs'))
+const RecentNewsBlogs = dynamic(() => import('@/components/gsp-recent-blogs'))
 const FaqSection = dynamic(() => import('@/components/faq-section'))
 import { getHomepageSettings, getBlogs, getNews, getTestimonials, getFeaturedScholars } from '@/app/actions/cms'
 import { getPlatformStats } from '@/app/actions/stats'
@@ -41,12 +41,14 @@ export default async function Page() {
   return (
     <main className="w-full">
       <HomeHero />
+                   {/* New Custom Sections */}
+      <GspExploreCategories />
       {settings.show_featured_content && <ScrollAnimation><FeaturedContent title={settings.featured_title} subtitle={settings.featured_subtitle} autoplay={settings.enable_carousel_autoplay} /></ScrollAnimation>}
+    <GspFeaturedContent />
       {settings.show_categories_section && <ExploreCategories title={settings.categories_title} subtitle={settings.categories_subtitle} />}
       
-      {/* New Custom Sections */}
-      <GspExploreCategories />
-      <GspFeaturedContent />
+
+  
 
       <HowItWorks title={settings.how_it_works_title} subtitle={settings.how_it_works_subtitle} />
       {recentItems.length > 0 && <ScrollAnimation><RecentNewsBlogs items={recentItems} autoplay={settings.enable_carousel_autoplay} /></ScrollAnimation>}
