@@ -1,13 +1,24 @@
 import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
+import { Cormorant_Garamond, Space_Grotesk } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { Providers } from './providers'
 import '../styles/globals.css'
+import './gsp-sections.css'
 import Header from '@/components/header'
 import { Toaster } from 'react-hot-toast'
 
-const _geist = Geist({ subsets: ["latin"] });
-const _geistMono = Geist_Mono({ subsets: ["latin"] });
+const cormorantGaramond = Cormorant_Garamond({ 
+  subsets: ["latin"],
+  weight: ['300', '400', '500', '600', '700'],
+  style: ['normal', 'italic'],
+  variable: '--font-cormorant'
+});
+
+const spaceGrotesk = Space_Grotesk({ 
+  subsets: ["latin"],
+  weight: ['300', '400', '500', '600', '700'],
+  variable: '--font-space-grotesk'
+});
 
 export const metadata: Metadata = {
   title: 'Global Scholar Publications - Empowering Global Research & Knowledge Sharing',
@@ -26,7 +37,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="bg-background">
-      <body className="font-sans antialiased text-foreground overflow-x-hidden min-h-screen">
+      <body className={`${spaceGrotesk.variable} ${cormorantGaramond.variable} font-sans antialiased text-foreground overflow-x-hidden min-h-screen`}>
         <Providers>
           <Header/>
           <main className="pb-16 md:pb-0 flex-1 flex flex-col">

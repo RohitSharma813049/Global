@@ -1,10 +1,11 @@
 import dynamic from 'next/dynamic'
-import Hero from '@/components/hero'
+import HomeHero from '@/components/home-hero'
 
 // Lazy load below-the-fold components
-const Statistics = dynamic(() => import('@/components/statistics'))
 const FeaturedContent = dynamic(() => import('@/components/featured-content'))
 const ExploreCategories = dynamic(() => import('@/components/explore-categories'))
+const GspFeaturedContent = dynamic(() => import('@/components/gsp-featured-content'))
+const GspExploreCategories = dynamic(() => import('@/components/gsp-explore-categories'))
 const HowItWorks = dynamic(() => import('@/components/how-it-works'))
 const FeaturedScholars = dynamic(() => import('@/components/featured-scholars'))
 const Testimonials = dynamic(() => import('@/components/testimonials'))
@@ -39,14 +40,14 @@ export default async function Page() {
 
   return (
     <main className="w-full">
-      <Hero 
-        title={settings.hero_title}
-        subtitle={settings.hero_subtitle}
-        imageUrl={settings.hero_image_url}
-      />
-      {settings.show_stats_section && <Statistics title={settings.stats_title} subtitle={settings.stats_subtitle} statsData={statsData} />}
+      <HomeHero />
       {settings.show_featured_content && <ScrollAnimation><FeaturedContent title={settings.featured_title} subtitle={settings.featured_subtitle} autoplay={settings.enable_carousel_autoplay} /></ScrollAnimation>}
       {settings.show_categories_section && <ExploreCategories title={settings.categories_title} subtitle={settings.categories_subtitle} />}
+      
+      {/* New Custom Sections */}
+      <GspExploreCategories />
+      <GspFeaturedContent />
+
       <HowItWorks title={settings.how_it_works_title} subtitle={settings.how_it_works_subtitle} />
       {recentItems.length > 0 && <ScrollAnimation><RecentNewsBlogs items={recentItems} autoplay={settings.enable_carousel_autoplay} /></ScrollAnimation>}
       {settings.show_featured_scholars && <ScrollAnimation><FeaturedScholars title={settings.scholars_title} subtitle={settings.scholars_subtitle} scholars={scholarsData} autoplay={settings.enable_carousel_autoplay} /></ScrollAnimation>}

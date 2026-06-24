@@ -82,58 +82,17 @@ export default function FeaturedContent({ title, subtitle, autoplay = true }: Fe
     <section className="bg-white px-6 py-10 sm:py-16 relative">
       <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.03]"></div>
       <div className="mx-auto max-w-7xl relative z-10">
-        <div className="mb-16">
+        <div className="mb-16 flex justify-between">
+
+          <div>
           <p className="text-sm font-bold tracking-widest text-indigo-600 uppercase">
             {subtitle || 'Featured Content'}
           </p>
           <h2 className="mt-3 text-balance text-4xl font-extrabold text-gray-900 sm:text-5xl">
             {title || 'Explore Trending Research'}
           </h2>
-        </div>
-
-        <div className="grid gap-12 lg:grid-cols-2 items-center">
-          {/* Image Container with Hover Animation */}
-          <div className="group relative overflow-hidden rounded-3xl bg-gray-100 shadow-xl transition-all duration-700 hover:shadow-2xl hover:shadow-indigo-200 cursor-pointer">
-            <Image
-              src={current.image}
-              alt={current.title}
-              width={600}
-              height={500}
-              className="h-96 w-full object-cover transition-transform duration-700 group-hover:scale-105"
-              unoptimized
-            />
-            <div className="absolute inset-0 bg-gray-900/40"></div>
-            <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between">
-              <span className="inline-block rounded-full bg-emerald-500/90 backdrop-blur-md px-4 py-1.5 text-xs font-bold text-white uppercase tracking-wider shadow-sm">
-                {current.type}
-              </span>
-            </div>
           </div>
-
-          <div className="flex flex-col justify-between h-full py-4">
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <div className="h-1 w-10 bg-indigo-600 rounded-full"></div>
-                <p className="text-sm font-semibold text-indigo-600 uppercase tracking-widest">Highlight</p>
-              </div>
-              <h3 className="text-4xl font-extrabold text-gray-900 leading-tight tracking-tight hover:text-indigo-700 transition-colors cursor-pointer">
-                {current.title}
-              </h3>
-              <p className="mt-4 text-base font-medium text-gray-500 uppercase tracking-wide">
-                By <span className="text-gray-900">{current.author}</span>
-              </p>
-              <p className="mt-6 text-xl leading-relaxed text-gray-600">
-                {current.description}
-              </p>
-              
-              <div className="mt-10">
-                <Button className="h-12 px-8 bg-indigo-50 text-indigo-700 hover:bg-indigo-600 hover:text-white font-semibold rounded-xl transition-all duration-300">
-                  Read Full Publication
-                </Button>
-              </div>
-            </div>
-
-            <div className="mt-12 flex items-center gap-4">
+                      <div className="mt-12 flex items-center gap-4">
               <Button
                 onClick={previous}
                 variant="outline"
@@ -162,6 +121,50 @@ export default function FeaturedContent({ title, subtitle, autoplay = true }: Fe
                 <ChevronRight className="h-5 w-5" />
               </Button>
             </div>
+        </div>
+
+        <div className="grid gap-12 lg:grid-cols-2 items-center">
+          {/* Image Container */}
+          <div className="group relative overflow-hidden rounded-3xl bg-gray-100 shadow-xl transition-all duration-700 cursor-pointer">
+            <Image
+              src={current.image}
+              alt={current.title}
+              width={600}
+              height={500}
+              className="h-96 w-full object-cover transition-transform duration-700"
+              unoptimized
+            />
+            <div className="absolute inset-0 bg-gray-900/40"></div>
+            <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between">
+              <span className="inline-block rounded-full bg-emerald-500/90 backdrop-blur-md px-4 py-1.5 text-xs font-bold text-white uppercase tracking-wider shadow-sm">
+                {current.type}
+              </span>
+            </div>
+          </div>
+
+          <div className="flex flex-col justify-between h-full py-4">
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <div className="h-1 w-10 bg-indigo-600 rounded-full"></div>
+                <p className="text-sm font-semibold text-indigo-600 uppercase tracking-widest">Highlight</p>
+              </div>
+              <h3 className="text-4xl font-extrabold text-gray-900 leading-tight tracking-tight transition-colors cursor-pointer">
+                {current.title}
+              </h3>
+              <p className="mt-4 text-base font-medium text-gray-500 uppercase tracking-wide">
+                By <span className="text-gray-900">{current.author}</span>
+              </p>
+              <p className="mt-6 text-xl leading-relaxed text-gray-600">
+                {current.description}
+              </p>
+              
+              <div className="mt-10">
+                <Button className="h-12 px-8 bg-indigo-50 text-indigo-700 hover:bg-indigo-600 hover:text-white font-semibold rounded-xl transition-all duration-300">
+                  Read Full Publication
+                </Button>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>

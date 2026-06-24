@@ -83,15 +83,14 @@ export default function ExploreCategories({ title, subtitle }: ExploreCategories
               <motion.button
                 variants={itemVariants}
                 key={category.name}
-                className="group relative flex-none w-[75vw] sm:w-auto snap-center rounded-3xl bg-white p-8 transition-all duration-500 hover:shadow-2xl hover:shadow-indigo-100/50 hover:-translate-y-2 text-left border border-gray-100 overflow-hidden"
+                className="group relative flex-none w-[75vw] sm:w-auto snap-center rounded-3xl bg-white p-8 transition-all duration-500 text-left border border-gray-100 overflow-hidden"
               >
-                <div className="absolute inset-0 bg-indigo-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 
                 <div className="relative z-10">
-                  <div className="inline-flex p-3 rounded-2xl bg-indigo-50 group-hover:bg-indigo-600 transition-colors duration-500 mb-6 shadow-inner">
-                    <Icon className="h-8 w-8 text-indigo-600 group-hover:text-white group-hover:scale-110 transition-all duration-500" />
+                  <div className="inline-flex p-3 rounded-2xl bg-indigo-50 transition-colors duration-500 mb-6">
+                    <Icon className="h-8 w-8 text-indigo-600 transition-all duration-500" />
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 group-hover:text-indigo-700 transition-colors duration-300">{category.name}</h3>
+                  <h3 className="text-xl font-bold text-gray-900 transition-colors duration-300">{category.name}</h3>
                   <p className="mt-2 text-sm font-medium text-gray-500 uppercase tracking-wide">{category.count} items</p>
                 </div>
               </motion.button>

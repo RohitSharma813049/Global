@@ -70,11 +70,11 @@ export default function RecentNewsBlogs({ items, autoplay = true }: { items: Con
               <CarouselItem key={`${item.type}-${item.id}`} className="pl-4 sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
                 <Link 
                   href={`/${item.type}/${item.slug}`} 
-                  className="group relative flex h-full rounded-2xl bg-white border border-gray-100 shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 overflow-hidden flex-col"
+                  className="group relative flex h-full rounded-2xl bg-white border border-gray-100 shadow-sm transition-all duration-300 overflow-hidden flex-col"
                 >
                   <div className="h-48 bg-gray-200 relative overflow-hidden shrink-0">
                     {item.cover_image ? (
-                      <Image src={item.cover_image} alt={item.title} fill sizes="(max-width: 640px) 100vw, 320px" className="object-cover transition-transform duration-500 group-hover:scale-105" />
+                      <Image src={item.cover_image} alt={item.title} fill sizes="(max-width: 640px) 100vw, 320px" className="object-cover transition-transform duration-500" />
                     ) : (
                       <div className="w-full h-full bg-indigo-100 flex items-center justify-center">
                         <span className="text-indigo-500 font-bold text-4xl">{item.title.charAt(0)}</span>
@@ -89,7 +89,7 @@ export default function RecentNewsBlogs({ items, autoplay = true }: { items: Con
                       <Calendar className="w-3 h-3 mr-1" />
                       {item.created_at ? new Date(item.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'Recently'}
                     </div>
-                    <h3 className="font-bold text-gray-900 text-lg leading-tight group-hover:text-indigo-600 transition-colors line-clamp-2">
+                    <h3 className="font-bold text-gray-900 text-lg leading-tight transition-colors line-clamp-2">
                       {item.title}
                     </h3>
                   </div>
