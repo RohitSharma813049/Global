@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
+import { motion, Variants } from 'framer-motion'
 
 interface Stat {
   label: string
@@ -41,7 +41,7 @@ interface StatisticsProps {
   }
 }
 
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -51,7 +51,7 @@ const containerVariants = {
   }
 }
 
-const itemVariants = {
+const itemVariants: Variants = {
   hidden: { opacity: 0, scale: 0.9, y: 20 },
   visible: { opacity: 1, scale: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 15 } }
 }
