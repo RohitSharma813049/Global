@@ -138,13 +138,13 @@ export default function GspRecentBlogs({ items, autoplay = true }: { items: Cont
           className="gsp-carousel-track" 
           ref={trackRef}
           style={{
-            transform: `translateX(calc(-${index * (cardWidth + gap)}px + ${dragging ? deltaX : 0}px))`,
+            transform: 'translateX(calc(-' + (index * (cardWidth + gap)) + 'px + ' + (dragging ? deltaX : 0) + 'px))',
             transition: dragging ? 'none' : 'transform 0.65s cubic-bezier(0.22, 1, 0.36, 1)',
-            gap: `${gap}px`
+            gap: gap + 'px'
           }}
         >
           {items.map((item, i) => (
-            <Link key={`${item.type}-${item.id}`} href={`/${item.type}/${item.slug}`} className="gsp-blog-card in-view" style={{ animationDelay: `${(i % 3) * 0.09}s` }}>
+            <Link key={`${item.type}-${item.id}`} href={`/${item.type}/${item.slug}`} className="gsp-blog-card in-view" style={{ animationDelay: ((i % 3) * 0.09) + 's' }}>
               <div className="gsp-bc-photo-wrap">
                 {item.cover_image ? (
                   <Image src={item.cover_image} alt={item.title} fill className="object-cover" />

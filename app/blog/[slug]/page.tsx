@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { Calendar, ArrowLeft, ArrowRight } from 'lucide-react'
 import Footer from '@/components/footer'
+import SidebarSlider from '@/components/sidebar-slider'
 
 import { prisma } from '@/lib/db'
 
@@ -30,28 +31,29 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     <div className="min-h-screen bg-gray-50 flex flex-col">
 
       {/* Hero Section of the Article */}
-      <div className="bg-white pt-12 pb-8">
-        <div className="max-w-3xl mx-auto px-6">
-          <Link href="/blog" className="inline-flex items-center text-sm text-indigo-600 hover:text-indigo-800 font-semibold mb-8 transition-colors group">
+      <div className="bg-white pt-16 pb-12 relative overflow-hidden">
+        <div className="absolute top-0 inset-x-0 h-64 bg-gradient-to-b from-[rgba(47,17,93,0.03)] to-transparent pointer-events-none" />
+        <div className="max-w-6xl mx-auto px-6 relative z-10">
+          <Link href="/blog" className="inline-flex items-center text-sm text-[#2F115D] hover:underline font-semibold mb-10 transition-colors group tracking-wide">
             <ArrowLeft className="w-4 h-4 mr-2 transition-transform group-hover:-translate-x-1" />
             Back to Blog
           </Link>
-          <div className="flex items-center gap-3 text-sm text-gray-500 mb-6 font-semibold uppercase tracking-wider">
-            <span className="bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full border border-indigo-100">Article</span>
+          <div className="flex items-center gap-3 text-[11px] text-gray-500 mb-6 font-bold uppercase tracking-[0.15em]">
+            <span className="bg-white text-[#2F115D] px-3.5 py-1.5 rounded-full border border-[#E2DFF0] shadow-sm">Article</span>
             <span className="flex items-center">
-              <Calendar className="w-4 h-4 mr-2" />
+              <Calendar className="w-4 h-4 mr-2 opacity-70" />
               {blog.created_at ? new Date(blog.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'Recently'}
             </span>
           </div>
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight leading-tight mb-6">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-[#000] tracking-tight leading-[1.1] max-w-4xl" style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
             {blog.title}
           </h1>
         </div>
       </div>
 
-      {/* Main Content */}
-      <main className="flex-1 w-full pb-16">
-        <div className="max-w-4xl mx-auto px-6">
+      {/* Main Content & Sidebar */}
+      <div className="max-w-6xl mx-auto px-6 w-full pb-16 flex flex-col lg:flex-row gap-10">
+        <main className="flex-1 min-w-0">
           {blog.cover_image && (
             <div className="relative w-full aspect-[16/9] sm:aspect-[2/1] rounded-2xl overflow-hidden shadow-lg mb-12">
               <Image 
@@ -63,15 +65,17 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
               />
             </div>
           )}
-        </div>
-        <div className="max-w-3xl mx-auto px-6">
           <div 
             className="prose prose-lg prose-indigo md:prose-xl max-w-none text-gray-800 prose-img:rounded-xl prose-headings:font-bold prose-a:text-indigo-600 hover:prose-a:text-indigo-500"
             dangerouslySetInnerHTML={{ __html: blog.content }}
           />
-        </div>
-      </main>
-
+        </main>
+        
+        {/* Sidebar */}
+        <aside className="w-full lg:w-[340px] shrink-0">
+          <SidebarSlider />
+        </aside>
+      </div>
       {/* Related Blogs Section */}
       {relatedBlogs.length > 0 && (
         <section className="bg-white border-t border-gray-200 py-20 mt-8">
