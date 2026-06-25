@@ -23,7 +23,7 @@ interface Publication {
   categories: {
     name: string
   } | null
-  subcategory_ids: string[]
+  subcategory_ids?: string[]
   cover_image?: string | null
   banner_image?: string | null
 }
