@@ -12,17 +12,26 @@ const footerLinks = {
     { name: 'About', href: '/about' },
     { name: 'Contact', href: '/contact' },
   ],
-  'Publication Categories': [
+  'Publication Types': [
     { name: 'Books', href: '/explore' },
     { name: 'Journals', href: '/explore' },
     { name: 'Conferences', href: '/explore' },
     { name: 'Magazines', href: '/explore' },
   ],
   'Subject Categories': [
-    { name: 'Computer Science', href: '/explore' },
-    { name: 'Engineering', href: '/explore' },
-    { name: 'Medicine', href: '/explore' },
+    { name: 'Agriculture', href: '/explore' },
+    { name: 'Business & Management', href: '/explore' },
+    { name: 'Computer Science & AI', href: '/explore' },
+    { name: 'Education', href: '/explore' },
+    { name: 'Engineering & Technology', href: '/explore' },
+    { name: 'Environmental Studies', href: '/explore' },
+  ],
+  'More Subjects': [
+    { name: 'Humanities', href: '/explore' },
+    { name: 'Law', href: '/explore' },
+    { name: 'Medical & Health Sciences', href: '/explore' },
     { name: 'Social Sciences', href: '/explore' },
+    { name: 'Other', href: '/explore' },
   ],
   Legal: [
     { name: 'Privacy Policy', href: '/privacy' },
@@ -37,11 +46,8 @@ export default function Footer() {
     <footer className="border-t border-border bg-white">
       <div className="px-6 py-8 sm:py-12">
         <div className="mx-auto max-w-7xl">
-          {/* Newsletter Section */}
-
-
-          <div className="grid gap-8 md:grid-cols-5">
-            <div>
+          <div className="grid gap-8 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
+            <div className="col-span-2 md:col-span-3 lg:col-span-1">
               <Link href="/" className="flex items-center gap-0">
                 <Image
                   src="/logo1.png"
