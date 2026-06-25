@@ -1,7 +1,8 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { getHomepageSettings, updateHomepageSettings } from '@/app/actions/cms'
+import { updateHomepageSettings } from '@/app/actions/cms'
+import { getHomepageSettings } from '@/app/queries/cms'
 import { useRouter } from 'next/navigation'
 import ImageUpload from '@/components/image-upload'
 import toast from 'react-hot-toast'

@@ -14,7 +14,8 @@ const Testimonials = dynamic(() => import('@/components/testimonials'))
 const Footer = dynamic(() => import('@/components/footer'))
 const RecentNewsBlogs = dynamic(() => import('@/components/gsp-recent-blogs'))
 const FaqSection = dynamic(() => import('@/components/faq-section'))
-import { getHomepageSettings, getBlogs, getNews, getTestimonials, getFeaturedScholars } from '@/app/actions/cms'
+const CtaBanner = dynamic(() => import('@/components/cta-banner'))
+import { getHomepageSettings, getBlogs, getNews, getTestimonials, getFeaturedScholars } from '@/app/queries/cms'
 import { getPlatformStats } from '@/app/actions/stats'
 
 import ScrollAnimation from '@/components/scroll-animation'
@@ -60,6 +61,7 @@ export default async function Page() {
       {/* {settings.show_featured_scholars && <ScrollAnimation><FeaturedScholars title={settings.scholars_title} subtitle={settings.scholars_subtitle} scholars={scholarsData} autoplay={settings.enable_carousel_autoplay} /></ScrollAnimation>} */}
       {settings.show_testimonials && <ScrollAnimation><Testimonials title={settings.testimonials_title} subtitle={settings.testimonials_subtitle} testimonials={testimonialsData} autoplay={settings.enable_carousel_autoplay} /></ScrollAnimation>}
       {settings.show_faq_section && settings.faqs && settings.faqs.length > 0 && <ScrollAnimation><FaqSection title={settings.faq_title} subtitle={settings.faq_subtitle} faqs={settings.faqs} /></ScrollAnimation>}
+      <ScrollAnimation><CtaBanner /></ScrollAnimation>
       <Footer />
     </main>
   )
