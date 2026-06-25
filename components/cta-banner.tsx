@@ -11,7 +11,7 @@ export default function CtaBanner() {
       
       <div className="relative mx-auto flex max-w-7xl flex-col items-center justify-between gap-10 px-6 md:flex-row md:items-center">
         {/* Left Content */}
-        <div className="max-w-2xl text-left">
+        <div className="max-w-2xl text-left"> 
           <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-white/90">
             Ready to publish?
           </div>
