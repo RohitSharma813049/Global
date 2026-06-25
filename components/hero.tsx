@@ -87,10 +87,10 @@ export default function Hero({ title, subtitle, imageUrl }: HeroProps) {
             </div>
           </div>
           <div className="mt-6 flex flex-wrap justify-center gap-3 sm:gap-4 text-sm font-medium">
-            <Link href="/category" className="flex items-center cursor-pointer transition-all px-4 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white/90 hover:text-white backdrop-blur-md border border-white/10 shadow-sm">By Author</Link>
-            <Link href="/category" className="flex items-center cursor-pointer transition-all px-4 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white/90 hover:text-white backdrop-blur-md border border-white/10 shadow-sm">By Subject</Link>
-            <Link href="/category" className="flex items-center cursor-pointer transition-all px-4 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white/90 hover:text-white backdrop-blur-md border border-white/10 shadow-sm">By Year</Link>
-            <Link href="/category" className="flex items-center cursor-pointer transition-all px-4 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white/90 hover:text-white backdrop-blur-md border border-white/10 shadow-sm">By Publication Type</Link>
+            <Link href="/explore" className="flex items-center cursor-pointer transition-all px-4 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white/90 hover:text-white backdrop-blur-md border border-white/10 shadow-sm">By Author</Link>
+            <Link href="/explore" className="flex items-center cursor-pointer transition-all px-4 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white/90 hover:text-white backdrop-blur-md border border-white/10 shadow-sm">By Subject</Link>
+            <Link href="/explore" className="flex items-center cursor-pointer transition-all px-4 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white/90 hover:text-white backdrop-blur-md border border-white/10 shadow-sm">By Year</Link>
+            <Link href="/explore" className="flex items-center cursor-pointer transition-all px-4 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white/90 hover:text-white backdrop-blur-md border border-white/10 shadow-sm">By Publication Type</Link>
           </div>
         </motion.div>
       </div>

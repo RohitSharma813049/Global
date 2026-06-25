@@ -26,9 +26,16 @@ import { NotificationsDropdown } from './notifications-dropdown'
 import GlobalSearch from './global-search'
 
 export default function Header() {
-  const { data: session, status } = useSession()
   const pathname = usePathname()
-  const role = session?.user?.role || 'user'
+  const { data: session, status } = useSession()
+
+  // Hide header on auth pages because they use a full screen 50/50 split layout
+  if (pathname === '/signin' || pathname === '/signup') {
+    return null;
+  }
+
+  // Define role checking safely
+  const role = session?.user?.role || 'user';
 
   // Hide the main header completely if the user is inside the dashboard, because dashboard has its own header.
   if (pathname.startsWith('/dashboard')) {
@@ -53,7 +60,7 @@ export default function Header() {
           <Link href="/" className="text-sm text-foreground/70 transition hover:text-foreground">
             Home
           </Link>
-          <Link href="/category" className="text-sm text-foreground/70 transition hover:text-foreground">
+          <Link href="/explore" className="text-sm text-foreground/70 transition hover:text-foreground">
             Explore
           </Link>
           <Link href="/updates" className="text-sm text-foreground/70 transition hover:text-foreground">
@@ -182,13 +189,13 @@ export default function Header() {
           </Link>
 
           <Link 
-            href="/category"
-            className={`flex flex-col items-center justify-center w-16 h-12 rounded-lg transition-colors ${pathname === '/category' ? "text-indigo-600" : "text-gray-500 hover:text-indigo-500 hover:bg-indigo-50/50"}`}
+            href="/explore"
+            className={`flex flex-col items-center justify-center w-16 h-12 rounded-lg transition-colors ${pathname === '/explore' ? "text-indigo-600" : "text-gray-500 hover:text-indigo-500 hover:bg-indigo-50/50"}`}
           >
-            <div className={`p-1 rounded-full ${pathname === '/category' ? "bg-indigo-100/50" : ""}`}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-6 w-6 ${pathname === '/category' ? 'scale-110' : ''}`}><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+            <div className={`p-1 rounded-full ${pathname === '/explore' ? "bg-indigo-100/50" : ""}`}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-6 w-6 ${pathname === '/explore' ? 'scale-110' : ''}`}><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
             </div>
-            <span className={`text-[10px] mt-0.5 font-medium truncate w-full text-center ${pathname === '/category' ? "text-indigo-700" : ""}`}>Explore</span>
+            <span className={`text-[10px] mt-0.5 font-medium truncate w-full text-center ${pathname === '/explore' ? "text-indigo-700" : ""}`}>Explore</span>
           </Link>
 
           {session && (
@@ -234,44 +241,44 @@ export default function Header() {
                 <span className="text-[10px] mt-0.5 font-medium truncate w-full text-center">Menu</span>
               </button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-[300px] sm:w-[400px] flex flex-col pt-16 z-[100]">
+            <SheetContent side="left" className="w-[300px] sm:w-[400px] flex flex-col pt-16 z-[100] font-sans antialiased">
               <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
               <nav className="flex flex-col gap-6 h-full overflow-y-auto pb-20">
-                <div className="flex flex-col space-y-4">
-                  <h4 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Main</h4>
-                  <SheetClose asChild><Link href="/" className="text-lg font-medium hover:text-indigo-600 transition-colors">Home</Link></SheetClose>
-                  <SheetClose asChild><Link href="/category" className="text-lg font-medium hover:text-indigo-600 transition-colors">Explore</Link></SheetClose>
-                  <SheetClose asChild><Link href="/updates" className="text-lg font-medium hover:text-indigo-600 transition-colors">News & Blogs</Link></SheetClose>
+                <div className="flex flex-col space-y-1">
+                  <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider px-2 mb-2">Main</h4>
+                  <SheetClose asChild><Link href="/" className="text-base font-medium px-2 py-2 rounded-md hover:text-indigo-600 hover:bg-indigo-50 transition-colors">Home</Link></SheetClose>
+                  <SheetClose asChild><Link href="/explore" className="text-base font-medium px-2 py-2 rounded-md hover:text-indigo-600 hover:bg-indigo-50 transition-colors">Explore</Link></SheetClose>
+                  <SheetClose asChild><Link href="/updates" className="text-base font-medium px-2 py-2 rounded-md hover:text-indigo-600 hover:bg-indigo-50 transition-colors">News & Blogs</Link></SheetClose>
                   {session && (
                     <>
-                      <SheetClose asChild><Link href="/library" className="text-lg font-medium hover:text-indigo-600 transition-colors">My Library</Link></SheetClose>
-                      <SheetClose asChild><Link href="/library/saved" className="text-lg font-medium hover:text-indigo-600 transition-colors">Saved Papers</Link></SheetClose>
+                      <SheetClose asChild><Link href="/library" className="text-base font-medium px-2 py-2 rounded-md hover:text-indigo-600 hover:bg-indigo-50 transition-colors">My Library</Link></SheetClose>
+                      <SheetClose asChild><Link href="/library/saved" className="text-base font-medium px-2 py-2 rounded-md hover:text-indigo-600 hover:bg-indigo-50 transition-colors">Saved Papers</Link></SheetClose>
                     </>
                   )}
                   <SheetClose asChild>
-                    <Link href={session ? '/dashboard' : '/signin'} className="text-lg font-medium hover:text-indigo-600 transition-colors">
+                    <Link href={session ? '/dashboard' : '/signin'} className="text-base font-medium px-2 py-2 rounded-md hover:text-indigo-600 hover:bg-indigo-50 transition-colors">
                       {session ? 'Dashboard' : 'Scholars Portal'}
                     </Link>
                   </SheetClose>
                   {(role === 'admin' || role === 'super_admin') && (
                     <SheetClose asChild>
-                      <Link href="/dashboard/admin/users" className="text-lg font-medium text-indigo-600 hover:text-indigo-800 transition-colors">
+                      <Link href="/dashboard/admin/users" className="text-base font-medium px-2 py-2 rounded-md text-indigo-600 hover:bg-indigo-50 transition-colors">
                         Admin Panel
                       </Link>
                     </SheetClose>
                   )}
                 </div>
 
-                <div className="flex flex-col space-y-4 mt-4">
-                  <h4 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Platform</h4>
-                  <SheetClose asChild><Link href="/about" className="text-lg font-medium hover:text-indigo-600 transition-colors">About Us</Link></SheetClose>
-                  <SheetClose asChild><Link href="/features" className="text-lg font-medium hover:text-indigo-600 transition-colors">Features</Link></SheetClose>
+                <div className="flex flex-col space-y-1 mt-6">
+                  <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider px-2 mb-2">Platform</h4>
+                  <SheetClose asChild><Link href="/about" className="text-base font-medium px-2 py-2 rounded-md hover:text-indigo-600 hover:bg-indigo-50 transition-colors">About Us</Link></SheetClose>
+                  <SheetClose asChild><Link href="/features" className="text-base font-medium px-2 py-2 rounded-md hover:text-indigo-600 hover:bg-indigo-50 transition-colors">Features</Link></SheetClose>
                 </div>
 
-                <div className="flex flex-col space-y-4 mt-4">
-                  <h4 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Support</h4>
-                  <SheetClose asChild><Link href="/help" className="text-lg font-medium hover:text-indigo-600 transition-colors">Help Center</Link></SheetClose>
-                  <SheetClose asChild><Link href="/contact" className="text-lg font-medium hover:text-indigo-600 transition-colors">Contact Us</Link></SheetClose>
+                <div className="flex flex-col space-y-1 mt-6">
+                  <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider px-2 mb-2">Support</h4>
+                  <SheetClose asChild><Link href="/help" className="text-base font-medium px-2 py-2 rounded-md hover:text-indigo-600 hover:bg-indigo-50 transition-colors">Help Center</Link></SheetClose>
+                  <SheetClose asChild><Link href="/contact" className="text-base font-medium px-2 py-2 rounded-md hover:text-indigo-600 hover:bg-indigo-50 transition-colors">Contact Us</Link></SheetClose>
                 </div>
 
                 <div className="mt-auto pt-8">

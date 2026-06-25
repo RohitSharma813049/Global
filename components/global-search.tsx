@@ -54,7 +54,7 @@ export default function GlobalSearch({ className }: { className?: string }) {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && query.trim()) {
       setIsOpen(false)
-      router.push(`/category?q=${encodeURIComponent(query.trim())}`)
+      router.push(`/explore?q=${encodeURIComponent(query.trim())}`)
     }
   }
 
@@ -123,7 +123,7 @@ export default function GlobalSearch({ className }: { className?: string }) {
               ))}
               <div className="p-3 bg-gray-50/80 border-t border-gray-100 mt-2">
                 <Link 
-                  href={`/category?q=${encodeURIComponent(query)}`}
+                  href={`/explore?q=${encodeURIComponent(query)}`}
                   onClick={() => setIsOpen(false)}
                   className="text-sm font-semibold text-indigo-600 hover:text-indigo-700 flex items-center justify-center w-full py-2 rounded-lg hover:bg-indigo-50 transition-colors"
                 >

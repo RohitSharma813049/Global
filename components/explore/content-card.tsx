@@ -60,7 +60,7 @@ export default function ContentCard({
   const handleBookmarkClick = (e: React.MouseEvent) => {
     e.preventDefault(); // Prevent navigating if clicking the whole card
     if (!session) {
-      router.push(`/signin?callbackUrl=/category`)
+      router.push(`/signin?callbackUrl=/explore`)
       return
     }
     onBookmarkToggle()

@@ -76,7 +76,7 @@ export async function GET(request: Request) {
         id: c.id,
         title: c.name,
         subtitle: 'Category',
-        link: `/category/${c.slug}`,
+        link: `/explore/${c.slug}`,
       })),
       ...scholars.map((s) => {
         const name = (s.users?.raw_user_meta_data as any)?.name || s.users?.email || 'Unknown Scholar';

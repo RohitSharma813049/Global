@@ -143,7 +143,7 @@ export default function Dashboard() {
             const pub = item.publications;
             if (!pub) return null;
             return (
-              <Link href={`/category`} key={index}>
+              <Link href={`/explore`} key={index}>
                 <div className="p-4 mb-4 border rounded-xl hover:shadow-md transition-shadow cursor-pointer bg-gray-50 hover:bg-white">
                   <h3 className="font-semibold text-gray-900">{pub.title}</h3>
                   <p className="text-sm text-gray-500 mt-1">

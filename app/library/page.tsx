@@ -15,7 +15,7 @@ export default function LibraryPage() {
         <p className="text-xl text-gray-600 leading-relaxed max-w-2xl mx-auto mb-10">
           Your personal collection of saved papers, thesis, and eBooks will appear here. Start exploring to build your library.
         </p>
-        <Link href="/category" className="inline-flex items-center px-8 py-4 text-lg font-bold rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 transition-all shadow-md">
+        <Link href="/explore" className="inline-flex items-center px-8 py-4 text-lg font-bold rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 transition-all shadow-md">
           <Search className="w-5 h-5 mr-2" /> Explore Papers
         </Link>
       </main>

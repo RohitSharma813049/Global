@@ -80,14 +80,14 @@ export default async function PublicationDetailPage({ params }: Props) {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
             <div className="absolute top-24 left-6 md:left-12">
-              <Link href="/category" className="inline-flex items-center text-sm font-medium text-white/90 hover:text-white transition-colors drop-shadow-md">
+              <Link href="/explore" className="inline-flex items-center text-sm font-medium text-white/90 hover:text-white transition-colors drop-shadow-md">
                 <ArrowLeft className="w-4 h-4 mr-2" /> Back to Explore
               </Link>
             </div>
           </div>
         ) : (
           <div className="pt-32 px-6 md:px-12 max-w-7xl mx-auto">
-            <Link href="/category" className="inline-flex items-center text-sm font-medium text-zinc-500 hover:text-blue-600 transition-colors">
+            <Link href="/explore" className="inline-flex items-center text-sm font-medium text-zinc-500 hover:text-blue-600 transition-colors">
               <ArrowLeft className="w-4 h-4 mr-2" /> Back to Explore
             </Link>
           </div>

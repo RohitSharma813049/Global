@@ -39,7 +39,7 @@ export async function createCategory(name: string, slug: string, parent_id?: str
     .single()
   if (error) throw new Error(error.message)
   revalidatePath('/dashboard/admin/categories')
-  revalidatePath('/category')
+  revalidatePath('/explore')
   return data
 }
 
@@ -51,7 +51,7 @@ export async function updateCategory(id: string, name: string, slug: string, par
     .eq('id', id)
   if (error) throw new Error(error.message)
   revalidatePath('/dashboard/admin/categories')
-  revalidatePath('/category')
+  revalidatePath('/explore')
 }
 
 export async function deleteCategory(id: string) {
@@ -70,7 +70,7 @@ export async function deleteCategory(id: string) {
     if (error) throw error
 
     revalidatePath('/dashboard/admin/categories')
-    revalidatePath('/category')
+    revalidatePath('/explore')
     return { success: true }
   } catch (error: any) {
     return { error: error.message }
@@ -113,7 +113,7 @@ export async function createCustomCategory(name: string, parent_id?: string) {
     if (error) throw error
 
     revalidatePath('/dashboard/admin/categories')
-    revalidatePath('/category')
+    revalidatePath('/explore')
     return { category: data }
   } catch (error: any) {
     return { error: error.message }
@@ -143,7 +143,7 @@ export async function createContentType(name: string, slug: string, icon_name: s
     .single()
   if (error) throw new Error(error.message)
   revalidatePath('/dashboard/admin/content-types')
-  revalidatePath('/category')
+  revalidatePath('/explore')
   return data
 }
 
@@ -155,7 +155,7 @@ export async function updateContentType(id: string, name: string, slug: string, 
     .eq('id', id)
   if (error) throw new Error(error.message)
   revalidatePath('/dashboard/admin/content-types')
-  revalidatePath('/category')
+  revalidatePath('/explore')
 }
 
 export async function deleteContentType(id: string) {
@@ -166,6 +166,6 @@ export async function deleteContentType(id: string) {
     .eq('id', id)
   if (error) throw new Error(error.message)
   revalidatePath('/dashboard/admin/content-types')
-  revalidatePath('/category')
+  revalidatePath('/explore')
 }
 

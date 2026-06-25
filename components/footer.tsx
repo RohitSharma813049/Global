@@ -6,7 +6,7 @@ import { Separator } from '@/components/ui/separator'
 
 const footerLinks = {
   'Quick Links': [
-    { name: 'Explore', href: '/category' },
+    { name: 'Explore', href: '/explore' },
     { name: 'For Scholars', href: '/signin' },
     { name: 'Features', href: '/features' },
     { name: 'About', href: '/about' },

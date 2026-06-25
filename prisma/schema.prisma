@@ -592,7 +592,7 @@ model scholars {
   institution     String?
   qualification   String?
   specialization  String?
-  verified        Boolean?       @default(true)
+  verified        Boolean?       @default(false)
   is_featured     Boolean?       @default(false)
   total_views     Int?           @default(0)
   total_downloads Int?           @default(0)

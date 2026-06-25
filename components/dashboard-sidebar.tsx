@@ -32,14 +32,14 @@ export default function DashboardSidebar() {
   const { isPinned, setIsPinned, setIsHovered, isExpanded } = useSidebar();
 
   const readerLinks = [
-    { name: "Explore", href: "/category", icon: MdExplore },
+    { name: "Explore", href: "/explore", icon: MdExplore },
     { name: "My Library", href: "/library", icon: MdLibraryBooks },
     { name: "Saved Papers", href: "/library/saved", icon: MdBookmark },
     { name: "Become a Scholar", href: "/dashboard/scholar", icon: MdDescription },
   ];
 
   const scholarLinks = [
-    { name: "Explore", href: "/category", icon: MdExplore },
+    { name: "Explore", href: "/explore", icon: MdExplore },
     { name: "My Library", href: "/library", icon: MdLibraryBooks },
     { name: "Saved Papers", href: "/library/saved", icon: MdBookmark },
     { name: "Scholar Profile", href: "/dashboard/scholar", icon: MdDescription },

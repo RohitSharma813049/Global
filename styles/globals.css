@@ -97,7 +97,7 @@
   --color-blue-800: #17082f;
   --color-blue-900: #0b0417;
   --color-blue-950: #05020c;
-  --font-sans: 'Geist', 'Geist Fallback';
+  --font-sans: var(--font-space-grotesk), 'Geist', 'Geist Fallback', sans-serif;
   --font-mono: 'Geist Mono', 'Geist Mono Fallback';
   --color-background: var(--background);
   --color-foreground: var(--foreground);

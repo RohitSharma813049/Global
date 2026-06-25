@@ -371,7 +371,7 @@ export async function updatePublicationContent(id: string, updates: { title?: st
     if (error) throw error
 
     revalidatePath('/dashboard/admin/publications')
-    revalidatePath('/category')
+    revalidatePath('/explore')
     return { success: true }
   } catch (error: any) {
     return { error: error.message }
@@ -416,7 +416,7 @@ export async function deletePublication(id: string) {
 
     revalidatePath('/dashboard/scholar/publications')
     revalidatePath('/dashboard/admin/publications')
-    revalidatePath('/category')
+    revalidatePath('/explore')
 
     return { success: true }
   } catch (error: any) {

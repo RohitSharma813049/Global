@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { uploadPublication } from '@/app/actions/publications'
 import { getCategories } from '@/app/actions/taxonomy'
 import { useRouter } from 'next/navigation'
-import { CategoryMultiSelect } from '@/components/category-multi-select'
+import { CategoryMultiSelect } from '@/components/explore-multi-select'
 import dynamic from 'next/dynamic'
 import 'react-quill-new/dist/quill.snow.css'
 
