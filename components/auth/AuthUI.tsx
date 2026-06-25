@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import toast from "react-hot-toast";
 import "./auth.css";
 
@@ -214,20 +215,14 @@ export default function AuthUI({ initialScreen }: AuthUIProps) {
       <div className="auth-left">
         {/* Top bar */}
         <div className="auth-topbar">
-          <Link href="/" className="auth-logo">
-            <div className="auth-logo-badge">
-              <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-                <rect x="3" y="4" width="9" height="12" rx="1.5" stroke="white" strokeWidth="1.4" />
-                <line x1="3" y1="7.5" x2="12" y2="7.5" stroke="white" strokeWidth="1.2" />
-                <circle cx="15" cy="13" r="3.5" stroke="white" strokeWidth="1.3" />
-                <line x1="15" y1="9.5" x2="15" y2="16.5" stroke="white" strokeWidth="1.1" />
-                <line x1="11.5" y1="13" x2="18.5" y2="13" stroke="white" strokeWidth="1.1" />
-              </svg>
-            </div>
-            <div className="auth-logo-text">
-              <span className="auth-logo-abbr">GSP</span>
-              <span className="auth-logo-full">Global Scholar Publications</span>
-            </div>
+          <Link href="/" className="flex items-center gap-0">
+            <Image
+              src="/logo1.png"
+              alt="Global Scholar Publications"
+              width={140}
+              height={50}
+              className="h-auto w-auto"
+            />
           </Link>
           <Link href="/" className="auth-topbar-link">
             <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
@@ -627,7 +622,7 @@ export default function AuthUI({ initialScreen }: AuthUIProps) {
            RIGHT — Image Panel
       ═══════════════════════════════ */}
       <div className="auth-right" aria-hidden="true">
-        <div className="auth-right-img" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1200&h=900&fit=crop&auto=format&q=85')", opacity: 1 }}></div>
+        <div className="auth-right-img" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1200&h=900&fit=crop&auto=format&q=85')", opacity: 1 }}></div>
         <div className="auth-right-overlay"></div>
         <div className="auth-right-texture"></div>
 
