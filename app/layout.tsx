@@ -3,8 +3,7 @@ import { Cormorant_Garamond, Space_Grotesk } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { Providers } from './providers'
 import '../styles/globals.css'
-import './gsp-sections.css'
-import Header from '@/components/header'
+import Header from "@/components/layout/header"
 import { Toaster } from 'react-hot-toast'
 
 const cormorantGaramond = Cormorant_Garamond({ 

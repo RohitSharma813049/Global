@@ -1,4 +1,4 @@
-import Footer from "@/components/footer"
+import Footer from "@/components/layout/footer"
 import { BookMarked, Search } from "lucide-react"
 import Link from "next/link"
 import { BackButton } from "@/components/back-button"

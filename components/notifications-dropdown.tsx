@@ -13,16 +13,16 @@ export function NotificationsDropdown() {
   const [notifications, setNotifications] = useState<any[]>([]);
   const [isOpen, setIsOpen] = useState(false);
 
+  const fetchNotifications = async () => {
+    const data = await getNotifications();
+    setNotifications(data);
+  };
+
   React.useEffect(() => {
     fetchNotifications();
     const interval = setInterval(fetchNotifications, 60000); // 1 min poll
     return () => clearInterval(interval);
   }, []);
-
-  const fetchNotifications = async () => {
-    const data = await getNotifications();
-    setNotifications(data);
-  };
 
   const unreadCount = notifications.filter((n: any) => !n.is_read).length;
 

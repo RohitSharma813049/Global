@@ -1,4 +1,4 @@
-import Footer from "@/components/footer"
+import Footer from "@/components/layout/footer"
 import { BackButton } from "@/components/back-button"
 
 export default function PrivacyPage() {

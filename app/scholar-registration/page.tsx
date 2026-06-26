@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import Footer from "@/components/footer";
+import Footer from "@/components/layout/footer";
 import { MdSchool, MdPerson, MdDomain, MdUploadFile } from "react-icons/md";
 import toast from "react-hot-toast";
 

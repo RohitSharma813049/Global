@@ -28,17 +28,17 @@ export default function NotificationsBell() {
   const [isOpen, setIsOpen] = useState(false)
   const router = useRouter()
 
+  const fetchNotifications = async () => {
+    const data = await getNotifications()
+    setNotifications(data as Notification[])
+  }
+
   useEffect(() => {
     fetchNotifications()
     // Optionally set up an interval to poll for new notifications here
     const interval = setInterval(fetchNotifications, 60000) // Poll every minute
     return () => clearInterval(interval)
   }, [])
-
-  const fetchNotifications = async () => {
-    const data = await getNotifications()
-    setNotifications(data as Notification[])
-  }
 
   const unreadCount = notifications.filter(n => !n.is_read).length
 

@@ -15,7 +15,7 @@ export interface SearchParams {
 export async function searchPublications(params: SearchParams) {
   const { query, type, category, year, sortBy = 'Relevance', limit = 10, cursor } = params;
 
-  let where: any = { status: 'published' };
+  const where: any = { status: 'published' };
 
   if (query && query.length >= 2) {
     where.OR = [

@@ -1,5 +1,5 @@
-import Footer from "@/components/footer"
-import Header from "@/components/header"
+import Footer from "@/components/layout/footer"
+import Header from "@/components/layout/header"
 import { Search, Filter, BookOpen, Download, Eye } from "lucide-react"
 import GlobalSearch from "@/components/global-search"
 import InfiniteSearchResults from "@/components/infinite-search-results"

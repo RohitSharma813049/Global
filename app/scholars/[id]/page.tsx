@@ -1,6 +1,6 @@
-import GSPDistinguishedScholars from "@/components/GSPDistinguishedScholars"
+import GSPDistinguishedScholars from "@/components/scholars/GSPDistinguishedScholars"
 import { notFound } from "next/navigation"
-import Footer from "@/components/footer"
+import Footer from "@/components/layout/footer"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { prisma } from "@/lib/db"

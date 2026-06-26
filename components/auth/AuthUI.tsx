@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import toast from "react-hot-toast";
-import "./auth.css";
 
 type Screen = "signin" | "signup" | "otp" | "forgot" | "reset-sent";
 type Role = "scholar" | "reader";

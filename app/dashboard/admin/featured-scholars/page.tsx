@@ -5,7 +5,7 @@ import { getAllScholarsForAdmin, toggleScholarFeaturedStatus } from '@/app/actio
 import toast from 'react-hot-toast'
 
 export default function FeaturedScholarsManager() {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   const [scholars, setScholars] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -21,7 +21,7 @@ export default function FeaturedScholarsManager() {
     }
   }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+   
   useEffect(() => { void loadScholars() }, [])
 
   const handleToggle = async (id: string, currentStatus: boolean) => {
@@ -62,7 +62,7 @@ export default function FeaturedScholarsManager() {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {scholars.map(scholar => {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                 
                 const name = (scholar.users?.raw_user_meta_data as any)?.name || scholar.users?.email || 'Unknown User'
                 return (
                   <tr key={String(scholar.id)}>

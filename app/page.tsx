@@ -1,24 +1,24 @@
 import dynamic from 'next/dynamic'
-import HomeHero from '@/components/home-hero'
+import HomeHero from "@/components/home/home-hero"
 
 // Lazy load below-the-fold components
-const FeaturedContent = dynamic(() => import('@/components/featured-content'))
-const ExploreCategories = dynamic(() => import('@/components/explore-categories'))
-const GspFeaturedContent = dynamic(() => import('@/components/gsp-featured-content'))
-const GspExploreCategories = dynamic(() => import('@/components/gsp-explore-categories'))
-const GspSubjectCategories = dynamic(() => import('@/components/gsp-subject-categories'))
-const GspFeaturedScholars = dynamic(() => import('@/components/gsp-featured-scholars'))
-const HowItWorks = dynamic(() => import('@/components/how-it-works'))
-const FeaturedScholars = dynamic(() => import('@/components/featured-scholars'))
-const Testimonials = dynamic(() => import('@/components/testimonials'))
-const Footer = dynamic(() => import('@/components/footer'))
-const RecentNewsBlogs = dynamic(() => import('@/components/gsp-recent-blogs'))
-const FaqSection = dynamic(() => import('@/components/faq-section'))
-const CtaBanner = dynamic(() => import('@/components/cta-banner'))
+const FeaturedContent = dynamic(() => import("@/components/home/featured-content"))
+const ExploreCategories = dynamic(() => import("@/components/home/explore-categories"))
+const GspFeaturedContent = dynamic(() => import("@/components/home/gsp-featured-content"))
+const GspExploreCategories = dynamic(() => import("@/components/home/gsp-explore-categories"))
+const GspSubjectCategories = dynamic(() => import("@/components/home/gsp-subject-categories"))
+const GspFeaturedScholars = dynamic(() => import("@/components/scholars/gsp-featured-scholars"))
+const HowItWorks = dynamic(() => import("@/components/shared/how-it-works"))
+const FeaturedScholars = dynamic(() => import("@/components/scholars/featured-scholars"))
+const Testimonials = dynamic(() => import("@/components/shared/testimonials"))
+const Footer = dynamic(() => import("@/components/layout/footer"))
+const RecentNewsBlogs = dynamic(() => import("@/components/home/gsp-recent-blogs"))
+const FaqSection = dynamic(() => import("@/components/shared/faq-section"))
+const CtaBanner = dynamic(() => import("@/components/shared/cta-banner"))
 import { getHomepageSettings, getBlogs, getNews, getTestimonials, getFeaturedScholars } from '@/app/queries/cms'
 import { getPlatformStats } from '@/app/actions/stats'
 
-import ScrollAnimation from '@/components/scroll-animation'
+import ScrollAnimation from "@/components/shared/scroll-animation"
 
 export const revalidate = 60 // Enable ISR caching (60 seconds)
 

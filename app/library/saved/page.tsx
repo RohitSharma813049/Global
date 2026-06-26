@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from "react"
-import Footer from "@/components/footer"
+import Footer from "@/components/layout/footer"
 import { BookMarked, Search, BookOpen } from "lucide-react"
 import Link from "next/link"
 import { BackButton } from "@/components/back-button"

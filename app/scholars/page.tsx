@@ -1,6 +1,6 @@
 import { supabase } from "@/lib/superbaseconfig"
-import GSPDistinguishedScholars from "@/components/GSPDistinguishedScholars"
-import Footer from "@/components/footer"
+import GSPDistinguishedScholars from "@/components/scholars/GSPDistinguishedScholars"
+import Footer from "@/components/layout/footer"
 
 export default async function ScholarsListingPage() {
   // Fetch all scholars

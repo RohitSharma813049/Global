@@ -1,21 +1,37 @@
-import React from "react";
-import { BackButton } from "@/components/back-button";
+"use client";
+
+import React, { useEffect } from "react";
+import Footer from "@/components/layout/footer";
+import AboutHero from "@/components/about/AboutHero";
+import VisionMission from "@/components/about/VisionMission";
+import WhyChooseUs from "@/components/about/WhyChooseUs";
+import OurProcess from "@/components/about/OurProcess";
 
 export default function About() {
+  useEffect(() => {
+    const io = new IntersectionObserver((entries, observer) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('in-view'), i * 70);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+    return () => {
+      io.disconnect();
+    };
+  }, []);
+
   return (
-    <div className="min-h-screen bg-white py-12">
-      <BackButton />
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-4xl font-extrabold text-gray-900 mb-8">About Us</h1>
-        <p className="text-lg text-gray-600 mb-6">
-          Global Scholar Publication is dedicated to advancing the frontier of human knowledge by connecting researchers, academics, and readers across the globe.
-        </p>
-        <div className="bg-indigo-50 border-l-4 border-indigo-500 p-6 rounded-r-lg">
-          <p className="text-indigo-800 font-medium">
-            Our mission is to make high-quality academic research accessible to everyone, everywhere.
-          </p>
-        </div>
-      </div>
-    </div>
+    <>
+      <AboutHero />
+      <VisionMission />
+      <WhyChooseUs />
+      <OurProcess />
+      <Footer />
+    </>
   );
 }

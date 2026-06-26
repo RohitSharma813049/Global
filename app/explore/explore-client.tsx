@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import Header from "@/components/header";
-import Footer from "@/components/footer";
-import "./explore.css";
+import Link from "next/link";
+import Header from "@/components/layout/header";
+import Footer from "@/components/layout/footer";
 
 interface Publication {
   id: string
@@ -84,9 +84,9 @@ export default function ExploreClient({
       const matchesSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
                             p.abstract?.toLowerCase().includes(searchQuery.toLowerCase());
 
-      const matchesSubject = filters.subjects.length === 0 || filters.subjects.includes(categoryName);
-      const matchesAuthor = filters.authors.length === 0 || filters.authors.includes(authorName);
-      const matchesType = filters.types.length === 0 || filters.types.includes(p.content_type);
+      const matchesSubject = filters.subjects.length === 0 || filters.subjects.some(s => s.toLowerCase() === categoryName.toLowerCase());
+      const matchesAuthor = filters.authors.length === 0 || filters.authors.some(a => a.toLowerCase() === authorName.toLowerCase());
+      const matchesType = filters.types.length === 0 || filters.types.some(t => t.toLowerCase() === (p.content_type || "").toLowerCase());
       const matchesYear = pubYear >= filters.yearRange[0] && pubYear <= filters.yearRange[1];
 
       return matchesSearch && matchesSubject && matchesAuthor && matchesType && matchesYear;
@@ -127,7 +127,7 @@ export default function ExploreClient({
             <div className="ph-top">
               <div>
                 <nav className="ph-breadcrumb" aria-label="Breadcrumb">
-                  <a href="/">Home</a>
+                  <Link href="/">Home</Link>
                   <span className="ph-breadcrumb-sep">›</span>
                   <span>Explore Publications</span>
                 </nav>
@@ -137,19 +137,19 @@ export default function ExploreClient({
               <div className="ph-stats" aria-label="Repository statistics">
                 <div className="ph-stat">
                   <div className="ph-stat-n">{publications.length}</div>
-                  <div className="ph-stat-l">Publications</div>
+                  <div className="ph-stat-l">PUBLICATIONS</div>
                 </div>
                 <div className="ph-stat">
-                  <div className="ph-stat-n">{allCategories.length}</div>
-                  <div className="ph-stat-l">Subjects</div>
+                  <div className="ph-stat-n">350+</div>
+                  <div className="ph-stat-l">JOURNALS</div>
                 </div>
                 <div className="ph-stat">
-                  <div className="ph-stat-n">{availableAuthors.length}</div>
-                  <div className="ph-stat-l">Scholars</div>
+                  <div className="ph-stat-n">25K+</div>
+                  <div className="ph-stat-l">RESEARCHERS</div>
                 </div>
                 <div className="ph-stat">
-                  <div className="ph-stat-n">{contentTypes.length}</div>
-                  <div className="ph-stat-l">Types</div>
+                  <div className="ph-stat-n">80+</div>
+                  <div className="ph-stat-l">COUNTRIES</div>
                 </div>
               </div>
             </div>
@@ -195,6 +195,45 @@ export default function ExploreClient({
               </button>
             </div>
 
+            {/* Active filters */}
+            {(filters.subjects.length > 0 || filters.types.length > 0 || filters.authors.length > 0 || filters.yearRange[1] < new Date().getFullYear()) && (
+              <>
+                <div className="sb-block" id="activeBlock">
+                  <div className="sb-block-title">
+                    Active Filters
+                    <button className="sb-clear-btn" id="clearAllBtn" onClick={() => setFilters({ subjects: [], subcategories: [], authors: [], types: [], yearRange: [2000, new Date().getFullYear()] })}>Clear all</button>
+                  </div>
+                  <div className="active-chip-row" id="activeChipRow">
+                    {filters.types.map(t => (
+                      <div key={`type-${t}`} className="active-chip">
+                        {contentTypes.find(ct => ct.slug === t)?.name || t}
+                        <span className="active-chip-x" onClick={() => toggleFilter('types', t)}>✕</span>
+                      </div>
+                    ))}
+                    {filters.subjects.map(s => (
+                      <div key={`subj-${s}`} className="active-chip">
+                        {s}
+                        <span className="active-chip-x" onClick={() => toggleFilter('subjects', s)}>✕</span>
+                      </div>
+                    ))}
+                    {filters.authors.map(a => (
+                      <div key={`auth-${a}`} className="active-chip">
+                        {a}
+                        <span className="active-chip-x" onClick={() => toggleFilter('authors', a)}>✕</span>
+                      </div>
+                    ))}
+                    {filters.yearRange[1] < new Date().getFullYear() && (
+                      <div className="active-chip">
+                        Up to {filters.yearRange[1]}
+                        <span className="active-chip-x" onClick={() => setFilters(prev => ({ ...prev, yearRange: [prev.yearRange[0], new Date().getFullYear()] }))}>✕</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="sb-hr" id="activeHr"></div>
+              </>
+            )}
+
             {/* Publication Type */}
             <div className="sb-block">
               <div className="sb-block-title">Publication Type</div>
@@ -215,7 +254,7 @@ export default function ExploreClient({
             {/* Subject Category */}
             <div className="sb-block">
               <div className="sb-block-title">Subject Category</div>
-              {availableSubjects.map((subject) => (
+              {availableSubjects.slice(0, 4).map((subject) => (
                 <label key={subject} className="filter-row">
                   <input 
                     type="checkbox" 
@@ -226,6 +265,27 @@ export default function ExploreClient({
                   <span className="filter-label">{subject}</span>
                 </label>
               ))}
+              {availableSubjects.length > 4 && (
+                <details className="group cursor-pointer">
+                  <summary className="show-more list-none" id="showMoreSubBtn">
+                    Show {availableSubjects.length - 4} more
+                    <svg className="group-open:rotate-180 transition-transform" width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                  </summary>
+                  <div className="mt-2">
+                    {availableSubjects.slice(4).map((subject) => (
+                      <label key={subject} className="filter-row">
+                        <input 
+                          type="checkbox" 
+                          checked={filters.subjects.includes(subject)}
+                          onChange={() => toggleFilter('subjects', subject)}
+                        />
+                        <span className="fcheck"></span>
+                        <span className="filter-label">{subject}</span>
+                      </label>
+                    ))}
+                  </div>
+                </details>
+              )}
             </div>
             <div className="sb-hr"></div>
 
@@ -256,12 +316,14 @@ export default function ExploreClient({
               <input 
                 type="range" 
                 className="year-range" 
+                id="yearSlider"
                 min="2000" 
                 max={new Date().getFullYear()} 
                 value={filters.yearRange[1]}
                 onChange={handleYearChange}
                 step="1" 
                 aria-label="Maximum year" 
+                style={{ background: `linear-gradient(to right, var(--violet) ${((filters.yearRange[1] - 2000) / (new Date().getFullYear() - 2000)) * 100}%, var(--rule) ${((filters.yearRange[1] - 2000) / (new Date().getFullYear() - 2000)) * 100}%)` }}
               />
             </div>
           </aside>
@@ -269,7 +331,7 @@ export default function ExploreClient({
           {/* ── RESULTS ── */}
           <main className="results-panel">
             {/* Toolbar */}
-            <div className="toolbar reveal in">
+            <div className="toolbar reveal in-view">
               <button className="toolbar-filter-btn" onClick={() => setIsSidebarOpen(true)} aria-label="Open filters">
                 <svg width="14" height="14" viewBox="0 0 15 15" fill="none">
                   <path d="M1 3h13M3 7.5h9M6 12h3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
@@ -322,47 +384,52 @@ export default function ExploreClient({
               </div>
             </div>
 
-            {filteredPublications.length === 0 ? (
+            {filteredPublications.length === 0 && (
               <div className="flex justify-center py-12 text-gray-500">No publications found matching your filters.</div>
-            ) : (
-              <div className={`pub-grid ${isListView ? "list-mode" : ""}`}>
-                {filteredPublications.map(pub => {
-                  const authorName = pub.scholars?.users?.raw_user_meta_data?.full_name || pub.scholars?.users?.raw_user_meta_data?.name || "Unknown Author";
-                  const subjectName = pub.categories?.name || "General";
-                  const coverImage = pub.cover_image || "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600&h=360&fit=crop&auto=format&q=80";
-                  
-                  return (
-                    <a key={pub.id} href={`/publications/${pub.id}`} className="pub-card reveal in">
-                      <div className="pc-img">
-                        <span className="pc-type-badge">{pub.content_type || 'Publication'}</span>
-                        <button className="pc-bookmark" aria-label="Bookmark" onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}>
-                          <svg width="12" height="12" viewBox="0 0 13 14" fill="none"><path d="M2 1h9a1 1 0 011 1v11l-5.5-3L2 13V2a1 1 0 011-1z" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                        </button>
-                        <img src={coverImage} alt="" loading="lazy" />
-                      </div>
-                      <div className="pc-body">
-                        <p className="pc-subject">{subjectName}</p>
-                        <h3 className="pc-title">{pub.title}</h3>
-                        <div className="pc-author">
-                          <div className="pc-avatar">
-                            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=56&h=56&fit=crop&crop=face&auto=format&q=80" alt="" />
-                          </div>
-                          <span className="pc-author-name">{authorName}</span>
-                        </div>
-                        <p className="pc-abstract-label">Abstract</p>
-                        <p className="pc-desc">{pub.abstract?.replace(/<[^>]+>/g, '')?.replace(/&nbsp;/g, ' ') || "No abstract available."}</p>
-                        <div className="pc-footer">
-                          <span className="pc-read">Read Full Publication <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg></span>
-                          <button className="pc-dl" onClick={(e) => { e.preventDefault(); e.stopPropagation(); }} aria-label="Download PDF">
-                            <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M6 1v7M3 6l3 3 3-3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" /><path d="M1 10h10" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" /></svg> PDF
-                          </button>
-                        </div>
-                      </div>
-                    </a>
-                  );
-                })}
-              </div>
             )}
+            <div id="pubGrid" className={isListView ? "list-mode" : ""}>
+              {filteredPublications.map(pub => (
+                <Link href={`/publications/${pub.id}`} key={pub.id} className="pub-card reveal in-view">
+                  <div className="pc-img">
+                    <span className="pc-type-badge pbadge-type">{pub.content_type || 'PUBLICATION'}</span>
+                    <button className="pc-bookmark" aria-label="Save publication" onClick={(e) => e.preventDefault()}>
+                      <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M12.6667 14L8 10.6667L3.33333 14V3.33333C3.33333 2.97971 3.47381 2.64057 3.72386 2.39052C3.97391 2.14048 4.31304 2 4.66667 2H11.3333C11.687 2 12.0261 2.14048 12.2761 2.39052C12.5262 2.64057 12.6667 2.97971 12.6667 3.33333V14Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                    </button>
+                    <img 
+                      src={pub.cover_image || "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=400&fit=crop"} 
+                      alt={pub.title} 
+                    />
+                  </div>
+                  <div className="pc-body">
+                    <div className="pc-meta">
+                      <span className="pc-subject">{pub.categories?.name || 'GENERAL'}</span>
+                    </div>
+                    <h3 className="pc-title">{pub.title}</h3>
+                    <div className="pc-author">
+                      <div className="pc-avatar">
+                        <img 
+                          src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop" 
+                          alt={pub.scholars?.users?.raw_user_meta_data?.full_name || pub.scholars?.users?.raw_user_meta_data?.name || "Author"} 
+                        />
+                      </div>
+                      <span className="pc-author-name">
+                        {pub.scholars?.users?.raw_user_meta_data?.full_name || pub.scholars?.users?.raw_user_meta_data?.name || "Unknown Author"}
+                      </span>
+                    </div>
+                    <div className="pc-desc">
+                      <p>{pub.abstract}</p>
+                    </div>
+                    <div className="pc-footer">
+                      <span className="pc-read">Read Full Publication →</span>
+                      <div className="pc-dl">
+                        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" style={{marginRight: 4}}><path d="M14 10V12.6667C14 13.0203 13.8595 13.3594 13.6095 13.6095C13.3594 13.8595 13.0203 14 12.6667 14H3.33333C2.97971 14 2.64057 13.8595 2.39052 13.6095C2.14048 13.3594 2 13.0203 2 12.6667V10M4.66667 6.66667L8 10M8 10L11.3333 6.66667M8 10V2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                        <span className="pdf-pi">PDF</span>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </main>
         </div>
       </div>

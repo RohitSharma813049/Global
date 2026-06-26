@@ -1,10 +1,7 @@
 import { notFound } from "next/navigation"
 import { supabase } from "@/lib/superbaseconfig"
-import Header from "@/components/header"
-import Footer from "@/components/footer"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Download, Share2, BookMarked, ArrowLeft, User, Eye, FileText, Image as ImageIcon } from "lucide-react"
+import Header from "@/components/layout/header"
+import Footer from "@/components/layout/footer"
 import Link from "next/link"
 import Image from "next/image"
 import { trackPublicationView } from "@/app/actions/history"
@@ -12,6 +9,8 @@ import { prisma } from "@/lib/db"
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import SaveButton from "@/components/save-button"
+import PublicationViewer from "./PublicationViewer"
+
 
 interface Props {
   params: {
@@ -56,6 +55,7 @@ export default async function PublicationDetailPage({ params }: Props) {
   });
 
   const isVideo = publication.content_type === 'video'
+  const authorName = (publication.scholars?.users?.raw_user_meta_data as any)?.name || (publication.scholars?.users?.raw_user_meta_data as any)?.full_name || publication.author_name || "Unknown Scholar";
   
   // Format dates securely
   const publishDate = publication.created_at ? new Date(publication.created_at).toLocaleDateString('en-US', {
@@ -64,269 +64,193 @@ export default async function PublicationDetailPage({ params }: Props) {
     day: 'numeric'
   }) : 'Unknown Date';
 
+  const doiValue = publication.doi || `10.9876/gsp.${new Date().getFullYear()}.${publication.id.substring(0,8)}`;
+
   return (
     <>
-      <main className="min-h-screen bg-white">
-        
-        {/* ── MASSIVE FULL-WIDTH BANNER ── */}
-        {publication.banner_image || publication.cover_image ? (
-          <div className="w-full h-[50vh] md:h-[65vh] relative bg-zinc-100">
-            <Image 
-              src={publication.banner_image || publication.cover_image || ''} 
-              alt="Publication Banner" 
-              fill 
-              className="object-cover" 
-              priority
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-            <div className="absolute top-24 left-6 md:left-12">
-              <Link href="/explore" className="inline-flex items-center text-sm font-medium text-white/90 hover:text-white transition-colors drop-shadow-md">
-                <ArrowLeft className="w-4 h-4 mr-2" /> Back to Explore
-              </Link>
-            </div>
-          </div>
-        ) : (
-          <div className="pt-32 px-6 md:px-12 max-w-7xl mx-auto">
-            <Link href="/explore" className="inline-flex items-center text-sm font-medium text-zinc-500 hover:text-blue-600 transition-colors">
-              <ArrowLeft className="w-4 h-4 mr-2" /> Back to Explore
-            </Link>
-          </div>
-        )}
+      <div className="gsp-publication-page">
 
-        <div className="max-w-[1400px] mx-auto px-6 md:px-12 pb-24">
-          
-          {/* ── EDITORIAL HEADER ── */}
-          <div className={`pt-12 md:pt-16 pb-12 ${!(publication.banner_image || publication.cover_image) && 'border-t border-zinc-200 mt-8'}`}>
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
-              <div className="max-w-4xl">
-                <div className="flex flex-wrap items-center gap-3 mb-6">
-                  <span className="text-xs font-bold uppercase tracking-widest text-blue-600">
-                    {publication.content_type}
+        {/* ══ BREADCRUMB ══ */}
+        <div className="bc-bar">
+          <div className="bc-inner">
+            <Link href="/">Home</Link><span className="bc-sep">›</span>
+            <Link href="/explore">Explore</Link><span className="bc-sep">›</span>
+            <span style={{ color: 'var(--mid)' }}>{publication.title}</span>
+          </div>
+        </div>
+
+        {/* ══ PUBLICATION HEADER — WHITE BACKGROUND ══ */}
+        <header className="pub-hd">
+          <div className="pub-hd-inner">
+
+            <div className="pub-badges">
+              <span className="pbadge pbadge-type"><span className="pbadge-dot"></span>{publication.content_type || 'Publication'}</span>
+              <span className="pbadge pbadge-oa"><span className="pbadge-dot"></span>Open Access</span>
+            </div>
+
+            <h1 className="pub-title">{publication.title}</h1>
+            {/* Shortened abstract for subtitle if no subtitle field */}
+            <p className="pub-subtitle">
+              {publication.abstract ? (publication.abstract.replace(/<[^>]+>/g, '').substring(0, 150) + '...') : ''}
+            </p>
+
+            <div className="pub-rule"></div>
+
+            <div className="pub-meta">
+              <div className="pub-mi">
+                <p className="pub-mi-label">Author</p>
+                <Link href={publication.scholar_id ? `/scholars/${publication.scholar_id}` : "#"} className="pub-mi-link">
+                  <span className="pub-mi-avatar">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop&crop=face&auto=format&q=80" alt="Author" />
                   </span>
-                  {publication.doi && (
-                    <>
-                      <span className="text-zinc-300">•</span>
-                      <span className="text-xs font-medium tracking-wider text-zinc-500">
-                        DOI: {publication.doi}
-                      </span>
-                    </>
-                  )}
-                </div>
-                <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-zinc-900 tracking-tight leading-[1.1] mb-8">
-                  {publication.title}
-                </h1>
-                
-                <div className="flex items-center gap-4">
-                  <div className="h-12 w-12 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-900 shrink-0">
-                    <User className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold uppercase tracking-widest text-zinc-400 mb-1">Authored By</p>
-                    {publication.scholars ? (
-                      <Link href={`/scholars/${publication.scholars.id}`} className="text-lg font-medium text-zinc-900 hover:text-blue-600 transition-colors">
-                        {(publication.scholars.users?.raw_user_meta_data as any)?.name || (publication.scholars.users?.raw_user_meta_data as any)?.full_name || "Unknown Scholar"}
-                      </Link>
-                    ) : (
-                      <span className="text-lg font-medium text-zinc-900">Unknown Scholar</span>
-                    )}
-                  </div>
-                </div>
+                  {authorName}
+                </Link>
               </div>
-
-              <div className="flex flex-row md:flex-col gap-6 text-sm text-zinc-500 md:text-right border-t md:border-t-0 border-zinc-100 pt-6 md:pt-0">
-                <div>
-                  <span className="block text-[10px] font-bold uppercase tracking-widest text-zinc-400 mb-1">Published</span>
-                  <span className="text-zinc-900 font-medium">{publishDate}</span>
-                </div>
-                <div className="flex gap-6 md:justify-end">
-                  <div>
-                    <span className="block text-[10px] font-bold uppercase tracking-widest text-zinc-400 mb-1">Views</span>
-                    <span className="text-zinc-900 font-medium">{publication.views || 0}</span>
-                  </div>
-                  <div>
-                    <span className="block text-[10px] font-bold uppercase tracking-widest text-zinc-400 mb-1">Downloads</span>
-                    <span className="text-zinc-900 font-medium">{publication.downloads || 0}</span>
-                  </div>
-                </div>
+              <div className="pub-mi">
+                <p className="pub-mi-label">Institution</p>
+                <p className="pub-mi-val">{publication.institution || "Global Scholar Publications"}</p>
               </div>
+              <div className="pub-mi">
+                <p className="pub-mi-label">Published</p>
+                <p className="pub-mi-val">{publishDate}</p>
+              </div>
+            </div>
 
-              {/* Editorial Gallery */}
-              {(publication.gallery_images?.length > 0 || publication.gallery_videos?.length > 0) && (
-                <div>
-                  <h3 className="text-xs font-bold uppercase tracking-widest text-zinc-900 mb-8 flex items-center gap-2">
-                    <span className="w-4 h-px bg-zinc-900"></span> Visual Appendix
-                  </h3>
-                  
-                  {publication.gallery_images && publication.gallery_images.length > 0 && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-                      {publication.gallery_images.map((imgUrl, index) => (
-                        <div key={index} className={`relative bg-zinc-100 overflow-hidden ${index % 3 === 0 ? 'md:col-span-2 aspect-[21/9]' : 'aspect-[4/5]'}`}>
-                          <Image 
-                            src={imgUrl} 
-                            alt={`Gallery Image ${index + 1}`} 
-                            fill 
-                            className="object-cover hover:scale-105 transition-transform duration-700 ease-out" 
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  )}
+            <div className="pub-doi-row">
+              <span className="doi-label">DOI</span>
+              <span className="doi-val" id="doi-val">{doiValue}</span>
+              <button className="doi-copy">
+                <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><rect x="1" y="3" width="8" height="8" rx="1.2" stroke="currentColor" strokeWidth="1.3"/><path d="M3 3V2a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H9" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/></svg>
+                Copy DOI
+              </button>
+            </div>
 
-                  {publication.gallery_videos && publication.gallery_videos.length > 0 && (
-                    <div className="flex flex-col gap-8">
-                      {publication.gallery_videos.map((vidUrl, index) => (
-                        <div key={index} className="relative bg-zinc-900 aspect-video overflow-hidden">
-                          {vidUrl.includes('youtube.com') || vidUrl.includes('youtu.be') || vidUrl.includes('vimeo.com') ? (
-                            <iframe 
-                              src={vidUrl} 
-                              className="w-full h-full absolute inset-0 border-0" 
-                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                              allowFullScreen
-                            />
-                          ) : (
-                            <video 
-                              src={vidUrl} 
-                              controls 
-                              className="w-full h-full absolute inset-0 object-contain"
-                            />
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
+          </div>
+        </header>
 
+        {/* ══ ACTION BAR ══ */}
+        <div className="act-bar">
+          <div className="act-inner">
+            <p className="act-title">{publication.title}</p>
+
+            {publication.file_url ? (
+              <a href={publication.file_url} target="_blank" download className="abtn abtn-primary text-white">
+                <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 1v8M4 7l3 3 3-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><path d="M1 11h12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
+                <span>Download {isVideo ? 'Video' : 'PDF'}</span>
+              </a>
+            ) : (
+              <button disabled className="abtn bg-gray-200 border-gray-300 text-gray-500">
+                 <span>Not Available</span>
+              </button>
+            )}
+
+            <div className="share-wrap">
+              <button className="abtn">
+                <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="11" cy="3" r="1.5" stroke="currentColor" strokeWidth="1.3"/><circle cx="11" cy="11" r="1.5" stroke="currentColor" strokeWidth="1.3"/><circle cx="3" cy="7" r="1.5" stroke="currentColor" strokeWidth="1.3"/><path d="M9.5 3.8L4.5 6.2M9.5 10.2L4.5 7.8" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/></svg>
+                <span>Share</span>
+              </button>
             </div>
           </div>
+        </div>
 
-          <div className="w-full h-px bg-zinc-200 mb-16" />
+        {/* ══ BODY ══ */}
+        <div className="pub-body">
 
-          {/* ── TWO COLUMN EDITORIAL LAYOUT ── */}
-          <div className="grid lg:grid-cols-12 gap-12 lg:gap-24 relative">
-            
-            {/* LEFT COLUMN: Abstract & Actions (Sticky) */}
-            <div className="lg:col-span-4 relative">
-              <div className="sticky top-32 space-y-12">
-                
-                {/* Actions */}
-                <div className="flex flex-col gap-3">
-                  {session ? (
-                    <>
-                      {publication.file_url ? (
-                        <Link href={publication.file_url} target="_blank" download className="w-full">
-                          <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-none h-14 text-sm font-bold tracking-wider uppercase transition-colors">
-                            <Download className="w-4 h-4 mr-2" /> Download {publication.content_type === 'video' ? 'Video' : 'PDF'}
-                          </Button>
-                        </Link>
-                      ) : (
-                        <Button disabled className="w-full bg-gray-400 text-white rounded-none h-14 text-sm font-bold tracking-wider uppercase transition-colors">
-                          <Download className="w-4 h-4 mr-2" /> Not Available
-                        </Button>
-                      )}
-                      <SaveButton 
-                        publication={{
-                          id: publication.id,
-                          title: publication.title,
-                          type: publication.content_type,
-                          author: (publication.scholars?.users?.raw_user_meta_data as any)?.name || 'Unknown Scholar',
-                          url: `/publications/${publication.id}`
-                        }} 
-                        variant="full" 
+          {/* MAIN */}
+          <main>
+
+            {/* Banner Media */}
+            {(publication.banner_image || publication.cover_image || publication.video_url) && (
+              <div className="pub-sec mb-8">
+                {publication.video_url ? (
+                   <div className="w-full aspect-video bg-black rounded-lg overflow-hidden">
+                      <iframe 
+                        src={publication.video_url} 
+                        className="w-full h-full border-0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowFullScreen
                       />
-                    </>
-                  ) : (
-                    <>
-                      <Link href={`/signin?callbackUrl=/publications/${publication.id}`} className="w-full">
-                        <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-none h-14 text-sm font-bold tracking-wider uppercase transition-colors">
-                          <Download className="w-4 h-4 mr-2" /> Login to Download
-                        </Button>
-                      </Link>
-                      <Link href={`/signin?callbackUrl=/publications/${publication.id}`} className="w-full">
-                        <Button variant="outline" className="w-full rounded-none border-zinc-200 text-zinc-900 hover:bg-zinc-50 h-14 text-sm font-bold tracking-wider uppercase transition-colors">
-                          <BookMarked className="w-4 h-4 mr-2" /> Login to Save
-                        </Button>
-                      </Link>
-                    </>
-                  )}
-                  <Button variant="ghost" className="w-full rounded-none text-zinc-500 hover:text-zinc-900 h-14 text-sm font-bold tracking-wider uppercase transition-colors">
-                    <Share2 className="w-4 h-4 mr-2" /> Share
-                  </Button>
-                </div>
-
-                {/* Abstract */}
-                <div>
-                  <h3 className="text-xs font-bold uppercase tracking-widest text-zinc-900 mb-6 flex items-center gap-2">
-                    <span className="w-4 h-px bg-zinc-900"></span> Abstract
-                  </h3>
-                  <div 
-                    className="prose prose-zinc text-sm leading-relaxed text-justify text-zinc-600 max-w-none break-words" 
-                    dangerouslySetInnerHTML={{ __html: publication.abstract?.replace(/&nbsp;/g, ' ') }} 
-                  />
-                </div>
-                
-              </div>
-            </div>
-
-            {/* RIGHT COLUMN: Media Viewer & Gallery */}
-            <div className="lg:col-span-8 space-y-16">
-              
-              {/* Main Viewer */}
-              <div className="bg-zinc-100 aspect-[4/3] w-full relative overflow-hidden group">
-                {isVideo ? (
-                  <iframe 
-                    src={publication.file_url} 
-                    className="w-full h-full absolute inset-0"
-                    allowFullScreen
-                    title={publication.title}
-                  ></iframe>
+                   </div>
                 ) : (
-                  <iframe 
-                    src={`${publication.file_url}#toolbar=0`} 
-                    className="w-full h-full absolute inset-0 mix-blend-multiply"
-                    title={publication.title}
-                  ></iframe>
+                   <div className="w-full aspect-[21/9] md:aspect-[3/1] bg-zinc-100 rounded-lg overflow-hidden relative">
+                      <Image 
+                        src={publication.banner_image || publication.cover_image || ''} 
+                        alt="Banner" 
+                        fill 
+                        className="object-cover"
+                      />
+                   </div>
                 )}
               </div>
+            )}
 
-            </div>
-          </div>
-
-          {/* ── RELATED CONTENT ── */}
-          {relatedPubs && relatedPubs.length > 0 && (
-            <div className="mt-32 pt-16 border-t border-zinc-200">
-              <h2 className="text-3xl font-extrabold text-zinc-900 tracking-tight mb-12">More in this Category</h2>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12">
-                {relatedPubs.map(pub => (
-                  <Link href={`/publications/${pub.id}`} key={pub.id} className="group">
-                    <div className="flex flex-col h-full">
-                      <div className="w-full aspect-[4/3] bg-zinc-100 mb-6 overflow-hidden relative">
-                         {pub.cover_image ? (
-                           <Image src={pub.cover_image} alt={pub.title} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
-                         ) : (
-                           <div className="absolute inset-0 flex items-center justify-center text-zinc-300">
-                             <FileText className="w-12 h-12" />
-                           </div>
-                         )}
-                      </div>
-                      <span className="text-[10px] font-bold uppercase tracking-widest text-blue-600 mb-3 block">
-                        {pub.content_type}
-                      </span>
-                      <h3 className="font-bold text-lg text-zinc-900 leading-snug group-hover:text-blue-600 transition-colors mb-2 line-clamp-3">
-                        {pub.title}
-                      </h3>
-                      <p className="text-sm text-zinc-500 mt-auto">
-                        {(pub.scholars?.users?.raw_user_meta_data as any)?.name || "Unknown Scholar"}
-                      </p>
-                    </div>
-                  </Link>
-                ))}
+            {/* Abstract */}
+            <div className="pub-sec">
+              <h2 className="sec-label">Abstract</h2>
+              <div className="pub-abstract">
+                <div dangerouslySetInnerHTML={{ __html: publication.abstract?.replace(/&nbsp;/g, ' ') || '' }} />
+              </div>
+              <div className="kws">
+                <span className="kw">{publication.content_type}</span>
+                <span className="kw">Global Scholar</span>
               </div>
             </div>
-          )}
+
+            {/* Viewer */}
+            <div className="pub-sec">
+              <h2 className="sec-label">Read Publication</h2>
+              <PublicationViewer publication={publication} isVideo={isVideo} />
+            </div>
+
+            {/* Related */}
+            {relatedPubs && relatedPubs.length > 0 && (
+              <div className="pub-sec">
+                <h2 className="sec-label">Related Publications</h2>
+                <div className="rel-grid">
+                  {relatedPubs.map(pub => (
+                    <Link href={`/publications/${pub.id}`} key={pub.id} className="rel-card">
+                      <div className="rel-img">
+                        {pub.cover_image ? (
+                          <img src={pub.cover_image} alt="" loading="lazy" />
+                        ) : (
+                          <div className="w-full h-full bg-zinc-100" />
+                        )}
+                        <span className="rel-type">{pub.content_type}</span>
+                      </div>
+                      <div className="rel-body">
+                        <p className="rel-subj">{pub.content_type}</p>
+                        <h4 className="rel-title">{pub.title}</h4>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+          </main>
+
+          {/* SIDEBAR */}
+          <aside className="pub-sb">
+            <div className="sb-card">
+              <div className="sb-head">About the Author</div>
+              <div className="sb-body">
+                <div className="au-hero">
+                  <div className="au-av">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop&crop=face&auto=format&q=80" alt="" />
+                  </div>
+                  <div>
+                    <h3 className="au-name">{authorName}</h3>
+                    <p className="au-inst">{publication.institution || "Independent Researcher"}</p>
+                  </div>
+                </div>
+                <Link href={publication.scholar_id ? `/scholars/${publication.scholar_id}` : "#"} className="flex items-center justify-center gap-2 w-full h-[34px] rounded-[7px] border-[1.5px] border-[#2F115D] text-[#2F115D] text-xs font-medium hover:bg-[#2F115D] hover:text-white transition-colors">
+                  View Profile
+                </Link>
+              </div>
+            </div>
+          </aside>
 
         </div>
-      </main>
+      </div>
       <Footer />
     </>
   )

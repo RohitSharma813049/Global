@@ -67,6 +67,7 @@ export default async function ScholarDashboard() {
   }
 
   // Fetch the scholar's profile data
+  // eslint-disable-next-line prefer-const
   let { data: scholar, error } = await supabaseAdmin
     .from('scholars')
     .select('*')
