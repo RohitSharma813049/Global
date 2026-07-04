@@ -2,11 +2,40 @@
 
 import React, { useState, useEffect } from 'react'
 
+interface HomeHeroProps {
+  title?: string;
+  subtitle?: string;
+  eyebrow?: string;
+  slidesData?: any[];
+  tickerItems?: any[];
+  searchPlaceholder?: string;
+  searchFilters?: string[];
+  topPill?: string;
+  ctaPrimaryText?: string;
+  ctaSecondaryText?: string;
+  trustText?: string;
+  trustAvatars?: string[];
+  stats?: any[];
+}
 
-export default function HomeHero() {
+export default function HomeHero({ 
+  title, 
+  subtitle, 
+  eyebrow, 
+  slidesData,
+  tickerItems,
+  searchPlaceholder,
+  searchFilters,
+  topPill,
+  ctaPrimaryText,
+  ctaSecondaryText,
+  trustText,
+  trustAvatars,
+  stats
+}: HomeHeroProps) {
   const [cur, setCur] = useState(0)
 
-  const slides = [
+  const defaultSlides = [
     {
       label: 'Featured Article',
       title: 'ESG Integration in GCC Markets: A Framework for Sustainable Finance',
@@ -54,6 +83,8 @@ export default function HomeHero() {
     },
   ]
 
+  const slides = slidesData && slidesData.length > 0 ? slidesData : defaultSlides;
+
   useEffect(() => {
     const timer = setInterval(() => {
       setCur((prev) => (prev + 1) % slides.length)
@@ -62,9 +93,19 @@ export default function HomeHero() {
   }, [slides.length])
 
   const [filter, setFilter] = useState('All')
-  const filters = ['All', 'Articles', 'eBooks', 'Theses', 'Magazines', 'Scholars']
+  const filters = searchFilters && searchFilters.length > 0 ? searchFilters : ['All', 'Articles', 'eBooks', 'Theses', 'Magazines', 'Scholars']
 
-  const d = slides[cur]
+  const d = slides[cur] || slides[0]
+
+  const defaultTicker = [
+    { prefix: 'New', text: 'ESG & Sustainable Finance — Dr. Priya Nair-Kapoor' },
+    { prefix: 'Featured', text: 'GCC Economic Diversification — Prof. Khalid Al-Mansouri' },
+    { prefix: 'Open Access', text: 'Decolonising Knowledge Systems — Dr. Ngozi Adeyemi' },
+    { prefix: 'eBook', text: 'AI Ethics in Global Research — Prof. Li Wei' },
+    { prefix: 'Interview', text: 'GSP Series — Dr. Amira Al-Rashidi on Climate Policy' }
+  ]
+  const displayTicker = tickerItems && tickerItems.length > 0 ? tickerItems : defaultTicker
+  const loopedTicker = [...displayTicker, ...displayTicker, ...displayTicker] // Triple it to ensure long scrolling
 
   return (
     <div className="home-hero-container">
@@ -72,33 +113,23 @@ export default function HomeHero() {
         <span className="ticker-label">Latest</span>
         <div className="ticker-track-wrap">
           <div className="ticker-track" id="ticker">
-            <span className="ticker-item"><strong>New:</strong> ESG & Sustainable Finance — Dr. Priya Nair-Kapoor</span>
-            <span className="ticker-item"><strong>Featured:</strong> GCC Economic Diversification — Prof. Khalid Al-Mansouri</span>
-            <span className="ticker-item"><strong>Open Access:</strong> Decolonising Knowledge Systems — Dr. Ngozi Adeyemi</span>
-            <span className="ticker-item"><strong>eBook:</strong> AI Ethics in Global Research — Prof. Li Wei</span>
-            <span className="ticker-item"><strong>Interview:</strong> GSP Series — Dr. Amira Al-Rashidi on Climate Policy</span>
-            <span className="ticker-item"><strong>New:</strong> ESG & Sustainable Finance — Dr. Priya Nair-Kapoor</span>
-            <span className="ticker-item"><strong>Featured:</strong> GCC Economic Diversification — Prof. Khalid Al-Mansouri</span>
-            <span className="ticker-item"><strong>Open Access:</strong> Decolonising Knowledge Systems — Dr. Ngozi Adeyemi</span>
-            <span className="ticker-item"><strong>eBook:</strong> AI Ethics in Global Research — Prof. Li Wei</span>
-            <span className="ticker-item"><strong>Interview:</strong> GSP Series — Dr. Amira Al-Rashidi on Climate Policy</span>
+            {loopedTicker.map((item, i) => (
+              <span className="ticker-item" key={i}>
+                <strong>{item.prefix}:</strong> {item.text}
+              </span>
+            ))}
           </div>
         </div>
       </div>
 
       <section className="hero">
         <div className="hero-left">
-          <p className="eyebrow"><span className="eyebrow-line"></span>Peer-Reviewed · Open Access · Global Impact</p>
+          <p className="eyebrow"><span className="eyebrow-line"></span>{eyebrow || 'Peer-Reviewed · Open Access · Global Impact'}</p>
 
-          <h1 className="hero-h1">
-            Advancing Global<br />
-            <em>Scholarly Excellence</em>
-          </h1>
+          <h1 className="hero-h1" dangerouslySetInnerHTML={{ __html: title || 'Advancing Global<br /><em>Scholarly Excellence</em>' }} />
 
           <p className="hero-sub">
-            A home for distinguished scholars, honorary doctorate holders,
-            and original research voices — connecting ideas across 80 nations
-            and 350+ peer-reviewed journals.
+            {subtitle || 'A home for distinguished scholars, honorary doctorate holders, and original research voices — connecting ideas across 80 nations and 350+ peer-reviewed journals.'}
           </p>
 
           <div className="search-wrap">
@@ -109,7 +140,7 @@ export default function HomeHero() {
               </svg>
             </span>
             <input className="search-input" type="text"
-              placeholder="Search journals, papers, authors, books…"
+              placeholder={searchPlaceholder || "Search journals, papers, authors, books…"}
               aria-label="Search publications" />
             <button className="search-btn-inline">Search</button>
           </div>
@@ -128,30 +159,32 @@ export default function HomeHero() {
 
           <div className="ctas">
             <button className="btn-p">
-              Explore Publications
+              {ctaPrimaryText || 'Explore Publications'}
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                 <path d="M2 7h10M8 3l4 4-4 4" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </button>
-            <button className="btn-s">Meet Our Scholars</button>
+            <button className="btn-s">{ctaSecondaryText || 'Meet Our Scholars'}</button>
           </div>
 
           <div className="trust-row">
             <div className="trust-avatars">
-              <div className="trust-avatar">
-                <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=64&h=64&fit=crop&crop=face&auto=format&q=80" alt="Scholar" loading="lazy" />
-              </div>
-              <div className="trust-avatar">
-                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&h=64&fit=crop&crop=face&auto=format&q=80" alt="Scholar" loading="lazy" />
-              </div>
-              <div className="trust-avatar">
-                <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=64&h=64&fit=crop&crop=face&auto=format&q=80" alt="Scholar" loading="lazy" />
-              </div>
-              <div className="trust-avatar">
-                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=64&h=64&fit=crop&crop=face&auto=format&q=80" alt="Scholar" loading="lazy" />
-              </div>
+              {(trustAvatars && trustAvatars.length > 0 ? trustAvatars : [
+                "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=64&h=64&fit=crop&crop=face&auto=format&q=80",
+                "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&h=64&fit=crop&crop=face&auto=format&q=80",
+                "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=64&h=64&fit=crop&crop=face&auto=format&q=80",
+                "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=64&h=64&fit=crop&crop=face&auto=format&q=80"
+              ]).map((avatar, index) => (
+                <div className="trust-avatar" key={index}>
+                  <img src={avatar} alt="Scholar" loading="lazy" />
+                </div>
+              ))}
             </div>
-            <p className="trust-text"><strong>25,000+ researchers</strong> published<br />across 80 countries this year</p>
+            {trustText ? (
+              <p className="trust-text" dangerouslySetInnerHTML={{ __html: trustText }} />
+            ) : (
+              <p className="trust-text"><strong>25,000+ researchers</strong> published<br />across 80 countries this year</p>
+            )}
           </div>
         </div>
 
@@ -171,7 +204,7 @@ export default function HomeHero() {
           <div className="photo-top">
             <div className="top-pill">
               <div className="top-pill-dot"></div>
-              Open Access 2026
+              {topPill || 'Open Access 2026'}
             </div>
           </div>
 
@@ -206,10 +239,17 @@ export default function HomeHero() {
       </section>
 
       <div className="stats-bar">
-        <div className="sc"><div className="sc-n">12K+</div><div className="sc-l">Publications</div></div>
-        <div className="sc"><div className="sc-n">350+</div><div className="sc-l">Journals</div></div>
-        <div className="sc"><div className="sc-n">25K+</div><div className="sc-l">Researchers</div></div>
-        <div className="sc"><div className="sc-n">80+</div><div className="sc-l">Countries</div></div>
+        {(stats && stats.length > 0 ? stats : [
+          { number: '12K+', label: 'Publications' },
+          { number: '350+', label: 'Journals' },
+          { number: '25K+', label: 'Researchers' },
+          { number: '80+', label: 'Countries' }
+        ]).map((stat, idx) => (
+          <div className="sc" key={idx}>
+            <div className="sc-n">{stat.number}</div>
+            <div className="sc-l">{stat.label}</div>
+          </div>
+        ))}
       </div>
     </div>
   )

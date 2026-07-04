@@ -588,6 +588,7 @@ model scholar_applications {
 model scholars {
   id              String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   user_id         String?        @unique @db.Uuid
+  username        String?        @unique
   bio             String?
   institution     String?
   qualification   String?

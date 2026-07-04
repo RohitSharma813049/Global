@@ -1,6 +1,10 @@
 import Link from 'next/link';
+interface CtaBannerProps {
+  title?: string;
+  subtitle?: string;
+}
 
-export default function CtaBanner() {
+export default function CtaBanner({ title, subtitle }: CtaBannerProps) {
   return (
     <section className="relative overflow-hidden bg-[#2F115D] py-16 lg:py-4 mb-5 mt-5">
       {/* Curved Background Shape (Bottom Right) */}
@@ -13,11 +17,9 @@ export default function CtaBanner() {
         {/* Left Content */}
         <div className="max-w-2xl text-left"> 
           <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-white/90">
-            Ready to publish?
+            {subtitle || 'Ready to publish?'}
           </div>
-          <h2 className="mb-4 text-3xl font-bold text-white md:text-4xl lg:text-5xl tracking-tight">
-            Publish and <em className="font-serif italic font-medium opacity-90">Discover</em> Peer-Reviewed Research.
-          </h2>
+          <h2 className="mb-4 text-3xl font-bold text-white md:text-4xl lg:text-5xl tracking-tight" dangerouslySetInnerHTML={{ __html: title || 'Publish and <em className="font-serif italic font-medium opacity-90">Discover</em> Peer-Reviewed Research.' }} />
         </div>
 
         {/* Right Content (Buttons) */}

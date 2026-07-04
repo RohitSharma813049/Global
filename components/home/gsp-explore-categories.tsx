@@ -6,9 +6,10 @@ import Link from 'next/link'
 interface GspExploreCategoriesProps {
   title?: string;
   subtitle?: string;
+  categories?: { title: string; count: string; image: string; link: string }[];
 }
 
-export default function GspExploreCategories({ title, subtitle }: GspExploreCategoriesProps) {
+export default function GspExploreCategories({ title, subtitle, categories }: GspExploreCategoriesProps) {
   const gridRef = useRef<HTMLDivElement>(null)
   const [activeDot, setActiveDot] = useState(0)
 
@@ -60,54 +61,19 @@ export default function GspExploreCategories({ title, subtitle }: GspExploreCate
         </div>
 
         <div className="gsp-cat-grid" ref={gridRef} onScroll={handleScroll}>
-          <Link href="/publications?category=theses" className="gsp-cat-card gsp-reveal">
-            <div className="gsp-cat-card-img" style={{backgroundImage: "url('https://images.unsplash.com/photo-1532012197267-da84d127e765?w=700&h=800&fit=crop&auto=format&q=80')"}}></div>
-            <div className="gsp-cat-card-overlay"></div>
-            <div className="gsp-cat-card-content">
-              <p className="gsp-cat-card-count">1,240+ Theses</p>
-              <h3 className="gsp-cat-card-title">Featured<br/>Thesis</h3>
-              <div className="gsp-cat-card-arrow">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 11L11 3M5 3h6v6" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+          {(categories || []).map((cat, index) => (
+            <Link key={index} href={cat.link} className="gsp-cat-card gsp-reveal" style={{transitionDelay: `${index * 100}ms`}}>
+              <div className="gsp-cat-card-img" style={{backgroundImage: `url('${cat.image}')`}}></div>
+              <div className="gsp-cat-card-overlay"></div>
+              <div className="gsp-cat-card-content">
+                <p className="gsp-cat-card-count">{cat.count}</p>
+                <h3 className="gsp-cat-card-title" dangerouslySetInnerHTML={{ __html: cat.title }}></h3>
+                <div className="gsp-cat-card-arrow">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 11L11 3M5 3h6v6" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                </div>
               </div>
-            </div>
-          </Link>
-
-          <Link href="/publications?category=articles" className="gsp-cat-card gsp-reveal" style={{transitionDelay: '100ms'}}>
-            <div className="gsp-cat-card-img" style={{backgroundImage: "url('https://images.unsplash.com/photo-1455894127589-22f75500213a?w=700&h=800&fit=crop&auto=format&q=80')"}}></div>
-            <div className="gsp-cat-card-overlay"></div>
-            <div className="gsp-cat-card-content">
-              <p className="gsp-cat-card-count">3,860+ Articles</p>
-              <h3 className="gsp-cat-card-title">Trending<br/>Articles</h3>
-              <div className="gsp-cat-card-arrow">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 11L11 3M5 3h6v6" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-              </div>
-            </div>
-          </Link>
-
-          <Link href="/publications?category=ebooks" className="gsp-cat-card gsp-reveal" style={{transitionDelay: '200ms'}}>
-            <div className="gsp-cat-card-img" style={{backgroundImage: "url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=700&h=800&fit=crop&auto=format&q=80')"}}></div>
-            <div className="gsp-cat-card-overlay"></div>
-            <div className="gsp-cat-card-content">
-              <p className="gsp-cat-card-count">980+ eBooks</p>
-              <h3 className="gsp-cat-card-title">Latest<br/>eBooks</h3>
-              <div className="gsp-cat-card-arrow">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 11L11 3M5 3h6v6" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-              </div>
-            </div>
-          </Link>
-
-          <Link href="/publications?category=magazine" className="gsp-cat-card gsp-reveal" style={{transitionDelay: '300ms'}}>
-            <div className="gsp-cat-card-img" style={{backgroundImage: "url('https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=700&h=800&fit=crop&auto=format&q=80')"}}></div>
-            <div className="gsp-cat-card-overlay"></div>
-            <div className="gsp-cat-card-content">
-              <p className="gsp-cat-card-count">410+ Issues</p>
-              <h3 className="gsp-cat-card-title">Latest<br/>Magazine</h3>
-              <div className="gsp-cat-card-arrow">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 11L11 3M5 3h6v6" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-              </div>
-            </div>
-          </Link>
-
+            </Link>
+          ))}
         </div>
 
         <div className="gsp-carousel-dots">

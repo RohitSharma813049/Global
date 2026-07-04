@@ -7,9 +7,10 @@ interface GspFeaturedContentProps {
   title?: string;
   subtitle?: string;
   autoplay?: boolean;
+  publications?: any[];
 }
 
-export default function GspFeaturedContent({ title, subtitle, autoplay = true }: GspFeaturedContentProps) {
+export default function GspFeaturedContent({ title, subtitle, autoplay = true, publications = [] }: GspFeaturedContentProps) {
   const [filter, setFilter] = useState('All')
   const gridRef = useRef<HTMLDivElement>(null)
   const [activeDot, setActiveDot] = useState(0)
@@ -43,7 +44,7 @@ export default function GspFeaturedContent({ title, subtitle, autoplay = true }:
     setActiveDot(Math.min(idx, cards.length - 1));
   };
 
-  const publications = [
+  const defaultPublications = [
     {
       type: 'Thesis',
       subject: 'Computer Science · Ethics',
@@ -90,9 +91,11 @@ export default function GspFeaturedContent({ title, subtitle, autoplay = true }:
     }
   ];
 
+  const displayPublications = publications && publications.length > 0 ? publications : defaultPublications;
+
   const filteredPublications = filter === 'All' 
-    ? publications 
-    : publications.filter(p => {
+    ? displayPublications 
+    : displayPublications.filter(p => {
         if (filter === 'Theses') return p.type === 'Thesis';
         if (filter === 'Articles') return p.type === 'Article';
         if (filter === 'eBooks') return p.type === 'eBook';

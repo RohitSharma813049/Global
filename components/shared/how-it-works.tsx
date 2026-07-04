@@ -3,7 +3,7 @@
 import { UserPlus, Compass, BookMarked, ArrowRight } from 'lucide-react'
 import { motion, Variants } from 'framer-motion'
 
-const steps = [
+const defaultSteps = [
   {
     number: 1,
     title: 'Sign Up',
@@ -27,6 +27,7 @@ const steps = [
 interface HowItWorksProps {
   title?: string;
   subtitle?: string;
+  steps?: { title: string; description: string }[];
 }
 
 const containerVariants: Variants = {
@@ -44,7 +45,13 @@ const itemVariants: Variants = {
   visible: { opacity: 1, x: 0, transition: { duration: 0.5, ease: "easeOut" } }
 }
 
-export default function HowItWorks({ title, subtitle }: HowItWorksProps) {
+export default function HowItWorks({ title, subtitle, steps = [] }: HowItWorksProps) {
+  const displaySteps = steps && steps.length === 3 ? [
+    { ...defaultSteps[0], title: steps[0].title, description: steps[0].description },
+    { ...defaultSteps[1], title: steps[1].title, description: steps[1].description },
+    { ...defaultSteps[2], title: steps[2].title, description: steps[2].description },
+  ] : defaultSteps;
+
   return (
     <section className="px-6 py-8 sm:py-12 overflow-hidden">
       <div className="mx-auto max-w-7xl">
@@ -70,7 +77,7 @@ export default function HowItWorks({ title, subtitle }: HowItWorksProps) {
           viewport={{ once: true, margin: "-50px" }}
           className="grid gap-8 md:grid-cols-3"
         >
-          {steps.map((step, idx) => {
+          {displaySteps.map((step, idx) => {
             const Icon = step.icon
             return (
               <motion.div variants={itemVariants} key={step.number} className="relative">
@@ -83,7 +90,7 @@ export default function HowItWorks({ title, subtitle }: HowItWorksProps) {
                     {step.description}
                   </p>
                 </div>
-                {idx < steps.length - 1 && (
+                {idx < displaySteps.length - 1 && (
                   <div className="absolute -right-4 top-1/2 hidden -translate-y-1/2 md:block">
                     <ArrowRight className="h-6 w-6 text-primary/30" />
                   </div>

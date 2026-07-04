@@ -8,3 +8,4 @@ const connection = new Redis(process.env.REDIS_URL || '', {
 });
 
 export const defaultQueue = new Queue('default', { connection: connection as any });
+ 

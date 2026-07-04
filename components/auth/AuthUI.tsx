@@ -221,6 +221,7 @@ export default function AuthUI({ initialScreen }: AuthUIProps) {
               width={140}
               height={50}
               className="h-auto w-auto"
+              style={{ width: "auto" }}
             />
           </Link>
           <Link href="/" className="auth-topbar-link">

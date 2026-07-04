@@ -43,25 +43,124 @@ export default async function Page() {
 
   return (
     <main className="w-full">
-      <HomeHero />
-                   {/* New Custom Sections */}
-      <GspExploreCategories />
-      <GspSubjectCategories />
-      {settings.show_featured_content && <ScrollAnimation><FeaturedContent title={settings.featured_title} subtitle={settings.featured_subtitle} autoplay={settings.enable_carousel_autoplay} /></ScrollAnimation>}
-      <GspFeaturedContent />
-      {/* {settings.show_categories_section && <ExploreCategories title={settings.categories_title} subtitle={settings.categories_subtitle} />} */}
-      
+      {settings.show_home_hero && (
+        <HomeHero 
+          title={settings.hero_title}
+          subtitle={settings.hero_subtitle}
+          eyebrow={settings.hero_eyebrow}
+          slidesData={settings.hero_slides}
+          tickerItems={settings.hero_ticker_items}
+          searchPlaceholder={settings.hero_search_placeholder}
+          searchFilters={settings.hero_search_filters}
+          topPill={settings.hero_top_pill}
+          ctaPrimaryText={settings.hero_cta_primary_text}
+          ctaSecondaryText={settings.hero_cta_secondary_text}
+          trustText={settings.hero_trust_text}
+          trustAvatars={settings.hero_trust_avatars}
+          stats={settings.hero_stats}
+        />
+      )}
 
-  
+      {settings.show_explore_categories_gsp && (
+        <ScrollAnimation>
+          <GspExploreCategories 
+            title={settings.explore_categories_gsp_title} 
+            subtitle={settings.explore_categories_gsp_subtitle} 
+            categories={settings.explore_categories}
+          />
+        </ScrollAnimation>
+      )}
 
-      <HowItWorks title={settings.how_it_works_title} subtitle={settings.how_it_works_subtitle} />
-      {recentItems.length > 0 && <ScrollAnimation><RecentNewsBlogs items={recentItems} autoplay={settings.enable_carousel_autoplay} /></ScrollAnimation>}
+      {settings.show_subject_categories_gsp && (
+        <ScrollAnimation>
+          <GspSubjectCategories 
+            title={settings.subject_categories_gsp_title} 
+            subtitle={settings.subject_categories_gsp_subtitle} 
+            categories={settings.subject_categories}
+            autoplay={settings.enable_carousel_autoplay}
+          />
+        </ScrollAnimation>
+      )}
+
+      {settings.show_featured_content && (
+        <ScrollAnimation>
+          <FeaturedContent 
+            title={settings.featured_title} 
+            subtitle={settings.featured_subtitle} 
+            autoplay={settings.enable_carousel_autoplay} 
+          />
+        </ScrollAnimation>
+      )}
+
+      {settings.show_featured_content_gsp && (
+        <ScrollAnimation>
+          <GspFeaturedContent 
+            title={settings.featured_content_gsp_title}
+            subtitle={settings.featured_content_gsp_subtitle}
+            publications={settings.featured_publications}
+            autoplay={settings.enable_carousel_autoplay}
+          />
+        </ScrollAnimation>
+      )}
       
-      <GspFeaturedScholars />
-      {/* {settings.show_featured_scholars && <ScrollAnimation><FeaturedScholars title={settings.scholars_title} subtitle={settings.scholars_subtitle} scholars={scholarsData} autoplay={settings.enable_carousel_autoplay} /></ScrollAnimation>} */}
-      {settings.show_testimonials && <ScrollAnimation><Testimonials title={settings.testimonials_title} subtitle={settings.testimonials_subtitle} testimonials={testimonialsData} autoplay={settings.enable_carousel_autoplay} /></ScrollAnimation>}
-      {settings.show_faq_section && settings.faqs && settings.faqs.length > 0 && <ScrollAnimation><FaqSection title={settings.faq_title} subtitle={settings.faq_subtitle} faqs={settings.faqs} /></ScrollAnimation>}
-      <ScrollAnimation><CtaBanner /></ScrollAnimation>
+      {settings.show_how_it_works && (
+        <HowItWorks 
+          title={settings.how_it_works_title} 
+          subtitle={settings.how_it_works_subtitle} 
+          steps={settings.how_it_works_steps}
+        />
+      )}
+
+      {recentItems.length > 0 && (
+        <ScrollAnimation>
+          <RecentNewsBlogs 
+            items={recentItems} 
+            autoplay={settings.enable_carousel_autoplay} 
+          />
+        </ScrollAnimation>
+      )}
+      
+      {settings.show_featured_scholars_gsp && (
+        <ScrollAnimation>
+          <GspFeaturedScholars 
+            title={settings.featured_scholars_gsp_title}
+            subtitle={settings.featured_scholars_gsp_subtitle}
+            scholars={scholarsData}
+            autoplay={settings.enable_carousel_autoplay}
+          />
+        </ScrollAnimation>
+      )}
+
+      {settings.show_testimonials && (
+        <ScrollAnimation>
+          <Testimonials 
+            title={settings.testimonials_title} 
+            subtitle={settings.testimonials_subtitle} 
+            testimonials={testimonialsData} 
+            autoplay={settings.enable_carousel_autoplay} 
+          />
+        </ScrollAnimation>
+      )}
+
+      {settings.show_faq_section && settings.faqs && settings.faqs.length > 0 && (
+        <ScrollAnimation>
+          <FaqSection 
+            title={settings.faq_title} 
+            subtitle={settings.faq_subtitle} 
+            faqs={settings.faqs} 
+          />
+        </ScrollAnimation>
+      )}
+
+      {settings.show_cta_banner && (
+        <ScrollAnimation>
+          <CtaBanner 
+            title={settings.cta_title}
+            subtitle={settings.cta_subtitle}
+          />
+        </ScrollAnimation>
+      )}
+
       <Footer />
     </main>
   )

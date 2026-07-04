@@ -15,13 +15,17 @@ export default async function ScholarProfilePage({ params }: Props) {
   const { id } = await params
   const session = await getServerSession(authOptions)
 
+  const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id);
+
   // Fetch scholar using Prisma
   const scholar = await prisma.scholars.findFirst({
-    where: {
+    where: isUuid ? {
       OR: [
         { id: id },
         { user_id: id }
       ]
+    } : {
+      username: id
     },
     include: {
       users: true

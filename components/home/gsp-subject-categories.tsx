@@ -69,7 +69,7 @@ const defaultCategories: SubjectCategory[] = [
   {
     id: "10",
     name: <>Environmental<br/>Studies</>,
-    image: "https://images.unsplash.com/photo-1497436072909-f5e4be1713b9?w=400&h=400&fit=crop&auto=format&q=85",
+    image: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=400&h=400&fit=crop&auto=format&q=85",
     icon: <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="currentColor" strokeWidth="1.3"/><path d="M2.5 8h11M8 2.5c1.8 1.6 1.8 9.4 0 11M8 2.5c-1.8 1.6-1.8 9.4 0 11" stroke="currentColor" strokeWidth="1.1"/></svg>
   },
   {
@@ -88,7 +88,18 @@ interface SubjectCategoriesProps {
 }
 
 export default function GSPSubjectCategories({ title, subtitle, categories, autoplay = true }: SubjectCategoriesProps) {
-  const displayCategories = categories && categories.length > 0 ? categories : defaultCategories;
+  // Merge the dynamic categories from CMS (name, image) with the static icons from defaultCategories
+  const displayCategories = categories && categories.length > 0 
+    ? categories.map((cat, i) => {
+        // Fallback to default icon if available, otherwise just no icon
+        const defaultIcon = defaultCategories[i]?.icon || defaultCategories[0].icon;
+        return {
+          ...cat,
+          name: <span dangerouslySetInnerHTML={{ __html: cat.name as string }} />,
+          icon: cat.icon || defaultIcon
+        }
+      })
+    : defaultCategories;
   
   const trackRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
