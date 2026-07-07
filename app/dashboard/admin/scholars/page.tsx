@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/table"
 import ScholarSearch from "./scholar-search"
 import FeatureToggle from "./feature-toggle"
+import { Suspense } from "react"
 
 export default async function AdminScholarsPage({
   searchParams,
@@ -74,9 +75,9 @@ export default async function AdminScholarsPage({
           </Button>
         </Link>
       </div>
-
-      <ScholarSearch />
-
+      <Suspense fallback={<div className="mb-4">Loading search...</div>}>
+        <ScholarSearch />
+      </Suspense>
       <div className="rounded-md border bg-card overflow-x-auto">
         <Table>
           <TableHeader>

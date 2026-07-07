@@ -50,6 +50,7 @@ export default function HomepageSettings() {
     show_featured_scholars_gsp: true,
     show_cta_banner: true,
     enable_carousel_autoplay: true,
+    faq_title: '',
     faq_subtitle: '',
     faqs: [] as { question: string; answer: string }[],
     explore_categories: [] as { title: string; count: string; image: string; link: string }[],

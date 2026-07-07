@@ -25,7 +25,7 @@ export default async function ScholarsListingPage({
     include: {
       users: true
     },
-    orderBy: { created_at: 'desc' }
+    orderBy: { users: { created_at: 'desc' } }
   })
 
   // Manual fallback filter for names inside JSON metadata
