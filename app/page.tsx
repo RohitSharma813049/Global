@@ -19,18 +19,57 @@ import { getHomepageSettings, getBlogs, getNews, getTestimonials, getFeaturedSch
 import { getPlatformStats } from '@/app/actions/stats'
 
 import ScrollAnimation from "@/components/shared/scroll-animation"
+import { prisma } from '@/lib/db'
 
 export const revalidate = 60 // Enable ISR caching (60 seconds)
 
 export default async function Page() {
-  const [settings, blogsData, newsData, statsData, testimonialsData, scholarsData] = await Promise.all([
+  const [
+    settings,
+    blogsData,
+    newsData,
+    statsData,
+    testimonialsData,
+    scholarsData,
+    dbCategories,
+    dbPublications
+  ] = await Promise.all([
     getHomepageSettings(),
     getBlogs(),
     getNews(),
     getPlatformStats(),
     getTestimonials(),
-    getFeaturedScholars()
+    getFeaturedScholars(),
+    prisma.categories.findMany({ orderBy: { name: 'asc' } }),
+    prisma.publications.findMany({
+      where: { status: 'published' },
+      include: {
+        categories: true,
+        scholars: {
+          include: {
+            users: true
+          }
+        }
+      },
+      orderBy: { created_at: 'desc' },
+      take: 8
+    })
   ]);
+
+  const formattedPublications = dbPublications.map((pub: any) => ({
+    id: pub.id,
+    type: pub.content_type,
+    subject: pub.categories?.name || 'Uncategorized',
+    title: pub.title,
+    author: pub.author_name || pub.scholars?.users?.raw_user_meta_data?.full_name || 'Anonymous',
+    authorImg: pub.scholars?.users?.raw_user_meta_data?.avatar_url || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=60&h=60&fit=crop&crop=face&auto=format&q=80',
+    desc: pub.abstract,
+    description: pub.abstract,
+    img: pub.cover_image || 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=300&fit=crop',
+    image: pub.cover_image || 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=300&fit=crop',
+    views: `${pub.views || 0} reads`,
+    link: `/publications/${pub.id}`
+  }));
 
   const recentItems = [
     ...(blogsData || []).map((b: any) => ({ ...b, type: 'blog' as const })),
@@ -76,7 +115,7 @@ export default async function Page() {
           <GspSubjectCategories 
             title={settings.subject_categories_gsp_title} 
             subtitle={settings.subject_categories_gsp_subtitle} 
-            categories={settings.subject_categories}
+            categories={dbCategories}
             autoplay={settings.enable_carousel_autoplay}
           />
         </ScrollAnimation>
@@ -88,6 +127,7 @@ export default async function Page() {
             title={settings.featured_title} 
             subtitle={settings.featured_subtitle} 
             autoplay={settings.enable_carousel_autoplay} 
+            publications={formattedPublications}
           />
         </ScrollAnimation>
       )}
@@ -97,7 +137,7 @@ export default async function Page() {
           <GspFeaturedContent 
             title={settings.featured_content_gsp_title}
             subtitle={settings.featured_content_gsp_subtitle}
-            publications={settings.featured_publications}
+            publications={formattedPublications.length > 0 ? formattedPublications : settings.featured_publications}
             autoplay={settings.enable_carousel_autoplay}
           />
         </ScrollAnimation>

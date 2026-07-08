@@ -31,25 +31,58 @@ interface Publication {
 export default function ExploreClient({ 
   publications, 
   allCategories, 
-  contentTypes 
+  contentTypes,
+  initialCategory
 }: { 
   publications: Publication[];
   allCategories: {id: string, name: string}[];
   contentTypes: {name: string, slug: string}[];
+  initialCategory?: string;
 }) {
   const [searchQuery, setSearchQuery] = useState("");
+  
   const [filters, setFilters] = useState<{
     subjects: string[]
     subcategories: string[]
     authors: string[]
     types: string[]
     yearRange: [number, number]
-  }>({
-    subjects: [],
-    subcategories: [],
-    authors: [],
-    types: [],
-    yearRange: [2000, new Date().getFullYear()],
+  }>(() => {
+    const initialSubjects: string[] = [];
+    const initialTypes: string[] = [];
+    
+    if (initialCategory) {
+      // Check if it matches a content type (accounting for singular/plural mismatches like 'theses' vs 'thesis', 'articles' vs 'article')
+      const matchedType = contentTypes.find(ct => 
+        ct.slug === initialCategory || 
+        ct.slug + 's' === initialCategory || 
+        initialCategory.replace(/s$/, '') === ct.slug ||
+        (ct.slug === 'thesis' && initialCategory === 'theses') ||
+        (ct.slug === 'magazine' && initialCategory === 'magazines')
+      );
+      if (matchedType) {
+        initialTypes.push(matchedType.slug);
+      }
+      // Check if it matches a subject category
+      const slugify = (text: string) => text.toLowerCase().replace(/&/g, '&amp;').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+      const matchedSubject = allCategories.find(c => {
+         const cleanName = c.name.toString().replace(/<[^>]*>?/gm, '').replace(/&amp;/g, '&');
+         const slug = cleanName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+         return slug === initialCategory;
+      });
+      if (matchedSubject) {
+        // use the exact display name because the filter logic looks for exact name
+        initialSubjects.push(matchedSubject.name);
+      }
+    }
+    
+    return {
+      subjects: initialSubjects,
+      subcategories: [],
+      authors: [],
+      types: initialTypes,
+      yearRange: [2000, new Date().getFullYear()],
+    };
   });
 
   const [isListView, setIsListView] = useState(false);
@@ -303,6 +336,27 @@ export default function ExploreClient({
                   <span className="filter-label">{author}</span>
                 </label>
               ))}
+              {availableAuthors.length > 5 && (
+                <details className="group cursor-pointer">
+                  <summary className="show-more list-none mt-2">
+                    Show {availableAuthors.length - 5} more
+                    <svg className="group-open:rotate-180 transition-transform inline-block ml-1" width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                  </summary>
+                  <div className="mt-2 space-y-2">
+                    {availableAuthors.slice(5).map((author) => (
+                      <label key={author} className="filter-row">
+                        <input 
+                          type="checkbox" 
+                          checked={filters.authors.includes(author)}
+                          onChange={() => toggleFilter('authors', author)}
+                        />
+                        <span className="fcheck"></span>
+                        <span className="filter-label">{author}</span>
+                      </label>
+                    ))}
+                  </div>
+                </details>
+              )}
             </div>
             <div className="sb-hr"></div>
 

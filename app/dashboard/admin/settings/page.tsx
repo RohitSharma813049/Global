@@ -3,8 +3,13 @@
 import React, { useState, useEffect } from 'react'
 import { updateHomepageSettings, getHomepageSettings } from '@/app/actions/cms'
 import { useRouter } from 'next/navigation'
-import ImageUpload from '@/components/image-upload'
+import dynamic from 'next/dynamic'
 import toast from 'react-hot-toast'
+
+const ImageUpload = dynamic(() => import('@/components/image-upload'), { 
+  ssr: false, 
+  loading: () => <div className="h-32 w-full bg-gray-100 rounded-lg animate-pulse border-2 border-dashed border-gray-200"></div> 
+})
 
 export default function HomepageSettings() {
   const [loading, setLoading] = useState(true)
@@ -208,7 +213,26 @@ export default function HomepageSettings() {
     }))
   }
 
-  if (loading) return <div className="p-8 text-center text-gray-500">Loading settings...</div>
+  if (loading) return (
+    <div className="p-4 md:p-6 w-full max-w-4xl mx-auto animate-pulse">
+      <div className="mb-6">
+        <div className="h-8 bg-gray-200 rounded w-1/3 mb-2"></div>
+        <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+      </div>
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-8">
+        {[1, 2, 3, 4].map(i => (
+          <div key={i} className="mb-8">
+            <div className="h-6 bg-gray-200 rounded w-1/4 mb-4"></div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="h-10 bg-gray-100 rounded"></div>
+              <div className="h-10 bg-gray-100 rounded"></div>
+              <div className="md:col-span-2 h-24 bg-gray-100 rounded"></div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
 
   return (
     <div className="p-4 md:p-6 w-full max-w-4xl mx-auto">

@@ -53,30 +53,33 @@ interface FeaturedContentProps {
   title?: string;
   subtitle?: string;
   autoplay?: boolean;
+  publications?: ContentItem[];
 }
 
-export default function FeaturedContent({ title, subtitle, autoplay = true }: FeaturedContentProps) {
+export default function FeaturedContent({ title, subtitle, autoplay = true, publications = featuredContent }: FeaturedContentProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
+  
+  const displayItems = publications && publications.length > 0 ? publications : featuredContent;
 
   const previous = () => {
-    setCurrentIndex((prev) => (prev === 0 ? featuredContent.length - 1 : prev - 1))
+    setCurrentIndex((prev) => (prev === 0 ? displayItems.length - 1 : prev - 1))
   }
 
   const next = () => {
-    setCurrentIndex((prev) => (prev === featuredContent.length - 1 ? 0 : prev + 1))
+    setCurrentIndex((prev) => (prev === displayItems.length - 1 ? 0 : prev + 1))
   }
 
   useEffect(() => {
     if (!autoplay) return
 
     const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev === featuredContent.length - 1 ? 0 : prev + 1))
+      setCurrentIndex((prev) => (prev === displayItems.length - 1 ? 0 : prev + 1))
     }, 4000)
 
     return () => clearInterval(interval)
-  }, [autoplay])
+  }, [autoplay, displayItems.length])
 
-  const current = featuredContent[currentIndex]
+  const current = displayItems[currentIndex] || displayItems[0]
 
   return (
     <section className="bg-white px-6 py-10 sm:py-16 relative overflow-hidden">
@@ -104,7 +107,7 @@ export default function FeaturedContent({ title, subtitle, autoplay = true }: Fe
               <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />
             </Button>
             <div className="flex gap-1.5 sm:gap-3 px-1 sm:px-2">
-              {featuredContent.map((_, idx) => (
+              {displayItems.map((_, idx) => (
                 <button
                   key={idx}
                   onClick={() => setCurrentIndex(idx)}
