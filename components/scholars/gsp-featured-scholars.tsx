@@ -5,14 +5,16 @@ import Link from 'next/link'
 import Image from 'next/image'
 
 interface ScholarCardData {
+  username?: string;
+  id?: string;
   name: string;
   image: string;
   country: string;
   countryFlag: string;
   publications: number;
-  credential: string;
-  institution: string;
-  field: string;
+  credential?: string;
+  institution?: string;
+  field?: string;
 }
 
 const defaultScholars: ScholarCardData[] = [
@@ -109,14 +111,17 @@ export default function GSPFeaturedScholars({ title, subtitle, scholars = [], au
   const trackRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
   
-  const displayScholars = scholars && scholars.length > 0 ? scholars.map(s => ({
+  const hasValidScholars = scholars && scholars.length > 0 && scholars.some(s => s.users?.raw_user_meta_data?.name || s.users?.email);
+  const displayScholars = hasValidScholars ? scholars.map(s => ({
+    username: s.username,
+    id: s.id,
     name: s.users?.raw_user_meta_data?.name || s.users?.email || 'Unknown',
     image: s.users?.raw_user_meta_data?.avatar_url || 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&h=300&fit=crop',
-    country: s.country || 'Global',
-    countryFlag: s.flag_emoji || '🌍',
+    country: s.users?.raw_user_meta_data?.country || 'Global',
+    countryFlag: s.users?.raw_user_meta_data?.countryFlag || '🌍',
     publications: s._count?.publications || 0,
-    credential: s.professional_role || 'Scholar',
-    institution: s.domain || 'Independent',
+    credential: s.qualification || 'Scholar',
+    institution: s.institution || 'Independent',
     field: s.specialization || 'Research'
   })) : defaultScholars;
 
@@ -295,7 +300,7 @@ export default function GSPFeaturedScholars({ title, subtitle, scholars = [], au
       >
         <div className="scholars-carousel-track" id="scholars-track" ref={trackRef}>
           {displayScholars.map((scholar, i) => (
-            <Link href="#" key={i} className="scholar-card" data-name={scholar.name}>
+            <Link href={`/scholars/${scholar.username || scholar.id || '#'}`} key={i} className="scholar-card" data-name={scholar.name}>
               <div className="sc-photo-wrap">
                 <Image src={scholar.image} alt={scholar.name} width={480} height={560} className="object-cover w-full h-full" />
                 <div className="sc-photo-gradient"></div>

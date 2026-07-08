@@ -88,6 +88,8 @@ export default function ExploreClient({
   const [isListView, setIsListView] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [sortOrder, setSortOrder] = useState<'newest' | 'oldest' | 'views' | 'downloads'>('newest');
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 12;
 
   const availableSubjects = useMemo(() => {
     const sorted = allCategories.map(c => c.name).sort();
@@ -142,12 +144,20 @@ export default function ExploreClient({
         return { ...prev, [type]: [...currentList, value] };
       }
     });
+    setCurrentPage(1);
   };
 
   const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = parseInt(e.target.value);
     setFilters(prev => ({ ...prev, yearRange: [prev.yearRange[0], val] }));
+    setCurrentPage(1);
   };
+
+  const paginatedPublications = useMemo(() => {
+    return filteredPublications.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+  }, [filteredPublications, currentPage]);
+  
+  const totalPages = Math.ceil(filteredPublications.length / ITEMS_PER_PAGE);
 
   return (
     <>
@@ -203,11 +213,17 @@ export default function ExploreClient({
                 autoComplete="off"
                 aria-label="Search publications"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setCurrentPage(1);
+                }}
               />
               <div className="ph-search-actions">
                 {searchQuery && (
-                  <button className="ph-search-clear" onClick={() => setSearchQuery("")} aria-label="Clear search">Clear</button>
+                  <button className="ph-search-clear" onClick={() => {
+                    setSearchQuery("");
+                    setCurrentPage(1);
+                  }} aria-label="Clear search">Clear</button>
                 )}
                 <button className="ph-search-btn">Search</button>
               </div>
@@ -442,7 +458,7 @@ export default function ExploreClient({
               <div className="flex justify-center py-12 text-gray-500">No publications found matching your filters.</div>
             )}
             <div id="pubGrid" className={isListView ? "list-mode" : ""}>
-              {filteredPublications.map(pub => (
+              {paginatedPublications.map(pub => (
                 <Link href={`/publications/${pub.id}`} key={pub.id} className="pub-card reveal in-view">
                   <div className="pc-img">
                     <span className="pc-type-badge pbadge-type">{pub.content_type || 'PUBLICATION'}</span>
@@ -462,12 +478,12 @@ export default function ExploreClient({
                     <div className="pc-author">
                       <div className="pc-avatar">
                         <img 
-                          src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop" 
-                          alt={pub.scholars?.users?.raw_user_meta_data?.full_name || pub.scholars?.users?.raw_user_meta_data?.name || "Author"} 
+                          src={(pub.scholars?.users?.raw_user_meta_data as any)?.avatar_url || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop"} 
+                          alt={(pub.scholars?.users?.raw_user_meta_data as any)?.full_name || (pub.scholars?.users?.raw_user_meta_data as any)?.name || "Author"} 
                         />
                       </div>
                       <span className="pc-author-name">
-                        {pub.scholars?.users?.raw_user_meta_data?.full_name || pub.scholars?.users?.raw_user_meta_data?.name || "Unknown Author"}
+                        {(pub.scholars?.users?.raw_user_meta_data as any)?.full_name || (pub.scholars?.users?.raw_user_meta_data as any)?.name || "Unknown Author"}
                       </span>
                     </div>
                     <div className="pc-desc">
@@ -484,6 +500,35 @@ export default function ExploreClient({
                 </Link>
               ))}
             </div>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="flex justify-center items-center space-x-2 mt-12 mb-8">
+                <button 
+                  onClick={() => {
+                    setCurrentPage(prev => Math.max(prev - 1, 1));
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  disabled={currentPage === 1}
+                  className="px-4 py-2 border rounded-md disabled:opacity-50 hover:bg-gray-50 transition-colors"
+                >
+                  Previous
+                </button>
+                <div className="text-sm text-gray-600 font-medium px-4">
+                  Page {currentPage} of {totalPages}
+                </div>
+                <button 
+                  onClick={() => {
+                    setCurrentPage(prev => Math.min(prev + 1, totalPages));
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  disabled={currentPage === totalPages}
+                  className="px-4 py-2 border rounded-md disabled:opacity-50 hover:bg-gray-50 transition-colors"
+                >
+                  Next
+                </button>
+              </div>
+            )}
           </main>
         </div>
       </div>

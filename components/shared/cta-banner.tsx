@@ -13,10 +13,10 @@ export default function CtaBanner({ title, subtitle }: CtaBannerProps) {
         style={{ borderTopLeftRadius: '100% 120%' }}
       ></div>
       
-      <div className="relative mx-auto flex max-w-7xl flex-col items-center justify-between gap-10 px-6 md:flex-row md:items-center">
+      <div className="relative mx-auto flex max-w-7xl flex-col items-center justify-between gap-10 px-6 md:flex-row text-center md:text-left">
         {/* Left Content */}
-        <div className="max-w-2xl text-left"> 
-          <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-white/90">
+        <div className="max-w-2xl text-center md:text-left flex flex-col items-center md:items-start"> 
+          <div className="mb-2 flex items-center justify-center md:justify-start gap-2 text-sm font-semibold text-white/90">
             {subtitle || 'Ready to publish?'}
           </div>
           <h2 className="mb-4 text-3xl font-bold text-white md:text-4xl lg:text-5xl tracking-tight" dangerouslySetInnerHTML={{ __html: title || 'Publish and <em className="font-serif italic font-medium opacity-90">Discover</em> Peer-Reviewed Research.' }} />

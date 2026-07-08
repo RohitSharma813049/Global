@@ -154,13 +154,13 @@ export default function FeaturedContent({ title, subtitle, autoplay = true, publ
                 <div className="h-1 w-8 sm:w-10 bg-indigo-600 rounded-full"></div>
                 <p className="text-xs sm:text-sm font-semibold text-indigo-600 uppercase tracking-widest">Highlight</p>
               </div>
-              <h3 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 leading-tight tracking-tight transition-colors cursor-pointer">
+              <h3 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 leading-tight tracking-tight transition-colors cursor-pointer line-clamp-2 min-h-[4rem] sm:min-h-[5.5rem]">
                 {current.title}
               </h3>
               <p className="mt-3 sm:mt-4 text-sm sm:text-base font-medium text-gray-500 uppercase tracking-wide">
                 By <span className="text-gray-900">{current.author}</span>
               </p>
-              <p className="mt-4 sm:mt-6 text-base sm:text-lg md:text-xl leading-relaxed text-gray-600">
+              <p className="mt-4 sm:mt-6 text-base sm:text-lg md:text-xl leading-relaxed text-gray-600 line-clamp-3 min-h-[5rem] sm:min-h-[6rem]">
                 {current.description}
               </p>
               
