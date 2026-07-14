@@ -31,8 +31,9 @@ export async function POST(req: Request) {
         // OTP is valid, delete it so it can't be reused
         await redis.del(`otp:${email}`);
 
-        // Security check: Don't allow creating admins from public signup
-        const finalRole = (role === "admin" || role === "super_admin") ? "reader" : (role || "reader");
+        // Security check: Force all new public signups to be 'reader'. 
+        // Scholars must go through the application process and be approved by an admin.
+        const finalRole = "reader";
 
         // Register user with Supabase Admin API to bypass rate limits
         const { data, error } = await supabaseAdmin.auth.admin.createUser({

@@ -3962,11 +3962,11 @@ a.pub-card { cursor: pointer; color: inherit; text-decoration: none; }
 
 /* ── OTP input row ── */
 .otp-row {
-  display: flex; gap: 8px; justify-content: space-between;
-  margin-bottom: 12px;
+  display: flex; gap: 12px; justify-content: center;
+  margin-bottom: 20px;
 }
 .otp-cell {
-  flex: 1; height: 52px; text-align: center;
+  width: 52px; height: 56px; text-align: center;
   border: 1.5px solid var(--rule); border-radius: var(--radius);
   background: var(--surface);
   font-family: 'Space Grotesk', sans-serif;

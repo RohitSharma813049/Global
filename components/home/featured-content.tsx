@@ -165,8 +165,8 @@ export default function FeaturedContent({ title, subtitle, autoplay = true, publ
               </p>
               
               <div className="mt-8 sm:mt-10">
-                <Button className="h-10 sm:h-12 px-6 sm:px-8 w-full sm:w-auto bg-indigo-50 text-indigo-700 hover:bg-indigo-600 hover:text-white font-semibold rounded-lg sm:rounded-xl transition-all duration-300">
-                  Read Full Publication
+                <Button asChild className="h-10 sm:h-12 px-6 sm:px-8 w-full sm:w-auto bg-indigo-50 text-indigo-700 hover:bg-indigo-600 hover:text-white font-semibold rounded-lg sm:rounded-xl transition-all duration-300">
+                  <a href={(current as any).link || "/publications"}>Read Full Publication</a>
                 </Button>
               </div>
             </div>

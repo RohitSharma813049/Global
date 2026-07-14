@@ -15,7 +15,7 @@ try {
     });
     ratelimit = new Ratelimit({
       redis: redis,
-      limiter: Ratelimit.slidingWindow(30, '10 s'), // Allow 30 requests per 10 seconds
+      limiter: Ratelimit.slidingWindow(100, '10 s'), // Allow 100 requests per 10 seconds
       analytics: true,
     });
   } else {

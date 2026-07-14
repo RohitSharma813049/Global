@@ -18,8 +18,8 @@ export default async function ScholarDashboard() {
     redirect("/dashboard")
   }
 
-  // If they are a regular user, show the application form or their application status
-  if (session.user.role === 'user') {
+  // If they are a regular user or reader, show the application form or their application status
+  if (session.user.role === 'user' || session.user.role === 'reader') {
     const { data: applicationState } = await supabaseAdmin
       .from('scholar_applications')
       .select('*')
@@ -84,7 +84,7 @@ export default async function ScholarDashboard() {
         institution: 'Not Specified',
         qualification: 'Not Specified',
         specialization: 'Not Specified',
-        verified: true
+        verified: false // Require manual verification by admin
       })
       .select('*')
       .single()

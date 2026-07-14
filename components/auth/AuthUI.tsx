@@ -58,6 +58,22 @@ export default function AuthUI({ initialScreen }: AuthUIProps) {
     return () => clearInterval(interval);
   }, [timerActive, timerCount]);
 
+  useEffect(() => {
+    // Auto-detect country based on mobile number prefix if country is empty
+    if (!formData.country && formData.mobileNumber) {
+      const num = formData.mobileNumber;
+      if (num.startsWith("+91")) setFormData(prev => ({ ...prev, country: "India" }));
+      else if (num.startsWith("+1")) setFormData(prev => ({ ...prev, country: "United States" }));
+      else if (num.startsWith("+44")) setFormData(prev => ({ ...prev, country: "United Kingdom" }));
+      else if (num.startsWith("+61")) setFormData(prev => ({ ...prev, country: "Australia" }));
+      else if (num.startsWith("+86")) setFormData(prev => ({ ...prev, country: "China" }));
+      else if (num.startsWith("+81")) setFormData(prev => ({ ...prev, country: "Japan" }));
+      else if (num.startsWith("+49")) setFormData(prev => ({ ...prev, country: "Germany" }));
+      else if (num.startsWith("+33")) setFormData(prev => ({ ...prev, country: "France" }));
+      else if (num.startsWith("+971")) setFormData(prev => ({ ...prev, country: "United Arab Emirates" }));
+    }
+  }, [formData.mobileNumber]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.type === "checkbox" ? e.target.checked : e.target.value;
     setFormData({ ...formData, [e.target.name]: value });
@@ -453,13 +469,13 @@ export default function AuthUI({ initialScreen }: AuthUIProps) {
                     <div className="field" style={{ marginBottom: 0 }}>
                       <label className="field-label">Mobile Number</label>
                       <div className="input-wrap">
-                        <input type="text" name="mobileNumber" value={formData.mobileNumber} onChange={handleChange} className="field-input" placeholder="+1 234..." required />
+                        <input type="text" name="mobileNumber" value={formData.mobileNumber} onChange={handleChange} className="field-input" placeholder="+1 234..." maxLength={15} required />
                       </div>
                     </div>
                     <div className="field" style={{ marginBottom: 0 }}>
                       <label className="field-label">Country</label>
                       <div className="input-wrap">
-                        <input type="text" name="country" value={formData.country} onChange={handleChange} className="field-input" placeholder="USA" required />
+                        <input type="text" name="country" value={formData.country} onChange={handleChange} className="field-input" placeholder="USA" maxLength={50} required />
                       </div>
                     </div>
                   </div>
@@ -519,7 +535,7 @@ export default function AuthUI({ initialScreen }: AuthUIProps) {
                   </div>
 
                   <label className="check-row">
-                    <input type="checkbox" name="termsAccepted" checked={formData.termsAccepted} onChange={handleChange} required />
+                    <input type="checkbox" name="termsAccepted" checked={formData.termsAccepted} onChange={handleChange} />
                     <span className="check-box"></span>
                     <span className="check-text">I agree to the <Link href="#">Terms of Service</Link> and <Link href="#">Privacy Policy</Link></span>
                   </label>

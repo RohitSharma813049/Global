@@ -1,6 +1,8 @@
 "use client"
 
 import React, { useState, useEffect } from 'react'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 interface HomeHeroProps {
   title?: string;
@@ -34,6 +36,8 @@ export default function HomeHero({
   stats
 }: HomeHeroProps) {
   const [cur, setCur] = useState(0)
+  const router = useRouter()
+  const [searchQuery, setSearchQuery] = useState('')
 
   const defaultSlides = [
     {
@@ -141,8 +145,12 @@ export default function HomeHero({
             </span>
             <input className="search-input" type="text"
               placeholder={searchPlaceholder || "Search journals, papers, authors, books…"}
-              aria-label="Search publications" />
-            <button className="search-btn-inline">Search</button>
+              aria-label="Search publications"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && router.push(`/publications?search=${encodeURIComponent(searchQuery)}`)}
+            />
+            <button className="search-btn-inline" onClick={() => router.push(`/publications?search=${encodeURIComponent(searchQuery)}`)}>Search</button>
           </div>
 
           <div className="filter-pills">
@@ -158,13 +166,13 @@ export default function HomeHero({
           </div>
 
           <div className="ctas">
-            <button className="btn-p">
+            <Link href="/publications" className="btn-p" style={{ textDecoration: 'none' }}>
               {ctaPrimaryText || 'Explore Publications'}
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                 <path d="M2 7h10M8 3l4 4-4 4" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
-            </button>
-            <button className="btn-s">{ctaSecondaryText || 'Meet Our Scholars'}</button>
+            </Link>
+            <Link href="/scholars" className="btn-s" style={{ textDecoration: 'none' }}>{ctaSecondaryText || 'Meet Our Scholars'}</Link>
           </div>
 
           <div className="trust-row">
