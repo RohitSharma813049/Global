@@ -19,20 +19,20 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
   return (
     <div className="min-h-screen bg-gray-50 pb-16">
       <div className="bg-white pt-16 pb-12 relative overflow-hidden">
-        <div className="absolute top-0 inset-x-0 h-64 bg-gradient-to-b from-[rgba(47,17,93,0.03)] to-transparent pointer-events-none" />
+        <div className="absolute top-0 inset-x-0 h-64 bg-linear-to-b from-[rgba(47,17,93,0.03)] to-transparent pointer-events-none" />
         <div className="max-w-6xl mx-auto px-6 relative z-10">
-          <Link href="/updates" className="inline-flex items-center text-sm text-[#2F115D] hover:underline font-semibold mb-10 transition-colors group tracking-wide">
+          <Link href="/updates" className="inline-flex items-center text-sm text-violet hover:underline font-semibold mb-10 transition-colors group tracking-wide">
             <ArrowLeft className="w-4 h-4 mr-2 transition-transform group-hover:-translate-x-1" />
             Back to Updates
           </Link>
           <div className="flex items-center gap-3 text-[11px] text-gray-500 mb-6 font-bold uppercase tracking-[0.15em]">
-            <span className="bg-white text-[#2F115D] px-3.5 py-1.5 rounded-full border border-[#E2DFF0] shadow-sm">Blog</span>
+            <span className="bg-white text-violet px-3.5 py-1.5 rounded-full border border-[#E2DFF0] shadow-sm">Blog</span>
             <span className="flex items-center">
               <Calendar className="w-4 h-4 mr-2 opacity-70" />
-              {blog.published_at ? new Date(blog.published_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : blog.created_at ? new Date(blog.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'Recently'}
+              {blog.created_at ? new Date(blog.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'Recently'}
             </span>
           </div>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-[#000] tracking-tight leading-[1.1] max-w-4xl" style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-black tracking-tight leading-[1.1] max-w-4xl" style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
             {blog.title}
           </h1>
         </div>

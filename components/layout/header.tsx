@@ -238,7 +238,7 @@ export default function Header() {
                 <span className="text-[10px] mt-0.5 font-medium truncate w-full text-center">Menu</span>
               </button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-[300px] sm:w-[400px] flex flex-col pt-16 z-[100] font-sans antialiased">
+            <SheetContent side="left" className="w-[300px] sm:w-[400px] flex flex-col pt-16 z-100 font-sans antialiased">
               <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
               <nav className="flex flex-col gap-6 h-full overflow-y-auto pb-20">
                 <div className="flex flex-col space-y-1">
