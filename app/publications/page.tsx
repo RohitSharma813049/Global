@@ -6,7 +6,7 @@ export const revalidate = 60; // Enable ISR caching
 export default async function PublicationsPage({
   searchParams
 }: {
-  searchParams: Promise<{ category?: string, subject?: string }>
+  searchParams: Promise<{ category?: string, subject?: string, search?: string }>
 }) {
   const params = await searchParams;
   // If a category or subject is passed in the query params, we pass it to getExploreData.
@@ -20,6 +20,7 @@ export default async function PublicationsPage({
       allCategories={data.categories} 
       contentTypes={data.contentTypes}
       initialCategory={categorySlug}
+      initialSearch={params.search || ""}
     />
   );
 }

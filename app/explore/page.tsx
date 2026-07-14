@@ -6,7 +6,7 @@ export const revalidate = 60; // Enable ISR caching
 export default async function ExplorePage({
   searchParams
 }: {
-  searchParams: Promise<{ category?: string }>
+  searchParams: Promise<{ category?: string, search?: string }>
 }) {
   const params = await searchParams;
   const data = await getExploreData();
@@ -17,6 +17,7 @@ export default async function ExplorePage({
       allCategories={data.categories} 
       contentTypes={data.contentTypes} 
       initialCategory={params.category}
+      initialSearch={params.search || ""}
     />
   );
 }

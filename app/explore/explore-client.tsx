@@ -32,14 +32,16 @@ export default function ExploreClient({
   publications, 
   allCategories, 
   contentTypes,
-  initialCategory
+  initialCategory,
+  initialSearch
 }: { 
   publications: Publication[];
   allCategories: {id: string, name: string}[];
   contentTypes: {name: string, slug: string}[];
   initialCategory?: string;
+  initialSearch?: string;
 }) {
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(initialSearch || "");
   
   const [filters, setFilters] = useState<{
     subjects: string[]

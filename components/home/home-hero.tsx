@@ -158,7 +158,12 @@ export default function HomeHero({
               <button 
                 key={f} 
                 className={`fpill ${filter === f ? 'on' : ''}`}
-                onClick={() => setFilter(f)}
+                onClick={() => {
+                  setFilter(f)
+                  if (f === 'Scholars') router.push('/scholars')
+                  else if (f === 'All') router.push('/publications')
+                  else router.push(`/publications?category=${f.toLowerCase()}`)
+                }}
               >
                 {f}
               </button>

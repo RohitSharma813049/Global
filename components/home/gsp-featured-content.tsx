@@ -96,10 +96,11 @@ export default function GspFeaturedContent({ title, subtitle, autoplay = true, p
   const filteredPublications = filter === 'All' 
     ? displayPublications 
     : displayPublications.filter(p => {
-        if (filter === 'Theses') return p.type === 'Thesis';
-        if (filter === 'Articles') return p.type === 'Article';
-        if (filter === 'eBooks') return p.type === 'eBook';
-        if (filter === 'Magazines') return p.type === 'Magazine';
+        const pType = (p.type || '').toLowerCase();
+        if (filter === 'Theses') return pType === 'thesis' || pType === 'theses';
+        if (filter === 'Articles') return pType === 'article' || pType === 'articles';
+        if (filter === 'eBooks') return pType === 'ebook' || pType === 'ebooks';
+        if (filter === 'Magazines') return pType === 'magazine' || pType === 'magazines';
         return true;
       });
 

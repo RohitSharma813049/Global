@@ -116,11 +116,15 @@ export async function deleteUser(userId: string, targetRole: string) {
     throw new Error('You cannot delete your own account.')
   }
 
-  const { data, error } = await supabaseAdmin.auth.admin.deleteUser(userId)
-  if (error) throw new Error(error.message)
-
-  // Clean up profile as well just in case there's no cascade deletion
+  // Clean up references in the public schema that don't have ON DELETE CASCADE set
+  await supabaseAdmin.from('scholar_applications').delete().eq('user_id', userId)
+  await supabaseAdmin.from('scholars').delete().eq('user_id', userId)
   await supabaseAdmin.from('profiles').delete().eq('id', userId)
+
+  const { data, error } = await supabaseAdmin.auth.admin.deleteUser(userId)
+  if (error) {
+    throw new Error('Failed to delete user: ' + error.message)
+  }
   
   revalidatePath('/dashboard/admin/users')
   return data

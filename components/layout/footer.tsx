@@ -14,9 +14,9 @@ const footerLinks = {
   ],
   'Publication Types': [
     { name: 'Books', href: '/publications?category=books' },
-    { name: 'Journals', href: '/publications?category=journals' },
+    { name: 'Journals', href: '/updates' },
     { name: 'Conferences', href: '/publications?category=conferences' },
-    { name: 'Magazines', href: '/publications?category=magazines' },
+    { name: 'Magazines', href: '/updates' },
   ],
   'Subject Categories': [
     { name: 'Agriculture', href: '/publications?category=agriculture' },
@@ -75,6 +75,7 @@ export default function Footer() {
                     <li key={link.name}>
                       <Link
                         href={link.href}
+                        prefetch={false}
                         className="text-sm text-gray-500 transition hover:text-[#2F115D]"
                       >
                         {link.name}

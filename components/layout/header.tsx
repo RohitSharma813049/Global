@@ -76,12 +76,9 @@ export default function Header() {
               </Link>
             </>
           )}
-          {/* If they are not logged in, take them to signin to apply. If logged in, they can apply from the dashboard. */}
-          {!session && (
-            <Link href="/signin" className="text-sm text-foreground/70 transition hover:text-foreground">
-              Become a Scholar
-            </Link>
-          )}
+          <Link href="/scholars" className="text-sm text-foreground/70 transition hover:text-foreground">
+            Scholars
+          </Link>
           <Link href="/about" className="text-sm text-foreground/70 transition hover:text-foreground">
             About
           </Link>
@@ -249,6 +246,7 @@ export default function Header() {
                   <SheetClose asChild><Link href="/" className="text-base font-medium px-2 py-2 rounded-md hover:text-indigo-600 hover:bg-indigo-50 transition-colors">Home</Link></SheetClose>
                   <SheetClose asChild><Link href="/explore" className="text-base font-medium px-2 py-2 rounded-md hover:text-indigo-600 hover:bg-indigo-50 transition-colors">Explore</Link></SheetClose>
                   <SheetClose asChild><Link href="/updates" className="text-base font-medium px-2 py-2 rounded-md hover:text-indigo-600 hover:bg-indigo-50 transition-colors">Blogs & News</Link></SheetClose>
+                  <SheetClose asChild><Link href="/scholars" className="text-base font-medium px-2 py-2 rounded-md hover:text-indigo-600 hover:bg-indigo-50 transition-colors">Scholars</Link></SheetClose>
                   {session && (
                     <>
                       <SheetClose asChild><Link href="/library" className="text-base font-medium px-2 py-2 rounded-md hover:text-indigo-600 hover:bg-indigo-50 transition-colors">My Library</Link></SheetClose>
