@@ -32,8 +32,6 @@ export default function HomepageSettings() {
     explore_categories_gsp_subtitle: '',
     subject_categories_gsp_title: '',
     subject_categories_gsp_subtitle: '',
-<<<<<<< HEAD
-=======
     how_it_works_title: '',
     how_it_works_subtitle: '',
     scholars_title: '',
@@ -79,7 +77,6 @@ export default function HomepageSettings() {
   useEffect(() => {
     async function load() {
       try {
->>>>>>> 3514b2fe92e2f92454c30e69c813279fb4236378
         const data = await getHomepageSettings()
         setSettings(data)
       } catch (e: any) {
