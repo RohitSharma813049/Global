@@ -4,15 +4,19 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { prisma } from '@/lib/db'
 
+import { supabaseAdmin } from '@/lib/supabase-admin'
+
 export async function getAdminStats() {
   const session = await getServerSession(authOptions)
   if (!session || (session.user.role !== 'admin' && session.user.role !== 'super_admin')) {
     throw new Error('Unauthorized')
   }
 
-  const [totalScholars, totalReaders, pendingPublications] = await Promise.all([
+  const { data: users, error } = await supabaseAdmin.auth.admin.listUsers({ page: 1, perPage: 1000 })
+  const totalReaders = users?.users?.filter((u: any) => !u.user_metadata?.role || u.user_metadata?.role === 'reader' || u.user_metadata?.role === 'user').length || 0
+
+  const [totalScholars, pendingPublications] = await Promise.all([
     prisma.scholars.count(),
-    prisma.profiles.count({ where: { role: 'user' } }),
     prisma.publications.count({ where: { status: 'pending' } })
   ])
 

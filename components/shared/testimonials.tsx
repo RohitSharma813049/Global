@@ -1,4 +1,5 @@
 'use client'
+import { useState, useEffect } from 'react';
 
 import { Star } from 'lucide-react'
 import Image from 'next/image'
@@ -20,10 +21,18 @@ interface TestimonialsProps {
 }
 
 export default function Testimonials({ title, subtitle, testimonials = [], autoplay = true }: TestimonialsProps) {
-  // Chunk testimonials into groups of 4 for the 2x2 grid
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize(); // Initial check
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const chunkSize = isMobile ? 2 : 4;
   const chunkedTestimonials = [];
-  for (let i = 0; i < testimonials.length; i += 4) {
-    chunkedTestimonials.push(testimonials.slice(i, i + 4));
+  for (let i = 0; i < testimonials.length; i += chunkSize) {
+    chunkedTestimonials.push(testimonials.slice(i, i + chunkSize));
   }
 
   return (

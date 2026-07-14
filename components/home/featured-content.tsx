@@ -53,30 +53,33 @@ interface FeaturedContentProps {
   title?: string;
   subtitle?: string;
   autoplay?: boolean;
+  publications?: ContentItem[];
 }
 
-export default function FeaturedContent({ title, subtitle, autoplay = true }: FeaturedContentProps) {
+export default function FeaturedContent({ title, subtitle, autoplay = true, publications = featuredContent }: FeaturedContentProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
+  
+  const displayItems = publications && publications.length > 0 ? publications : featuredContent;
 
   const previous = () => {
-    setCurrentIndex((prev) => (prev === 0 ? featuredContent.length - 1 : prev - 1))
+    setCurrentIndex((prev) => (prev === 0 ? displayItems.length - 1 : prev - 1))
   }
 
   const next = () => {
-    setCurrentIndex((prev) => (prev === featuredContent.length - 1 ? 0 : prev + 1))
+    setCurrentIndex((prev) => (prev === displayItems.length - 1 ? 0 : prev + 1))
   }
 
   useEffect(() => {
     if (!autoplay) return
 
     const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev === featuredContent.length - 1 ? 0 : prev + 1))
+      setCurrentIndex((prev) => (prev === displayItems.length - 1 ? 0 : prev + 1))
     }, 4000)
 
     return () => clearInterval(interval)
-  }, [autoplay])
+  }, [autoplay, displayItems.length])
 
-  const current = featuredContent[currentIndex]
+  const current = displayItems[currentIndex] || displayItems[0]
 
   return (
     <section className="bg-white px-6 py-10 sm:py-16 relative overflow-hidden">
@@ -104,7 +107,7 @@ export default function FeaturedContent({ title, subtitle, autoplay = true }: Fe
               <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />
             </Button>
             <div className="flex gap-1.5 sm:gap-3 px-1 sm:px-2">
-              {featuredContent.map((_, idx) => (
+              {displayItems.map((_, idx) => (
                 <button
                   key={idx}
                   onClick={() => setCurrentIndex(idx)}
@@ -151,13 +154,13 @@ export default function FeaturedContent({ title, subtitle, autoplay = true }: Fe
                 <div className="h-1 w-8 sm:w-10 bg-indigo-600 rounded-full"></div>
                 <p className="text-xs sm:text-sm font-semibold text-indigo-600 uppercase tracking-widest">Highlight</p>
               </div>
-              <h3 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 leading-tight tracking-tight transition-colors cursor-pointer">
+              <h3 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 leading-tight tracking-tight transition-colors cursor-pointer line-clamp-2 min-h-[4rem] sm:min-h-[5.5rem]">
                 {current.title}
               </h3>
               <p className="mt-3 sm:mt-4 text-sm sm:text-base font-medium text-gray-500 uppercase tracking-wide">
                 By <span className="text-gray-900">{current.author}</span>
               </p>
-              <p className="mt-4 sm:mt-6 text-base sm:text-lg md:text-xl leading-relaxed text-gray-600">
+              <p className="mt-4 sm:mt-6 text-base sm:text-lg md:text-xl leading-relaxed text-gray-600 line-clamp-3 min-h-[5rem] sm:min-h-[6rem]">
                 {current.description}
               </p>
               

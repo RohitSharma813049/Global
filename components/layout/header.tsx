@@ -44,15 +44,14 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        <Link href="/" className="flex items-center bg-background">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 md:px-6 py-4">
+        <Link href="/" className="flex items-center justify-start mr-auto bg-background">
           <Image
             src="/logo1.png"
             alt="Global Scholar Publications"
             width={240}
             height={70}
-            className="w-[200px] md:w-[240px] h-auto"
-            style={{ width: "auto" }}
+            className="w-32 sm:w-40 md:w-56 max-w-full h-auto object-contain object-left shrink-0"
             priority
           />
         </Link>

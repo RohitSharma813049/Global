@@ -68,16 +68,21 @@ export default function DashboardSidebar() {
     <div 
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className={`hidden md:flex flex-col h-full bg-white border-r border-gray-200 shadow-sm fixed top-0 left-0 transition-all duration-300 ease-in-out z-50 ${isExpanded ? 'w-64' : 'w-20'}`}
+      className={`hidden md:flex flex-col h-full bg-slate-900 border-r border-slate-800 shadow-xl fixed top-0 left-0 transition-all duration-300 ease-in-out z-50 ${isExpanded ? 'w-64' : 'w-20'}`}
     >
-      <div className={`p-6 border-b border-gray-100 flex items-center ${isExpanded ? 'justify-between' : 'justify-center'} overflow-hidden h-24`}>
+      <div className={`p-5 border-b border-slate-800 flex items-center ${isExpanded ? 'justify-between' : 'justify-center'} overflow-hidden h-20`}>
         {isExpanded ? (
-          <div className="whitespace-nowrap transition-opacity duration-300">
-            <h2 className="text-2xl font-extrabold text-indigo-700 tracking-tight">Global Scholar</h2>
-            <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{role}</span>
+          <div className="whitespace-nowrap flex items-center gap-3 transition-opacity duration-300">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg shadow-lg">
+              GS
+            </div>
+            <div>
+              <h2 className="text-lg font-bold text-white tracking-tight leading-tight">Global Scholar</h2>
+              <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-wider">{role.replace('_', ' ')}</span>
+            </div>
           </div>
         ) : (
-          <div className="w-10 h-10 bg-indigo-600 rounded-xl text-white flex items-center justify-center font-bold text-xl shrink-0">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg shadow-lg shrink-0">
             GS
           </div>
         )}
@@ -85,7 +90,7 @@ export default function DashboardSidebar() {
         {isExpanded && (
           <button 
             onClick={() => setIsPinned(!isPinned)}
-            className={`p-1.5 rounded-md hover:bg-gray-100 text-gray-400 transition-colors ${isPinned ? 'text-indigo-600 bg-indigo-50' : ''}`}
+            className={`p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-all ${isPinned ? 'text-indigo-400 bg-slate-800/50' : ''}`}
             title={isPinned ? "Unpin sidebar" : "Pin sidebar"}
           >
             <MdPushPin className={`text-lg transition-transform ${isPinned ? 'rotate-45' : 'rotate-0'}`} />
@@ -93,19 +98,19 @@ export default function DashboardSidebar() {
         )}
       </div>
 
-      <nav className="flex-1 overflow-y-auto py-6 px-4 space-y-2 overflow-x-hidden">
+      <nav className="flex-1 overflow-y-auto py-5 px-3 space-y-1 overflow-x-hidden custom-scrollbar">
         <Link 
           href="/dashboard"
-          className={`flex items-center py-3 rounded-xl transition-all duration-200 ${isExpanded ? 'px-4' : 'justify-center px-0'} ${pathname === "/dashboard" ? "bg-indigo-50 text-indigo-700 shadow-sm" : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"}`}
+          className={`flex items-center py-2.5 rounded-lg transition-all duration-200 ${isExpanded ? 'px-3' : 'justify-center px-0'} ${pathname === "/dashboard" ? "bg-indigo-600/10 text-indigo-400" : "text-slate-400 hover:bg-slate-800 hover:text-slate-200"}`}
           title={!isExpanded ? "Overview" : ""}
         >
-          <MdDashboard className={`text-xl ${isExpanded ? 'mr-3 text-lg' : ''}`} /> 
-          {isExpanded && <span className="whitespace-nowrap">Overview</span>}
+          <MdDashboard className={`text-xl ${isExpanded ? 'mr-3' : ''}`} /> 
+          {isExpanded && <span className="font-medium whitespace-nowrap">Overview</span>}
         </Link>
         
         {isExpanded && (
-          <div className="pt-4 pb-2">
-            <p className="px-4 text-xs font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap">Features</p>
+          <div className="pt-5 pb-2">
+            <p className="px-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Features</p>
           </div>
         )}
         {!isExpanded && <div className="h-4"></div>}
@@ -117,42 +122,42 @@ export default function DashboardSidebar() {
             <Link
               key={link.name}
               href={link.href}
-              className={`flex items-center py-3 rounded-xl transition-all duration-200 ${isExpanded ? 'px-4' : 'justify-center px-0'} ${isActive ? "bg-indigo-50 text-indigo-700 shadow-sm" : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"}`}
+              className={`flex items-center py-2.5 rounded-lg transition-all duration-200 ${isExpanded ? 'px-3' : 'justify-center px-0'} ${isActive ? "bg-indigo-600/10 text-indigo-400" : "text-slate-400 hover:bg-slate-800 hover:text-slate-200"}`}
               title={!isExpanded ? link.name : ""}
             >
-              <Icon className={`text-xl ${isExpanded ? 'mr-3 text-lg' : ''}`} /> 
-              {isExpanded && <span className="whitespace-nowrap">{link.name}</span>}
+              <Icon className={`text-xl ${isExpanded ? 'mr-3' : ''}`} /> 
+              {isExpanded && <span className="font-medium whitespace-nowrap">{link.name}</span>}
             </Link>
           );
         })}
       </nav>
 
-      <div className={`p-4 border-t border-gray-100 ${!isExpanded ? 'flex flex-col items-center' : ''}`}>
+      <div className={`p-4 border-t border-slate-800 ${!isExpanded ? 'flex flex-col items-center' : ''}`}>
         {role === "user" && (
           <BecomeScholarModal>
             <button 
-              className={`flex items-center py-3 rounded-xl text-indigo-700 bg-indigo-50 hover:bg-indigo-100 transition-all duration-200 mb-2 ${isExpanded ? 'w-full px-4 text-sm font-medium' : 'justify-center w-12 h-12'}`}
+              className={`flex items-center py-2.5 rounded-lg text-indigo-400 bg-indigo-500/10 hover:bg-indigo-500/20 transition-all duration-200 mb-2 ${isExpanded ? 'w-full px-3 text-sm font-medium' : 'justify-center w-10 h-10'}`}
               title={!isExpanded ? "Become a Scholar" : ""}
             >
-              <MdSchool className={`text-xl ${isExpanded ? 'mr-3 text-lg' : ''}`} /> 
+              <MdSchool className={`text-xl ${isExpanded ? 'mr-3' : ''}`} /> 
               {isExpanded && <span className="whitespace-nowrap">Become Scholar</span>}
             </button>
           </BecomeScholarModal>
         )}
         <Link 
           href="/dashboard/settings"
-          className={`flex items-center py-3 rounded-xl transition-all duration-200 mb-2 ${isExpanded ? 'px-4 text-sm font-medium w-full' : 'justify-center w-12 h-12 px-0'} ${pathname === "/dashboard/settings" ? "bg-indigo-50 text-indigo-700" : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"}`}
+          className={`flex items-center py-2.5 rounded-lg transition-all duration-200 mb-1 ${isExpanded ? 'px-3 text-sm font-medium w-full' : 'justify-center w-10 h-10 px-0'} ${pathname === "/dashboard/settings" ? "bg-indigo-600/10 text-indigo-400" : "text-slate-400 hover:bg-slate-800 hover:text-slate-200"}`}
           title={!isExpanded ? "Settings" : ""}
         >
-          <MdSettings className={`text-xl ${isExpanded ? 'mr-3 text-lg' : ''}`} /> 
+          <MdSettings className={`text-xl ${isExpanded ? 'mr-3' : ''}`} /> 
           {isExpanded && <span className="whitespace-nowrap">Settings</span>}
         </Link>
         <button
           onClick={() => signOut({ callbackUrl: "/signin" })}
-          className={`flex items-center py-3 rounded-xl text-red-600 hover:bg-red-50 transition-all duration-200 mt-2 ${isExpanded ? 'w-full px-4 text-sm font-medium' : 'justify-center w-12 h-12 px-0'}`}
+          className={`flex items-center py-2.5 rounded-lg text-rose-400 hover:bg-rose-500/10 hover:text-rose-300 transition-all duration-200 ${isExpanded ? 'w-full px-3 text-sm font-medium' : 'justify-center w-10 h-10 px-0'}`}
           title={!isExpanded ? "Logout" : ""}
         >
-          <MdLogout className={`text-xl ${isExpanded ? 'mr-3 text-lg' : ''}`} /> 
+          <MdLogout className={`text-xl ${isExpanded ? 'mr-3' : ''}`} /> 
           {isExpanded && <span className="whitespace-nowrap">Logout</span>}
         </button>
       </div>

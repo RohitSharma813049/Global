@@ -1,17 +1,20 @@
 import { prisma } from '@/lib/db'
 
-export async function getPlatformStats() {
-  const [scholarsCount, thesisCount, ebookCount, articleCount] = await Promise.all([
-    prisma.scholars.count(),
-    prisma.publications.count({ where: { content_type: 'thesis', status: 'published' } }),
-    prisma.publications.count({ where: { content_type: 'ebook', status: 'published' } }),
-    prisma.publications.count({ where: { content_type: 'article', status: 'published' } })
-  ])
-  
-  return {
-    scholarsCount,
-    thesisCount,
-    ebookCount,
-    articleCount
-  }
-}
+import { unstable_cache } from 'next/cache'
+
+export const getPlatformStats = unstable_cache(
+  async () => {
+    const scholarsCount = await prisma.scholars.count()
+    const thesisCount = await prisma.publications.count({ where: { content_type: 'Thesis', status: 'published' } })
+    const ebookCount = await prisma.publications.count({ where: { content_type: 'Ebook', status: 'published' } })
+    const articleCount = await prisma.publications.count({ where: { content_type: 'Article', status: 'published' } })
+    return {
+      scholarsCount,
+      thesisCount,
+      ebookCount,
+      articleCount
+    }
+  },
+  ['stats-platform'],
+  { revalidate: 60, tags: ['stats-platform'] }
+)

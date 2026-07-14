@@ -9,13 +9,14 @@ export default async function ExplorePage({
   searchParams: Promise<{ category?: string }>
 }) {
   const params = await searchParams;
-  const data = await getExploreData(params.category);
+  const data = await getExploreData();
 
   return (
     <ExploreClient 
       publications={data.publications} 
       allCategories={data.categories} 
       contentTypes={data.contentTypes} 
+      initialCategory={params.category}
     />
   );
 }

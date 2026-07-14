@@ -13,25 +13,25 @@ const footerLinks = {
     { name: 'Contact', href: '/contact' },
   ],
   'Publication Types': [
-    { name: 'Books', href: '/explore' },
-    { name: 'Journals', href: '/explore' },
-    { name: 'Conferences', href: '/explore' },
-    { name: 'Magazines', href: '/explore' },
+    { name: 'Books', href: '/publications?category=books' },
+    { name: 'Journals', href: '/publications?category=journals' },
+    { name: 'Conferences', href: '/publications?category=conferences' },
+    { name: 'Magazines', href: '/publications?category=magazines' },
   ],
   'Subject Categories': [
-    { name: 'Agriculture', href: '/explore' },
-    { name: 'Business & Management', href: '/explore' },
-    { name: 'Computer Science & AI', href: '/explore' },
-    { name: 'Education', href: '/explore' },
-    { name: 'Engineering & Technology', href: '/explore' },
-    { name: 'Environmental Studies', href: '/explore' },
+    { name: 'Agriculture', href: '/publications?category=agriculture' },
+    { name: 'Business & Management', href: '/publications?category=business-management' },
+    { name: 'Computer Science & AI', href: '/publications?category=computer-science' },
+    { name: 'Education', href: '/publications?category=education' },
+    { name: 'Engineering & Technology', href: '/publications?category=engineering' },
+    { name: 'Environmental Studies', href: '/publications?category=environmental-studies' },
   ],
   'More Subjects': [
-    { name: 'Humanities', href: '/explore' },
-    { name: 'Law', href: '/explore' },
-    { name: 'Medical & Health Sciences', href: '/explore' },
-    { name: 'Social Sciences', href: '/explore' },
-    { name: 'Other', href: '/explore' },
+    { name: 'Humanities', href: '/publications?category=humanities' },
+    { name: 'Law', href: '/publications?category=law' },
+    { name: 'Medical & Health Sciences', href: '/publications?category=medical-health' },
+    { name: 'Social Sciences', href: '/publications?category=social-sciences' },
+    { name: 'Other', href: '/publications?category=other' },
   ],
   Legal: [
     { name: 'Privacy Policy', href: '/privacy' },
@@ -47,7 +47,7 @@ export default function Footer() {
       <div className="px-6 py-8 sm:py-12">
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-8 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
-            <div className="col-span-2 md:col-span-3 lg:col-span-1">
+            <div className="col-span-2 md:col-span-3 lg:col-span-1 flex flex-col items-center md:items-start text-center md:text-left">
               <Link href="/" className="flex items-center gap-0">
                 <Image
                   src="/logo1.png"

@@ -286,9 +286,11 @@
   transition: transform 0.35s ease, box-shadow 0.35s ease;
   cursor: pointer;
 }
-.gsp-cat-card:hover {
-  transform: translateY(-6px);
-  box-shadow: var(--card-shadow-hover);
+@media (hover: hover) {
+  .gsp-cat-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--card-shadow-hover);
+  }
 }
 
 .gsp-cat-card-img {
@@ -297,7 +299,9 @@
   background-position: center;
   transition: transform 0.6s ease;
 }
-.gsp-cat-card:hover .gsp-cat-card-img { transform: scale(1.06); }
+@media (hover: hover) {
+  .gsp-cat-card:hover .gsp-cat-card-img { transform: scale(1.06); }
+}
 
 .gsp-cat-card-overlay {
   position: absolute; inset: 0;
@@ -334,10 +338,12 @@
   display: flex; align-items: center; justify-content: center;
   transition: background 0.25s, transform 0.25s;
 }
-.gsp-cat-card:hover .gsp-cat-card-arrow {
-  background: var(--gold);
-  border-color: var(--gold);
-  transform: translateX(2px);
+@media (hover: hover) {
+  .gsp-cat-card:hover .gsp-cat-card-arrow {
+    background: var(--gold);
+    border-color: var(--gold);
+    transform: translateX(2px);
+  }
 }
 
 /* ════════════════════════════════
@@ -375,10 +381,12 @@
   cursor: pointer;
   transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
 }
-.gsp-pub-card:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--card-shadow-hover);
-  border-color: rgba(47,17,93,0.18);
+@media (hover: hover) {
+  .gsp-pub-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--card-shadow-hover);
+    border-color: rgba(47,17,93,0.18);
+  }
 }
 
 .gsp-pub-card-media {
@@ -394,7 +402,9 @@
   display: block;
   transition: transform 0.5s ease;
 }
-.gsp-pub-card:hover .gsp-pub-card-media img { transform: scale(1.08); }
+@media (hover: hover) {
+  .gsp-pub-card:hover .gsp-pub-card-media img { transform: scale(1.08); }
+}
 
 .gsp-pub-card-type {
   position: absolute; top: 12px; left: 12px; z-index: 2;

@@ -25,7 +25,7 @@ export default async function ScholarsListingPage({
     include: {
       users: true
     },
-    orderBy: { created_at: 'desc' }
+    orderBy: { users: { created_at: 'desc' } }
   })
 
   // Manual fallback filter for names inside JSON metadata
@@ -71,7 +71,7 @@ export default async function ScholarsListingPage({
                 No scholars found matching your search.
               </div>
             ) : (
-              filteredScholars.map(scholar => {
+              filteredScholars.map((scholar, index) => {
                 const meta = scholar.users?.raw_user_meta_data as any
                 const name = meta?.name || scholar.users?.email?.split('@')[0] || 'Unknown'
                 const avatar = meta?.avatar_url || ''
@@ -82,7 +82,14 @@ export default async function ScholarsListingPage({
                     <div className="flex items-center gap-4 mb-4">
                       <div className="w-16 h-16 rounded-full overflow-hidden bg-primary/10 flex items-center justify-center text-primary font-bold text-xl relative">
                         {avatar ? (
-                          <Image src={avatar} alt={name} fill className="object-cover" />
+                          <Image 
+                            src={avatar} 
+                            alt={name} 
+                            fill 
+                            className="object-cover" 
+                            sizes="64px"
+                            priority={index < 6}
+                          />
                         ) : initials}
                       </div>
                       <div>

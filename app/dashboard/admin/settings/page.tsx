@@ -3,8 +3,13 @@
 import React, { useState, useEffect } from 'react'
 import { updateHomepageSettings, getHomepageSettings } from '@/app/actions/cms'
 import { useRouter } from 'next/navigation'
-import ImageUpload from '@/components/image-upload'
+import dynamic from 'next/dynamic'
 import toast from 'react-hot-toast'
+
+const ImageUpload = dynamic(() => import('@/components/image-upload'), { 
+  ssr: false, 
+  loading: () => <div className="h-32 w-full bg-gray-100 rounded-lg animate-pulse border-2 border-dashed border-gray-200"></div> 
+})
 
 export default function HomepageSettings() {
   const [loading, setLoading] = useState(true)
@@ -27,6 +32,54 @@ export default function HomepageSettings() {
     explore_categories_gsp_subtitle: '',
     subject_categories_gsp_title: '',
     subject_categories_gsp_subtitle: '',
+<<<<<<< HEAD
+=======
+    how_it_works_title: '',
+    how_it_works_subtitle: '',
+    scholars_title: '',
+    scholars_subtitle: '',
+    featured_scholars_gsp_title: '',
+    featured_scholars_gsp_subtitle: '',
+    testimonials_title: '',
+    testimonials_subtitle: '',
+    cta_title: '',
+    cta_subtitle: '',
+    show_stats_section: true,
+    show_categories_section: true,
+    show_featured_content: true,
+    show_featured_scholars: true,
+    show_testimonials: true,
+    show_faq_section: true,
+    show_explore_categories_gsp: true,
+    show_subject_categories_gsp: true,
+    show_featured_content_gsp: true,
+    show_how_it_works: true,
+    show_featured_scholars_gsp: true,
+    show_cta_banner: true,
+    enable_carousel_autoplay: true,
+    faq_title: '',
+    faq_subtitle: '',
+    faqs: [] as { question: string; answer: string }[],
+    explore_categories: [] as { title: string; count: string; image: string; link: string }[],
+    subject_categories: [] as { id: string; name: string; image: string }[],
+    hero_slides: [] as any[],
+    hero_ticker_items: [] as any[],
+    hero_search_filters: [] as string[],
+    hero_trust_avatars: [] as string[],
+    hero_stats: [] as any[],
+    hero_search_placeholder: '',
+    hero_top_pill: '',
+    hero_cta_primary_text: '',
+    hero_cta_secondary_text: '',
+    hero_trust_text: '',
+    featured_publications: [] as any[],
+    how_it_works_steps: [] as { title: string; description: string }[],
+  })
+
+  useEffect(() => {
+    async function load() {
+      try {
+>>>>>>> 3514b2fe92e2f92454c30e69c813279fb4236378
         const data = await getHomepageSettings()
         setSettings(data)
       } catch (e: any) {
@@ -163,7 +216,26 @@ export default function HomepageSettings() {
     }))
   }
 
-  if (loading) return <div className="p-8 text-center text-gray-500">Loading settings...</div>
+  if (loading) return (
+    <div className="p-4 md:p-6 w-full max-w-4xl mx-auto animate-pulse">
+      <div className="mb-6">
+        <div className="h-8 bg-gray-200 rounded w-1/3 mb-2"></div>
+        <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+      </div>
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-8">
+        {[1, 2, 3, 4].map(i => (
+          <div key={i} className="mb-8">
+            <div className="h-6 bg-gray-200 rounded w-1/4 mb-4"></div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="h-10 bg-gray-100 rounded"></div>
+              <div className="h-10 bg-gray-100 rounded"></div>
+              <div className="md:col-span-2 h-24 bg-gray-100 rounded"></div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
 
   return (
     <div className="p-4 md:p-6 w-full max-w-4xl mx-auto">

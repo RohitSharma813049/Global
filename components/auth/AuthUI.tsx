@@ -246,13 +246,23 @@ export default function AuthUI({ initialScreen }: AuthUIProps) {
                 {/* Role tabs */}
                 <div className="role-tabs">
                   <button className={`role-tab ${role === "scholar" ? "active" : ""}`} onClick={() => setRole("scholar")}>
-                    <span className="role-tab-icon"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=104&h=104&fit=crop&crop=face&auto=format&q=80" alt="Scholar" /></span>
+                    <span className="role-tab-icon" style={{ height: '100px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f1f5f9' }}>
+                      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                        <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+                      </svg>
+                    </span>
                     <span className="role-tab-name">Scholar</span>
                     <span className="role-tab-desc">Publish & manage research</span>
                     <span className="role-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none"><path d="M1 4l2 2 4-4" stroke="white" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" /></svg></span>
                   </button>
                   <button className={`role-tab ${role === "reader" ? "active" : ""}`} onClick={() => setRole("reader")}>
-                    <span className="role-tab-icon"><img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=104&h=104&fit=crop&crop=face&auto=format&q=80" alt="Reader" /></span>
+                    <span className="role-tab-icon" style={{ height: '100px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f1f5f9' }}>
+                      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                      </svg>
+                    </span>
                     <span className="role-tab-name">Reader</span>
                     <span className="role-tab-desc">Discover & bookmark research</span>
                     <span className="role-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none"><path d="M1 4l2 2 4-4" stroke="white" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" /></svg></span>
@@ -371,13 +381,23 @@ export default function AuthUI({ initialScreen }: AuthUIProps) {
                 {/* Role tabs */}
                 <div className="role-tabs" style={{ marginBottom: "20px" }}>
                   <button className={`role-tab ${role === "scholar" ? "active" : ""}`} onClick={() => setRole("scholar")}>
-                    <span className="role-tab-icon"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=104&h=104&fit=crop&crop=face&auto=format&q=80" alt="Scholar" /></span>
+                    <span className="role-tab-icon" style={{ height: '100px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f1f5f9' }}>
+                      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                        <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+                      </svg>
+                    </span>
                     <span className="role-tab-name">Scholar</span>
                     <span className="role-tab-desc">Publish your research</span>
                     <span className="role-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none"><path d="M1 4l2 2 4-4" stroke="white" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" /></svg></span>
                   </button>
                   <button className={`role-tab ${role === "reader" ? "active" : ""}`} onClick={() => setRole("reader")}>
-                    <span className="role-tab-icon"><img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=104&h=104&fit=crop&crop=face&auto=format&q=80" alt="Reader" /></span>
+                    <span className="role-tab-icon" style={{ height: '100px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f1f5f9' }}>
+                      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                      </svg>
+                    </span>
                     <span className="role-tab-name">Reader</span>
                     <span className="role-tab-desc">Explore publications</span>
                     <span className="role-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none"><path d="M1 4l2 2 4-4" stroke="white" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" /></svg></span>
