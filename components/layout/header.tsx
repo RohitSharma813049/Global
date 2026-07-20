@@ -51,7 +51,7 @@ export default function Header() {
             alt="Global Scholar Publications"
             width={240}
             height={70}
-            className="w-32 sm:w-40 md:w-56 max-w-full h-auto object-contain object-left shrink-0"
+            className="w-40 sm:w-48 md:w-56 max-w-full h-auto object-contain object-left shrink-0"
             priority
           />
         </Link>

@@ -422,7 +422,7 @@ export default function ExploreClient({
 
               <div className="sort-wrap">
                 <select 
-                  className="sort-sel" 
+                  className="sort-sel w-full md:w-auto" 
                   aria-label="Sort results"
                   value={sortOrder}
                   onChange={(e) => setSortOrder(e.target.value as any)}

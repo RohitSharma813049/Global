@@ -1885,8 +1885,28 @@ a.pub-card { cursor: pointer; color: inherit; text-decoration: none; }
   #pubGrid.list-mode .pub-card { flex-direction: column; }
   .ph-stats { display: none; }
   .ph-top { flex-direction: column; align-items: flex-start; gap: 16px; }
-  .toolbar { gap: 8px; }
-  .toolbar-count { font-size: 12px; }
+  .toolbar { 
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 8px; 
+  }
+  .toolbar-filter-btn { order: 1; flex: 0 0 auto; justify-content: center; width: auto; }
+  .sort-wrap { order: 2; flex: 1; min-width: 120px; }
+  .sort-sel { width: 100%; }
+  .view-toggle { order: 3; flex: 0 0 auto; margin-top: 0; }
+  .toolbar-count { 
+    order: 4; 
+    width: 100%; 
+    text-align: left; 
+    margin: 0; 
+    font-size: 13.5px; 
+    padding-top: 4px; 
+    border-top: 1px solid var(--rule);
+    margin-top: 4px;
+    padding-bottom: 4px;
+  }
   .nav-center { display: none; }
   .nav-btn-ghost { display: none; }
 }
@@ -2630,7 +2650,7 @@ a.pub-card { cursor: pointer; color: inherit; text-decoration: none; }
 /* --- gsp-featured-scholars.css --- */
 .scholars-section {
   position: relative;
-  padding: 96px 56px 110px;
+  padding: 64px 56px 64px;
   background: #fff;
   overflow: hidden;
 }
@@ -2923,14 +2943,14 @@ a.pub-card { cursor: pointer; color: inherit; text-decoration: none; }
   .scholar-card { flex: 0 0 calc((100% - 28px * 2) / 3); }
 }
 @media (max-width: 860px) {
-  .scholars-section { padding: 72px 28px 90px; }
+  .scholars-section { padding: 56px 28px 56px; }
   .scholars-head { flex-direction: column; align-items: flex-start; gap: 20px; }
   .scholar-card { flex: 0 0 calc((100% - 20px) / 2); }
   .scholars-carousel-track { gap: 20px; }
   .scholars-carousel-controls { align-self: flex-end; }
 }
 @media (max-width: 600px) {
-  .scholars-section { padding: 60px 20px 72px; }
+  .scholars-section { padding: 48px 20px 48px; }
   .scholars-h2 { font-size: clamp(28px, 8vw, 38px); }
   .scholar-card { flex: 0 0 78%; }
   .scholars-carousel-track { gap: 16px; }
@@ -2942,7 +2962,7 @@ a.pub-card { cursor: pointer; color: inherit; text-decoration: none; }
 /* --- gsp-recent-blogs.css --- */
 .gsp-blog-section {
   position: relative;
-  padding: 96px 56px 110px;
+  padding: 64px 56px 64px;
   background: #fff;
   overflow: hidden;
 }
@@ -3189,7 +3209,7 @@ a.pub-card { cursor: pointer; color: inherit; text-decoration: none; }
   .gsp-blog-card { flex: 0 0 calc((100% - 24px) / 2); }
 }
 @media (max-width: 760px) {
-  .gsp-blog-section { padding: 72px 28px 90px; }
+  .gsp-blog-section { padding: 56px 28px 56px; }
   .gsp-blog-head { flex-direction: column; align-items: flex-start; gap: 20px; }
   .gsp-blog-head-right { align-self: stretch; justify-content: space-between; }
   .gsp-view-all-btn { height: 42px; padding: 0 16px; font-size: 12px; }
@@ -3197,7 +3217,7 @@ a.pub-card { cursor: pointer; color: inherit; text-decoration: none; }
   .gsp-bc-title { font-size: 18px; min-height: 46px; }
 }
 @media (max-width: 560px) {
-  .gsp-blog-section { padding: 60px 20px 72px; }
+  .gsp-blog-section { padding: 48px 20px 48px; }
   .gsp-blog-h2 { font-size: clamp(28px, 8vw, 38px); }
   .gsp-blog-card { flex: 0 0 84%; }
   .gsp-carousel-controls { display: none; }
@@ -4304,11 +4324,12 @@ a.pub-card { cursor: pointer; color: inherit; text-decoration: none; }
   border: 1.5px solid var(--rule);
   border-radius: 10px;
   background: #fff;
-  padding: 0 18px 0 50px;
+  padding: 0 100px 0 50px;
   font-family: var(--font-space-grotesk), sans-serif;
   font-size: 14px; font-weight: 300; color: var(--ink);
   outline: none;
   appearance: none;
+  text-overflow: ellipsis;
 }
 .home-hero-container .search-input::placeholder { color: rgba(0,0,0,0.3); }
 .home-hero-container .search-input:focus {
