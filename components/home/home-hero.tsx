@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 
 interface HomeHeroProps {
   title?: string;
@@ -188,8 +189,8 @@ export default function HomeHero({
                 "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=64&h=64&fit=crop&crop=face&auto=format&q=80",
                 "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=64&h=64&fit=crop&crop=face&auto=format&q=80"
               ]).map((avatar, index) => (
-                <div className="trust-avatar" key={index}>
-                  <img src={avatar} alt="Scholar" loading="lazy" />
+                <div className="trust-avatar" key={index} style={{ position: 'relative', width: '32px', height: '32px', overflow: 'hidden', borderRadius: '50%' }}>
+                  <Image src={avatar} alt="Scholar" fill sizes="32px" className="object-cover" priority />
                 </div>
               ))}
             </div>
@@ -207,8 +208,10 @@ export default function HomeHero({
               <div 
                 key={i} 
                 className={`photo-slide ${i === cur ? 'active' : ''}`} 
-                style={{ backgroundImage: `url('${s.image}')` }}
-              ></div>
+                style={{ position: 'absolute', inset: 0, opacity: i === cur ? 1 : 0, transition: 'opacity 0.8s ease' }}
+              >
+                <Image src={s.image} alt={s.title} fill className="object-cover" priority={i === 0} sizes="(max-width: 768px) 100vw, 50vw" />
+              </div>
             ))}
           </div>
 
@@ -226,8 +229,8 @@ export default function HomeHero({
               <p className="feat-label">{d.label}</p>
               <p className="feat-title">{d.title}</p>
               <div className="feat-meta">
-                <div className="feat-avatar">
-                  <img src={d.avatar} alt="Author" />
+                <div className="feat-avatar" style={{ position: 'relative', width: '40px', height: '40px', overflow: 'hidden', borderRadius: '50%' }}>
+                  <Image src={d.avatar} alt="Author" fill sizes="40px" className="object-cover" priority />
                 </div>
                 <span className="feat-author"><strong>{d.author}</strong> · {d.cred}</span>
                 <span className="feat-badge">{d.badge}</span>
