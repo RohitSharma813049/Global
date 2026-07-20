@@ -245,6 +245,13 @@ export async function deleteTestimonial(id: string) {
   revalidatePath('/dashboard/admin/testimonials')
 }
 
+export async function updateTestimonial(id: string, data: { quote: string, author: string, role: string, rating: number, image?: string }) {
+  await checkAdmin()
+  await prisma.testimonials.update({ where: { id }, data })
+  revalidatePath('/')
+  revalidatePath('/dashboard/admin/testimonials')
+}
+
 // ---- FEATURED SCHOLARS ----
 
 export async function getAllScholarsForAdmin() {

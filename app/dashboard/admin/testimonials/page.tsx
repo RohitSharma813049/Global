@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { getTestimonials, createTestimonial, deleteTestimonial } from '@/app/actions/cms'
+import { getTestimonials, createTestimonial, deleteTestimonial, updateTestimonial } from '@/app/actions/cms'
 import toast from 'react-hot-toast'
 import ImageUpload from '@/components/image-upload'
 
@@ -9,7 +9,8 @@ export default function TestimonialsManager() {
   const [items, setItems] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
-  const [newItem, setNewItem] = useState({ quote: '', author: '', role: '', rating: 5, image: '' })
+  const [newItem, setNewItem] = useState({ id: '', quote: '', author: '', role: '', rating: 5, image: '' })
+  const [isEditing, setIsEditing] = useState(false)
   const [saving, setSaving] = useState(false)
 
   const loadItems = async () => {
@@ -30,10 +31,16 @@ export default function TestimonialsManager() {
     e.preventDefault()
     setSaving(true)
     try {
-      await createTestimonial(newItem)
-      toast.success('Testimonial added!')
+      if (isEditing && newItem.id) {
+        await updateTestimonial(newItem.id, newItem)
+        toast.success('Testimonial updated!')
+      } else {
+        await createTestimonial(newItem)
+        toast.success('Testimonial added!')
+      }
       setShowModal(false)
-      setNewItem({ quote: '', author: '', role: '', rating: 5, image: '' })
+      setNewItem({ id: '', quote: '', author: '', role: '', rating: 5, image: '' })
+      setIsEditing(false)
       loadItems()
     } catch (e: any) {
       toast.error(e.message)
@@ -61,7 +68,11 @@ export default function TestimonialsManager() {
           <p className="text-gray-600 text-sm mt-1">Manage scholar testimonials for the homepage.</p>
         </div>
         <button 
-          onClick={() => setShowModal(true)}
+          onClick={() => {
+            setNewItem({ id: '', quote: '', author: '', role: '', rating: 5, image: '' })
+            setIsEditing(false)
+            setShowModal(true)
+          }}
           className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700"
         >
           + Add Testimonial
@@ -99,6 +110,7 @@ export default function TestimonialsManager() {
                   <td className="px-6 py-4 text-sm text-gray-500 truncate max-w-xs">{item.quote}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.rating}/5</td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <button onClick={() => { setNewItem(item); setIsEditing(true); setShowModal(true); }} className="text-indigo-600 hover:text-indigo-900 mr-4">Edit</button>
                     <button onClick={() => handleDelete(item.id)} className="text-red-600 hover:text-red-900">Delete</button>
                   </td>
                 </tr>
@@ -114,7 +126,7 @@ export default function TestimonialsManager() {
       {showModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full p-6">
-            <h2 className="text-xl font-bold mb-4">Add Testimonial</h2>
+            <h2 className="text-xl font-bold mb-4">{isEditing ? 'Edit Testimonial' : 'Add Testimonial'}</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -143,7 +155,7 @@ export default function TestimonialsManager() {
               </div>
               <div className="flex justify-end gap-3 pt-4">
                 <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 text-gray-600">Cancel</button>
-                <button type="submit" disabled={saving} className="bg-indigo-600 text-white px-4 py-2 rounded-lg">{saving ? 'Saving...' : 'Create'}</button>
+                <button type="submit" disabled={saving} className="bg-indigo-600 text-white px-4 py-2 rounded-lg">{saving ? 'Saving...' : (isEditing ? 'Update' : 'Create')}</button>
               </div>
             </form>
           </div>
