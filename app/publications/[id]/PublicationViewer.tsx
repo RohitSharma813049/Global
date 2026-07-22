@@ -23,6 +23,27 @@ export default function PublicationViewer({ publication, isVideo }: PublicationV
     setPage(prev => Math.max(1, Math.min(totalPages, prev + dir)));
   };
 
+  const getSimulatedContent = (pageNum: number) => {
+    const abstractText = publication.abstract || "<p>No content available.</p>";
+    const chunks = [
+      abstractText,
+      "<p>The methodology applied in this research involves a comprehensive analysis of the existing literature and empirical data gathered over the course of several months. We utilized both qualitative and quantitative approaches to ensure a robust framework.</p>",
+      "<p>Results indicate a significant correlation between the variables tested. The statistical significance suggests that the initial hypothesis holds true under the specified conditions, pointing towards a new understanding of the core mechanisms.</p>",
+      "<p>Discussion of these results suggests that further investigation is warranted. While the current data provides a strong foundation, edge cases and outliers must be examined in greater detail to formulate a universal theory.</p>",
+      "<p>Conclusion: The findings provide a robust framework for future studies. By establishing this baseline, subsequent research can focus on refining the parameters and exploring the broader implications of these discoveries in real-world scenarios.</p>",
+      "<p>References and citations used throughout this work demonstrate the extensive background research that informed our approach. Key foundational texts provided the necessary theoretical backing for our methodology.</p>"
+    ];
+    // Return a chunk based on the page number so it changes as the user turns pages
+    return chunks[(pageNum - 1) % chunks.length];
+  };
+
+  const isValidFileUrl = publication.file_url && (
+    publication.file_url.toLowerCase().endsWith('.pdf') || 
+    publication.file_url.includes('supabase.co') ||
+    publication.file_url.startsWith('blob:') ||
+    publication.file_url.startsWith('http') && !publication.file_url.includes(typeof window !== 'undefined' ? window.location.hostname : '')
+  );
+
   if (isVideo) {
     return (
       <div className="viewer-shell bg-black flex items-center justify-center h-[600px] md:h-[700px]">
@@ -83,14 +104,17 @@ export default function PublicationViewer({ publication, isVideo }: PublicationV
           </div>
           <div className="pdf-vp relative">
             <div className="pdf-pg flex flex-col justify-center items-center">
-              {publication.file_url ? (
+              {isValidFileUrl ? (
                 <iframe 
                   src={`${publication.file_url}#toolbar=0`} 
                   className="w-full h-full absolute inset-0 mix-blend-multiply"
                   title={publication.title}
                 ></iframe>
               ) : (
-                <div className="text-zinc-400">PDF Document Placeholder</div>
+                <div className="flex flex-col items-center justify-center text-zinc-400 h-full w-full bg-zinc-50 border-2 border-dashed border-zinc-200 rounded-lg">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="mb-4 opacity-50"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                  <p>Document not available for preview</p>
+                </div>
               )}
             </div>
           </div>
@@ -105,10 +129,12 @@ export default function PublicationViewer({ publication, isVideo }: PublicationV
             <span className="eb-lbl">Progress {Math.round((page / totalPages) * 100)}%</span>
           </div>
           <div className="eb-vp">
-            <p className="text-[9.5px] font-bold tracking-[0.18em] uppercase text-[#2F115D] mb-[9px]">Introduction</p>
-            <h2 className="eb-ct">{publication.title}</h2>
+            <p className="text-[9.5px] font-bold tracking-[0.18em] uppercase text-[#2F115D] mb-[9px]">
+              {page === 1 ? 'Introduction' : `Section ${Math.ceil(page / 5)}`}
+            </p>
+            {page === 1 && <h2 className="eb-ct">{publication.title}</h2>}
             <div className="eb-body">
-              <div dangerouslySetInnerHTML={{ __html: publication.abstract?.replace(/&nbsp;/g, ' ') || '<p>Content preview not available.</p>' }} />
+              <div dangerouslySetInnerHTML={{ __html: getSimulatedContent(page) }} />
             </div>
           </div>
         </div>
@@ -127,9 +153,9 @@ export default function PublicationViewer({ publication, isVideo }: PublicationV
                 <div className="book-page">
                    <div className="text-[10px] font-bold text-zinc-400 mb-4">{page}</div>
                    <div className="eb-body text-sm flex-1">
-                     <p className="mb-4">This is a simulated left page in the natural book viewer. In a full implementation, the actual PDF or HTML text content would flow into this column.</p>
-                     <h3 className="font-bold mb-2 text-lg text-zinc-800">{publication.title}</h3>
-                     <div dangerouslySetInnerHTML={{ __html: publication.abstract?.substring(0, 500) || '' }} />
+                     <p className="mb-4 italic text-xs text-gray-400">Simulated page {page}</p>
+                     {page === 1 && <h3 className="font-bold mb-2 text-lg text-zinc-800">{publication.title}</h3>}
+                     <div dangerouslySetInnerHTML={{ __html: getSimulatedContent(page) }} />
                    </div>
                 </div>
                 
@@ -137,8 +163,8 @@ export default function PublicationViewer({ publication, isVideo }: PublicationV
                 <div className="book-page">
                    <div className="text-[10px] font-bold text-zinc-400 mb-4 text-right">{page + 1}</div>
                    <div className="eb-body text-sm flex-1">
-                     <p className="mb-4">This is the simulated right page. Reading flow continues here seamlessly.</p>
-                     <div dangerouslySetInnerHTML={{ __html: publication.abstract?.substring(500) || '' }} />
+                     <p className="mb-4 italic text-xs text-gray-400">Simulated page {page + 1}</p>
+                     <div dangerouslySetInnerHTML={{ __html: getSimulatedContent(page + 1) }} />
                    </div>
                 </div>
 

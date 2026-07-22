@@ -90,9 +90,6 @@ export default function Header() {
               <Link href="/library" className="text-sm text-foreground/70 transition hover:text-foreground">
                 My Library
               </Link>
-              <Link href="/library/saved" className="text-sm text-foreground/70 transition hover:text-foreground">
-                Saved Papers
-              </Link>
             </>
           )}
           <Link href="/scholars" className="text-sm text-foreground/70 transition hover:text-foreground">
@@ -270,7 +267,6 @@ export default function Header() {
                   {session && (
                     <>
                       <SheetClose asChild><Link href="/library" className="text-base font-medium px-2 py-2 rounded-md hover:text-indigo-600 hover:bg-indigo-50 transition-colors">My Library</Link></SheetClose>
-                      <SheetClose asChild><Link href="/library/saved" className="text-base font-medium px-2 py-2 rounded-md hover:text-indigo-600 hover:bg-indigo-50 transition-colors">Saved Papers</Link></SheetClose>
                     </>
                   )}
                   <SheetClose asChild>
