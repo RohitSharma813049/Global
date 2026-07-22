@@ -645,7 +645,7 @@ export default function AuthUI({ initialScreen }: AuthUIProps) {
                 <button className="submit-btn" onClick={() => setActiveScreen("signin")}>
                   <span className="btn-text">Back to Sign In</span>
                 </button>
-                <div className="switch-row" style={{ marginTop: "14px" }}>Didn't receive it? <a onClick={() => setActiveScreen("forgot")}>Try again</a></div>
+                <div className="switch-row" style={{ marginTop: "14px" }}>Didn't get any password reset link? <a onClick={() => setActiveScreen("forgot")}>Try again</a></div>
               </div>
             )}
 
