@@ -15,6 +15,10 @@ export default function ScholarUploadPage() {
   const [error, setError] = useState('')
   const [categories, setCategories] = useState<{id: string, name: string}[]>([])
   const [abstract, setAbstract] = useState('')
+  const [coverName, setCoverName] = useState('')
+  const [bannerName, setBannerName] = useState('')
+  const [galleryNames, setGalleryNames] = useState('')
+  const [galleryVideoNames, setGalleryVideoNames] = useState('')
   const router = useRouter()
 
   useEffect(() => {
@@ -192,10 +196,10 @@ export default function ScholarUploadPage() {
                   <svg className="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
                     <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
-                  <div className="flex text-sm text-gray-600 justify-center">
+                  <div className="flex text-sm text-gray-600 justify-center text-center">
                     <label htmlFor="cover_image" className="relative cursor-pointer bg-white rounded-md font-medium text-emerald-600 hover:text-emerald-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-emerald-500 px-1">
-                      <span>Add Public Photo</span>
-                      <input aria-label="Input field" id="cover_image" name="cover_image" type="file" accept="image/*" className="sr-only" />
+                      <span>{coverName || "Add Public Photo"}</span>
+                      <input aria-label="Input field" id="cover_image" name="cover_image" type="file" accept="image/*" className="sr-only" onChange={(e) => setCoverName(e.target.files?.[0]?.name || '')} />
                     </label>
                   </div>
                   <p className="text-xs text-gray-500">PNG, JPG up to 5MB</p>
@@ -210,10 +214,10 @@ export default function ScholarUploadPage() {
                   <svg className="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
                     <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
-                  <div className="flex text-sm text-gray-600 justify-center">
+                  <div className="flex text-sm text-gray-600 justify-center text-center">
                     <label htmlFor="banner_image" className="relative cursor-pointer bg-white rounded-md font-medium text-emerald-600 hover:text-emerald-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-emerald-500 px-1">
-                      <span>Add Banner Photo</span>
-                      <input aria-label="Input field" id="banner_image" name="banner_image" type="file" accept="image/*" className="sr-only" />
+                      <span>{bannerName || "Add Banner Photo"}</span>
+                      <input aria-label="Input field" id="banner_image" name="banner_image" type="file" accept="image/*" className="sr-only" onChange={(e) => setBannerName(e.target.files?.[0]?.name || '')} />
                     </label>
                   </div>
                   <p className="text-xs text-gray-500">PNG, JPG up to 5MB</p>
@@ -228,10 +232,13 @@ export default function ScholarUploadPage() {
                   <svg className="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
                     <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
-                  <div className="flex text-sm text-gray-600 justify-center">
+                  <div className="flex text-sm text-gray-600 justify-center text-center">
                     <label htmlFor="gallery_images" className="relative cursor-pointer bg-white rounded-md font-medium text-emerald-600 hover:text-emerald-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-emerald-500 px-1">
-                      <span>Add Photos</span>
-                      <input aria-label="Input field" id="gallery_images" name="gallery_images" type="file" accept="image/*" multiple className="sr-only" />
+                      <span>{galleryNames || "Add Photos"}</span>
+                      <input aria-label="Input field" id="gallery_images" name="gallery_images" type="file" accept="image/*" multiple className="sr-only" onChange={(e) => {
+                        const files = Array.from(e.target.files || []);
+                        setGalleryNames(files.map(f => f.name).join(', '));
+                      }} />
                     </label>
                   </div>
                   <p className="text-xs text-gray-500">PNG, JPG up to 5MB each</p>
@@ -248,8 +255,11 @@ export default function ScholarUploadPage() {
                   </svg>
                   <div className="flex text-sm text-gray-600 justify-center">
                     <label htmlFor="gallery_videos" className="relative cursor-pointer bg-white rounded-md font-medium text-emerald-600 hover:text-emerald-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-emerald-500 px-1">
-                      <span>Add Videos</span>
-                      <input aria-label="Input field" id="gallery_videos" name="gallery_videos" type="file" accept="video/mp4,video/webm,video/ogg" multiple className="sr-only" />
+                      <span>{galleryVideoNames || "Add Videos"}</span>
+                      <input aria-label="Input field" id="gallery_videos" name="gallery_videos" type="file" accept="video/*" multiple className="sr-only" onChange={(e) => {
+                        const files = Array.from(e.target.files || []);
+                        setGalleryVideoNames(files.map(f => f.name).join(', '));
+                      }} />
                     </label>
                   </div>
                   <p className="text-xs text-gray-500">MP4, WEBM up to 50MB each</p>
