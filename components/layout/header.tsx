@@ -19,7 +19,7 @@ import {
   SheetTitle,
   SheetClose,
 } from '@/components/ui/sheet'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { MdDashboard, MdSwapHoriz, MdLogout, MdSettings, MdAdminPanelSettings } from 'react-icons/md'
 import { Menu, BookMarked } from 'lucide-react'
 import { NotificationsDropdown } from '@/components/notifications-dropdown'
@@ -95,8 +95,9 @@ export default function Header() {
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="relative h-10 w-10 rounded-full">
                       <Avatar className="h-10 w-10 bg-indigo-100 text-indigo-700">
+                        <AvatarImage src={session.user.image || undefined} alt={session.user.name || "User avatar"} />
                         <AvatarFallback className="font-bold">
-                          {session.user.name ? session.user.name.charAt(0).toUpperCase() : 'U'}
+                          {session.user.name ? session.user.name.charAt(0).toUpperCase() : session.user.email ? session.user.email.charAt(0).toUpperCase() : 'U'}
                         </AvatarFallback>
                       </Avatar>
                     </Button>

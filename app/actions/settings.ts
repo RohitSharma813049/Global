@@ -9,8 +9,11 @@ const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
 const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
 
 import { prisma } from "@/lib/db"
-import { writeFile, mkdir } from "fs/promises"
-import path from "path"
+import { mkdir } from 'fs/promises'
+import { createWriteStream } from 'fs'
+import { Readable } from 'stream'
+import { pipeline } from 'stream/promises'
+import path from 'path'
 
 export async function getScholarProfile() {
   try {
@@ -155,10 +158,12 @@ export async function uploadVideoFile(formData: FormData) {
     await mkdir(dirPath, { recursive: true })
     
     const filePath = path.join(dirPath, fileName)
-    const arrayBuffer = await file.arrayBuffer()
-    const buffer = Buffer.from(arrayBuffer)
     
-    await writeFile(filePath, buffer)
+    // Use streaming to prevent out-of-memory or Unexpected end of form errors
+    const webStream = file.stream() as any
+    const nodeStream = Readable.fromWeb(webStream)
+    const writeStream = createWriteStream(filePath)
+    await pipeline(nodeStream, writeStream)
 
     return { success: true, url: `/uploads/videos/${fileName}` }
   } catch (error: any) {
@@ -184,10 +189,12 @@ export async function uploadImageFile(formData: FormData) {
     await mkdir(dirPath, { recursive: true })
     
     const filePath = path.join(dirPath, fileName)
-    const arrayBuffer = await file.arrayBuffer()
-    const buffer = Buffer.from(arrayBuffer)
     
-    await writeFile(filePath, buffer)
+    // Use streaming to prevent out-of-memory or Unexpected end of form errors
+    const webStream = file.stream() as any
+    const nodeStream = Readable.fromWeb(webStream)
+    const writeStream = createWriteStream(filePath)
+    await pipeline(nodeStream, writeStream)
 
     return { success: true, url: `/uploads/images/${fileName}` }
   } catch (error: any) {

@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { writeFile } from 'fs/promises';
 import { join } from 'path';
-import { existsSync, mkdirSync } from 'fs';
+import { existsSync, mkdirSync, createWriteStream } from 'fs';
+import { Readable } from 'stream';
+import { pipeline } from 'stream/promises';
 
 export async function POST(req: NextRequest) {
   try {
@@ -12,9 +14,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, error: 'No file provided' }, { status: 400 });
     }
 
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-
+    // Prepare to stream
     // Create a unique filename to prevent overwriting
     const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
     const originalName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, ''); // sanitize
@@ -29,7 +29,9 @@ export async function POST(req: NextRequest) {
     }
 
     const filePath = join(uploadDir, filename);
-    await writeFile(filePath, buffer);
+    const nodeStream = Readable.fromWeb(file.stream() as any);
+    const writeStream = createWriteStream(filePath);
+    await pipeline(nodeStream, writeStream);
 
     // Return the URL that can be used to access the image
     const fileUrl = `/uploads/${filename}`;

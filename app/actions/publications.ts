@@ -4,8 +4,11 @@ import { createClient } from "@supabase/supabase-js"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { revalidatePath } from "next/cache"
-import { writeFile, mkdir, unlink } from "fs/promises"
+import { createWriteStream } from "fs"
+import { Readable } from 'stream'
+import { pipeline } from 'stream/promises'
 import path from "path"
+import { unlink } from "fs/promises"
 import { createNotification } from "./notifications"
 import { prisma } from "@/lib/db"
 
@@ -70,9 +73,11 @@ export async function uploadPublication(formData: FormData) {
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
       
       const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'publications', contentType)
-      await mkdir(uploadDir, { recursive: true })
+      await require('fs/promises').mkdir(uploadDir, { recursive: true })
       localFilePath = path.join(uploadDir, fileName)
-      await writeFile(localFilePath, Buffer.from(await file.arrayBuffer()))
+      const nodeStream = Readable.fromWeb(file.stream() as any)
+      const writeStream = createWriteStream(localFilePath)
+      await pipeline(nodeStream, writeStream)
       fileUrl = `/uploads/publications/${contentType}/${fileName}`
     }
 
@@ -81,8 +86,10 @@ export async function uploadPublication(formData: FormData) {
       const vidExt = videoFile.name.split('.').pop()
       const vidName = `video-${Date.now()}-${Math.random().toString(36).substring(7)}.${vidExt}`
       const vidPath = path.join(process.cwd(), 'public', 'uploads', 'videos')
-      await mkdir(vidPath, { recursive: true })
-      await writeFile(path.join(vidPath, vidName), Buffer.from(await videoFile.arrayBuffer()))
+      await require('fs/promises').mkdir(vidPath, { recursive: true })
+      const nodeStream = Readable.fromWeb(videoFile.stream() as any)
+      const writeStream = createWriteStream(path.join(vidPath, vidName))
+      await pipeline(nodeStream, writeStream)
       videoUrl = `/uploads/videos/${vidName}`
       
       // If no other file was uploaded, make the video URL the main file_url
@@ -97,8 +104,10 @@ export async function uploadPublication(formData: FormData) {
       const imgExt = coverImage.name.split('.').pop();
       const imgName = `cover-${Date.now()}-${Math.random().toString(36).substring(7)}.${imgExt}`;
       const imgPath = path.join(process.cwd(), 'public', 'uploads', 'images');
-      await mkdir(imgPath, { recursive: true });
-      await writeFile(path.join(imgPath, imgName), Buffer.from(await coverImage.arrayBuffer()));
+      await require('fs/promises').mkdir(imgPath, { recursive: true });
+      const nodeStream = Readable.fromWeb(coverImage.stream() as any)
+      const writeStream = createWriteStream(path.join(imgPath, imgName))
+      await pipeline(nodeStream, writeStream)
       coverImageUrl = `/uploads/images/${imgName}`;
     }
 
@@ -108,8 +117,10 @@ export async function uploadPublication(formData: FormData) {
       const imgExt = bannerImage.name.split('.').pop();
       const imgName = `banner-${Date.now()}-${Math.random().toString(36).substring(7)}.${imgExt}`;
       const imgPath = path.join(process.cwd(), 'public', 'uploads', 'images');
-      await mkdir(imgPath, { recursive: true });
-      await writeFile(path.join(imgPath, imgName), Buffer.from(await bannerImage.arrayBuffer()));
+      await require('fs/promises').mkdir(imgPath, { recursive: true });
+      const nodeStream = Readable.fromWeb(bannerImage.stream() as any)
+      const writeStream = createWriteStream(path.join(imgPath, imgName))
+      await pipeline(nodeStream, writeStream)
       bannerImageUrl = `/uploads/images/${imgName}`;
     }
 
@@ -120,8 +131,10 @@ export async function uploadPublication(formData: FormData) {
         const imgExt = gImg.name.split('.').pop();
         const imgName = `gallery-${Date.now()}-${Math.random().toString(36).substring(7)}.${imgExt}`;
         const imgPath = path.join(process.cwd(), 'public', 'uploads', 'images');
-        await mkdir(imgPath, { recursive: true });
-        await writeFile(path.join(imgPath, imgName), Buffer.from(await gImg.arrayBuffer()));
+        await require('fs/promises').mkdir(imgPath, { recursive: true });
+        const nodeStream = Readable.fromWeb(gImg.stream() as any)
+        const writeStream = createWriteStream(path.join(imgPath, imgName))
+        await pipeline(nodeStream, writeStream)
         galleryImageUrls.push(`/uploads/images/${imgName}`);
       }
     }
@@ -133,8 +146,10 @@ export async function uploadPublication(formData: FormData) {
         const vidExt = gVid.name.split('.').pop();
         const vidName = `gallery-vid-${Date.now()}-${Math.random().toString(36).substring(7)}.${vidExt}`;
         const vidPath = path.join(process.cwd(), 'public', 'uploads', 'videos');
-        await mkdir(vidPath, { recursive: true });
-        await writeFile(path.join(vidPath, vidName), Buffer.from(await gVid.arrayBuffer()));
+        await require('fs/promises').mkdir(vidPath, { recursive: true });
+        const nodeStream = Readable.fromWeb(gVid.stream() as any)
+        const writeStream = createWriteStream(path.join(vidPath, vidName))
+        await pipeline(nodeStream, writeStream)
         galleryVideoUrls.push(`/uploads/videos/${vidName}`);
       }
     }

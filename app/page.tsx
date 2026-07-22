@@ -62,11 +62,11 @@ export default async function Page() {
     subject: pub.categories?.name || 'Uncategorized',
     title: pub.title,
     author: pub.author_name || pub.scholars?.users?.raw_user_meta_data?.full_name || 'Anonymous',
-    authorImg: pub.scholars?.users?.raw_user_meta_data?.avatar_url || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=60&h=60&fit=crop&crop=face&auto=format&q=80',
+    authorImg: pub.scholars?.users?.raw_user_meta_data?.avatar_url || '/placeholder-user.jpg',
     desc: pub.abstract,
     description: pub.abstract,
-    img: pub.cover_image || 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=300&fit=crop',
-    image: pub.cover_image || 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=300&fit=crop',
+    img: pub.cover_image || '/placeholder.svg',
+    image: pub.cover_image || '/placeholder.svg',
     views: `${pub.views || 0} reads`,
     link: `/publications/${pub.id}`
   }));

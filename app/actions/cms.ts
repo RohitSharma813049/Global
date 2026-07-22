@@ -100,10 +100,10 @@ export async function getHomepageSettings() {
     ],
 
     explore_categories: [
-      { title: 'Featured<br/>Thesis', count: '1,240+ Theses', image: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=700&h=800&fit=crop&auto=format&q=80', link: '/publications?category=theses' },
-      { title: 'Trending<br/>Articles', count: '3,860+ Articles', image: 'https://images.unsplash.com/photo-1455894127589-22f75500213a?w=700&h=800&fit=crop&auto=format&q=80', link: '/publications?category=articles' },
-      { title: 'Latest<br/>eBooks', count: '980+ eBooks', image: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=700&h=800&fit=crop&auto=format&q=80', link: '/publications?category=ebooks' },
-      { title: 'Latest<br/>Magazine', count: '410+ Issues', image: 'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=700&h=800&fit=crop&auto=format&q=80', link: '/publications?category=magazine' }
+      { title: 'Featured<br/>Thesis', count: '1,240+ Theses', image: '/placeholder.svg', link: '/explore?category=theses' },
+      { title: 'Trending<br/>Articles', count: '3,860+ Articles', image: '/placeholder.svg', link: '/explore?category=articles' },
+      { title: 'Latest<br/>eBooks', count: '980+ eBooks', image: '/placeholder.svg', link: '/explore?category=ebooks' },
+      { title: 'Latest<br/>Magazine', count: '410+ Issues', image: '/placeholder.svg', link: '/explore?category=magazine' }
     ],
 
     subject_categories: [

@@ -7,6 +7,9 @@ import { revalidatePath } from "next/cache"
 import { sendEmail } from "@/lib/email"
 import { writeFile, mkdir } from "fs/promises"
 import path from "path"
+import { createWriteStream } from 'fs'
+import { Readable } from 'stream'
+import { pipeline } from 'stream/promises'
 import { createNotification } from "./notifications"
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
@@ -62,9 +65,6 @@ export async function submitScholarApplication(formData: FormData) {
     let document_link = null;
 
     if (documentFile && documentFile.size > 0) {
-      const bytes = await documentFile.arrayBuffer();
-      const buffer = Buffer.from(bytes);
-
       // Create uploads directory if it doesn't exist
       const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'scholar-applications');
       await mkdir(uploadDir, { recursive: true });
@@ -74,7 +74,9 @@ export async function submitScholarApplication(formData: FormData) {
       const filename = `${uniqueSuffix}-${documentFile.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
       const filepath = path.join(uploadDir, filename);
 
-      await writeFile(filepath, buffer);
+      const nodeStream = Readable.fromWeb(documentFile.stream() as any)
+      const writeStream = createWriteStream(filepath)
+      await pipeline(nodeStream, writeStream)
       
       // The public URL path
       document_link = `/uploads/scholar-applications/${filename}`;

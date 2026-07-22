@@ -154,10 +154,25 @@ export default function SettingsPage() {
                   <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 text-center sm:text-left">
                     <div className="w-20 h-20 rounded-full bg-indigo-100 flex items-center justify-center text-3xl font-bold text-indigo-700 shrink-0 overflow-hidden">
                       {avatarUrl ? (
-                        <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
-                      ) : (
-                        name ? name.charAt(0).toUpperCase() : "U"
-                      )}
+                        <img 
+                          key={avatarUrl}
+                          src={avatarUrl} 
+                          alt="Avatar" 
+                          className="w-full h-full object-cover" 
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                            if (e.currentTarget.nextElementSibling) {
+                              (e.currentTarget.nextElementSibling as HTMLElement).style.display = 'flex';
+                            }
+                          }}
+                        />
+                      ) : null}
+                      <div 
+                        className="w-full h-full flex items-center justify-center" 
+                        style={{ display: avatarUrl ? 'none' : 'flex' }}
+                      >
+                        {name ? name.charAt(0).toUpperCase() : "U"}
+                      </div>
                     </div>
                     <div>
                       <input 
@@ -168,6 +183,10 @@ export default function SettingsPage() {
                         onChange={async (e) => {
                           const file = e.target.files?.[0];
                           if (file) {
+                            if (file.size > 10 * 1024 * 1024) {
+                              toast.error("Avatar must be less than 10MB");
+                              return;
+                            }
                             const toastId = toast.loading("Uploading avatar...");
                             try {
                               const formData = new FormData();
@@ -177,6 +196,7 @@ export default function SettingsPage() {
                                 toast.error(res.error, { id: toastId });
                               } else if (res.url) {
                                 setAvatarUrl(res.url);
+                                updateSession({ image: res.url });
                                 toast.success("Avatar uploaded! Don't forget to save changes.", { id: toastId });
                               }
                             } catch (err: any) {
@@ -234,8 +254,13 @@ export default function SettingsPage() {
                           className="w-full px-3 py-2 sm:px-4 text-sm sm:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none"
                         />
                       </div>
-                      <div className="space-y-2">
-                        <label className="text-xs sm:text-sm font-medium text-gray-700">Professional Role / Qualification</label>
+                    </div>
+
+                    {session?.user?.role === 'scholar' && (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mt-4 pt-4 border-t border-gray-100">
+                        <div className="space-y-2">
+                          <h3 className="text-sm sm:text-base font-bold text-gray-900 mb-2">Scholar Information</h3>
+                          <label className="text-xs sm:text-sm font-medium text-gray-700">Professional Role / Qualification</label>
                         <input aria-label="Input field" 
                           type="text" 
                           value={qualification}
@@ -282,6 +307,10 @@ export default function SettingsPage() {
                             onChange={async (e) => {
                               const file = e.target.files?.[0];
                               if (file) {
+                                if (file.size > 100 * 1024 * 1024) {
+                                  toast.error("Video must be less than 100MB");
+                                  return;
+                                }
                                 const toastId = toast.loading("Uploading video...");
                                 try {
                                   const formData = new FormData();
@@ -333,6 +362,11 @@ export default function SettingsPage() {
                                     const newUrls: string[] = [];
                                     let hasError = false;
                                     for (const file of files) {
+                                      if (file.size > 10 * 1024 * 1024) {
+                                        toast.error(`Photo must be less than 10MB`, { id: toastId });
+                                        hasError = true;
+                                        break;
+                                      }
                                       const formData = new FormData();
                                       formData.append("image", file);
                                       const res = await uploadImageFile(formData);
@@ -397,6 +431,11 @@ export default function SettingsPage() {
                                     const newUrls: string[] = [];
                                     let hasError = false;
                                     for (const file of files) {
+                                      if (file.size > 100 * 1024 * 1024) {
+                                        toast.error(`Video must be less than 100MB`, { id: toastId });
+                                        hasError = true;
+                                        break;
+                                      }
                                       const formData = new FormData();
                                       formData.append("video", file);
                                       const res = await uploadVideoFile(formData);
@@ -443,9 +482,9 @@ export default function SettingsPage() {
                           )}
                         </div>
                       </div>
-
                     </div>
-                  </div>
+                  )}
+                </div>
                 <div className="p-4 sm:p-6 border-t border-gray-100 bg-gray-50/50 flex justify-end">
                   <Button 
                     onClick={handleSaveProfile} 

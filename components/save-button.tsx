@@ -10,11 +10,15 @@ interface SavedPublication {
   type?: string
   author?: string
   url: string
+  cover_image?: string
+  abstract?: string
+  author_avatar?: string
+  subject?: string
 }
 
 interface Props {
   publication: SavedPublication
-  variant?: 'icon' | 'full'
+  variant?: 'icon' | 'full' | 'card'
   className?: string
 }
 
@@ -64,6 +68,23 @@ export default function SaveButton({ publication, variant = 'full', className }:
         title={isSaved ? "Remove from Library" : "Save to Library"}
       >
         {isSaved ? <Check className="w-5 h-5" /> : <BookMarked className="w-5 h-5" />}
+      </button>
+    )
+  }
+
+  if (variant === 'card') {
+    return (
+      <button 
+        onClick={toggleSave}
+        className={`pc-bookmark ${isSaved ? 'saved' : ''} ${className || ''}`} 
+        aria-label="Save publication"
+        title={isSaved ? "Remove from Library" : "Save to Library"}
+      >
+        {isSaved ? (
+          <Check className="w-4 h-4" />
+        ) : (
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M12.6667 14L8 10.6667L3.33333 14V3.33333C3.33333 2.97971 3.47381 2.64057 3.72386 2.39052C3.97391 2.14048 4.31304 2 4.66667 2H11.3333C11.687 2 12.0261 2.14048 12.2761 2.39052C12.5262 2.64057 12.6667 2.97971 12.6667 3.33333V14Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+        )}
       </button>
     )
   }

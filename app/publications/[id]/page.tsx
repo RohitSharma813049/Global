@@ -56,6 +56,7 @@ export default async function PublicationDetailPage({ params }: Props) {
 
   const isVideo = publication.content_type === 'video'
   const authorName = (publication.scholars?.users?.raw_user_meta_data as any)?.name || (publication.scholars?.users?.raw_user_meta_data as any)?.full_name || publication.author_name || "Unknown Scholar";
+  const authorImg = (publication.scholars?.users?.raw_user_meta_data as any)?.avatar_url || "/placeholder-user.jpg";
   
   // Format dates securely
   const publishDate = publication.created_at ? new Date(publication.created_at).toLocaleDateString('en-US', {
@@ -101,7 +102,7 @@ export default async function PublicationDetailPage({ params }: Props) {
                 <p className="pub-mi-label">Author</p>
                 <Link href={publication.scholar_id ? `/scholars/${publication.scholar_id}` : "#"} className="pub-mi-link">
                   <span className="pub-mi-avatar">
-                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop&crop=face&auto=format&q=80" alt="Author" />
+                    <img src={authorImg || "/placeholder-user.jpg"} alt={authorName} />
                   </span>
                   {authorName}
                 </Link>
@@ -235,7 +236,7 @@ export default async function PublicationDetailPage({ params }: Props) {
               <div className="sb-body">
                 <div className="au-hero">
                   <div className="au-av">
-                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop&crop=face&auto=format&q=80" alt="" />
+                    <img src={authorImg || "/placeholder-user.jpg"} alt={authorName} />
                   </div>
                   <div>
                     <h3 className="au-name">{authorName}</h3>

@@ -13,6 +13,10 @@ interface SavedPublication {
   type?: string
   author?: string
   url: string
+  cover_image?: string
+  abstract?: string
+  author_avatar?: string
+  subject?: string
 }
 
 export default function SavedPapersPage() {
@@ -76,38 +80,36 @@ export default function SavedPapersPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {savedPapers.map((paper) => (
-              <div key={paper.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-all flex flex-col h-full">
-                <div className="flex justify-between items-start mb-3 gap-4">
-                  <div>
-                    {paper.type && (
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-indigo-50 text-indigo-700 mb-3">
-                        {paper.type}
-                      </span>
-                    )}
-                    <Link href={paper.url}>
-                      <h3 className="text-xl font-bold text-gray-900 hover:text-indigo-600 transition-colors line-clamp-2">
-                        {paper.title}
-                      </h3>
-                    </Link>
+              <Link href={paper.url} key={paper.id} className="pub-card reveal in-view !opacity-100 !translate-y-0 relative">
+                <div className="pc-img">
+                  <span className="pc-type-badge pbadge-type">{paper.type || 'PUBLICATION'}</span>
+                  <SaveButton publication={paper} variant="card" />
+                  <img 
+                    src={paper.cover_image || "/placeholder.svg"} 
+                    alt={paper.title} 
+                  />
+                </div>
+                <div className="pc-body">
+                  <div className="pc-meta">
+                    <span className="pc-subject">{paper.subject || 'GENERAL'}</span>
                   </div>
-                  <SaveButton publication={paper} variant="icon" />
+                  <h3 className="pc-title">{paper.title}</h3>
+                  <div className="pc-author">
+                    <div className="pc-avatar">
+                      <img 
+                        src={paper.author_avatar || "/placeholder-user.jpg"} 
+                        alt={paper.author || "Author"} 
+                      />
+                    </div>
+                    <span className="pc-author-name">
+                      {paper.author || "Unknown Author"}
+                    </span>
+                  </div>
+                  <div className="pc-desc">
+                    <p>{paper.abstract || "No description available."}</p>
+                  </div>
                 </div>
-                
-                {paper.author && (
-                  <p className="text-sm text-gray-600 font-medium mb-6">
-                    By <span className="text-gray-900">{paper.author}</span>
-                  </p>
-                )}
-                
-                <div className="mt-auto pt-4 border-t border-gray-50 flex items-center justify-between">
-                  <Link 
-                    href={paper.url}
-                    className="inline-flex items-center text-sm font-semibold text-indigo-600 hover:text-indigo-700"
-                  >
-                    <BookOpen className="w-4 h-4 mr-1.5" /> Read Online
-                  </Link>
-                </div>
-              </div>
+              </Link>
             ))}
           </div>
         )}

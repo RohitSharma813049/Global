@@ -4,6 +4,7 @@ import React, { useState, useMemo } from "react";
 import Link from "next/link";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
+import SaveButton from "@/components/save-button";
 
 interface Publication {
   id: string
@@ -464,11 +465,22 @@ export default function ExploreClient({
                 <Link href={`/publications/${pub.id}`} key={pub.id} className="pub-card reveal in-view">
                   <div className="pc-img">
                     <span className="pc-type-badge pbadge-type">{pub.content_type || 'PUBLICATION'}</span>
-                    <button className="pc-bookmark" aria-label="Save publication" onClick={(e) => e.preventDefault()}>
-                      <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M12.6667 14L8 10.6667L3.33333 14V3.33333C3.33333 2.97971 3.47381 2.64057 3.72386 2.39052C3.97391 2.14048 4.31304 2 4.66667 2H11.3333C11.687 2 12.0261 2.14048 12.2761 2.39052C12.5262 2.64057 12.6667 2.97971 12.6667 3.33333V14Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                    </button>
+                    <SaveButton 
+                      variant="card" 
+                      publication={{
+                        id: pub.id,
+                        title: pub.title,
+                        type: pub.content_type,
+                        author: (pub as any).author_name || (pub.scholars?.users?.raw_user_meta_data as any)?.name || (pub.scholars?.users?.raw_user_meta_data as any)?.full_name || 'Unknown Scholar',
+                        url: `/publications/${pub.id}`,
+                        cover_image: pub.cover_image || "/placeholder.svg",
+                        abstract: pub.abstract,
+                        author_avatar: (pub.scholars?.users?.raw_user_meta_data as any)?.avatar_url || "/placeholder-user.jpg",
+                        subject: pub.categories?.name || 'GENERAL'
+                      }} 
+                    />
                     <img 
-                      src={pub.cover_image || "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=400&fit=crop"} 
+                      src={pub.cover_image || "/placeholder.svg"} 
                       alt={pub.title} 
                     />
                   </div>
@@ -480,7 +492,7 @@ export default function ExploreClient({
                     <div className="pc-author">
                       <div className="pc-avatar">
                         <img 
-                          src={(pub.scholars?.users?.raw_user_meta_data as any)?.avatar_url || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop"} 
+                          src={(pub.scholars?.users?.raw_user_meta_data as any)?.avatar_url || "/placeholder-user.jpg"} 
                           alt={(pub.scholars?.users?.raw_user_meta_data as any)?.full_name || (pub.scholars?.users?.raw_user_meta_data as any)?.name || "Author"} 
                         />
                       </div>

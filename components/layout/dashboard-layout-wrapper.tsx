@@ -26,8 +26,27 @@ export function DashboardLayoutWrapper({ children }: { children: React.ReactNode
           </div>
           <div className="flex items-center space-x-4">
             <NotificationsDropdown />
-            <div className="w-8 h-8 bg-indigo-100 text-indigo-700 rounded-full flex items-center justify-center font-bold shadow-sm">
-              {session?.user?.name ? session.user.name.charAt(0).toUpperCase() : "U"}
+            <div className="w-8 h-8 bg-indigo-100 text-indigo-700 rounded-full flex items-center justify-center font-bold shadow-sm overflow-hidden">
+              {session?.user?.image ? (
+                <img 
+                  key={session.user.image}
+                  src={session.user.image} 
+                  alt="User Avatar" 
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                    if (e.currentTarget.nextElementSibling) {
+                      (e.currentTarget.nextElementSibling as HTMLElement).style.display = 'flex';
+                    }
+                  }} 
+                />
+              ) : null}
+              <div 
+                className="w-full h-full flex items-center justify-center" 
+                style={{ display: session?.user?.image ? 'none' : 'flex' }}
+              >
+                {session?.user?.name ? session.user.name.charAt(0).toUpperCase() : session?.user?.email ? session.user.email.charAt(0).toUpperCase() : "U"}
+              </div>
             </div>
             <button 
               onClick={() => signOut({ callbackUrl: '/' })}
