@@ -20,7 +20,7 @@ interface ScholarCardData {
 const defaultScholars: ScholarCardData[] = [
   {
     name: "Dr. Priya Nair-Kapoor",
-    image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=480&h=560&fit=crop&crop=face&auto=format&q=85",
+    image: "/placeholder-user.jpg",
     country: "India",
     countryFlag: "🇮🇳",
     publications: 42,
@@ -30,7 +30,7 @@ const defaultScholars: ScholarCardData[] = [
   },
   {
     name: "Dr. Ngozi Adeyemi",
-    image: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=480&h=560&fit=crop&crop=face&auto=format&q=85",
+    image: "/placeholder-user.jpg",
     country: "Nigeria",
     countryFlag: "🇳🇬",
     publications: 37,
@@ -40,7 +40,7 @@ const defaultScholars: ScholarCardData[] = [
   },
   {
     name: "Dr. Amira Al-Rashidi",
-    image: "https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=480&h=560&fit=crop&crop=face&auto=format&q=85",
+    image: "/placeholder-user.jpg",
     country: "UAE",
     countryFlag: "🇦🇪",
     publications: 29,
@@ -50,7 +50,7 @@ const defaultScholars: ScholarCardData[] = [
   },
   {
     name: "Prof. Khalid Al-Mansouri",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=480&h=560&fit=crop&crop=face&auto=format&q=85",
+    image: "/placeholder-user.jpg",
     country: "Saudi Arabia",
     countryFlag: "🇸🇦",
     publications: 51,
@@ -60,7 +60,7 @@ const defaultScholars: ScholarCardData[] = [
   },
   {
     name: "Prof. Li Wei",
-    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=480&h=560&fit=crop&crop=face&auto=format&q=85",
+    image: "/placeholder-user.jpg",
     country: "China",
     countryFlag: "🇨🇳",
     publications: 33,
@@ -70,7 +70,7 @@ const defaultScholars: ScholarCardData[] = [
   },
   {
     name: "Dr. Carlos Mendieta",
-    image: "https://images.unsplash.com/photo-1556157382-97eda2d62296?w=480&h=560&fit=crop&crop=face&auto=format&q=85",
+    image: "/placeholder-user.jpg",
     country: "Mexico",
     countryFlag: "🇲🇽",
     publications: 26,
@@ -80,7 +80,7 @@ const defaultScholars: ScholarCardData[] = [
   },
   {
     name: "Dr. Hana Kobayashi",
-    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=480&h=560&fit=crop&crop=face&auto=format&q=85",
+    image: "/placeholder-user.jpg",
     country: "Japan",
     countryFlag: "🇯🇵",
     publications: 39,
@@ -90,7 +90,7 @@ const defaultScholars: ScholarCardData[] = [
   },
   {
     name: "Prof. Elena Marchetti",
-    image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=480&h=560&fit=crop&crop=face&auto=format&q=85",
+    image: "/placeholder-user.jpg",
     country: "Italy",
     countryFlag: "🇮🇹",
     publications: 44,
@@ -116,7 +116,7 @@ export default function GSPFeaturedScholars({ title, subtitle, scholars = [], au
     username: s.username,
     id: s.id,
     name: s.users?.raw_user_meta_data?.name || s.users?.email || 'Unknown',
-    image: s.users?.raw_user_meta_data?.avatar_url || 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&h=300&fit=crop',
+    image: s.users?.raw_user_meta_data?.avatar_url || '/placeholder-user.jpg',
     country: s.users?.raw_user_meta_data?.country || 'Global',
     countryFlag: s.users?.raw_user_meta_data?.countryFlag || '🌍',
     publications: s._count?.publications || 0,

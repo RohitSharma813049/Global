@@ -47,8 +47,8 @@ export default function HomeHero({
       author: 'Dr. Priya Nair-Kapoor',
       cred: 'Hon. D.B.A.',
       badge: 'eBook',
-      avatar: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=60&h=60&fit=crop&crop=face&auto=format&q=80',
-      image: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1200&h=900&fit=crop&auto=format&q=85'
+      avatar: '/placeholder-user.jpg',
+      image: '/placeholder-user.jpg'
     },
     {
       label: 'Research Paper',
@@ -56,8 +56,8 @@ export default function HomeHero({
       author: 'Dr. Ngozi Adeyemi',
       cred: 'Ph.D., FAAN',
       badge: 'Article',
-      avatar: 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=60&h=60&fit=crop&face&auto=format&q=80',
-      image: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=1200&h=900&fit=crop&auto=format&q=85'
+      avatar: '/placeholder-user.jpg',
+      image: '/placeholder-user.jpg'
     },
     {
       label: 'GSP Interview Series',
@@ -65,8 +65,8 @@ export default function HomeHero({
       author: 'Dr. Amira Al-Rashidi',
       cred: 'Hon. D.Sc.',
       badge: 'Magazine',
-      avatar: 'https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=60&h=60&fit=crop&crop=face&auto=format&q=80',
-      image: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1200&h=900&fit=crop&auto=format&q=85'
+      avatar: '/placeholder-user.jpg',
+      image: '/placeholder-user.jpg'
     },
     {
       label: 'Featured eBook',
@@ -74,8 +74,8 @@ export default function HomeHero({
       author: 'Prof. Khalid Al-Mansouri',
       cred: 'Hon. D.B.A.',
       badge: 'eBook',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=60&h=60&fit=crop&crop=face&auto=format&q=80',
-      image: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1200&h=900&fit=crop&auto=format&q=85'
+      avatar: '/placeholder-user.jpg',
+      image: '/placeholder-user.jpg'
     },
     {
       label: 'Doctoral Thesis',
@@ -83,8 +83,8 @@ export default function HomeHero({
       author: 'Prof. Li Wei',
       cred: 'Ph.D.',
       badge: 'Thesis',
-      avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=60&h=60&fit=crop&crop=face&auto=format&q=80',
-      image: 'https://images.unsplash.com/photo-1532619187608-e5375cab36aa?w=1200&h=900&fit=crop&auto=format&q=85'
+      avatar: '/placeholder-user.jpg',
+      image: '/placeholder-user.jpg'
     },
   ]
 
@@ -184,10 +184,10 @@ export default function HomeHero({
           <div className="trust-row">
             <div className="trust-avatars">
               {(trustAvatars && trustAvatars.length > 0 ? trustAvatars : [
-                "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=64&h=64&fit=crop&crop=face&auto=format&q=80",
-                "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&h=64&fit=crop&crop=face&auto=format&q=80",
-                "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=64&h=64&fit=crop&crop=face&auto=format&q=80",
-                "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=64&h=64&fit=crop&crop=face&auto=format&q=80"
+                "/placeholder-user.jpg",
+                "/placeholder-user.jpg",
+                "/placeholder-user.jpg",
+                "/placeholder-user.jpg"
               ]).map((avatar, index) => (
                 <div className="trust-avatar" key={index} style={{ position: 'relative', width: '32px', height: '32px', overflow: 'hidden', borderRadius: '50%' }}>
                   <Image src={avatar} alt="Scholar" fill sizes="32px" className="object-cover" priority />

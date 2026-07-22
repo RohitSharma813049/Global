@@ -153,7 +153,7 @@ export default function GSPDistinguishedScholars({ scholar, videos = [], publica
             <div className="p-6 bg-[#F8F7FC] rounded-xl border border-[#ECEAF4]">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 bg-white rounded-full overflow-hidden border border-[#ECEAF4]">
-                  <Image src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face" alt="Reviewer" width={40} height={40} className="object-cover" />
+                  <Image src="/placeholder-user.jpg" alt="Reviewer" width={40} height={40} className="object-cover" />
                 </div>
                 <div>
                   <h4 className="font-['Cormorant_Garamond'] font-bold text-gray-900 leading-tight">Dr. Alistair Vance</h4>
@@ -168,7 +168,7 @@ export default function GSPDistinguishedScholars({ scholar, videos = [], publica
             <div className="p-6 bg-[#F8F7FC] rounded-xl border border-[#ECEAF4]">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 bg-white rounded-full overflow-hidden border border-[#ECEAF4]">
-                  <Image src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face" alt="Reviewer" width={40} height={40} className="object-cover" />
+                  <Image src="/placeholder-user.jpg" alt="Reviewer" width={40} height={40} className="object-cover" />
                 </div>
                 <div>
                   <h4 className="font-['Cormorant_Garamond'] font-bold text-gray-900 leading-tight">Prof. Evelyn Reyes</h4>

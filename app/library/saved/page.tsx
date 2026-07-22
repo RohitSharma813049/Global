@@ -78,7 +78,7 @@ export default function SavedPapersPage() {
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div id="pubGrid" className="grid list-mode">
             {savedPapers.map((paper) => (
               <Link href={paper.url} key={paper.id} className="pub-card reveal in-view !opacity-100 !translate-y-0 relative">
                 <div className="pc-img">

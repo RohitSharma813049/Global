@@ -50,9 +50,9 @@ export default function GspFeaturedContent({ title, subtitle, autoplay = true, p
       subject: 'Computer Science · Ethics',
       title: 'Artificial Intelligence Ethics in Cross-Cultural Research Environments',
       author: 'Prof. Li Wei, Ph.D.',
-      authorImg: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=60&h=60&fit=crop&crop=face&auto=format&q=80',
+      authorImg: '/placeholder-user.jpg',
       desc: 'A cross-cultural framework examining ethical accountability in AI systems deployed across divergent regulatory and academic research contexts.',
-      img: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=500&h=340&fit=crop&auto=format&q=80',
+      img: '/placeholder-user.jpg',
       views: '2.3k reads',
       link: '/publications'
     },
@@ -61,9 +61,9 @@ export default function GspFeaturedContent({ title, subtitle, autoplay = true, p
       subject: 'Social Sciences · Education',
       title: 'Decolonising Knowledge Systems: Toward an African Academic Paradigm',
       author: 'Dr. Ngozi Adeyemi, FAAN',
-      authorImg: 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=60&h=60&fit=crop&crop=face&auto=format&q=80',
+      authorImg: '/placeholder-user.jpg',
       desc: 'An incisive look at restructuring curricula and research methodology to center indigenous African epistemologies in higher education.',
-      img: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=500&h=340&fit=crop&auto=format&q=80',
+      img: '/placeholder-user.jpg',
       views: '4.1k reads',
       link: '/publications'
     },
@@ -72,9 +72,9 @@ export default function GspFeaturedContent({ title, subtitle, autoplay = true, p
       subject: 'Economics · Public Policy',
       title: 'GCC Economic Diversification: Vision 2030 and Beyond',
       author: 'Prof. Khalid Al-Mansouri',
-      authorImg: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=60&h=60&fit=crop&crop=face&auto=format&q=80',
+      authorImg: '/placeholder-user.jpg',
       desc: "A comprehensive eBook tracing the GCC's structural shift away from hydrocarbon dependency through Vision 2030's policy levers.",
-      img: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=500&h=340&fit=crop&auto=format&q=80',
+      img: '/placeholder-user.jpg',
       views: '3.7k reads',
       link: '/publications'
     },
@@ -83,9 +83,9 @@ export default function GspFeaturedContent({ title, subtitle, autoplay = true, p
       subject: 'Environmental Policy',
       title: 'Climate Policy in Transition Economies: Pathways to Net Zero by 2050',
       author: 'Dr. Amira Al-Rashidi, D.Sc.',
-      authorImg: 'https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=60&h=60&fit=crop&crop=face&auto=format&q=80',
+      authorImg: '/placeholder-user.jpg',
       desc: "GSP's exclusive interview series feature exploring realistic decarbonisation pathways for emerging and transition economies.",
-      img: 'https://images.unsplash.com/photo-1532619187608-e5375cab36aa?w=500&h=340&fit=crop&auto=format&q=80',
+      img: '/placeholder-user.jpg',
       views: '1.9k reads',
       link: '/publications'
     }

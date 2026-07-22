@@ -187,7 +187,7 @@ export default function ScholarReviewsCarousel() {
           {/* Review 1 */}
           <div className="review-card">
             <div className="rv-photo-wrap">
-              <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=600&h=450&fit=crop&crop=face&auto=format&q=85" alt="Dr. Priya Nair-Kapoor" loading="lazy"/>
+              <img src="/placeholder-user.jpg" alt="Dr. Priya Nair-Kapoor" loading="lazy"/>
               <div className="rv-photo-gradient"></div>
               <span className="rv-stars">
                 <svg width="13" height="13" viewBox="0 0 16 16" fill="#B8924A"><path d="M8 1.2l1.9 4.2 4.5.5-3.4 3.1.9 4.5L8 11.3l-4 2.2.9-4.5-3.4-3.1 4.5-.5L8 1.2z"/></svg>
@@ -213,7 +213,7 @@ export default function ScholarReviewsCarousel() {
           {/* Review 2 */}
           <div className="review-card">
             <div className="rv-photo-wrap">
-              <img src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=600&h=450&fit=crop&crop=face&auto=format&q=85" alt="Dr. Ngozi Adeyemi" loading="lazy"/>
+              <img src="/placeholder-user.jpg" alt="Dr. Ngozi Adeyemi" loading="lazy"/>
               <div className="rv-photo-gradient"></div>
               <span className="rv-stars">
                 <svg width="13" height="13" viewBox="0 0 16 16" fill="#B8924A"><path d="M8 1.2l1.9 4.2 4.5.5-3.4 3.1.9 4.5L8 11.3l-4 2.2.9-4.5-3.4-3.1 4.5-.5L8 1.2z"/></svg>
@@ -239,7 +239,7 @@ export default function ScholarReviewsCarousel() {
           {/* Review 3 */}
           <div className="review-card">
             <div className="rv-photo-wrap">
-              <img src="https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=600&h=450&fit=crop&crop=face&auto=format&q=85" alt="Dr. Amira Al-Rashidi" loading="lazy"/>
+              <img src="/placeholder-user.jpg" alt="Dr. Amira Al-Rashidi" loading="lazy"/>
               <div className="rv-photo-gradient"></div>
               <span className="rv-stars">
                 <svg width="13" height="13" viewBox="0 0 16 16" fill="#B8924A"><path d="M8 1.2l1.9 4.2 4.5.5-3.4 3.1.9 4.5L8 11.3l-4 2.2.9-4.5-3.4-3.1 4.5-.5L8 1.2z"/></svg>
@@ -265,7 +265,7 @@ export default function ScholarReviewsCarousel() {
           {/* Review 4 */}
           <div className="review-card">
             <div className="rv-photo-wrap">
-              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=450&fit=crop&crop=face&auto=format&q=85" alt="Prof. Khalid Al-Mansouri" loading="lazy"/>
+              <img src="/placeholder-user.jpg" alt="Prof. Khalid Al-Mansouri" loading="lazy"/>
               <div className="rv-photo-gradient"></div>
               <span className="rv-stars">
                 <svg width="13" height="13" viewBox="0 0 16 16" fill="#B8924A"><path d="M8 1.2l1.9 4.2 4.5.5-3.4 3.1.9 4.5L8 11.3l-4 2.2.9-4.5-3.4-3.1 4.5-.5L8 1.2z"/></svg>
@@ -291,7 +291,7 @@ export default function ScholarReviewsCarousel() {
           {/* Review 5 */}
           <div className="review-card">
             <div className="rv-photo-wrap">
-              <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=600&h=450&fit=crop&crop=face&auto=format&q=85" alt="Prof. Li Wei" loading="lazy"/>
+              <img src="/placeholder-user.jpg" alt="Prof. Li Wei" loading="lazy"/>
               <div className="rv-photo-gradient"></div>
               <span className="rv-stars">
                 <svg width="13" height="13" viewBox="0 0 16 16" fill="#B8924A"><path d="M8 1.2l1.9 4.2 4.5.5-3.4 3.1.9 4.5L8 11.3l-4 2.2.9-4.5-3.4-3.1 4.5-.5L8 1.2z"/></svg>
@@ -317,7 +317,7 @@ export default function ScholarReviewsCarousel() {
           {/* Review 6 */}
           <div className="review-card">
             <div className="rv-photo-wrap">
-              <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=600&h=450&fit=crop&crop=face&auto=format&q=85" alt="Prof. Elena Marchetti" loading="lazy"/>
+              <img src="/placeholder-user.jpg" alt="Prof. Elena Marchetti" loading="lazy"/>
               <div className="rv-photo-gradient"></div>
               <span className="rv-stars">
                 <svg width="13" height="13" viewBox="0 0 16 16" fill="#B8924A"><path d="M8 1.2l1.9 4.2 4.5.5-3.4 3.1.9 4.5L8 11.3l-4 2.2.9-4.5-3.4-3.1 4.5-.5L8 1.2z"/></svg>
