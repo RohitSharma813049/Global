@@ -22,6 +22,7 @@ export default function SettingsPage() {
   const [institution, setInstitution] = useState("");
   const [specialization, setSpecialization] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState("");
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
   const [galleryVideos, setGalleryVideos] = useState<string[]>([]);
 
@@ -42,6 +43,7 @@ export default function SettingsPage() {
         setInstitution(data.institution || "");
         setSpecialization(data.specialization || "");
         setVideoUrl(data.video_url || "");
+        setAvatarUrl(data.avatar_url || "");
         setGalleryImages(data.gallery_images || []);
         setGalleryVideos(data.gallery_videos || []);
       }
@@ -52,7 +54,7 @@ export default function SettingsPage() {
 
   const handleSaveProfile = async () => {
     setIsSaving(true);
-    const res = await updateProfile(name, bio, country, { institution, qualification, specialization, video_url: videoUrl, gallery_images: galleryImages, gallery_videos: galleryVideos });
+    const res = await updateProfile(name, bio, country, avatarUrl, { institution, qualification, specialization, video_url: videoUrl, gallery_images: galleryImages, gallery_videos: galleryVideos });
     if (res.error) {
       toast.error(res.error);
     } else {
@@ -150,11 +152,40 @@ export default function SettingsPage() {
                 </div>
                 <div className="p-4 sm:p-6 space-y-6">
                   <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 text-center sm:text-left">
-                    <div className="w-20 h-20 rounded-full bg-indigo-100 flex items-center justify-center text-3xl font-bold text-indigo-700 shrink-0">
-                      {name ? name.charAt(0).toUpperCase() : "U"}
+                    <div className="w-20 h-20 rounded-full bg-indigo-100 flex items-center justify-center text-3xl font-bold text-indigo-700 shrink-0 overflow-hidden">
+                      {avatarUrl ? (
+                        <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+                      ) : (
+                        name ? name.charAt(0).toUpperCase() : "U"
+                      )}
                     </div>
                     <div>
-                      <Button variant="outline" size="sm" className="mb-2 w-full sm:w-auto">Change Avatar</Button>
+                      <input 
+                        type="file" 
+                        accept="image/png,image/jpeg,image/gif,image/webp" 
+                        id="avatar-upload" 
+                        className="hidden" 
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            const toastId = toast.loading("Uploading avatar...");
+                            try {
+                              const formData = new FormData();
+                              formData.append("image", file);
+                              const res = await uploadImageFile(formData);
+                              if (res.error) {
+                                toast.error(res.error, { id: toastId });
+                              } else if (res.url) {
+                                setAvatarUrl(res.url);
+                                toast.success("Avatar uploaded! Don't forget to save changes.", { id: toastId });
+                              }
+                            } catch (err: any) {
+                              toast.error(err.message || "Upload failed", { id: toastId });
+                            }
+                          }
+                        }}
+                      />
+                      <Button variant="outline" size="sm" className="mb-2 w-full sm:w-auto" onClick={() => document.getElementById("avatar-upload")?.click()}>Change Avatar</Button>
                       <p className="text-xs text-gray-500">JPG, GIF or PNG. 1MB max.</p>
                     </div>
                   </div>
@@ -252,14 +283,18 @@ export default function SettingsPage() {
                               const file = e.target.files?.[0];
                               if (file) {
                                 const toastId = toast.loading("Uploading video...");
-                                const formData = new FormData();
-                                formData.append("video", file);
-                                const res = await uploadVideoFile(formData);
-                                if (res.error) {
-                                  toast.error(res.error, { id: toastId });
-                                } else if (res.url) {
-                                  setVideoUrl(res.url);
-                                  toast.success("Video uploaded! Don't forget to save changes.", { id: toastId });
+                                try {
+                                  const formData = new FormData();
+                                  formData.append("video", file);
+                                  const res = await uploadVideoFile(formData);
+                                  if (res.error) {
+                                    toast.error(res.error, { id: toastId });
+                                  } else if (res.url) {
+                                    setVideoUrl(res.url);
+                                    toast.success("Video uploaded! Don't forget to save changes.", { id: toastId });
+                                  }
+                                } catch (err: any) {
+                                  toast.error(err.message || "Upload failed", { id: toastId });
                                 }
                               }
                             }}
@@ -294,15 +329,30 @@ export default function SettingsPage() {
                                 const files = Array.from(e.target.files || []);
                                 if (files.length > 0) {
                                   const toastId = toast.loading(`Uploading ${files.length} photos...`);
-                                  const newUrls: string[] = [];
-                                  for (const file of files) {
-                                    const formData = new FormData();
-                                    formData.append("image", file);
-                                    const res = await uploadImageFile(formData);
-                                    if (res.url) newUrls.push(res.url);
+                                  try {
+                                    const newUrls: string[] = [];
+                                    let hasError = false;
+                                    for (const file of files) {
+                                      const formData = new FormData();
+                                      formData.append("image", file);
+                                      const res = await uploadImageFile(formData);
+                                      if (res.error) {
+                                        toast.error(res.error, { id: toastId });
+                                        hasError = true;
+                                        break;
+                                      } else if (res.url) {
+                                        newUrls.push(res.url);
+                                      }
+                                    }
+                                    if (newUrls.length > 0) {
+                                      setGalleryImages(prev => [...prev, ...newUrls]);
+                                    }
+                                    if (!hasError) {
+                                      toast.success("Photos uploaded!", { id: toastId });
+                                    }
+                                  } catch (err: any) {
+                                    toast.error(err.message || "An error occurred during upload", { id: toastId });
                                   }
-                                  setGalleryImages(prev => [...prev, ...newUrls]);
-                                  toast.success("Photos uploaded!", { id: toastId });
                                 }
                               }}
                             />
@@ -343,15 +393,30 @@ export default function SettingsPage() {
                                 const files = Array.from(e.target.files || []);
                                 if (files.length > 0) {
                                   const toastId = toast.loading(`Uploading ${files.length} videos...`);
-                                  const newUrls: string[] = [];
-                                  for (const file of files) {
-                                    const formData = new FormData();
-                                    formData.append("video", file);
-                                    const res = await uploadVideoFile(formData);
-                                    if (res.url) newUrls.push(res.url);
+                                  try {
+                                    const newUrls: string[] = [];
+                                    let hasError = false;
+                                    for (const file of files) {
+                                      const formData = new FormData();
+                                      formData.append("video", file);
+                                      const res = await uploadVideoFile(formData);
+                                      if (res.error) {
+                                        toast.error(res.error, { id: toastId });
+                                        hasError = true;
+                                        break;
+                                      } else if (res.url) {
+                                        newUrls.push(res.url);
+                                      }
+                                    }
+                                    if (newUrls.length > 0) {
+                                      setGalleryVideos(prev => [...prev, ...newUrls]);
+                                    }
+                                    if (!hasError) {
+                                      toast.success("Videos uploaded!", { id: toastId });
+                                    }
+                                  } catch (err: any) {
+                                    toast.error(err.message || "An error occurred during upload", { id: toastId });
                                   }
-                                  setGalleryVideos(prev => [...prev, ...newUrls]);
-                                  toast.success("Videos uploaded!", { id: toastId });
                                 }
                               }}
                             />

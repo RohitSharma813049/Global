@@ -187,8 +187,22 @@ export default function AuthUI({ initialScreen }: AuthUIProps) {
         toast.error("Failed to create account.");
       }
     } else {
-      // Login with OTP logic (if supported backend exists, else mock for now)
-      toast.error("OTP login backend not yet implemented");
+      // Login with OTP logic
+      try {
+        const result = await signIn("otp", {
+          email: formData.email,
+          otp: otpCode,
+          redirect: false,
+        });
+        if (result?.error) {
+          toast.error("Invalid or expired OTP");
+        } else {
+          toast.success("Successfully signed in");
+          router.push("/dashboard");
+        }
+      } catch (err) {
+        toast.error("An error occurred during sign in.");
+      }
     }
     setLoading(false);
   };

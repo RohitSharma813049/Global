@@ -33,6 +33,7 @@ export async function getScholarProfile() {
       qualification: scholar?.qualification || "",
       specialization: scholar?.specialization || "",
       video_url: scholar?.video_url || userMeta.video_url || "",
+      avatar_url: userMeta.avatar_url || session.user?.image || "",
       gallery_images: scholar?.gallery_images || [],
       gallery_videos: scholar?.gallery_videos || [],
     }
@@ -46,6 +47,7 @@ export async function updateProfile(
   name: string, 
   bio: string, 
   country?: string,
+  avatar_url?: string,
   scholarData?: { 
     institution: string, 
     qualification: string, 
@@ -68,7 +70,7 @@ export async function updateProfile(
     // Update user metadata in Supabase
     const { error } = await supabaseAdmin.auth.admin.updateUserById(
       session.user.id,
-      { user_metadata: { ...existingMeta, name, bio, country: country || existingMeta.country, video_url: scholarData?.video_url || existingMeta.video_url } }
+      { user_metadata: { ...existingMeta, name, bio, country: country || existingMeta.country, avatar_url: avatar_url || existingMeta.avatar_url, video_url: scholarData?.video_url || existingMeta.video_url } }
     )
 
     if (error) throw error

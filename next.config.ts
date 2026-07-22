@@ -16,7 +16,7 @@ const nextConfig: NextConfig = {
   allowedDevOrigins: ['https://global-2cz3.vercel.app', 'http://localhost:3000','192.168.1.57', '[IP_ADDRESS]', '[IP_ADDRESS]'],
   experimental: {
     serverActions: {
-      bodySizeLimit: '50mb',
+      bodySizeLimit: '150mb',
     },
   },
 };

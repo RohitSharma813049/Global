@@ -1,10 +1,10 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { MdNotificationsNone, MdCheckCircle, MdInfo, MdWarning } from "react-icons/md";
 
 // Dummy data for notifications
-const notifications = [
+const initialNotifications = [
   {
     id: "1",
     title: "Application Approved",
@@ -40,7 +40,21 @@ const notifications = [
 ];
 
 export default function NotificationsPage() {
+  const [notifications, setNotifications] = useState(initialNotifications);
+  
   const unreadCount = notifications.filter(n => !n.read).length;
+
+  const handleMarkAllAsRead = () => {
+    setNotifications(notifications.map(n => ({ ...n, read: true })));
+  };
+
+  const handleClearAll = () => {
+    setNotifications([]);
+  };
+
+  const handleMarkAsRead = (id: string) => {
+    setNotifications(notifications.map(n => n.id === id ? { ...n, read: true } : n));
+  };
 
   const getIcon = (type: string) => {
     switch (type) {
@@ -65,10 +79,10 @@ export default function NotificationsPage() {
             </p>
           </div>
           <div className="flex gap-3">
-            <button className="text-sm font-medium px-4 py-2 bg-gray-50 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors border border-gray-200">
+            <button onClick={handleMarkAllAsRead} className="text-sm font-medium px-4 py-2 bg-gray-50 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors border border-gray-200">
               Mark all as read
             </button>
-            <button className="text-sm font-medium px-4 py-2 bg-gray-50 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors border border-gray-200">
+            <button onClick={handleClearAll} className="text-sm font-medium px-4 py-2 bg-gray-50 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors border border-gray-200">
               Clear all
             </button>
           </div>
@@ -98,7 +112,7 @@ export default function NotificationsPage() {
                 
                 {!notification.read && (
                   <div className="mt-3 flex gap-3">
-                    <button className="text-xs font-medium text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-md transition-colors">
+                    <button onClick={() => handleMarkAsRead(notification.id)} className="text-xs font-medium text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-md transition-colors">
                       Mark as read
                     </button>
                   </div>

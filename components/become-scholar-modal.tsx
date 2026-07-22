@@ -13,10 +13,12 @@ import {
 
 export function BecomeScholarModal({ 
   children, 
-  initialData 
+  initialData,
+  userProfile
 }: { 
   children?: React.ReactNode, 
-  initialData?: any 
+  initialData?: any,
+  userProfile?: any
 }) {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
@@ -59,7 +61,7 @@ export function BecomeScholarModal({
             <input aria-label="Input field" 
               name="full_name"
               type="text" 
-              defaultValue={initialData?.full_name || ''}
+              defaultValue={initialData?.full_name || userProfile?.name || ''}
               required 
               className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
             />
@@ -70,7 +72,7 @@ export function BecomeScholarModal({
             <input aria-label="Input field" 
               name="qualification"
               type="text" 
-              defaultValue={initialData?.qualification || ''}
+              defaultValue={initialData?.qualification || userProfile?.qualification || ''}
               required 
               placeholder="e.g. Ph.D. in Computer Science"
               className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
@@ -82,7 +84,7 @@ export function BecomeScholarModal({
             <input aria-label="Input field" 
               name="institution"
               type="text" 
-              defaultValue={initialData?.institution || ''}
+              defaultValue={initialData?.institution || userProfile?.institution || ''}
               required 
               className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
             />
@@ -93,7 +95,7 @@ export function BecomeScholarModal({
             <input aria-label="Input field" 
               name="specialization"
               type="text" 
-              defaultValue={initialData?.specialization || ''}
+              defaultValue={initialData?.specialization || userProfile?.specialization || ''}
               required 
               placeholder="e.g. Artificial Intelligence"
               className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"

@@ -8,6 +8,7 @@ import { BecomeScholarModal } from "@/components/become-scholar-modal";
 
 import { getReadingHistory } from "@/app/actions/history";
 import { getAdminStats, getScholarStats } from "@/app/actions/dashboard";
+import { getScholarProfile } from "@/app/actions/settings";
 import Link from "next/link";
 
 export default function Dashboard() {
@@ -17,6 +18,7 @@ export default function Dashboard() {
   const [history, setHistory] = useState<any[]>([]);
   const [adminStats, setAdminStats] = useState<any>(null);
   const [scholarStats, setScholarStats] = useState<any>(null);
+  const [userProfile, setUserProfile] = useState<any>(null);
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -33,6 +35,11 @@ export default function Dashboard() {
           const historyData = await getReadingHistory();
           if (historyData) {
             setHistory((prev) => JSON.stringify(prev) !== JSON.stringify(historyData) ? historyData : prev);
+          }
+
+          const profileData = await getScholarProfile();
+          if (profileData) {
+            setUserProfile((prev: any) => JSON.stringify(prev) !== JSON.stringify(profileData) ? profileData : prev);
           }
 
           const role = session?.user?.role;
@@ -97,7 +104,7 @@ export default function Dashboard() {
                 <p><strong>Reason:</strong> {applicationState.admin_notes}</p>
               </div>
               <div className="mt-4">
-                <BecomeScholarModal initialData={applicationState}>
+                <BecomeScholarModal initialData={applicationState} userProfile={userProfile}>
                   <button className="text-sm font-medium text-red-800 bg-red-100 hover:bg-red-200 px-3 py-1.5 rounded-md transition-colors">
                     Resubmit Application
                   </button>
@@ -168,9 +175,11 @@ export default function Dashboard() {
           </h2>
           <div className="p-8 text-center bg-gray-50 rounded-xl border border-dashed border-gray-300">
             <p className="text-gray-500">Read more papers to get personalized recommendations!</p>
-            <button className="mt-4 px-6 py-2 bg-indigo-50 text-indigo-700 font-semibold rounded-full hover:bg-indigo-100 transition-colors">
-              Explore Categories
-            </button>
+            <Link href="/explore">
+              <button className="mt-4 px-6 py-2 bg-indigo-50 text-indigo-700 font-semibold rounded-full hover:bg-indigo-100 transition-colors">
+                Explore Categories
+              </button>
+            </Link>
           </div>
         </div>
       </div>
@@ -181,7 +190,7 @@ export default function Dashboard() {
             <h2 className="text-xl font-bold text-indigo-900 mb-2">Want to contribute?</h2>
             <p className="text-indigo-700">Apply to become a verified scholar and share your research with the world.</p>
           </div>
-          <BecomeScholarModal initialData={applicationState} />
+          <BecomeScholarModal initialData={applicationState} userProfile={userProfile} />
         </div>
       )}
     </div>
@@ -304,7 +313,7 @@ export default function Dashboard() {
     <div className="max-w-6xl mx-auto">
       {role === "super_admin" || role === "admin" 
         ? renderAdminDashboard() 
-        : role === "scholar" 
+        : (role === "scholar" || applicationState?.status === 'approved')
           ? renderScholarDashboard() 
           : renderReaderDashboard()}
     </div>
