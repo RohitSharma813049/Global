@@ -54,7 +54,7 @@ export default function GspFeaturedContent({ title, subtitle, autoplay = true, p
       desc: 'A cross-cultural framework examining ethical accountability in AI systems deployed across divergent regulatory and academic research contexts.',
       img: '/placeholder.svg',
       views: '2.3k reads',
-      link: '/publications'
+      link: '/publications?category=thesis'
     },
     {
       type: 'Article',
@@ -65,7 +65,7 @@ export default function GspFeaturedContent({ title, subtitle, autoplay = true, p
       desc: 'An incisive look at restructuring curricula and research methodology to center indigenous African epistemologies in higher education.',
       img: '/placeholder.svg',
       views: '4.1k reads',
-      link: '/publications'
+      link: '/publications?category=article'
     },
     {
       type: 'eBook',
@@ -76,7 +76,7 @@ export default function GspFeaturedContent({ title, subtitle, autoplay = true, p
       desc: "A comprehensive eBook tracing the GCC's structural shift away from hydrocarbon dependency through Vision 2030's policy levers.",
       img: '/placeholder.svg',
       views: '3.7k reads',
-      link: '/publications'
+      link: '/publications?category=e-book'
     },
     {
       type: 'Magazine',
@@ -87,7 +87,7 @@ export default function GspFeaturedContent({ title, subtitle, autoplay = true, p
       desc: "GSP's exclusive interview series feature exploring realistic decarbonisation pathways for emerging and transition economies.",
       img: '/placeholder.svg',
       views: '1.9k reads',
-      link: '/publications'
+      link: '/publications?category=magazine'
     }
   ];
 
