@@ -148,8 +148,28 @@ export const authOptions: NextAuthOptions = {
         token.role = (user as any).role || "user";
         if (user.image) token.picture = user.image;
       }
-      if (trigger === "update" && session?.image) {
-        token.picture = session.image;
+      if (trigger === "update") {
+        if (session?.image) {
+          token.picture = session.image;
+        } else if (token.id) {
+          // Force sync with database only if no specific image was provided
+          try {
+            const { createClient } = require('@supabase/supabase-js');
+            const supabaseAdmin = createClient(
+              process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+              process.env.SUPABASE_SERVICE_ROLE_KEY || ''
+            );
+            const { data: userData } = await supabaseAdmin.auth.admin.getUserById(token.id as string);
+            if (userData?.user?.user_metadata?.avatar_url) {
+              token.picture = userData.user.user_metadata.avatar_url;
+            }
+            if (userData?.user?.user_metadata?.name) {
+              token.name = userData.user.user_metadata.name;
+            }
+          } catch (e) {
+            console.error("Failed to sync session with DB on update", e);
+          }
+        }
       }
       return token;
     },
