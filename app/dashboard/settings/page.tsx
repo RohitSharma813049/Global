@@ -197,6 +197,7 @@ export default function SettingsPage() {
                               } else if (res.url) {
                                 setAvatarUrl(res.url);
                                 updateSession({ image: res.url });
+                                window.dispatchEvent(new CustomEvent('avatarUpdated', { detail: res.url }));
                                 toast.success("Avatar uploaded! Don't forget to save changes.", { id: toastId });
                               }
                             } catch (err: any) {
@@ -205,7 +206,16 @@ export default function SettingsPage() {
                           }
                         }}
                       />
-                      <Button variant="outline" size="sm" className="mb-2 w-full sm:w-auto" onClick={() => document.getElementById("avatar-upload")?.click()}>Change Avatar</Button>
+                      <div className="flex flex-wrap gap-2 mb-2">
+                        <Button variant="outline" size="sm" className="w-full sm:w-auto" onClick={() => document.getElementById("avatar-upload")?.click()}>Change Avatar</Button>
+                        {avatarUrl && (
+                          <Button variant="ghost" size="sm" className="w-full sm:w-auto text-red-600 hover:text-red-700 hover:bg-red-50" onClick={() => {
+                            setAvatarUrl("");
+                            updateSession({ image: "" });
+                            window.dispatchEvent(new CustomEvent('avatarUpdated', { detail: "" }));
+                          }}>Remove Avatar</Button>
+                        )}
+                      </div>
                       <p className="text-xs text-gray-500">JPG, GIF or PNG. 1MB max.</p>
                     </div>
                   </div>

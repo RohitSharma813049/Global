@@ -4,40 +4,7 @@ import React, { useState } from "react";
 import { MdNotificationsNone, MdCheckCircle, MdInfo, MdWarning } from "react-icons/md";
 
 // Dummy data for notifications
-const initialNotifications = [
-  {
-    id: "1",
-    title: "Application Approved",
-    description: "Congratulations! Your scholar application has been reviewed and approved. You can now access all scholar features.",
-    time: "2 hours ago",
-    read: false,
-    type: "success"
-  },
-  {
-    id: "2",
-    title: "New feature available",
-    description: "Check out the new analytics dashboard for your publications. You can now track views and citations in real-time.",
-    time: "1 day ago",
-    read: false,
-    type: "info"
-  },
-  {
-    id: "3",
-    title: "Paper published",
-    description: "Your paper 'Quantum Computing in Cryptography' is now live and available to the public.",
-    time: "3 days ago",
-    read: true,
-    type: "success"
-  },
-  {
-    id: "4",
-    title: "Profile update needed",
-    description: "Please update your profile with your latest institution details to maintain your verified status.",
-    time: "1 week ago",
-    read: true,
-    type: "warning"
-  }
-];
+const initialNotifications: any[] = [];
 
 export default function NotificationsPage() {
   const [notifications, setNotifications] = useState(initialNotifications);
@@ -89,42 +56,56 @@ export default function NotificationsPage() {
         </div>
 
         <div className="divide-y divide-gray-50">
-          {notifications.map((notification) => (
-            <div 
-              key={notification.id} 
-              className={`p-6 hover:bg-gray-50 transition-colors flex gap-4 ${notification.read ? 'bg-white' : 'bg-indigo-50/20'}`}
-            >
-              <div className="shrink-0 mt-1">
-                {getIcon(notification.type)}
+          {notifications.length === 0 ? (
+            <div className="p-12 text-center flex flex-col items-center justify-center bg-white">
+              <div className="bg-gray-50 h-16 w-16 rounded-full flex items-center justify-center mb-4">
+                <MdNotificationsNone className="h-8 w-8 text-gray-400" />
               </div>
-              <div className="flex-1">
-                <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-1">
-                  <h3 className={`text-base ${notification.read ? 'text-gray-800 font-medium' : 'text-gray-900 font-bold'}`}>
-                    {notification.title}
-                  </h3>
-                  <span className="text-xs font-medium text-gray-500 whitespace-nowrap">
-                    {notification.time}
-                  </span>
-                </div>
-                <p className={`mt-1 text-sm ${notification.read ? 'text-gray-500' : 'text-gray-700'}`}>
-                  {notification.description}
-                </p>
-                
-                {!notification.read && (
-                  <div className="mt-3 flex gap-3">
-                    <button onClick={() => handleMarkAsRead(notification.id)} className="text-xs font-medium text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-md transition-colors">
-                      Mark as read
-                    </button>
-                  </div>
-                )}
-              </div>
+              <h3 className="text-lg font-medium text-gray-900">No notifications</h3>
+              <p className="mt-1 text-gray-500 max-w-sm mx-auto">
+                You're all caught up! When you receive notifications, they will appear here.
+              </p>
             </div>
-          ))}
+          ) : (
+            notifications.map((notification) => (
+              <div 
+                key={notification.id} 
+                className={`p-6 hover:bg-gray-50 transition-colors flex gap-4 ${notification.read ? 'bg-white' : 'bg-indigo-50/20'}`}
+              >
+                <div className="shrink-0 mt-1">
+                  {getIcon(notification.type)}
+                </div>
+                <div className="flex-1">
+                  <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-1">
+                    <h3 className={`text-base ${notification.read ? 'text-gray-800 font-medium' : 'text-gray-900 font-bold'}`}>
+                      {notification.title}
+                    </h3>
+                    <span className="text-xs font-medium text-gray-500 whitespace-nowrap">
+                      {notification.time}
+                    </span>
+                  </div>
+                  <p className={`mt-1 text-sm ${notification.read ? 'text-gray-500' : 'text-gray-700'}`}>
+                    {notification.description}
+                  </p>
+                  
+                  {!notification.read && (
+                    <div className="mt-3 flex gap-3">
+                      <button onClick={() => handleMarkAsRead(notification.id)} className="text-xs font-medium text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-md transition-colors">
+                        Mark as read
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))
+          )}
         </div>
         
-        <div className="p-4 border-t border-gray-100 bg-gray-50 text-center">
-          <p className="text-sm text-gray-500">End of notifications</p>
-        </div>
+        {notifications.length > 0 && (
+          <div className="p-4 border-t border-gray-100 bg-gray-50 text-center">
+            <p className="text-sm text-gray-500">End of notifications</p>
+          </div>
+        )}
       </div>
     </div>
   );

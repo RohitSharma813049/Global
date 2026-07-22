@@ -1,4 +1,5 @@
 'use client'
+import { useState, useEffect } from 'react'
 
 import Image from 'next/image'
 import Link from 'next/link'
@@ -28,6 +29,24 @@ import GlobalSearch from '@/components/global-search'
 export default function Header() {
   const pathname = usePathname()
   const { data: session, status } = useSession()
+  const [localAvatar, setLocalAvatar] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (session?.user?.image) {
+      setLocalAvatar(session.user.image)
+    }
+  }, [session?.user?.image])
+
+  useEffect(() => {
+    const handleAvatarUpdate = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      if (customEvent.detail !== undefined) {
+        setLocalAvatar(customEvent.detail || null);
+      }
+    };
+    window.addEventListener('avatarUpdated', handleAvatarUpdate);
+    return () => window.removeEventListener('avatarUpdated', handleAvatarUpdate);
+  }, []);
 
   // Hide header on auth pages because they use a full screen 50/50 split layout
   if (pathname === '/signin' || pathname === '/signup') {
@@ -95,7 +114,7 @@ export default function Header() {
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="relative h-10 w-10 rounded-full">
                       <Avatar className="h-10 w-10 bg-indigo-100 text-indigo-700">
-                        <AvatarImage src={session.user.image || undefined} alt={session.user.name || "User avatar"} />
+                        <AvatarImage src={localAvatar || undefined} alt={session.user.name || "User avatar"} />
                         <AvatarFallback className="font-bold">
                           {session.user.name ? session.user.name.charAt(0).toUpperCase() : session.user.email ? session.user.email.charAt(0).toUpperCase() : 'U'}
                         </AvatarFallback>

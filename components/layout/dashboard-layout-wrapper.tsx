@@ -6,10 +6,29 @@ import { useSidebar } from "@/components/sidebar-context";
 import { MdLogout } from "react-icons/md";
 import { signOut, useSession } from "next-auth/react";
 import { NotificationsDropdown } from "@/components/notifications-dropdown";
+import { useState, useEffect } from "react";
 
 export function DashboardLayoutWrapper({ children }: { children: React.ReactNode }) {
   const { isPinned } = useSidebar();
   const { data: session } = useSession();
+  const [localAvatar, setLocalAvatar] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (session?.user?.image) {
+      setLocalAvatar(session.user.image);
+    }
+  }, [session?.user?.image]);
+
+  useEffect(() => {
+    const handleAvatarUpdate = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      if (customEvent.detail !== undefined) {
+        setLocalAvatar(customEvent.detail || null);
+      }
+    };
+    window.addEventListener('avatarUpdated', handleAvatarUpdate);
+    return () => window.removeEventListener('avatarUpdated', handleAvatarUpdate);
+  }, []);
   
   return (
     <div className="flex min-h-screen bg-gray-50 overflow-x-hidden max-w-[100vw]">
@@ -27,10 +46,10 @@ export function DashboardLayoutWrapper({ children }: { children: React.ReactNode
           <div className="flex items-center space-x-4">
             <NotificationsDropdown />
             <div className="w-8 h-8 bg-indigo-100 text-indigo-700 rounded-full flex items-center justify-center font-bold shadow-sm overflow-hidden">
-              {session?.user?.image ? (
+              {localAvatar ? (
                 <img 
-                  key={session.user.image}
-                  src={session.user.image} 
+                  key={localAvatar}
+                  src={localAvatar} 
                   alt="User Avatar" 
                   className="w-full h-full object-cover"
                   onError={(e) => {
@@ -43,7 +62,7 @@ export function DashboardLayoutWrapper({ children }: { children: React.ReactNode
               ) : null}
               <div 
                 className="w-full h-full flex items-center justify-center" 
-                style={{ display: session?.user?.image ? 'none' : 'flex' }}
+                style={{ display: localAvatar ? 'none' : 'flex' }}
               >
                 {session?.user?.name ? session.user.name.charAt(0).toUpperCase() : session?.user?.email ? session.user.email.charAt(0).toUpperCase() : "U"}
               </div>
