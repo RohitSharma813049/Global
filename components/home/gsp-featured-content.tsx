@@ -52,7 +52,7 @@ export default function GspFeaturedContent({ title, subtitle, autoplay = true, p
       author: 'Prof. Li Wei, Ph.D.',
       authorImg: '/placeholder-user.jpg',
       desc: 'A cross-cultural framework examining ethical accountability in AI systems deployed across divergent regulatory and academic research contexts.',
-      img: '/placeholder-user.jpg',
+      img: '/placeholder.svg',
       views: '2.3k reads',
       link: '/publications'
     },
@@ -63,7 +63,7 @@ export default function GspFeaturedContent({ title, subtitle, autoplay = true, p
       author: 'Dr. Ngozi Adeyemi, FAAN',
       authorImg: '/placeholder-user.jpg',
       desc: 'An incisive look at restructuring curricula and research methodology to center indigenous African epistemologies in higher education.',
-      img: '/placeholder-user.jpg',
+      img: '/placeholder.svg',
       views: '4.1k reads',
       link: '/publications'
     },
@@ -74,7 +74,7 @@ export default function GspFeaturedContent({ title, subtitle, autoplay = true, p
       author: 'Prof. Khalid Al-Mansouri',
       authorImg: '/placeholder-user.jpg',
       desc: "A comprehensive eBook tracing the GCC's structural shift away from hydrocarbon dependency through Vision 2030's policy levers.",
-      img: '/placeholder-user.jpg',
+      img: '/placeholder.svg',
       views: '3.7k reads',
       link: '/publications'
     },
@@ -85,7 +85,7 @@ export default function GspFeaturedContent({ title, subtitle, autoplay = true, p
       author: 'Dr. Amira Al-Rashidi, D.Sc.',
       authorImg: '/placeholder-user.jpg',
       desc: "GSP's exclusive interview series feature exploring realistic decarbonisation pathways for emerging and transition economies.",
-      img: '/placeholder-user.jpg',
+      img: '/placeholder.svg',
       views: '1.9k reads',
       link: '/publications'
     }
