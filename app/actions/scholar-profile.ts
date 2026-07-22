@@ -34,9 +34,8 @@ export async function updateScholarProfile(formData: FormData) {
       const vidName = `scholar-video-${Date.now()}-${Math.random().toString(36).substring(7)}.${vidExt}`
       const vidPath = path.join(process.cwd(), 'public', 'uploads', 'videos')
       await require('fs/promises').mkdir(vidPath, { recursive: true })
-      const nodeStream = Readable.fromWeb(videoFile.stream() as any)
-      const writeStream = createWriteStream(path.join(vidPath, vidName))
-      await pipeline(nodeStream, writeStream)
+      const buffer = Buffer.from(await videoFile.arrayBuffer())
+      await require('fs/promises').writeFile(path.join(vidPath, vidName), buffer)
       videoUrl = `/uploads/videos/${vidName}`
     }
 
@@ -50,9 +49,8 @@ export async function updateScholarProfile(formData: FormData) {
           const imgName = `scholar-gallery-${Date.now()}-${Math.random().toString(36).substring(7)}.${imgExt}`;
           const imgPath = path.join(process.cwd(), 'public', 'uploads', 'images');
           await require('fs/promises').mkdir(imgPath, { recursive: true });
-          const nodeStream = Readable.fromWeb(gImg.stream() as any)
-          const writeStream = createWriteStream(path.join(imgPath, imgName))
-          await pipeline(nodeStream, writeStream)
+          const buffer = Buffer.from(await gImg.arrayBuffer())
+          await require('fs/promises').writeFile(path.join(imgPath, imgName), buffer)
           galleryImageUrls.push(`/uploads/images/${imgName}`);
         }
       }
@@ -68,9 +66,8 @@ export async function updateScholarProfile(formData: FormData) {
           const vidName = `scholar-gallery-vid-${Date.now()}-${Math.random().toString(36).substring(7)}.${vidExt}`;
           const vidPath = path.join(process.cwd(), 'public', 'uploads', 'videos');
           await require('fs/promises').mkdir(vidPath, { recursive: true });
-          const nodeStream = Readable.fromWeb(gVid.stream() as any)
-          const writeStream = createWriteStream(path.join(vidPath, vidName))
-          await pipeline(nodeStream, writeStream)
+          const buffer = Buffer.from(await gVid.arrayBuffer())
+          await require('fs/promises').writeFile(path.join(vidPath, vidName), buffer)
           galleryVideoUrls.push(`/uploads/videos/${vidName}`);
         }
       }

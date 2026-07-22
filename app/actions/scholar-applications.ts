@@ -74,9 +74,8 @@ export async function submitScholarApplication(formData: FormData) {
       const filename = `${uniqueSuffix}-${documentFile.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
       const filepath = path.join(uploadDir, filename);
 
-      const nodeStream = Readable.fromWeb(documentFile.stream() as any)
-      const writeStream = createWriteStream(filepath)
-      await pipeline(nodeStream, writeStream)
+      const buffer = Buffer.from(await documentFile.arrayBuffer())
+      await require('fs/promises').writeFile(filepath, buffer)
       
       // The public URL path
       document_link = `/uploads/scholar-applications/${filename}`;

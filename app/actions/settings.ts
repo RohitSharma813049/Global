@@ -159,11 +159,8 @@ export async function uploadVideoFile(formData: FormData) {
     
     const filePath = path.join(dirPath, fileName)
     
-    // Use streaming to prevent out-of-memory or Unexpected end of form errors
-    const webStream = file.stream() as any
-    const nodeStream = Readable.fromWeb(webStream)
-    const writeStream = createWriteStream(filePath)
-    await pipeline(nodeStream, writeStream)
+    const buffer = Buffer.from(await file.arrayBuffer())
+    await require('fs/promises').writeFile(filePath, buffer)
 
     return { success: true, url: `/uploads/videos/${fileName}` }
   } catch (error: any) {
@@ -190,11 +187,8 @@ export async function uploadImageFile(formData: FormData) {
     
     const filePath = path.join(dirPath, fileName)
     
-    // Use streaming to prevent out-of-memory or Unexpected end of form errors
-    const webStream = file.stream() as any
-    const nodeStream = Readable.fromWeb(webStream)
-    const writeStream = createWriteStream(filePath)
-    await pipeline(nodeStream, writeStream)
+    const buffer = Buffer.from(await file.arrayBuffer())
+    await require('fs/promises').writeFile(filePath, buffer)
 
     return { success: true, url: `/uploads/images/${fileName}` }
   } catch (error: any) {

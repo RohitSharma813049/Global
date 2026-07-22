@@ -29,9 +29,8 @@ export async function POST(req: NextRequest) {
     }
 
     const filePath = join(uploadDir, filename);
-    const nodeStream = Readable.fromWeb(file.stream() as any);
-    const writeStream = createWriteStream(filePath);
-    await pipeline(nodeStream, writeStream);
+    const buffer = Buffer.from(await file.arrayBuffer());
+    await writeFile(filePath, buffer);
 
     // Return the URL that can be used to access the image
     const fileUrl = `/uploads/${filename}`;
