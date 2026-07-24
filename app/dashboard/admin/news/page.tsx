@@ -85,8 +85,8 @@ export default function NewsManager() {
             <tbody className="bg-white divide-y divide-gray-200">
               {newsList.map(item => (
                 <tr key={item.id}>
-                  <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{item.title}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.slug}</td>
+                  <td className="px-6 py-4 font-medium text-gray-900 whitespace-normal min-w-[250px]">{item.title}</td>
+                  <td className="px-6 py-4 text-sm text-gray-500 truncate max-w-[200px]">{item.slug}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {new Date(item.published_at).toLocaleDateString()}
                   </td>
