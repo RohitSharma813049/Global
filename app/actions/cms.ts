@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { revalidatePath } from "next/cache"
 import { prisma } from '@/lib/db'
+import { blogSchema, newsSchema, testimonialSchema } from '@/lib/validations/cms'
 
 // Note: For actual admin actions, we also verify session role.
 async function checkAdmin() {
@@ -177,6 +178,11 @@ export async function getBlogs() {
 
 export async function createBlog(data: { title: string, slug: string, content: string, cover_image?: string }) {
   const session = await checkAdmin()
+  const parsed = blogSchema.safeParse(data)
+  if (!parsed.success) {
+    const firstError = Object.values(parsed.error.flatten().fieldErrors)[0]?.[0] || 'Validation failed'
+    throw new Error(firstError)
+  }
   await prisma.blogs.create({
     data: {
       ...data,
@@ -190,7 +196,7 @@ export async function createBlog(data: { title: string, slug: string, content: s
 
 export async function deleteBlog(id: string) {
   await checkAdmin()
-  await prisma.blogs.delete({ where: { id } })
+  await prisma.blogs.update({ where: { id }, data: { deleted_at: new Date() } })
   revalidatePath('/blog')
   revalidatePath('/dashboard/admin/blogs')
 }
@@ -205,6 +211,11 @@ export async function getNews() {
 
 export async function createNews(data: { title: string, slug: string, content: string, cover_image?: string }) {
   await checkAdmin()
+  const parsed = newsSchema.safeParse(data)
+  if (!parsed.success) {
+    const firstError = Object.values(parsed.error.flatten().fieldErrors)[0]?.[0] || 'Validation failed'
+    throw new Error(firstError)
+  }
   await prisma.news.create({
     data: {
       ...data,
@@ -218,7 +229,7 @@ export async function createNews(data: { title: string, slug: string, content: s
 
 export async function deleteNews(id: string) {
   await checkAdmin()
-  await prisma.news.delete({ where: { id } })
+  await prisma.news.update({ where: { id }, data: { deleted_at: new Date() } })
   revalidatePath('/news')
   revalidatePath('/dashboard/admin/news')
 }
@@ -233,6 +244,11 @@ export async function getTestimonials() {
 
 export async function createTestimonial(data: { quote: string, author: string, role: string, rating: number, image?: string }) {
   await checkAdmin()
+  const parsed = testimonialSchema.safeParse(data)
+  if (!parsed.success) {
+    const firstError = Object.values(parsed.error.flatten().fieldErrors)[0]?.[0] || 'Validation failed'
+    throw new Error(firstError)
+  }
   await prisma.testimonials.create({ data })
   revalidatePath('/')
   revalidatePath('/dashboard/admin/testimonials')
@@ -247,6 +263,11 @@ export async function deleteTestimonial(id: string) {
 
 export async function updateTestimonial(id: string, data: { quote: string, author: string, role: string, rating: number, image?: string }) {
   await checkAdmin()
+  const parsed = testimonialSchema.safeParse(data)
+  if (!parsed.success) {
+    const firstError = Object.values(parsed.error.flatten().fieldErrors)[0]?.[0] || 'Validation failed'
+    throw new Error(firstError)
+  }
   await prisma.testimonials.update({ where: { id }, data })
   revalidatePath('/')
   revalidatePath('/dashboard/admin/testimonials')

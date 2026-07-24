@@ -100,6 +100,13 @@ export default async function ScholarPublications() {
                       <span className="text-gray-400">Not Available</span>
                     )}
                     
+                    <Link 
+                      href={`/dashboard/scholar/publications/${pub.id}/edit`}
+                      className="text-blue-600 hover:text-blue-800 font-semibold bg-blue-50 px-3 py-1 rounded-md hover:bg-blue-100 transition-colors"
+                    >
+                      Edit
+                    </Link>
+
                     <form action={async () => {
                       "use server"
                       await deletePublication(pub.id)

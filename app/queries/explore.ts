@@ -23,7 +23,7 @@ export async function getExploreData() {
       LEFT JOIN public.categories c ON p.category_id = c.id
       LEFT JOIN public.scholars s ON p.scholar_id = s.id
       LEFT JOIN auth.users u ON s.user_id = u.id
-      WHERE p.status = 'published'
+      WHERE p.status = 'published' AND p.deleted_at IS NULL
       ORDER BY p.created_at DESC
     `;
 

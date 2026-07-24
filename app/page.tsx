@@ -19,7 +19,8 @@ import { getHomepageSettings, getBlogs, getNews, getTestimonials, getFeaturedSch
 import { getPlatformStats } from '@/app/actions/stats'
 
 import ScrollAnimation from "@/components/shared/scroll-animation"
-import { prisma } from '@/lib/db'
+import { getAllCategories } from '@/app/queries/categories'
+import { getRecentPublishedPublications } from '@/app/queries/publications'
 
 export const revalidate = 60 // Enable ISR caching (60 seconds)
 
@@ -40,20 +41,8 @@ export default async function Page() {
     getPlatformStats(),
     getTestimonials(),
     getFeaturedScholars(),
-    prisma.categories.findMany({ orderBy: { name: 'asc' } }),
-    prisma.publications.findMany({
-      where: { status: 'published' },
-      include: {
-        categories: true,
-        scholars: {
-          include: {
-            users: true
-          }
-        }
-      },
-      orderBy: { created_at: 'desc' },
-      take: 8
-    })
+    getAllCategories(),
+    getRecentPublishedPublications(8)
   ]);
 
   const formattedPublications = dbPublications.map((pub: any) => ({

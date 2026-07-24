@@ -11,6 +11,7 @@ import path from "path"
 import { unlink } from "fs/promises"
 import { createNotification } from "./notifications"
 import { prisma } from "@/lib/db"
+import { publicationSchema, updatePublicationSchema } from "@/lib/validations/publication"
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
@@ -54,12 +55,25 @@ export async function uploadPublication(formData: FormData) {
     const originalityDeclaration = formData.get('originality_declaration') === 'true'
     const copyrightDeclaration = formData.get('copyright_declaration') === 'true'
     const termsAcceptance = formData.get('terms_acceptance') === 'true'
+    const doi = formData.get('doi') as string | null
+
+    // Zod Validation
+    const validation = publicationSchema.safeParse({
+      title, abstract, content_type: contentType, category_id: categoryId,
+      author_name: authorName, institution, email_address: emailAddress, doi,
+      originality_declaration: originalityDeclaration, copyright_declaration: copyrightDeclaration, terms_acceptance: termsAcceptance
+    })
+
+    if (!validation.success) {
+      const firstError = Object.values(validation.error.flatten().fieldErrors)[0]?.[0] || 'Validation failed'
+      return { error: firstError }
+    }
+
     const file = formData.get('file') as File | null
     const coverImage = formData.get('cover_image') as File | null
     const bannerImage = formData.get('banner_image') as File | null
     const galleryImages = formData.getAll('gallery_images') as File[]
     const galleryVideos = formData.getAll('gallery_videos') as File[]
-    const doi = formData.get('doi') as string | null
     const videoFile = formData.get('video_file') as File | null
     
     if ((!file || file.size === 0) && (!videoFile || videoFile.size === 0)) {
@@ -236,8 +250,8 @@ export async function updatePublicationStatus(id: string, status: string, doi?: 
           )
         }
 
-        // Delete from database
-        await supabaseAdmin.from('publications').delete().eq('id', id)
+        // Soft delete from database
+        await supabaseAdmin.from('publications').update({ deleted_at: new Date().toISOString() }).eq('id', id)
       }
     } else {
       const updateData: any = { status }
@@ -364,14 +378,43 @@ export async function getPublication(id: string) {
   }
 }
 
-export async function updatePublicationContent(id: string, updates: { title?: string, abstract?: string, content_type?: string, category_id?: string | null }) {
+export async function updatePublicationContent(id: string, updates: { title?: string, abstract?: string, content_type?: string, category_id?: string | null, status?: string }) {
   const session = await getServerSession(authOptions)
   
-  if (!session || !['admin', 'super_admin'].includes(session.user?.role as string)) {
+  if (!session) {
     return { error: 'Unauthorized.' }
   }
 
+  const role = session.user?.role as string;
+  const isScholar = role === 'scholar';
+  const isAdmin = ['admin', 'super_admin'].includes(role);
+
+  if (!isAdmin && !isScholar) {
+    return { error: 'Unauthorized.' }
+  }
+
+  // Zod Validation
+  const validation = updatePublicationSchema.safeParse(updates)
+  if (!validation.success) {
+    const firstError = Object.values(validation.error.flatten().fieldErrors)[0]?.[0] || 'Validation failed'
+    return { error: firstError }
+  }
+
   try {
+    if (isScholar) {
+      // Check ownership
+      const { data: scholar } = await supabaseAdmin.from('scholars').select('id').eq('user_id', session.user.id).single();
+      if (!scholar) return { error: 'Scholar profile not found.' };
+
+      const { data: pub } = await supabaseAdmin.from('publications').select('scholar_id, status').eq('id', id).single();
+      if (!pub || pub.scholar_id !== scholar.id) return { error: 'Unauthorized. You do not own this publication.' };
+
+      // Revert status to draft if it was published, so admins must re-approve
+      if (pub.status === 'published') {
+        updates = { ...updates, status: 'draft' };
+      }
+    }
+
     const { error } = await supabaseAdmin
       .from('publications')
       .update(updates)
@@ -418,7 +461,7 @@ export async function deletePublication(id: string) {
 
     const { error: deleteError } = await supabaseAdmin
       .from('publications')
-      .delete()
+      .update({ deleted_at: new Date().toISOString() })
       .eq('id', id)
 
     if (deleteError) throw deleteError

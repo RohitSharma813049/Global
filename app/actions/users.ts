@@ -67,6 +67,23 @@ export async function updateUserRole(userId: string, newRole: string) {
   await supabaseAdmin.from('profiles').update({ role: newRole }).eq('id', userId)
   
   if (error) throw new Error(error.message)
+
+  // Auto-provision scholar profile if needed
+  if (newRole === 'scholar') {
+    const { data: existingScholar } = await supabaseAdmin
+      .from('scholars')
+      .select('id')
+      .eq('user_id', userId)
+      .single()
+      
+    if (!existingScholar) {
+      await supabaseAdmin.from('scholars').insert({
+        user_id: userId,
+        verified: true
+      })
+    }
+  }
+
   revalidatePath('/dashboard/admin/users')
   return data
 }
