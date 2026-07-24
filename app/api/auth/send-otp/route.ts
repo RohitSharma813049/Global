@@ -1,9 +1,17 @@
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 import { redis } from '@/lib/redis';
+import { authRateLimit } from '@/lib/rate-limit';
 
 export async function POST(req: Request) {
   try {
+    const ip = req.headers.get("x-forwarded-for") ?? "127.0.0.1";
+    const { success } = await authRateLimit.limit(ip);
+    
+    if (!success) {
+      return NextResponse.json({ message: 'Too many requests. Please try again later.' }, { status: 429 });
+    }
+
     const { email } = await req.json();
 
     if (!email) {

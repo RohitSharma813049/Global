@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { redis } from "@/lib/redis";
 import { createClient } from "@supabase/supabase-js";
+import { authRateLimit } from "@/lib/rate-limit";
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL || "",
@@ -9,6 +10,13 @@ const supabaseAdmin = createClient(
 
 export async function POST(req: Request) {
     try {
+        const ip = req.headers.get("x-forwarded-for") ?? "127.0.0.1";
+        const { success } = await authRateLimit.limit(ip);
+        
+        if (!success) {
+            return NextResponse.json({ message: "Too many requests. Please try again later." }, { status: 429 });
+        }
+
         const { firstName, lastName, email, mobileNumber, country, institution, username, password, role, otp } = await req.json();
         
         const fullName = `${firstName} ${lastName}`.trim();
