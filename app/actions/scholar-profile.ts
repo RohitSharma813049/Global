@@ -91,6 +91,13 @@ export async function updateScholarProfile(formData: FormData) {
       }
     }
 
+    // Fetch existing scholar profile to append images instead of replacing
+    const { data: existingScholar } = await supabaseAdmin
+      .from('scholars')
+      .select('gallery_images, gallery_videos')
+      .eq('user_id', session.user.id)
+      .single()
+
     // Build update payload
     const updateData: any = {
       bio,
@@ -100,8 +107,14 @@ export async function updateScholarProfile(formData: FormData) {
     }
 
     if (videoUrl) updateData.video_url = videoUrl
-    if (galleryImageUrls.length > 0) updateData.gallery_images = galleryImageUrls
-    if (galleryVideoUrls.length > 0) updateData.gallery_videos = galleryVideoUrls
+    
+    if (galleryImageUrls.length > 0) {
+      updateData.gallery_images = [...(existingScholar?.gallery_images || []), ...galleryImageUrls]
+    }
+    
+    if (galleryVideoUrls.length > 0) {
+      updateData.gallery_videos = [...(existingScholar?.gallery_videos || []), ...galleryVideoUrls]
+    }
 
     const { error } = await supabaseAdmin
       .from('scholars')

@@ -266,234 +266,267 @@ export default function SettingsPage() {
                       </div>
                     </div>
 
-                    {session?.user?.role === 'scholar' && (
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mt-4 pt-4 border-t border-gray-100">
-                        <div className="space-y-2">
-                          <h3 className="text-sm sm:text-base font-bold text-gray-900 mb-2">Scholar Information</h3>
-                          <label className="text-xs sm:text-sm font-medium text-gray-700">Professional Role / Qualification</label>
-                        <input aria-label="Input field" 
-                          type="text" 
-                          value={qualification}
-                          onChange={(e) => setQualification(e.target.value)}
-                          placeholder="e.g. Senior Financial Economist"
-                          className="w-full px-3 py-2 sm:px-4 text-sm sm:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all outline-none"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-xs sm:text-sm font-medium text-gray-700">Institution / Company</label>
-                        <input aria-label="Input field" 
-                          type="text" 
-                          value={institution}
-                          onChange={(e) => setInstitution(e.target.value)}
-                          placeholder="e.g. Central Bank of Kuwait"
-                          className="w-full px-3 py-2 sm:px-4 text-sm sm:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all outline-none"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-xs sm:text-sm font-medium text-gray-700">Specialization / Domain</label>
-                        <input aria-label="Input field" 
-                          type="text" 
-                          value={specialization}
-                          onChange={(e) => setSpecialization(e.target.value)}
-                          placeholder="e.g. Islamic Finance & Sustainable Investments"
-                          className="w-full px-3 py-2 sm:px-4 text-sm sm:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all outline-none"
-                        />
-                      </div>
-                      <div className="space-y-2 md:col-span-2">
-                        <label className="text-xs sm:text-sm font-medium text-gray-700">Featured Video</label>
-                        <div className="flex flex-col sm:flex-row gap-3">
-                          <input aria-label="Input field" 
-                            type="url" 
-                            value={videoUrl}
-                            onChange={(e) => setVideoUrl(e.target.value)}
-                            placeholder="e.g. https://www.youtube.com/embed/... OR Upload a file"
-                            className="flex-1 px-3 py-2 sm:px-4 text-sm sm:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all outline-none"
-                          />
-                          <input 
-                            type="file" 
-                            accept="video/mp4,video/webm,video/ogg" 
-                            id="video-upload" 
-                            className="hidden" 
-                            onChange={async (e) => {
-                              const file = e.target.files?.[0];
-                              if (file) {
-                                if (file.size > 100 * 1024 * 1024) {
-                                  toast.error("Video must be less than 100MB");
-                                  return;
-                                }
-                                const toastId = toast.loading("Uploading video...");
-                                try {
-                                  const formData = new FormData();
-                                  formData.append("video", file);
-                                  const res = await uploadVideoFile(formData);
-                                  if (res.error) {
-                                    toast.error(res.error, { id: toastId });
-                                  } else if (res.url) {
-                                    setVideoUrl(res.url);
-                                    toast.success("Video uploaded! Don't forget to save changes.", { id: toastId });
-                                  }
-                                } catch (err: any) {
-                                  toast.error(err.message || "Upload failed", { id: toastId });
-                                }
-                              }
-                            }}
-                          />
-                          <Button 
-                            variant="outline" 
-                            className="shrink-0"
-                            onClick={() => document.getElementById("video-upload")?.click()}
-                          >
-                            Upload Video File
-                          </Button>
+                    {session?.user?.role === 'scholar' ? (
+                      <div className="mt-8 pt-8 border-t border-gray-100">
+                        <div className="mb-6">
+                          <h3 className="text-lg font-bold text-gray-900">Scholar Information</h3>
+                          <p className="text-sm text-gray-500">Manage your professional credentials and media gallery to display on your public profile.</p>
                         </div>
-                        <p className="text-xs text-gray-500">Provide a YouTube embed URL, or upload a standard video file (.mp4, .webm) up to 100MB.</p>
-                      </div>
-
-                      {/* Media Gallery Section */}
-                      <div className="space-y-4 md:col-span-2 pt-4 border-t border-gray-100">
-                        <h3 className="text-sm sm:text-base font-bold text-gray-900">Scholar Media Gallery</h3>
-                        <p className="text-xs text-gray-500">Upload multiple photos and additional videos to showcase on your profile.</p>
                         
-                        {/* Gallery Images */}
-                        <div className="space-y-2">
-                          <label className="text-xs sm:text-sm font-medium text-gray-700">Gallery Photos</label>
-                          <div className="flex flex-col sm:flex-row gap-3">
-                            <input 
-                              type="file" 
-                              accept="image/png,image/jpeg,image/gif,image/webp" 
-                              id="gallery-images-upload" 
-                              className="hidden" 
-                              multiple
-                              onChange={async (e) => {
-                                const files = Array.from(e.target.files || []);
-                                if (files.length > 0) {
-                                  const toastId = toast.loading(`Uploading ${files.length} photos...`);
-                                  try {
-                                    const newUrls: string[] = [];
-                                    let hasError = false;
-                                    for (const file of files) {
-                                      if (file.size > 10 * 1024 * 1024) {
-                                        toast.error(`Photo must be less than 10MB`, { id: toastId });
-                                        hasError = true;
-                                        break;
-                                      }
-                                      const formData = new FormData();
-                                      formData.append("image", file);
-                                      const res = await uploadImageFile(formData);
-                                      if (res.error) {
-                                        toast.error(res.error, { id: toastId });
-                                        hasError = true;
-                                        break;
-                                      } else if (res.url) {
-                                        newUrls.push(res.url);
-                                      }
-                                    }
-                                    if (newUrls.length > 0) {
-                                      setGalleryImages(prev => [...prev, ...newUrls]);
-                                    }
-                                    if (!hasError) {
-                                      toast.success("Photos uploaded!", { id: toastId });
-                                    }
-                                  } catch (err: any) {
-                                    toast.error(err.message || "An error occurred during upload", { id: toastId });
-                                  }
-                                }
-                              }}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 bg-purple-50/50 p-6 rounded-xl border border-purple-100/50">
+                          <div className="space-y-2">
+                            <label className="text-xs sm:text-sm font-medium text-gray-700">Professional Role / Qualification</label>
+                            <input aria-label="Input field" 
+                              type="text" 
+                              value={qualification}
+                              onChange={(e) => setQualification(e.target.value)}
+                              placeholder="e.g. Senior Financial Economist"
+                              className="w-full px-3 py-2 sm:px-4 text-sm sm:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all outline-none bg-white"
                             />
-                            <Button 
-                              variant="outline" 
-                              className="shrink-0"
-                              onClick={() => document.getElementById("gallery-images-upload")?.click()}
-                            >
-                              + Add Photos
-                            </Button>
                           </div>
-                          {galleryImages.length > 0 && (
-                            <div className="flex flex-wrap gap-2 mt-2">
-                              {galleryImages.map((url, i) => (
-                                <div key={i} className="relative w-16 h-16 rounded-md overflow-hidden border border-gray-200">
-                                  <img src={url} alt={`Gallery ${i}`} className="w-full h-full object-cover" />
-                                  <button 
-                                    onClick={() => setGalleryImages(prev => prev.filter((_, idx) => idx !== i))}
-                                    className="absolute top-1 right-1 bg-white/80 rounded-full w-4 h-4 flex items-center justify-center text-[10px] text-red-500"
-                                  >✕</button>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Gallery Videos */}
-                        <div className="space-y-2 mt-4">
-                          <label className="text-xs sm:text-sm font-medium text-gray-700">Gallery Videos</label>
-                          <div className="flex flex-col sm:flex-row gap-3">
-                            <input 
-                              type="file" 
-                              accept="video/mp4,video/webm,video/ogg" 
-                              id="gallery-videos-upload" 
-                              className="hidden" 
-                              multiple
-                              onChange={async (e) => {
-                                const files = Array.from(e.target.files || []);
-                                if (files.length > 0) {
-                                  const toastId = toast.loading(`Uploading ${files.length} videos...`);
-                                  try {
-                                    const newUrls: string[] = [];
-                                    let hasError = false;
-                                    for (const file of files) {
-                                      if (file.size > 100 * 1024 * 1024) {
-                                        toast.error(`Video must be less than 100MB`, { id: toastId });
-                                        hasError = true;
-                                        break;
-                                      }
+                          <div className="space-y-2">
+                            <label className="text-xs sm:text-sm font-medium text-gray-700">Institution / Company</label>
+                            <input aria-label="Input field" 
+                              type="text" 
+                              value={institution}
+                              onChange={(e) => setInstitution(e.target.value)}
+                              placeholder="e.g. Central Bank of Kuwait"
+                              className="w-full px-3 py-2 sm:px-4 text-sm sm:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all outline-none bg-white"
+                            />
+                          </div>
+                          <div className="space-y-2 md:col-span-2">
+                            <label className="text-xs sm:text-sm font-medium text-gray-700">Specialization / Domain</label>
+                            <input aria-label="Input field" 
+                              type="text" 
+                              value={specialization}
+                              onChange={(e) => setSpecialization(e.target.value)}
+                              placeholder="e.g. Islamic Finance & Sustainable Investments"
+                              className="w-full px-3 py-2 sm:px-4 text-sm sm:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all outline-none bg-white"
+                            />
+                          </div>
+                          
+                          <div className="space-y-2 md:col-span-2 mt-2 pt-6 border-t border-purple-100">
+                            <label className="text-xs sm:text-sm font-medium text-gray-700">Featured Video</label>
+                            <div className="flex flex-col sm:flex-row gap-3">
+                              <input aria-label="Input field" 
+                                type="url" 
+                                value={videoUrl}
+                                onChange={(e) => setVideoUrl(e.target.value)}
+                                placeholder="e.g. https://www.youtube.com/embed/... OR Upload a file"
+                                className="flex-1 px-3 py-2 sm:px-4 text-sm sm:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all outline-none bg-white"
+                              />
+                              <input 
+                                type="file" 
+                                accept="video/mp4,video/webm,video/ogg" 
+                                id="video-upload" 
+                                className="hidden" 
+                                onChange={async (e) => {
+                                  const file = e.target.files?.[0];
+                                  if (file) {
+                                    if (file.size > 100 * 1024 * 1024) {
+                                      toast.error("Video must be less than 100MB");
+                                      return;
+                                    }
+                                    const toastId = toast.loading("Uploading video...");
+                                    try {
                                       const formData = new FormData();
                                       formData.append("video", file);
                                       const res = await uploadVideoFile(formData);
                                       if (res.error) {
                                         toast.error(res.error, { id: toastId });
-                                        hasError = true;
-                                        break;
                                       } else if (res.url) {
-                                        newUrls.push(res.url);
+                                        setVideoUrl(res.url);
+                                        toast.success("Video uploaded! Don't forget to save changes.", { id: toastId });
+                                      }
+                                    } catch (err: any) {
+                                      toast.error(err.message || "Upload failed", { id: toastId });
+                                    }
+                                  }
+                                }}
+                              />
+                              <Button 
+                                variant="outline" 
+                                className="shrink-0 bg-white"
+                                onClick={() => document.getElementById("video-upload")?.click()}
+                              >
+                                Upload Video File
+                              </Button>
+                            </div>
+                            <p className="text-xs text-gray-500">Provide a YouTube embed URL, or upload a standard video file (.mp4, .webm) up to 100MB.</p>
+                          </div>
+
+                          {/* Media Gallery Section */}
+                          <div className="space-y-6 md:col-span-2 pt-6 border-t border-purple-100">
+                            <div>
+                              <h3 className="text-sm sm:text-base font-bold text-gray-900">Scholar Media Gallery</h3>
+                              <p className="text-xs text-gray-500">Upload multiple photos and additional videos to showcase on your profile.</p>
+                            </div>
+                            
+                            {/* Gallery Images */}
+                            <div className="space-y-3 bg-white p-4 rounded-lg border border-gray-200">
+                              <label className="text-xs sm:text-sm font-medium text-gray-700">Gallery Photos</label>
+                              <div className="flex flex-col sm:flex-row gap-3">
+                                <input 
+                                  type="file" 
+                                  accept="image/png,image/jpeg,image/gif,image/webp" 
+                                  id="gallery-images-upload" 
+                                  className="hidden" 
+                                  multiple
+                                  onChange={async (e) => {
+                                    const files = Array.from(e.target.files || []);
+                                    if (files.length > 0) {
+                                      const toastId = toast.loading(`Uploading ${files.length} photos...`);
+                                      try {
+                                        const newUrls: string[] = [];
+                                        let hasError = false;
+                                        for (const file of files) {
+                                          if (file.size > 10 * 1024 * 1024) {
+                                            toast.error(`Photo must be less than 10MB`, { id: toastId });
+                                            hasError = true;
+                                            break;
+                                          }
+                                          const formData = new FormData();
+                                          formData.append("image", file);
+                                          const res = await uploadImageFile(formData);
+                                          if (res.error) {
+                                            toast.error(res.error, { id: toastId });
+                                            hasError = true;
+                                            break;
+                                          } else if (res.url) {
+                                            newUrls.push(res.url);
+                                          }
+                                        }
+                                        if (newUrls.length > 0) {
+                                          setGalleryImages(prev => [...prev, ...newUrls]);
+                                        }
+                                        if (!hasError) {
+                                          toast.success("Photos uploaded!", { id: toastId });
+                                        }
+                                      } catch (err: any) {
+                                        toast.error(err.message || "An error occurred during upload", { id: toastId });
                                       }
                                     }
-                                    if (newUrls.length > 0) {
-                                      setGalleryVideos(prev => [...prev, ...newUrls]);
-                                    }
-                                    if (!hasError) {
-                                      toast.success("Videos uploaded!", { id: toastId });
-                                    }
-                                  } catch (err: any) {
-                                    toast.error(err.message || "An error occurred during upload", { id: toastId });
-                                  }
-                                }
-                              }}
-                            />
-                            <Button 
-                              variant="outline" 
-                              className="shrink-0"
-                              onClick={() => document.getElementById("gallery-videos-upload")?.click()}
-                            >
-                              + Add Videos
-                            </Button>
-                          </div>
-                          {galleryVideos.length > 0 && (
-                            <div className="flex flex-wrap gap-2 mt-2">
-                              {galleryVideos.map((url, i) => (
-                                <div key={i} className="relative w-24 h-16 bg-gray-100 rounded-md overflow-hidden border border-gray-200 flex items-center justify-center">
-                                  <span className="text-[10px] text-gray-500 truncate px-1">{url.split('/').pop()}</span>
-                                  <button 
-                                    onClick={() => setGalleryVideos(prev => prev.filter((_, idx) => idx !== i))}
-                                    className="absolute top-1 right-1 bg-white/80 rounded-full w-4 h-4 flex items-center justify-center text-[10px] text-red-500"
-                                  >✕</button>
+                                  }}
+                                />
+                                <Button 
+                                  variant="outline" 
+                                  className="shrink-0 w-full sm:w-auto border-dashed border-2 hover:border-purple-500 hover:text-purple-600 transition-colors"
+                                  onClick={() => document.getElementById("gallery-images-upload")?.click()}
+                                >
+                                  + Add Photos
+                                </Button>
+                              </div>
+                              {galleryImages.length > 0 && (
+                                <div className="flex flex-wrap gap-3 mt-4">
+                                  {galleryImages.map((url, i) => (
+                                    <div key={i} className="relative w-20 h-20 rounded-lg overflow-hidden border-2 border-gray-100 shadow-sm group">
+                                      <img src={url} alt={`Gallery ${i}`} className="w-full h-full object-cover" />
+                                      <button 
+                                        onClick={() => setGalleryImages(prev => prev.filter((_, idx) => idx !== i))}
+                                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                                      >✕</button>
+                                    </div>
+                                  ))}
                                 </div>
-                              ))}
+                              )}
                             </div>
-                          )}
+
+                            {/* Gallery Videos */}
+                            <div className="space-y-3 bg-white p-4 rounded-lg border border-gray-200">
+                              <label className="text-xs sm:text-sm font-medium text-gray-700">Gallery Videos</label>
+                              <div className="flex flex-col sm:flex-row gap-3">
+                                <input 
+                                  type="file" 
+                                  accept="video/mp4,video/webm,video/ogg" 
+                                  id="gallery-videos-upload" 
+                                  className="hidden" 
+                                  multiple
+                                  onChange={async (e) => {
+                                    const files = Array.from(e.target.files || []);
+                                    if (files.length > 0) {
+                                      const toastId = toast.loading(`Uploading ${files.length} videos...`);
+                                      try {
+                                        const newUrls: string[] = [];
+                                        let hasError = false;
+                                        for (const file of files) {
+                                          if (file.size > 100 * 1024 * 1024) {
+                                            toast.error(`Video must be less than 100MB`, { id: toastId });
+                                            hasError = true;
+                                            break;
+                                          }
+                                          const formData = new FormData();
+                                          formData.append("video", file);
+                                          const res = await uploadVideoFile(formData);
+                                          if (res.error) {
+                                            toast.error(res.error, { id: toastId });
+                                            hasError = true;
+                                            break;
+                                          } else if (res.url) {
+                                            newUrls.push(res.url);
+                                          }
+                                        }
+                                        if (newUrls.length > 0) {
+                                          setGalleryVideos(prev => [...prev, ...newUrls]);
+                                        }
+                                        if (!hasError) {
+                                          toast.success("Videos uploaded!", { id: toastId });
+                                        }
+                                      } catch (err: any) {
+                                        toast.error(err.message || "An error occurred during upload", { id: toastId });
+                                      }
+                                    }
+                                  }}
+                                />
+                                <Button 
+                                  variant="outline" 
+                                  className="shrink-0 w-full sm:w-auto border-dashed border-2 hover:border-purple-500 hover:text-purple-600 transition-colors"
+                                  onClick={() => document.getElementById("gallery-videos-upload")?.click()}
+                                >
+                                  + Add Videos
+                                </Button>
+                              </div>
+                              {galleryVideos.length > 0 && (
+                                <div className="flex flex-wrap gap-3 mt-4">
+                                  {galleryVideos.map((url, i) => (
+                                    <div key={i} className="relative w-28 h-20 bg-gray-900 rounded-lg overflow-hidden border border-gray-200 flex flex-col items-center justify-center group">
+                                      <svg className="w-8 h-8 text-white/50 mb-1" fill="currentColor" viewBox="0 0 20 20"><path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm3 2h6v4H7V5zm8 8v2h1v-2h-1zm-2-2H7v4h6v-4zm2 0h1V9h-1v2zm1-4V5h-1v2h1zM5 5h1v2H5V5zm0 4h1v2H5V9zm0 4h1v2H5v-2z"/></svg>
+                                      <span className="text-[10px] text-gray-400 truncate px-2 max-w-full">{url.split('/').pop()}</span>
+                                      <button 
+                                        onClick={() => setGalleryVideos(prev => prev.filter((_, idx) => idx !== i))}
+                                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                                      >✕</button>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  )}
+                    ) : (
+                      <div className="mt-8 pt-8 border-t border-gray-100">
+                        <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl p-6 sm:p-8 border border-indigo-100/50 relative overflow-hidden">
+                          <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none">
+                            <svg className="w-32 h-32 text-indigo-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72l5 2.73 5-2.73v3.72z"/></svg>
+                          </div>
+                          
+                          <div className="relative z-10 max-w-xl">
+                            <h3 className="text-xl font-bold text-gray-900 mb-2">Become a Scholar</h3>
+                            <p className="text-gray-600 text-sm sm:text-base mb-6 leading-relaxed">
+                              You are currently on a standard account. Upgrade to a Scholar Profile to publish research papers, showcase your professional credentials, and build your academic portfolio.
+                            </p>
+                            
+                            <a 
+                              href="/scholar-registration" 
+                              className="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-xl shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all hover:scale-[1.02]"
+                            >
+                              Apply for Scholar Profile
+                              <svg className="ml-2 -mr-1 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                 </div>
                 <div className="p-4 sm:p-6 border-t border-gray-100 bg-gray-50/50 flex justify-end">
                   <Button 
