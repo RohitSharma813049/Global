@@ -87,16 +87,9 @@ export async function uploadPublication(formData: FormData) {
       try {
         const { uploadFileToR2 } = await import('@/lib/r2');
         fileUrl = await uploadFileToR2(buffer, file.name, `publications/${contentType}`, file.type);
-      } catch (err) {
-        console.error("R2 Upload failed, falling back to local", err);
-        const fileExt = file.name.split('.').pop()
-        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
-        
-        const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'publications', contentType)
-        await require('fs/promises').mkdir(uploadDir, { recursive: true })
-        localFilePath = path.join(uploadDir, fileName)
-        await require('fs/promises').writeFile(localFilePath, buffer)
-        fileUrl = `/uploads/publications/${contentType}/${fileName}`
+      } catch (err: any) {
+        console.error("R2 Upload failed:", err);
+        throw new Error("Cloud storage upload failed: " + (err.message || "Unknown error"));
       }
     }
 
@@ -107,14 +100,9 @@ export async function uploadPublication(formData: FormData) {
         const { uploadFileToR2 } = await import('@/lib/r2');
         videoUrl = await uploadFileToR2(buffer, videoFile.name, 'videos', videoFile.type);
         if (!fileUrl) fileUrl = videoUrl;
-      } catch (err) {
-        const vidExt = videoFile.name.split('.').pop()
-        const vidName = `video-${Date.now()}-${Math.random().toString(36).substring(7)}.${vidExt}`
-        const vidPath = path.join(process.cwd(), 'public', 'uploads', 'videos')
-        await require('fs/promises').mkdir(vidPath, { recursive: true })
-        await require('fs/promises').writeFile(path.join(vidPath, vidName), buffer)
-        videoUrl = `/uploads/videos/${vidName}`
-        if (!fileUrl) fileUrl = videoUrl;
+      } catch (err: any) {
+        console.error("R2 Upload failed:", err);
+        throw new Error("Cloud storage upload failed: " + (err.message || "Unknown error"));
       }
     }
 
@@ -125,13 +113,9 @@ export async function uploadPublication(formData: FormData) {
       try {
         const { uploadFileToR2 } = await import('@/lib/r2');
         coverImageUrl = await uploadFileToR2(buffer, coverImage.name, 'images', coverImage.type);
-      } catch (err) {
-        const imgExt = coverImage.name.split('.').pop();
-        const imgName = `cover-${Date.now()}-${Math.random().toString(36).substring(7)}.${imgExt}`;
-        const imgPath = path.join(process.cwd(), 'public', 'uploads', 'images');
-        await require('fs/promises').mkdir(imgPath, { recursive: true });
-        await require('fs/promises').writeFile(path.join(imgPath, imgName), buffer)
-        coverImageUrl = `/uploads/images/${imgName}`;
+      } catch (err: any) {
+        console.error("R2 Upload failed:", err);
+        throw new Error("Cloud storage upload failed: " + (err.message || "Unknown error"));
       }
     }
 
@@ -142,13 +126,9 @@ export async function uploadPublication(formData: FormData) {
       try {
         const { uploadFileToR2 } = await import('@/lib/r2');
         bannerImageUrl = await uploadFileToR2(buffer, bannerImage.name, 'images', bannerImage.type);
-      } catch (err) {
-        const imgExt = bannerImage.name.split('.').pop();
-        const imgName = `banner-${Date.now()}-${Math.random().toString(36).substring(7)}.${imgExt}`;
-        const imgPath = path.join(process.cwd(), 'public', 'uploads', 'images');
-        await require('fs/promises').mkdir(imgPath, { recursive: true });
-        await require('fs/promises').writeFile(path.join(imgPath, imgName), buffer)
-        bannerImageUrl = `/uploads/images/${imgName}`;
+      } catch (err: any) {
+        console.error("R2 Upload failed:", err);
+        throw new Error("Cloud storage upload failed: " + (err.message || "Unknown error"));
       }
     }
 
@@ -161,13 +141,9 @@ export async function uploadPublication(formData: FormData) {
           const { uploadFileToR2 } = await import('@/lib/r2');
           const url = await uploadFileToR2(buffer, gImg.name, 'images', gImg.type);
           galleryImageUrls.push(url);
-        } catch (err) {
-          const imgExt = gImg.name.split('.').pop();
-          const imgName = `gallery-${Date.now()}-${Math.random().toString(36).substring(7)}.${imgExt}`;
-          const imgPath = path.join(process.cwd(), 'public', 'uploads', 'images');
-          await require('fs/promises').mkdir(imgPath, { recursive: true });
-          await require('fs/promises').writeFile(path.join(imgPath, imgName), buffer)
-          galleryImageUrls.push(`/uploads/images/${imgName}`);
+        } catch (err: any) {
+          console.error("R2 Upload failed:", err);
+          throw new Error("Cloud storage upload failed: " + (err.message || "Unknown error"));
         }
       }
     }
@@ -181,13 +157,9 @@ export async function uploadPublication(formData: FormData) {
           const { uploadFileToR2 } = await import('@/lib/r2');
           const url = await uploadFileToR2(buffer, gVid.name, 'videos', gVid.type);
           galleryVideoUrls.push(url);
-        } catch (err) {
-          const vidExt = gVid.name.split('.').pop();
-          const vidName = `gallery-vid-${Date.now()}-${Math.random().toString(36).substring(7)}.${vidExt}`;
-          const vidPath = path.join(process.cwd(), 'public', 'uploads', 'videos');
-          await require('fs/promises').mkdir(vidPath, { recursive: true });
-          await require('fs/promises').writeFile(path.join(vidPath, vidName), buffer)
-          galleryVideoUrls.push(`/uploads/videos/${vidName}`);
+        } catch (err: any) {
+          console.error("R2 Upload failed:", err);
+          throw new Error("Cloud storage upload failed: " + (err.message || "Unknown error"));
         }
       }
     }

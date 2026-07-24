@@ -119,11 +119,21 @@ export async function updateProfile(
   }
 }
 
-export async function updatePassword(newPassword: string) {
+export async function updatePassword(currentPassword: string, newPassword: string) {
   try {
     const session = await getServerSession(authOptions)
-    if (!session || !session.user?.id) {
+    if (!session || !session.user?.id || !session.user?.email) {
       throw new Error("Unauthorized")
+    }
+
+    // Verify current password first
+    const { error: signInError } = await supabaseAdmin.auth.signInWithPassword({
+      email: session.user.email,
+      password: currentPassword,
+    })
+
+    if (signInError) {
+      throw new Error("Incorrect current password")
     }
 
     const { error } = await supabaseAdmin.auth.admin.updateUserById(
@@ -158,16 +168,9 @@ export async function uploadVideoFile(formData: FormData) {
       const { uploadFileToR2 } = await import('@/lib/r2');
       const url = await uploadFileToR2(buffer, file.name, 'videos', file.type);
       return { success: true, url };
-    } catch (err) {
-      console.error("R2 Upload failed, falling back to local", err);
-      const fileName = `scholar-video-${Date.now()}-${Math.random().toString(36).substring(7)}.${ext}`
-      const dirPath = path.join(process.cwd(), "public", "uploads", "videos")
-      
-      await mkdir(dirPath, { recursive: true })
-      const filePath = path.join(dirPath, fileName)
-      await require('fs/promises').writeFile(filePath, buffer)
-
-      return { success: true, url: `/uploads/videos/${fileName}` }
+    } catch (err: any) {
+      console.error("R2 Upload failed:", err);
+      throw new Error("Cloud storage upload failed: " + (err.message || "Unknown error"));
     }
   } catch (error: any) {
     console.error("Video upload error:", error)
@@ -192,16 +195,9 @@ export async function uploadImageFile(formData: FormData) {
       const { uploadFileToR2 } = await import('@/lib/r2');
       const url = await uploadFileToR2(buffer, file.name, 'images', file.type);
       return { success: true, url };
-    } catch (err) {
-      console.error("R2 Upload failed, falling back to local", err);
-      const fileName = `scholar-gallery-${Date.now()}-${Math.random().toString(36).substring(7)}.${ext}`
-      const dirPath = path.join(process.cwd(), "public", "uploads", "images")
-      
-      await mkdir(dirPath, { recursive: true })
-      const filePath = path.join(dirPath, fileName)
-      await require('fs/promises').writeFile(filePath, buffer)
-
-      return { success: true, url: `/uploads/images/${fileName}` }
+    } catch (err: any) {
+      console.error("R2 Upload failed:", err);
+      throw new Error("Cloud storage upload failed: " + (err.message || "Unknown error"));
     }
   } catch (error: any) {
     console.error("Image upload error:", error)

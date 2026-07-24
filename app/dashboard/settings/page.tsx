@@ -26,6 +26,7 @@ export default function SettingsPage() {
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
   const [galleryVideos, setGalleryVideos] = useState<string[]>([]);
 
+  const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isSaving, setIsSaving] = useState(false);
@@ -65,6 +66,10 @@ export default function SettingsPage() {
   };
 
   const handleUpdatePassword = async () => {
+    if (!currentPassword) {
+      toast.error("Please enter your current password");
+      return;
+    }
     if (newPassword !== confirmPassword) {
       toast.error("Passwords do not match");
       return;
@@ -74,11 +79,12 @@ export default function SettingsPage() {
       return;
     }
     setIsSaving(true);
-    const res = await updatePassword(newPassword);
+    const res = await updatePassword(currentPassword, newPassword);
     if (res.error) {
       toast.error(res.error);
     } else {
       toast.success("Password updated successfully!");
+      setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
     }
@@ -547,6 +553,15 @@ export default function SettingsPage() {
                   <p className="text-xs sm:text-sm text-gray-500 mt-1">Update your password and secure your account.</p>
                 </div>
                 <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
+                  <div className="space-y-2">
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700">Current Password</label>
+                    <input aria-label="Input field" 
+                      type="password" 
+                      value={currentPassword}
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                      className="w-full max-w-md px-3 py-2 sm:px-4 text-sm sm:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all outline-none"
+                    />
+                  </div>
                   <div className="space-y-2">
                     <label className="block text-xs sm:text-sm font-medium text-gray-700">New Password</label>
                     <input aria-label="Input field" 

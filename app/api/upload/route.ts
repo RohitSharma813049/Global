@@ -52,17 +52,7 @@ export async function POST(req: NextRequest) {
         fileUrl = `${process.env.R2_ENDPOINT}/${process.env.R2_BUCKET}/${filename}`;
       }
     } else {
-      // Fallback to local upload if R2 is not configured
-      const uploadDir = join(process.cwd(), 'public', 'uploads');
-      
-      if (!existsSync(uploadDir)) {
-        mkdirSync(uploadDir, { recursive: true });
-      }
-
-      const filePath = join(uploadDir, filename);
-      await writeFile(filePath, buffer);
-      
-      fileUrl = `/uploads/${filename}`;
+      return NextResponse.json({ success: false, error: 'Cloud storage is not configured' }, { status: 500 });
     }
     
     return NextResponse.json({ success: true, url: fileUrl });
