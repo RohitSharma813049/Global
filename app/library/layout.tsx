@@ -10,7 +10,7 @@ export default async function LibraryLayout({
   const session = await getServerSession(authOptions)
 
   if (!session?.user) {
-    redirect('/auth/signin?callbackUrl=/library/saved')
+    redirect('/signin?callbackUrl=/library/saved')
   }
 
   return (
