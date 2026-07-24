@@ -30,11 +30,11 @@ export async function getCategories() {
   return data
 }
 
-export async function createCategory(name: string, slug: string, parent_id?: string, content_types?: string[]) {
+export async function createCategory(name: string, slug: string, parent_id?: string, content_types?: string[], image_url?: string) {
   await checkAdmin()
   const { data, error } = await supabaseAdmin
     .from('categories')
-    .insert({ name, slug, parent_id: parent_id || null, content_types: content_types || [] })
+    .insert({ name, slug, parent_id: parent_id || null, content_types: content_types || [], image_url: image_url || null })
     .select()
     .single()
   if (error) throw new Error(error.message)
@@ -43,11 +43,11 @@ export async function createCategory(name: string, slug: string, parent_id?: str
   return data
 }
 
-export async function updateCategory(id: string, name: string, slug: string, parent_id?: string, content_types?: string[]) {
+export async function updateCategory(id: string, name: string, slug: string, parent_id?: string, content_types?: string[], image_url?: string) {
   await checkAdmin()
   const { error } = await supabaseAdmin
     .from('categories')
-    .update({ name, slug, parent_id: parent_id || null, content_types: content_types || [] })
+    .update({ name, slug, parent_id: parent_id || null, content_types: content_types || [], image_url: image_url || null })
     .eq('id', id)
   if (error) throw new Error(error.message)
   revalidatePath('/dashboard/admin/categories')

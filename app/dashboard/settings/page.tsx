@@ -101,7 +101,7 @@ export default function SettingsPage() {
         
         <div className="mb-6 sm:mb-8">
           <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-indigo-100 text-indigo-700 rounded-lg">
+            <div className="p-2 bg-purple-100 text-purple-700 rounded-lg">
               <MdSettings className="w-6 h-6" />
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Settings</h1>
@@ -122,7 +122,7 @@ export default function SettingsPage() {
                     onClick={() => setActiveTab(tab.id)}
                     className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${
                       isActive
-                        ? "bg-indigo-50 text-indigo-700 shadow-sm"
+                        ? "bg-purple-50 text-purple-700 shadow-sm"
                         : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                     }`}
                   >
@@ -152,7 +152,7 @@ export default function SettingsPage() {
                 </div>
                 <div className="p-4 sm:p-6 space-y-6">
                   <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 text-center sm:text-left">
-                    <div className="w-20 h-20 rounded-full bg-indigo-100 flex items-center justify-center text-3xl font-bold text-indigo-700 shrink-0 overflow-hidden">
+                    <div className="w-20 h-20 rounded-full bg-purple-100 flex items-center justify-center text-3xl font-bold text-purple-700 shrink-0 overflow-hidden">
                       {avatarUrl ? (
                         <img 
                           key={avatarUrl}
@@ -227,7 +227,7 @@ export default function SettingsPage() {
                         type="text" 
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        className="w-full px-3 py-2 sm:px-4 text-sm sm:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none"
+                        className="w-full px-3 py-2 sm:px-4 text-sm sm:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all outline-none"
                       />
                     </div>
                     <div className="space-y-2">
@@ -236,7 +236,7 @@ export default function SettingsPage() {
                         type="email" 
                         value={email}
                         disabled
-                        className="w-full px-3 py-2 sm:px-4 text-sm sm:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none bg-gray-50 text-gray-500 cursor-not-allowed"
+                        className="w-full px-3 py-2 sm:px-4 text-sm sm:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all outline-none bg-gray-50 text-gray-500 cursor-not-allowed"
                       />
                       <p className="text-xs text-gray-400">Email cannot be changed.</p>
                     </div>
@@ -248,7 +248,7 @@ export default function SettingsPage() {
                         rows={4}
                         value={bio}
                         onChange={(e) => setBio(e.target.value)}
-                        className="w-full px-3 py-2 sm:px-4 text-sm sm:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none resize-none"
+                        className="w-full px-3 py-2 sm:px-4 text-sm sm:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all outline-none resize-none"
                         placeholder="Write a few sentences about yourself..."
                       />
                     </div>
@@ -261,7 +261,7 @@ export default function SettingsPage() {
                           value={country}
                           onChange={(e) => setCountry(e.target.value)}
                           placeholder="e.g. United Kingdom"
-                          className="w-full px-3 py-2 sm:px-4 text-sm sm:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none"
+                          className="w-full px-3 py-2 sm:px-4 text-sm sm:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all outline-none"
                         />
                       </div>
                     </div>
@@ -276,7 +276,7 @@ export default function SettingsPage() {
                           value={qualification}
                           onChange={(e) => setQualification(e.target.value)}
                           placeholder="e.g. Senior Financial Economist"
-                          className="w-full px-3 py-2 sm:px-4 text-sm sm:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none"
+                          className="w-full px-3 py-2 sm:px-4 text-sm sm:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all outline-none"
                         />
                       </div>
                       <div className="space-y-2">
@@ -286,7 +286,7 @@ export default function SettingsPage() {
                           value={institution}
                           onChange={(e) => setInstitution(e.target.value)}
                           placeholder="e.g. Central Bank of Kuwait"
-                          className="w-full px-3 py-2 sm:px-4 text-sm sm:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none"
+                          className="w-full px-3 py-2 sm:px-4 text-sm sm:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all outline-none"
                         />
                       </div>
                       <div className="space-y-2">
@@ -296,7 +296,7 @@ export default function SettingsPage() {
                           value={specialization}
                           onChange={(e) => setSpecialization(e.target.value)}
                           placeholder="e.g. Islamic Finance & Sustainable Investments"
-                          className="w-full px-3 py-2 sm:px-4 text-sm sm:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none"
+                          className="w-full px-3 py-2 sm:px-4 text-sm sm:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all outline-none"
                         />
                       </div>
                       <div className="space-y-2 md:col-span-2">
@@ -307,7 +307,7 @@ export default function SettingsPage() {
                             value={videoUrl}
                             onChange={(e) => setVideoUrl(e.target.value)}
                             placeholder="e.g. https://www.youtube.com/embed/... OR Upload a file"
-                            className="flex-1 px-3 py-2 sm:px-4 text-sm sm:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none"
+                            className="flex-1 px-3 py-2 sm:px-4 text-sm sm:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all outline-none"
                           />
                           <input 
                             type="file" 
@@ -499,7 +499,7 @@ export default function SettingsPage() {
                   <Button 
                     onClick={handleSaveProfile} 
                     disabled={isSaving}
-                    className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700"
+                    className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700"
                   >
                     {isSaving ? "Saving..." : "Save Changes"}
                   </Button>
@@ -520,7 +520,7 @@ export default function SettingsPage() {
                       type="password" 
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
-                      className="w-full max-w-md px-3 py-2 sm:px-4 text-sm sm:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none"
+                      className="w-full max-w-md px-3 py-2 sm:px-4 text-sm sm:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all outline-none"
                     />
                   </div>
                   <div className="space-y-2">
@@ -529,7 +529,7 @@ export default function SettingsPage() {
                       type="password" 
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="w-full max-w-md px-3 py-2 sm:px-4 text-sm sm:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none"
+                      className="w-full max-w-md px-3 py-2 sm:px-4 text-sm sm:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all outline-none"
                     />
                   </div>
                 </div>
@@ -537,7 +537,7 @@ export default function SettingsPage() {
                   <Button 
                     onClick={handleUpdatePassword} 
                     disabled={isSaving}
-                    className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700"
+                    className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700"
                   >
                     {isSaving ? "Updating..." : "Update Password"}
                   </Button>
@@ -559,7 +559,7 @@ export default function SettingsPage() {
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input aria-label="Input field" type="checkbox" className="sr-only peer" defaultChecked />
-                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
                     </label>
                   </div>
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -569,12 +569,12 @@ export default function SettingsPage() {
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input aria-label="Input field" type="checkbox" className="sr-only peer" defaultChecked />
-                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
                     </label>
                   </div>
                 </div>
                 <div className="p-4 sm:p-6 border-t border-gray-100 bg-gray-50/50 flex justify-end">
-                  <Button className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700">Save Preferences</Button>
+                  <Button className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700">Save Preferences</Button>
                 </div>
               </div>
             )}
@@ -598,7 +598,7 @@ export default function SettingsPage() {
                         checked={isPinned}
                         onChange={(e) => setIsPinned(e.target.checked)}
                       />
-                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
                     </label>
                   </div>
                 </div>

@@ -3,9 +3,7 @@ import { z } from 'zod'
 export const publicationSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters").max(200, "Title must be less than 200 characters"),
   abstract: z.string().min(10, "Abstract must be at least 10 characters").max(5000, "Abstract must be less than 5000 characters"),
-  content_type: z.enum(['thesis', 'article', 'ebook', 'magazine'], {
-    errorMap: () => ({ message: "Invalid content type" })
-  }),
+  content_type: z.enum(['thesis', 'article', 'ebook', 'magazine']),
   category_id: z.string().min(1, "Category is required"),
   author_name: z.string().min(2, "Author name must be at least 2 characters").max(100, "Author name must be less than 100 characters"),
   email_address: z.string().email("Invalid email address"),
@@ -19,9 +17,7 @@ export const publicationSchema = z.object({
 export const updatePublicationSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters").max(200, "Title must be less than 200 characters").optional(),
   abstract: z.string().min(10, "Abstract must be at least 10 characters").max(5000, "Abstract must be less than 5000 characters").optional(),
-  content_type: z.enum(['thesis', 'article', 'ebook', 'magazine'], {
-    errorMap: () => ({ message: "Invalid content type" })
-  }).optional(),
+  content_type: z.enum(['thesis', 'article', 'ebook', 'magazine']).optional(),
   category_id: z.string().min(1, "Category is required").optional().nullable(),
   status: z.string().optional(),
 })

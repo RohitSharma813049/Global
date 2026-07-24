@@ -29,13 +29,12 @@ export default function DashboardSidebar() {
   const { data: session } = useSession();
   const pathname = usePathname();
   const role = session?.user?.role || "user";
-  const { isPinned, setIsPinned, setIsHovered, isExpanded } = useSidebar();
+  const { isPinned, setIsPinned, setIsHovered, isExpanded, isMobileMenuOpen, setIsMobileMenuOpen } = useSidebar();
 
   const readerLinks = [
     { name: "Explore", href: "/explore", icon: MdExplore },
     { name: "My Library", href: "/library", icon: MdLibraryBooks },
     { name: "Saved Papers", href: "/library/saved", icon: MdBookmark },
-    { name: "Become a Scholar", href: "/dashboard/scholar", icon: MdDescription },
   ];
 
   const scholarLinks = [
@@ -58,39 +57,56 @@ export default function DashboardSidebar() {
     { name: "News", href: "/dashboard/admin/news", icon: MdNewspaper },
   ];
 
-  const links = role === "super_admin" || role === "admin" 
-    ? adminLinks 
-    : role === "scholar" 
-      ? scholarLinks 
-      : readerLinks;
+  const superAdminLinks = [
+    { name: "Audit Logs", href: "/dashboard/super-admin/audit-logs", icon: MdLibraryBooks },
+    ...adminLinks
+  ];
+
+  const links = role === "super_admin" 
+    ? superAdminLinks
+    : role === "admin" 
+      ? adminLinks 
+      : role === "scholar" 
+        ? scholarLinks 
+        : readerLinks;
 
   return (
-    <div 
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      className={`hidden md:flex flex-col h-full bg-slate-900 border-r border-slate-800 shadow-xl fixed top-0 left-0 transition-all duration-300 ease-in-out z-50 ${isExpanded ? 'w-64' : 'w-20'}`}
-    >
-      <div className={`p-5 border-b border-slate-800 flex items-center ${isExpanded ? 'justify-between' : 'justify-center'} overflow-hidden h-20`}>
+    <>
+      {/* Mobile Overlay */}
+      {isMobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-gray-900/50 z-40 md:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+      <div 
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        className={`flex flex-col h-full bg-white border-r border-gray-200 shadow-lg fixed top-0 transition-all duration-300 ease-in-out z-50 
+          ${isExpanded ? 'w-64' : 'w-20'} 
+          ${isMobileMenuOpen ? 'left-0 w-64' : '-left-64 md:left-0'}`}
+      >
+      <div className={`p-5 border-b border-gray-100 flex items-center ${isExpanded ? 'justify-between' : 'justify-center'} overflow-hidden h-20`}>
         {isExpanded ? (
           <div className="whitespace-nowrap flex items-center gap-3 transition-opacity duration-300">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg shadow-lg">
-              GS
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0">
+              <img src="/logo1.png" alt="Global Scholar" className="w-full h-full object-contain" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-white tracking-tight leading-tight">Global Scholar</h2>
-              <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-wider">{role.replace('_', ' ')}</span>
+              <h2 className="text-base font-bold text-gray-900 tracking-tight leading-tight">Global Scholar</h2>
+              <span className="text-[10px] font-bold text-purple-600 uppercase tracking-wider">{role.replace('_', ' ')}</span>
             </div>
           </div>
         ) : (
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg shadow-lg shrink-0">
-            GS
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0">
+            <img src="/logo1.png" alt="Global Scholar" className="w-full h-full object-contain" />
           </div>
         )}
         
         {isExpanded && (
           <button 
             onClick={() => setIsPinned(!isPinned)}
-            className={`p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-all ${isPinned ? 'text-indigo-400 bg-slate-800/50' : ''}`}
+            className={`p-1.5 rounded-lg text-gray-400 hover:text-purple-600 hover:bg-purple-50 transition-all ${isPinned ? 'text-purple-600 bg-purple-50' : ''}`}
             title={isPinned ? "Unpin sidebar" : "Pin sidebar"}
           >
             <MdPushPin className={`text-lg transition-transform ${isPinned ? 'rotate-45' : 'rotate-0'}`} />
@@ -101,16 +117,17 @@ export default function DashboardSidebar() {
       <nav className="flex-1 overflow-y-auto py-5 px-3 space-y-1 overflow-x-hidden custom-scrollbar">
         <Link 
           href="/dashboard"
-          className={`flex items-center py-2.5 rounded-lg transition-all duration-200 ${isExpanded ? 'px-3' : 'justify-center px-0'} ${pathname === "/dashboard" ? "bg-indigo-600/10 text-indigo-400" : "text-slate-400 hover:bg-slate-800 hover:text-slate-200"}`}
-          title={!isExpanded ? "Overview" : ""}
+          onClick={() => setIsMobileMenuOpen(false)}
+          className={`flex items-center py-2.5 rounded-lg transition-all duration-200 ${isExpanded || isMobileMenuOpen ? 'px-3 text-sm' : 'justify-center px-0'} ${pathname === "/dashboard" ? "bg-purple-50 text-purple-700 font-semibold" : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"}`}
+          title={!isExpanded && !isMobileMenuOpen ? "Overview" : ""}
         >
-          <MdDashboard className={`text-xl ${isExpanded ? 'mr-3' : ''}`} /> 
-          {isExpanded && <span className="font-medium whitespace-nowrap">Overview</span>}
+          <MdDashboard className={`text-lg ${isExpanded || isMobileMenuOpen ? 'mr-3' : ''}`} /> 
+          {(isExpanded || isMobileMenuOpen) && <span className="font-medium whitespace-nowrap">Overview</span>}
         </Link>
         
-        {isExpanded && (
+        {(isExpanded || isMobileMenuOpen) && (
           <div className="pt-5 pb-2">
-            <p className="px-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Features</p>
+            <p className="px-3 text-[11px] font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap">Features</p>
           </div>
         )}
         {!isExpanded && <div className="h-4"></div>}
@@ -122,46 +139,49 @@ export default function DashboardSidebar() {
             <Link
               key={link.name}
               href={link.href}
-              className={`flex items-center py-2.5 rounded-lg transition-all duration-200 ${isExpanded ? 'px-3' : 'justify-center px-0'} ${isActive ? "bg-indigo-600/10 text-indigo-400" : "text-slate-400 hover:bg-slate-800 hover:text-slate-200"}`}
-              title={!isExpanded ? link.name : ""}
+              onClick={() => setIsMobileMenuOpen(false)}
+              className={`flex items-center py-2.5 rounded-lg transition-all duration-200 ${isExpanded || isMobileMenuOpen ? 'px-3 text-sm' : 'justify-center px-0'} ${isActive ? "bg-purple-50 text-purple-700 font-semibold" : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"}`}
+              title={!isExpanded && !isMobileMenuOpen ? link.name : ""}
             >
-              <Icon className={`text-xl ${isExpanded ? 'mr-3' : ''}`} /> 
-              {isExpanded && <span className="font-medium whitespace-nowrap">{link.name}</span>}
+              <Icon className={`text-lg ${isExpanded || isMobileMenuOpen ? 'mr-3' : ''}`} /> 
+              {(isExpanded || isMobileMenuOpen) && <span className="font-medium whitespace-nowrap">{link.name}</span>}
             </Link>
           );
         })}
       </nav>
 
-      <div className={`p-4 border-t border-slate-800 ${!isExpanded ? 'flex flex-col items-center' : ''}`}>
+      <div className={`p-4 border-t border-gray-100 ${(!isExpanded && !isMobileMenuOpen) ? 'flex flex-col items-center' : ''}`}>
         {role === "user" && (
           <BecomeScholarModal>
             <button 
-              className={`flex items-center py-2.5 rounded-lg text-indigo-400 bg-indigo-500/10 hover:bg-indigo-500/20 transition-all duration-200 mb-2 ${isExpanded ? 'w-full px-3 text-sm font-medium' : 'justify-center w-10 h-10'}`}
-              title={!isExpanded ? "Become a Scholar" : ""}
+              className={`flex items-center py-2.5 rounded-lg text-purple-700 bg-purple-50 hover:bg-purple-100 transition-all duration-200 mb-2 ${isExpanded || isMobileMenuOpen ? 'w-full px-3 text-sm font-semibold' : 'justify-center w-10 h-10'}`}
+              title={!isExpanded && !isMobileMenuOpen ? "Become a Scholar" : ""}
             >
-              <MdSchool className={`text-xl ${isExpanded ? 'mr-3' : ''}`} /> 
-              {isExpanded && <span className="whitespace-nowrap">Become Scholar</span>}
+              <MdSchool className={`text-lg ${isExpanded || isMobileMenuOpen ? 'mr-3' : ''}`} /> 
+              {(isExpanded || isMobileMenuOpen) && <span className="whitespace-nowrap">Become Scholar</span>}
             </button>
           </BecomeScholarModal>
         )}
         <Link 
           href="/dashboard/settings"
-          className={`flex items-center py-2.5 rounded-lg transition-all duration-200 mb-1 ${isExpanded ? 'px-3 text-sm font-medium w-full' : 'justify-center w-10 h-10 px-0'} ${pathname === "/dashboard/settings" ? "bg-indigo-600/10 text-indigo-400" : "text-slate-400 hover:bg-slate-800 hover:text-slate-200"}`}
-          title={!isExpanded ? "Settings" : ""}
+          onClick={() => setIsMobileMenuOpen(false)}
+          className={`flex items-center py-2.5 rounded-lg transition-all duration-200 mb-1 ${isExpanded || isMobileMenuOpen ? 'px-3 text-sm font-medium w-full' : 'justify-center w-10 h-10 px-0'} ${pathname === "/dashboard/settings" ? "bg-purple-50 text-purple-700 font-semibold" : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"}`}
+          title={!isExpanded && !isMobileMenuOpen ? "Settings" : ""}
         >
-          <MdSettings className={`text-xl ${isExpanded ? 'mr-3' : ''}`} /> 
-          {isExpanded && <span className="whitespace-nowrap">Settings</span>}
+          <MdSettings className={`text-lg ${isExpanded || isMobileMenuOpen ? 'mr-3' : ''}`} /> 
+          {(isExpanded || isMobileMenuOpen) && <span className="whitespace-nowrap">Settings</span>}
         </Link>
         <button
           onClick={() => signOut({ callbackUrl: "/signin" })}
-          className={`flex items-center py-2.5 rounded-lg text-rose-400 hover:bg-rose-500/10 hover:text-rose-300 transition-all duration-200 ${isExpanded ? 'w-full px-3 text-sm font-medium' : 'justify-center w-10 h-10 px-0'}`}
-          title={!isExpanded ? "Logout" : ""}
+          className={`flex items-center py-2.5 rounded-lg text-red-600 hover:bg-red-50 hover:text-red-700 transition-all duration-200 ${isExpanded || isMobileMenuOpen ? 'w-full px-3 text-sm font-medium' : 'justify-center w-10 h-10 px-0'}`}
+          title={!isExpanded && !isMobileMenuOpen ? "Logout" : ""}
         >
-          <MdLogout className={`text-xl ${isExpanded ? 'mr-3' : ''}`} /> 
-          {isExpanded && <span className="whitespace-nowrap">Logout</span>}
+          <MdLogout className={`text-lg ${isExpanded || isMobileMenuOpen ? 'mr-3' : ''}`} /> 
+          {(isExpanded || isMobileMenuOpen) && <span className="whitespace-nowrap">Logout</span>}
         </button>
       </div>
     </div>
+    </>
   );
 }
 

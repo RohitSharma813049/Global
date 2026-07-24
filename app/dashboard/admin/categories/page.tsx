@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { getCategories, createCategory, updateCategory, deleteCategory, getContentTypes } from '@/app/actions/taxonomy'
 import { MdEdit, MdDelete, MdGridView, MdViewList, MdSearch } from 'react-icons/md'
 import toast from 'react-hot-toast'
+import ImageUpload from '@/components/image-upload'
 
 interface Category {
   id: string
@@ -11,6 +12,7 @@ interface Category {
   slug: string
   parent_id: string | null
   content_types?: string[]
+  image_url?: string | null
 }
 
 interface ContentType {
@@ -31,7 +33,7 @@ export default function CategoriesAdminPage() {
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list')
   const [searchQuery, setSearchQuery] = useState('')
 
-  const [formData, setFormData] = useState({ name: '', slug: '', parent_id: '', content_types: [] as string[] })
+  const [formData, setFormData] = useState({ name: '', slug: '', parent_id: '', content_types: [] as string[], image_url: '' })
   const [isCustomSlug, setIsCustomSlug] = useState(false)
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -74,13 +76,13 @@ export default function CategoriesAdminPage() {
 
     try {
       if (isEditing) {
-        await updateCategory(isEditing, formData.name, formData.slug, finalParentId, formData.content_types)
+        await updateCategory(isEditing, formData.name, formData.slug, finalParentId, formData.content_types, formData.image_url)
         toast.success("Category updated!")
       } else {
-        await createCategory(formData.name, formData.slug, finalParentId, formData.content_types)
+        await createCategory(formData.name, formData.slug, finalParentId, formData.content_types, formData.image_url)
         toast.success("Category created!")
       }
-      setFormData({ name: '', slug: '', parent_id: '', content_types: [] })
+      setFormData({ name: '', slug: '', parent_id: '', content_types: [], image_url: '' })
       setIsEditing(null)
       setIsCustomSlug(false)
       fetchCategories()
@@ -103,7 +105,7 @@ export default function CategoriesAdminPage() {
   const handleEdit = (cat: Category) => {
     setIsEditing(cat.id)
     setCategoryType(cat.parent_id ? 'sub' : 'parent')
-    setFormData({ name: cat.name, slug: cat.slug, parent_id: cat.parent_id || '', content_types: cat.content_types || [] })
+    setFormData({ name: cat.name, slug: cat.slug, parent_id: cat.parent_id || '', content_types: cat.content_types || [], image_url: cat.image_url || '' })
     setIsCustomSlug(true)
   }
 
@@ -237,12 +239,20 @@ export default function CategoriesAdminPage() {
               <p className="text-xs text-gray-500 mt-1">Hold Ctrl/Cmd to select multiple. These types will be available when scholars upload to this category.</p>
             </div>
             
+            <div className="mt-2">
+              <ImageUpload 
+                label="Background Image (Optional)"
+                value={formData.image_url} 
+                onChange={(url) => setFormData({ ...formData, image_url: url })}
+              />
+            </div>
+            
             <div className="flex gap-2 pt-2">
               <button type="submit" className="flex-1 bg-indigo-600 text-white py-2 rounded font-medium hover:bg-indigo-700 transition-colors">
                 {isEditing ? 'Save Changes' : (categoryType === 'parent' ? 'Create Parent Category' : 'Create Sub Category')}
               </button>
               {isEditing && (
-                <button type="button" onClick={() => { setIsEditing(null); setFormData({ name: '', slug: '', parent_id: '', content_types: [] }); setIsCustomSlug(false); }} className="flex-1 bg-gray-200 text-gray-800 py-2 rounded font-medium hover:bg-gray-300 transition-colors">
+                <button type="button" onClick={() => { setIsEditing(null); setFormData({ name: '', slug: '', parent_id: '', content_types: [], image_url: '' }); setIsCustomSlug(false); }} className="flex-1 bg-gray-200 text-gray-800 py-2 rounded font-medium hover:bg-gray-300 transition-colors">
                   Cancel
                 </button>
               )}

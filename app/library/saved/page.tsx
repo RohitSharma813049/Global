@@ -73,7 +73,7 @@ export default function SavedPapersPage() {
             <p className="text-gray-500 mb-8 max-w-md mx-auto">
               When you find an interesting paper while exploring, click the "Save to Library" button to bookmark it here for later reading.
             </p>
-            <Link href="/search" className="inline-flex items-center px-8 py-4 text-base font-bold rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 transition-all shadow-md hover:-translate-y-0.5">
+            <Link href="/explore" className="inline-flex items-center px-8 py-4 text-base font-bold rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 transition-all shadow-md hover:-translate-y-0.5">
               <Search className="w-5 h-5 mr-2" /> Explore Research
             </Link>
           </div>

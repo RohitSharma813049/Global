@@ -51,6 +51,12 @@ interface Props {
 }
 
 export default function GSPDistinguishedScholars({ scholar, videos = [], publications = [], allScholars = [], isOwner = false }: Props) {
+  const [activeTab, setActiveTab] = useState('All');
+
+  const uniqueTags = Array.from(new Set(publications.map(p => p.tag))).sort();
+  const filterTabs = ['All', ...uniqueTags];
+
+  const filteredPublications = activeTab === 'All' ? publications : publications.filter(p => p.tag === activeTab);
   if (!scholar) return null;
 
   return (
@@ -185,13 +191,26 @@ export default function GSPDistinguishedScholars({ scholar, videos = [], publica
         {/* Publications List */}
         {publications.length > 0 && (
           <div className="bg-white p-8 md:p-10 rounded-2xl border border-[#ECEAF4] shadow-sm">
-            <div className="text-[9.5px] font-bold tracking-[0.18em] uppercase text-gray-400 flex items-center gap-2 mb-6 pb-2 border-b border-[#ECEAF4]">
-              <span className="w-[18px] h-[2px] bg-[#2F115D] rounded-[1px] block"></span>
-              Published Works
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-2 border-b border-[#ECEAF4]">
+              <div className="text-[9.5px] font-bold tracking-[0.18em] uppercase text-gray-400 flex items-center gap-2">
+                <span className="w-[18px] h-[2px] bg-[#2F115D] rounded-[1px] block"></span>
+                Published Works
+              </div>
+              <div className="flex gap-2 flex-wrap">
+                {filterTabs.map(tab => (
+                  <button 
+                    key={tab}
+                    onClick={() => setActiveTab(tab)}
+                    className={`px-3 py-1.5 text-xs font-semibold rounded-full border transition-colors ${activeTab === tab ? 'bg-[#2F115D] text-white border-[#2F115D]' : 'bg-white text-gray-600 border-[#ECEAF4] hover:border-gray-300'}`}
+                  >
+                    {tab}
+                  </button>
+                ))}
+              </div>
             </div>
             <div className="flex flex-col gap-6">
-              {publications.map((pub, i) => (
-                <Link key={i} href={`/publications/${pub.id}`} className="group flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 bg-[#F8F7FC] rounded-xl border border-[#ECEAF4] hover:border-[#2F115D] transition-colors">
+              {filteredPublications.map((pub, i) => (
+                <Link key={i} href={pub.url || `/publications/${pub.id}`} className="group flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 bg-[#F8F7FC] rounded-xl border border-[#ECEAF4] hover:border-[#2F115D] transition-colors">
                   <div className="flex-1">
                     <h3 className="font-['Cormorant_Garamond'] text-xl font-bold text-[#0A0A0A] mb-2 group-hover:text-[#2F115D] transition-colors leading-tight">
                       {pub.title}

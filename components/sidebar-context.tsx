@@ -7,6 +7,8 @@ interface SidebarContextType {
   isHovered: boolean;
   setIsHovered: (val: boolean) => void;
   isExpanded: boolean;
+  isMobileMenuOpen: boolean;
+  setIsMobileMenuOpen: (val: boolean) => void;
 }
 
 const SidebarContext = createContext<SidebarContextType | undefined>(undefined);
@@ -14,6 +16,7 @@ const SidebarContext = createContext<SidebarContextType | undefined>(undefined);
 export function SidebarProvider({ children }: { children: React.ReactNode }) {
   const [isPinned, setIsPinned] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // The sidebar is visually expanded if it's either pinned OR hovered over.
   const isExpanded = isPinned || isHovered;
@@ -26,6 +29,8 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
         isHovered,
         setIsHovered,
         isExpanded,
+        isMobileMenuOpen,
+        setIsMobileMenuOpen,
       }}
     >
       {children}

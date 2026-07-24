@@ -83,68 +83,92 @@ export async function uploadPublication(formData: FormData) {
     let fileUrl = ''
     let localFilePath: string | null = null;
     if (file && file.size > 0) {
-      const fileExt = file.name.split('.').pop()
-      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
-      
-      const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'publications', contentType)
-      await require('fs/promises').mkdir(uploadDir, { recursive: true })
-      localFilePath = path.join(uploadDir, fileName)
       const buffer = Buffer.from(await file.arrayBuffer())
-      await require('fs/promises').writeFile(localFilePath, buffer)
-      fileUrl = `/uploads/publications/${contentType}/${fileName}`
+      try {
+        const { uploadFileToR2 } = await import('@/lib/r2');
+        fileUrl = await uploadFileToR2(buffer, file.name, `publications/${contentType}`, file.type);
+      } catch (err) {
+        console.error("R2 Upload failed, falling back to local", err);
+        const fileExt = file.name.split('.').pop()
+        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
+        
+        const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'publications', contentType)
+        await require('fs/promises').mkdir(uploadDir, { recursive: true })
+        localFilePath = path.join(uploadDir, fileName)
+        await require('fs/promises').writeFile(localFilePath, buffer)
+        fileUrl = `/uploads/publications/${contentType}/${fileName}`
+      }
     }
 
     let videoUrl = null;
     if (videoFile && videoFile.size > 0) {
-      const vidExt = videoFile.name.split('.').pop()
-      const vidName = `video-${Date.now()}-${Math.random().toString(36).substring(7)}.${vidExt}`
-      const vidPath = path.join(process.cwd(), 'public', 'uploads', 'videos')
-      await require('fs/promises').mkdir(vidPath, { recursive: true })
       const buffer = Buffer.from(await videoFile.arrayBuffer())
-      await require('fs/promises').writeFile(path.join(vidPath, vidName), buffer)
-      videoUrl = `/uploads/videos/${vidName}`
-      
-      // If no other file was uploaded, make the video URL the main file_url
-      if (!fileUrl) {
-        fileUrl = videoUrl;
+      try {
+        const { uploadFileToR2 } = await import('@/lib/r2');
+        videoUrl = await uploadFileToR2(buffer, videoFile.name, 'videos', videoFile.type);
+        if (!fileUrl) fileUrl = videoUrl;
+      } catch (err) {
+        const vidExt = videoFile.name.split('.').pop()
+        const vidName = `video-${Date.now()}-${Math.random().toString(36).substring(7)}.${vidExt}`
+        const vidPath = path.join(process.cwd(), 'public', 'uploads', 'videos')
+        await require('fs/promises').mkdir(vidPath, { recursive: true })
+        await require('fs/promises').writeFile(path.join(vidPath, vidName), buffer)
+        videoUrl = `/uploads/videos/${vidName}`
+        if (!fileUrl) fileUrl = videoUrl;
       }
     }
 
     // Handle Cover Image
     let coverImageUrl = null;
     if (coverImage && coverImage.size > 0) {
-      const imgExt = coverImage.name.split('.').pop();
-      const imgName = `cover-${Date.now()}-${Math.random().toString(36).substring(7)}.${imgExt}`;
-      const imgPath = path.join(process.cwd(), 'public', 'uploads', 'images');
-      await require('fs/promises').mkdir(imgPath, { recursive: true });
       const buffer = Buffer.from(await coverImage.arrayBuffer())
-      await require('fs/promises').writeFile(path.join(imgPath, imgName), buffer)
-      coverImageUrl = `/uploads/images/${imgName}`;
+      try {
+        const { uploadFileToR2 } = await import('@/lib/r2');
+        coverImageUrl = await uploadFileToR2(buffer, coverImage.name, 'images', coverImage.type);
+      } catch (err) {
+        const imgExt = coverImage.name.split('.').pop();
+        const imgName = `cover-${Date.now()}-${Math.random().toString(36).substring(7)}.${imgExt}`;
+        const imgPath = path.join(process.cwd(), 'public', 'uploads', 'images');
+        await require('fs/promises').mkdir(imgPath, { recursive: true });
+        await require('fs/promises').writeFile(path.join(imgPath, imgName), buffer)
+        coverImageUrl = `/uploads/images/${imgName}`;
+      }
     }
 
     // Handle Banner Image
     let bannerImageUrl = null;
     if (bannerImage && bannerImage.size > 0) {
-      const imgExt = bannerImage.name.split('.').pop();
-      const imgName = `banner-${Date.now()}-${Math.random().toString(36).substring(7)}.${imgExt}`;
-      const imgPath = path.join(process.cwd(), 'public', 'uploads', 'images');
-      await require('fs/promises').mkdir(imgPath, { recursive: true });
       const buffer = Buffer.from(await bannerImage.arrayBuffer())
-      await require('fs/promises').writeFile(path.join(imgPath, imgName), buffer)
-      bannerImageUrl = `/uploads/images/${imgName}`;
+      try {
+        const { uploadFileToR2 } = await import('@/lib/r2');
+        bannerImageUrl = await uploadFileToR2(buffer, bannerImage.name, 'images', bannerImage.type);
+      } catch (err) {
+        const imgExt = bannerImage.name.split('.').pop();
+        const imgName = `banner-${Date.now()}-${Math.random().toString(36).substring(7)}.${imgExt}`;
+        const imgPath = path.join(process.cwd(), 'public', 'uploads', 'images');
+        await require('fs/promises').mkdir(imgPath, { recursive: true });
+        await require('fs/promises').writeFile(path.join(imgPath, imgName), buffer)
+        bannerImageUrl = `/uploads/images/${imgName}`;
+      }
     }
 
     // Handle Gallery Images
     const galleryImageUrls: string[] = [];
     for (const gImg of galleryImages) {
       if (gImg && gImg.size > 0) {
-        const imgExt = gImg.name.split('.').pop();
-        const imgName = `gallery-${Date.now()}-${Math.random().toString(36).substring(7)}.${imgExt}`;
-        const imgPath = path.join(process.cwd(), 'public', 'uploads', 'images');
-        await require('fs/promises').mkdir(imgPath, { recursive: true });
         const buffer = Buffer.from(await gImg.arrayBuffer())
-        await require('fs/promises').writeFile(path.join(imgPath, imgName), buffer)
-        galleryImageUrls.push(`/uploads/images/${imgName}`);
+        try {
+          const { uploadFileToR2 } = await import('@/lib/r2');
+          const url = await uploadFileToR2(buffer, gImg.name, 'images', gImg.type);
+          galleryImageUrls.push(url);
+        } catch (err) {
+          const imgExt = gImg.name.split('.').pop();
+          const imgName = `gallery-${Date.now()}-${Math.random().toString(36).substring(7)}.${imgExt}`;
+          const imgPath = path.join(process.cwd(), 'public', 'uploads', 'images');
+          await require('fs/promises').mkdir(imgPath, { recursive: true });
+          await require('fs/promises').writeFile(path.join(imgPath, imgName), buffer)
+          galleryImageUrls.push(`/uploads/images/${imgName}`);
+        }
       }
     }
 
@@ -152,13 +176,19 @@ export async function uploadPublication(formData: FormData) {
     const galleryVideoUrls: string[] = [];
     for (const gVid of galleryVideos) {
       if (gVid && gVid.size > 0) {
-        const vidExt = gVid.name.split('.').pop();
-        const vidName = `gallery-vid-${Date.now()}-${Math.random().toString(36).substring(7)}.${vidExt}`;
-        const vidPath = path.join(process.cwd(), 'public', 'uploads', 'videos');
-        await require('fs/promises').mkdir(vidPath, { recursive: true });
         const buffer = Buffer.from(await gVid.arrayBuffer())
-        await require('fs/promises').writeFile(path.join(vidPath, vidName), buffer)
-        galleryVideoUrls.push(`/uploads/videos/${vidName}`);
+        try {
+          const { uploadFileToR2 } = await import('@/lib/r2');
+          const url = await uploadFileToR2(buffer, gVid.name, 'videos', gVid.type);
+          galleryVideoUrls.push(url);
+        } catch (err) {
+          const vidExt = gVid.name.split('.').pop();
+          const vidName = `gallery-vid-${Date.now()}-${Math.random().toString(36).substring(7)}.${vidExt}`;
+          const vidPath = path.join(process.cwd(), 'public', 'uploads', 'videos');
+          await require('fs/promises').mkdir(vidPath, { recursive: true });
+          await require('fs/promises').writeFile(path.join(vidPath, vidName), buffer)
+          galleryVideoUrls.push(`/uploads/videos/${vidName}`);
+        }
       }
     }
 

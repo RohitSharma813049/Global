@@ -1,4 +1,5 @@
 import GSPDistinguishedScholars from "@/components/scholars/GSPDistinguishedScholars"
+import Header from "@/components/layout/header"
 import { notFound } from "next/navigation"
 import Footer from "@/components/layout/footer"
 import { getServerSession } from "next-auth"
@@ -36,21 +37,40 @@ export default async function ScholarProfilePage({ params }: Props) {
     return notFound()
   }
 
-  // Fetch publications using Prisma
-  const rawPublications = await prisma.publications.findMany({
-    where: {
-      scholar_id: scholar.id
-    }
-  });
+  const [rawPublications, rawBlogs] = await Promise.all([
+    prisma.publications.findMany({
+      where: { scholar_id: scholar.id }
+    }),
+    scholar.user_id ? prisma.blogs.findMany({
+      where: { author_id: scholar.user_id, status: 'published' }
+    }) : []
+  ]);
 
   const publications = rawPublications.map((p: any) => ({
     id: p.id,
     scholar_id: p.scholar_id,
     title: p.title,
     metadata: p.abstract || '',
-    tag: p.content_type || 'article',
+    tag: p.content_type || 'Article',
     url: p.file_url || `/publications/${p.id}`,
-  }))
+    date: p.created_at
+  }));
+
+  const blogs = rawBlogs.map((b: any) => ({
+    id: b.id,
+    scholar_id: scholar.id,
+    title: b.title,
+    metadata: 'Blog Post',
+    tag: 'Blog',
+    url: `/blog/${b.slug}`,
+    date: b.created_at
+  }));
+
+  const allWorks = [...publications, ...blogs].sort((a, b) => {
+    const timeB = b.date ? new Date(b.date).getTime() : 0;
+    const timeA = a.date ? new Date(a.date).getTime() : 0;
+    return timeB - timeA;
+  });
 
   const isOwner = session?.user?.id === scholar.user_id || session?.user?.role === 'admin';
 
@@ -87,11 +107,12 @@ export default async function ScholarProfilePage({ params }: Props) {
 
   return (
     <>
-      <main className="min-h-screen bg-gray-50">
+      <Header />
+      <main className="min-h-screen bg-gray-50 pt-24">
         <GSPDistinguishedScholars 
           scholar={formattedScholar}
           videos={videos}
-          publications={publications || []}
+          publications={allWorks}
           isOwner={isOwner}
         />
       </main>

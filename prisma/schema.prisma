@@ -454,6 +454,8 @@ model users {
   notifications               notifications[]
   reading_history             reading_history[]
   blogs                       blogs[]
+  audit_logs                  audit_logs[]
+  platform_settings           platform_settings[]
 
   @@index([created_at(sort: Desc)], map: "idx_users_created_at_desc")
   @@index([email], map: "idx_users_email")
@@ -500,13 +502,14 @@ model webauthn_credentials {
 }
 
 model categories {
-  id           String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name         String
-  slug         String
-  parent_id    String?        @db.Uuid
-  content_types String[]      @default([])
-  created_at   DateTime?      @default(now()) @db.Timestamptz(6)
-  
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name          String
+  slug          String
+  parent_id     String?   @db.Uuid
+  content_types String[]  @default([])
+  image_url     String?
+  created_at    DateTime? @default(now()) @db.Timestamptz(6)
+
   parent       categories?    @relation("CategoryToCategory", fields: [parent_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   children     categories[]   @relation("CategoryToCategory")
   publications publications[]
@@ -536,34 +539,34 @@ model profiles {
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model publications {
-  id           String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  scholar_id   String?     @db.Uuid
-  category_id     String?     @db.Uuid
-  subcategory_ids String[]    @default([])
-  title           String
-  abstract     String
-  content_type String
-  file_url     String
-  cover_image  String?
-  banner_image String?
-  gallery_images String[] @default([])
-  gallery_videos String[] @default([])
-  doi          String?
-  video_url    String?
-  author_name  String?
-  institution  String?
-  email_address String?
-  originality_declaration Boolean? @default(false)
-  copyright_declaration Boolean? @default(false)
-  terms_acceptance Boolean? @default(false)
-  status       String?     @default("draft")
-  views        Int?        @default(0)
-  downloads    Int?        @default(0)
-  created_at   DateTime?   @default(now()) @db.Timestamptz(6)
-  deleted_at   DateTime?   @db.Timestamptz(6)
-  scholars     scholars?   @relation(fields: [scholar_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  categories   categories? @relation(fields: [category_id], references: [id], onDelete: SetNull, onUpdate: NoAction)
-  reading_history reading_history[]
+  id                      String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  scholar_id              String?           @db.Uuid
+  category_id             String?           @db.Uuid
+  subcategory_ids         String[]          @default([])
+  title                   String
+  abstract                String
+  content_type            String
+  file_url                String
+  cover_image             String?
+  banner_image            String?
+  gallery_images          String[]          @default([])
+  gallery_videos          String[]          @default([])
+  doi                     String?
+  video_url               String?
+  author_name             String?
+  institution             String?
+  email_address           String?
+  originality_declaration Boolean?          @default(false)
+  copyright_declaration   Boolean?          @default(false)
+  terms_acceptance        Boolean?          @default(false)
+  status                  String?           @default("draft")
+  views                   Int?              @default(0)
+  downloads               Int?              @default(0)
+  created_at              DateTime?         @default(now()) @db.Timestamptz(6)
+  deleted_at              DateTime?         @db.Timestamptz(6)
+  scholars                scholars?         @relation(fields: [scholar_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  categories              categories?       @relation(fields: [category_id], references: [id], onDelete: SetNull, onUpdate: NoAction)
+  reading_history         reading_history[]
 
   @@schema("public")
 }
@@ -695,13 +698,13 @@ model notifications {
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model reading_history {
-  id             String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  user_id        String       @db.Uuid
-  publication_id String       @db.Uuid
-  last_read_at   DateTime?    @default(now()) @db.Timestamptz(6)
-  
-  users          users        @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  publications   publications @relation(fields: [publication_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id        String    @db.Uuid
+  publication_id String    @db.Uuid
+  last_read_at   DateTime? @default(now()) @db.Timestamptz(6)
+
+  users        users        @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  publications publications @relation(fields: [publication_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@unique([user_id, publication_id])
   @@schema("public")
@@ -748,14 +751,42 @@ model news {
 }
 
 model testimonials {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  quote       String
+  author      String
+  role        String
+  rating      Int       @default(5)
+  image       String?
+  is_featured Boolean   @default(true)
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
+
+  @@schema("public")
+}
+
+model audit_logs {
   id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  quote      String
-  author     String
-  role       String
-  rating     Int       @default(5)
-  image      String?
-  is_featured Boolean  @default(true)
+  user_id    String?   @db.Uuid
+  action     String
+  entity     String?
+  entity_id  String?
+  details    Json?
+  ip_address String?
   created_at DateTime? @default(now()) @db.Timestamptz(6)
+
+  users users? @relation(fields: [user_id], references: [id], onDelete: SetNull, onUpdate: NoAction)
+
+  @@schema("public")
+}
+
+model platform_settings {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  key         String    @unique
+  value       Json
+  description String?
+  updated_at  DateTime? @default(now()) @db.Timestamptz(6)
+  updated_by  String?   @db.Uuid
+
+  users users? @relation(fields: [updated_by], references: [id], onDelete: SetNull, onUpdate: NoAction)
 
   @@schema("public")
 }

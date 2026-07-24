@@ -67,7 +67,7 @@ export default function ImageUpload({ value, onChange, label = 'Image URL' }: Im
       <div className="flex gap-2 items-center flex-wrap">
         <input aria-label="Input field" 
           type="text" 
-          value={value} 
+          value={value || ''} 
           onChange={(e) => onChange(e.target.value)} 
           className="flex-1 min-w-[200px] border border-gray-300 rounded-lg p-2 text-sm"
           placeholder="https://example.com/image.jpg"

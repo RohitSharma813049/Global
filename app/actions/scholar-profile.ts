@@ -30,13 +30,19 @@ export async function updateScholarProfile(formData: FormData) {
     const videoFile = formData.get('video_file') as File | null
     let videoUrl = undefined;
     if (videoFile && videoFile.size > 0) {
-      const vidExt = videoFile.name.split('.').pop()
-      const vidName = `scholar-video-${Date.now()}-${Math.random().toString(36).substring(7)}.${vidExt}`
-      const vidPath = path.join(process.cwd(), 'public', 'uploads', 'videos')
-      await require('fs/promises').mkdir(vidPath, { recursive: true })
       const buffer = Buffer.from(await videoFile.arrayBuffer())
-      await require('fs/promises').writeFile(path.join(vidPath, vidName), buffer)
-      videoUrl = `/uploads/videos/${vidName}`
+      try {
+        const { uploadFileToR2 } = await import('@/lib/r2');
+        videoUrl = await uploadFileToR2(buffer, videoFile.name, 'videos', videoFile.type);
+      } catch (err) {
+        console.error("R2 Upload failed, falling back to local", err);
+        const vidExt = videoFile.name.split('.').pop()
+        const vidName = `scholar-video-${Date.now()}-${Math.random().toString(36).substring(7)}.${vidExt}`
+        const vidPath = path.join(process.cwd(), 'public', 'uploads', 'videos')
+        await require('fs/promises').mkdir(vidPath, { recursive: true })
+        await require('fs/promises').writeFile(path.join(vidPath, vidName), buffer)
+        videoUrl = `/uploads/videos/${vidName}`
+      }
     }
 
     // Handle Gallery Images
@@ -45,13 +51,19 @@ export async function updateScholarProfile(formData: FormData) {
     if (galleryImages && galleryImages.length > 0 && galleryImages[0].size > 0) {
       for (const gImg of galleryImages) {
         if (gImg && gImg.size > 0) {
-          const imgExt = gImg.name.split('.').pop();
-          const imgName = `scholar-gallery-${Date.now()}-${Math.random().toString(36).substring(7)}.${imgExt}`;
-          const imgPath = path.join(process.cwd(), 'public', 'uploads', 'images');
-          await require('fs/promises').mkdir(imgPath, { recursive: true });
           const buffer = Buffer.from(await gImg.arrayBuffer())
-          await require('fs/promises').writeFile(path.join(imgPath, imgName), buffer)
-          galleryImageUrls.push(`/uploads/images/${imgName}`);
+          try {
+            const { uploadFileToR2 } = await import('@/lib/r2');
+            const imgUrl = await uploadFileToR2(buffer, gImg.name, 'images', gImg.type);
+            galleryImageUrls.push(imgUrl);
+          } catch (err) {
+            const imgExt = gImg.name.split('.').pop();
+            const imgName = `scholar-gallery-${Date.now()}-${Math.random().toString(36).substring(7)}.${imgExt}`;
+            const imgPath = path.join(process.cwd(), 'public', 'uploads', 'images');
+            await require('fs/promises').mkdir(imgPath, { recursive: true });
+            await require('fs/promises').writeFile(path.join(imgPath, imgName), buffer)
+            galleryImageUrls.push(`/uploads/images/${imgName}`);
+          }
         }
       }
     }
@@ -62,13 +74,19 @@ export async function updateScholarProfile(formData: FormData) {
     if (galleryVideos && galleryVideos.length > 0 && galleryVideos[0].size > 0) {
       for (const gVid of galleryVideos) {
         if (gVid && gVid.size > 0) {
-          const vidExt = gVid.name.split('.').pop();
-          const vidName = `scholar-gallery-vid-${Date.now()}-${Math.random().toString(36).substring(7)}.${vidExt}`;
-          const vidPath = path.join(process.cwd(), 'public', 'uploads', 'videos');
-          await require('fs/promises').mkdir(vidPath, { recursive: true });
           const buffer = Buffer.from(await gVid.arrayBuffer())
-          await require('fs/promises').writeFile(path.join(vidPath, vidName), buffer)
-          galleryVideoUrls.push(`/uploads/videos/${vidName}`);
+          try {
+            const { uploadFileToR2 } = await import('@/lib/r2');
+            const vUrl = await uploadFileToR2(buffer, gVid.name, 'videos', gVid.type);
+            galleryVideoUrls.push(vUrl);
+          } catch (err) {
+            const vidExt = gVid.name.split('.').pop();
+            const vidName = `scholar-gallery-vid-${Date.now()}-${Math.random().toString(36).substring(7)}.${vidExt}`;
+            const vidPath = path.join(process.cwd(), 'public', 'uploads', 'videos');
+            await require('fs/promises').mkdir(vidPath, { recursive: true });
+            await require('fs/promises').writeFile(path.join(vidPath, vidName), buffer)
+            galleryVideoUrls.push(`/uploads/videos/${vidName}`);
+          }
         }
       }
     }

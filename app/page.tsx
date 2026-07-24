@@ -69,6 +69,30 @@ export default async function Page() {
     return timeB - timeA;
   }).slice(0, 8);
 
+  const totalPublications = statsData.articleCount + statsData.ebookCount + statsData.magazineCount + statsData.thesisCount;
+  
+  const dynamicStats = settings.hero_stats.map((stat: any) => {
+    const labelLower = stat.label.toLowerCase();
+    if (labelLower === 'publications' || labelLower === 'publication') {
+      return { ...stat, number: totalPublications.toString() };
+    }
+    if (labelLower === 'researchers' || labelLower === 'scholars' || labelLower === 'researcher' || labelLower === 'scholar') {
+      return { ...stat, number: statsData.scholarsCount.toString() };
+    }
+    return stat;
+  });
+
+  const finalStats = settings.enable_dynamic_hero_stats ? dynamicStats : settings.hero_stats;
+
+  const formattedCategories = dbCategories.slice(0, 12).map((cat: any) => ({
+    id: cat.id,
+    name: cat.name,
+    slug: cat.slug,
+    image: cat.image_url || "/placeholder-user.jpg"
+  }));
+
+  console.log("Rendering homepage with dynamic categories", formattedCategories);
+
   return (
     <main className="w-full">
       {settings.show_home_hero && (
@@ -81,11 +105,10 @@ export default async function Page() {
           searchPlaceholder={settings.hero_search_placeholder}
           searchFilters={settings.hero_search_filters}
           topPill={settings.hero_top_pill}
-          ctaPrimaryText={settings.hero_cta_primary_text}
           ctaSecondaryText={settings.hero_cta_secondary_text}
           trustText={settings.hero_trust_text}
           trustAvatars={settings.hero_trust_avatars}
-          stats={settings.hero_stats}
+          stats={finalStats}
         />
       )}
 
@@ -104,7 +127,7 @@ export default async function Page() {
           <GspSubjectCategories 
             title={settings.subject_categories_gsp_title} 
             subtitle={settings.subject_categories_gsp_subtitle} 
-            categories={dbCategories}
+            categories={settings.enable_dynamic_subject_categories ? formattedCategories : settings.subject_categories}
             autoplay={settings.enable_carousel_autoplay}
           />
         </ScrollAnimation>

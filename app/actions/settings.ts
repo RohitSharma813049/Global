@@ -152,17 +152,23 @@ export async function uploadVideoFile(formData: FormData) {
     if (file.size > 100 * 1024 * 1024) throw new Error("File too large (max 100MB)")
 
     const ext = file.name.split(".").pop()
-    const fileName = `scholar-video-${Date.now()}-${Math.random().toString(36).substring(7)}.${ext}`
-    const dirPath = path.join(process.cwd(), "public", "uploads", "videos")
-    
-    await mkdir(dirPath, { recursive: true })
-    
-    const filePath = path.join(dirPath, fileName)
-    
     const buffer = Buffer.from(await file.arrayBuffer())
-    await require('fs/promises').writeFile(filePath, buffer)
+    
+    try {
+      const { uploadFileToR2 } = await import('@/lib/r2');
+      const url = await uploadFileToR2(buffer, file.name, 'videos', file.type);
+      return { success: true, url };
+    } catch (err) {
+      console.error("R2 Upload failed, falling back to local", err);
+      const fileName = `scholar-video-${Date.now()}-${Math.random().toString(36).substring(7)}.${ext}`
+      const dirPath = path.join(process.cwd(), "public", "uploads", "videos")
+      
+      await mkdir(dirPath, { recursive: true })
+      const filePath = path.join(dirPath, fileName)
+      await require('fs/promises').writeFile(filePath, buffer)
 
-    return { success: true, url: `/uploads/videos/${fileName}` }
+      return { success: true, url: `/uploads/videos/${fileName}` }
+    }
   } catch (error: any) {
     console.error("Video upload error:", error)
     return { error: error.message || "Upload failed" }
@@ -180,17 +186,23 @@ export async function uploadImageFile(formData: FormData) {
     if (file.size > 10 * 1024 * 1024) throw new Error("File too large (max 10MB)")
 
     const ext = file.name.split(".").pop()
-    const fileName = `scholar-gallery-${Date.now()}-${Math.random().toString(36).substring(7)}.${ext}`
-    const dirPath = path.join(process.cwd(), "public", "uploads", "images")
-    
-    await mkdir(dirPath, { recursive: true })
-    
-    const filePath = path.join(dirPath, fileName)
-    
     const buffer = Buffer.from(await file.arrayBuffer())
-    await require('fs/promises').writeFile(filePath, buffer)
+    
+    try {
+      const { uploadFileToR2 } = await import('@/lib/r2');
+      const url = await uploadFileToR2(buffer, file.name, 'images', file.type);
+      return { success: true, url };
+    } catch (err) {
+      console.error("R2 Upload failed, falling back to local", err);
+      const fileName = `scholar-gallery-${Date.now()}-${Math.random().toString(36).substring(7)}.${ext}`
+      const dirPath = path.join(process.cwd(), "public", "uploads", "images")
+      
+      await mkdir(dirPath, { recursive: true })
+      const filePath = path.join(dirPath, fileName)
+      await require('fs/promises').writeFile(filePath, buffer)
 
-    return { success: true, url: `/uploads/images/${fileName}` }
+      return { success: true, url: `/uploads/images/${fileName}` }
+    }
   } catch (error: any) {
     console.error("Image upload error:", error)
     return { error: error.message || "Upload failed" }

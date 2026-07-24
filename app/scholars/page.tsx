@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db"
+import Header from "@/components/layout/header"
 import Footer from "@/components/layout/footer"
 import Link from "next/link"
 import Image from "next/image"
@@ -42,6 +43,7 @@ export default async function ScholarsListingPage({
 
   return (
     <>
+      <Header />
       <main className="min-h-screen bg-gray-50 pt-28 pb-16 px-4 md:px-12">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
@@ -97,7 +99,7 @@ export default async function ScholarsListingPage({
                           {name}
                         </h3>
                         {scholar.username && (
-                          <p className="text-sm font-semibold text-indigo-600">@{scholar.username}</p>
+                          <p className="text-sm font-semibold text-[#2F115D]">@{scholar.username}</p>
                         )}
                       </div>
                     </div>

@@ -56,7 +56,7 @@ export default async function ScholarDashboard() {
             </h2>
             <p className="text-gray-500 mb-6">Fill out our scholar application form to get verified.</p>
             <BecomeScholarModal initialData={applicationState}>
-              <button className="px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-colors">
+              <button className="px-6 py-3 bg-[#2F115D] text-white font-semibold rounded-lg hover:bg-[#3d167a] transition-colors">
                 {applicationState?.status === 'rejected' ? 'Resubmit Application' : 'Open Application Form'}
               </button>
             </BecomeScholarModal>
@@ -101,21 +101,21 @@ export default async function ScholarDashboard() {
   }
 
   return (
-    <div className="p-6 max-w-4xl mx-auto space-y-8">
+    <div className="p-6 max-w-4xl mx-auto space-y-8 animate-fade-in-up">
       <div>
-        <h1 className="text-3xl font-bold mb-2">Scholar Dashboard</h1>
-        <p className="text-gray-600">Manage your public profile, qualifications, and track your metrics.</p>
+        <h1 className="text-3xl font-bold mb-2">Scholar Profile</h1>
+        <p className="text-gray-600">Manage your public profile information, qualifications, and biography.</p>
       </div>
 
       {/* Metrics Row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center justify-center">
           <span className="text-sm font-medium text-gray-500 uppercase">Total Views</span>
-          <span className="text-4xl font-bold text-emerald-600 mt-2">{scholar.total_views}</span>
+          <span className="text-4xl font-bold text-[#2F115D] mt-2">{scholar.total_views}</span>
         </div>
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center justify-center">
           <span className="text-sm font-medium text-gray-500 uppercase">Total Downloads</span>
-          <span className="text-4xl font-bold text-blue-600 mt-2">{scholar.total_downloads}</span>
+          <span className="text-4xl font-bold text-purple-600 mt-2">{scholar.total_downloads}</span>
         </div>
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center justify-center">
           <span className="text-sm font-medium text-gray-500 uppercase">Status</span>
@@ -123,19 +123,6 @@ export default async function ScholarDashboard() {
             {scholar.verified ? 'Verified Scholar' : 'Pending Verification'}
           </span>
         </div>
-      </div>
-
-      {/* Quick Actions */}
-      <div className="flex justify-end space-x-4">
-        <a 
-          href="/dashboard/scholar/upload" 
-          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
-        >
-          <svg className="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-            <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
-          </svg>
-          Upload Publication
-        </a>
       </div>
 
       {/* Profile Edit Form */}

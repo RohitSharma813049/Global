@@ -39,6 +39,7 @@ export const getHomepageSettings = unstable_cache(
         { number: '25K+', label: 'Researchers' },
         { number: '80+', label: 'Countries' }
       ],
+      enable_dynamic_hero_stats: false,
 
       show_stats_section: true,
       stats_title: 'Trusted by Scholars Worldwide',
@@ -55,6 +56,8 @@ export const getHomepageSettings = unstable_cache(
       show_categories_section: true,
       categories_title: 'Explore by Category',
       categories_subtitle: 'Browse Topics',
+
+      enable_dynamic_subject_categories: false,
 
       show_explore_categories_gsp: true,
       explore_categories_gsp_title: 'Publication <em>Categories</em>',

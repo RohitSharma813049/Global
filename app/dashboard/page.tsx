@@ -8,7 +8,9 @@ import { BecomeScholarModal } from "@/components/become-scholar-modal";
 
 import { getReadingHistory } from "@/app/actions/history";
 import { getAdminStats, getScholarStats } from "@/app/actions/dashboard";
+import { getSuperAdminStats, getPlatformSettings } from "@/app/actions/super-admin";
 import { getScholarProfile } from "@/app/actions/settings";
+import MaintenanceToggle from "./super-admin/MaintenanceToggle";
 import Link from "next/link";
 
 export default function Dashboard() {
@@ -17,6 +19,8 @@ export default function Dashboard() {
   const [applicationState, setApplicationState] = useState<any>(null);
   const [history, setHistory] = useState<any[]>([]);
   const [adminStats, setAdminStats] = useState<any>(null);
+  const [superAdminStats, setSuperAdminStats] = useState<any>(null);
+  const [platformConfig, setPlatformConfig] = useState<any>(null);
   const [scholarStats, setScholarStats] = useState<any>(null);
   const [userProfile, setUserProfile] = useState<any>(null);
 
@@ -46,6 +50,15 @@ export default function Dashboard() {
           if (role === 'admin' || role === 'super_admin') {
             const stats = await getAdminStats();
             setAdminStats((prev: any) => JSON.stringify(prev) !== JSON.stringify(stats) ? stats : prev);
+            
+            if (role === 'super_admin') {
+              const [saStats, settings] = await Promise.all([
+                getSuperAdminStats(),
+                getPlatformSettings()
+              ]);
+              setSuperAdminStats((prev: any) => JSON.stringify(prev) !== JSON.stringify(saStats) ? saStats : prev);
+              setPlatformConfig((prev: any) => JSON.stringify(prev) !== JSON.stringify(settings.config) ? settings.config : prev);
+            }
           } else if (role === 'scholar') {
             const stats = await getScholarStats();
             setScholarStats((prev: any) => JSON.stringify(prev) !== JSON.stringify(stats) ? stats : prev);
@@ -197,67 +210,82 @@ export default function Dashboard() {
   );
 
   const renderScholarDashboard = () => (
-    <div className="space-y-8 animate-fade-in-up">
-      <div className="bg-linear-to-r from-indigo-600 to-purple-700 rounded-2xl p-8 text-white shadow-lg">
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold mb-2">Scholar Dashboard</h1>
-            <p className="text-indigo-100 text-lg">Manage your publications and track your impact.</p>
-          </div>
-          <Link href="/dashboard/scholar/upload">
-            <button className="px-6 py-3 bg-white text-indigo-600 font-bold rounded-xl shadow-md hover:shadow-lg transition-all hover:-translate-y-1 flex items-center">
-              <MdPublish className="mr-2" /> Submit Paper
-            </button>
-          </Link>
+    <div className="space-y-6 animate-fade-in-up">
+      {/* Header Banner */}
+      <div className="bg-[#5c1c9b] rounded-2xl p-8 flex flex-col md:flex-row justify-between items-start md:items-center text-white shadow-md relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-[#2F115D] to-[#6a29ab] opacity-90"></div>
+        <div className="relative z-10 mb-4 md:mb-0">
+          <h1 className="text-3xl font-bold mb-2">Scholar Dashboard</h1>
+          <p className="text-purple-200">Manage your publications and track your impact.</p>
         </div>
+        <Link 
+          href="/dashboard/scholar/upload"
+          className="relative z-10 flex items-center gap-2 bg-white text-[#2F115D] px-6 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors shadow-sm"
+        >
+          <MdPublish className="w-5 h-5" />
+          Submit Paper
+        </Link>
       </div>
 
+      {/* Metrics Row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center">
-          <div className="w-14 h-14 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-2xl mr-4">
-            <MdLibraryBooks />
-          </div>
-          <div>
-            <p className="text-sm text-gray-500 font-semibold uppercase">Published</p>
-            <p className="text-3xl font-extrabold text-gray-900">{scholarStats?.published || 0}</p>
-          </div>
-        </div>
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center">
-          <div className="w-14 h-14 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-2xl mr-4">
-            <MdAnalytics />
-          </div>
-          <div>
-            <p className="text-sm text-gray-500 font-semibold uppercase">Total Views</p>
-            <p className="text-3xl font-extrabold text-gray-900">{scholarStats?.views || 0}</p>
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center text-[#2F115D]">
+              <MdLibraryBooks className="w-6 h-6" />
+            </div>
+            <div>
+              <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">Published</p>
+              <p className="text-3xl font-bold text-gray-900 mt-1">{scholarStats?.published || 0}</p>
+            </div>
           </div>
         </div>
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center">
-          <div className="w-14 h-14 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center text-2xl mr-4">
-            <MdVerified />
+
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-500">
+              <MdAnalytics className="w-6 h-6" />
+            </div>
+            <div>
+              <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">Total Views</p>
+              <p className="text-3xl font-bold text-gray-900 mt-1">{scholarStats?.views || 0}</p>
+            </div>
           </div>
-          <div>
-            <p className="text-sm text-gray-500 font-semibold uppercase">Downloads</p>
-            <p className="text-3xl font-extrabold text-gray-900">{scholarStats?.downloads || 0}</p>
+        </div>
+
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-purple-50 flex items-center justify-center text-[#8e44ad]">
+              <MdVerified className="w-6 h-6" />
+            </div>
+            <div>
+              <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">Downloads</p>
+              <p className="text-3xl font-bold text-gray-900 mt-1">{scholarStats?.downloads || 0}</p>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-        <h2 className="text-xl font-bold text-gray-900 mb-6">Recent Drafts</h2>
-        {scholarStats?.drafts?.length > 0 ? (
-          <div className="space-y-4">
-            {scholarStats.drafts.map((draft: any) => (
-              <div key={draft.id} className="p-4 border rounded-xl flex justify-between items-center">
-                <span className="font-semibold">{draft.title}</span>
-                <Link href={`/dashboard/scholar/upload?id=${draft.id}`} className="text-indigo-600 hover:underline">Edit</Link>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="p-8 text-center bg-gray-50 rounded-xl border border-dashed border-gray-300">
-            <p className="text-gray-500">You don't have any drafts right now.</p>
-          </div>
-        )}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="px-6 py-5 border-b border-gray-100">
+          <h2 className="text-lg font-bold text-gray-900">Recent Drafts</h2>
+        </div>
+        <div className="p-6">
+          {scholarStats?.drafts?.length > 0 ? (
+            <div className="space-y-4">
+              {scholarStats.drafts.map((draft: any) => (
+                <div key={draft.id} className="p-4 border rounded-xl flex justify-between items-center">
+                  <span className="font-semibold">{draft.title}</span>
+                  <Link href={`/dashboard/scholar/upload?id=${draft.id}`} className="text-purple-600 hover:underline">Edit</Link>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="border-2 border-dashed border-gray-200 rounded-xl p-12 flex items-center justify-center text-center">
+              <p className="text-gray-500">You don't have any drafts right now.</p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -265,9 +293,66 @@ export default function Dashboard() {
   const renderAdminDashboard = () => (
     <div className="space-y-8 animate-fade-in-up">
       <div className="bg-linear-to-r from-gray-800 to-gray-900 rounded-2xl p-8 text-white shadow-lg">
-        <h1 className="text-3xl font-bold mb-2">Admin Control Center</h1>
-        <p className="text-gray-300 text-lg">Overview of platform health and moderation queue.</p>
+        <h1 className="text-3xl font-bold mb-2">
+          {role === 'super_admin' ? 'Super Admin Control Center' : 'Admin Control Center'}
+        </h1>
+        <p className="text-gray-300 text-lg">
+          {role === 'super_admin' 
+            ? 'High-level platform metrics, global controls, and moderation queue.' 
+            : 'Overview of platform health and moderation queue.'}
+        </p>
       </div>
+
+      {role === 'super_admin' && platformConfig?.maintenance_mode && (
+        <div className="bg-red-50 border border-red-200 rounded-2xl p-6 flex items-start gap-4 shadow-sm">
+          <MdWarning className="text-3xl text-red-500 shrink-0 mt-1" />
+          <div>
+            <h3 className="text-lg font-bold text-red-800 mb-1">MAINTENANCE MODE ACTIVE</h3>
+            <p className="text-red-700 text-sm">The platform is currently locked down for all regular users. Only Admins and Super Admins can log in.</p>
+          </div>
+        </div>
+      )}
+
+      {role === 'super_admin' && superAdminStats && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center">
+            <div className="w-12 h-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xl mr-4 shrink-0">
+              <MdGroup />
+            </div>
+            <div>
+              <p className="text-xs text-gray-500 font-semibold uppercase">Total Users</p>
+              <p className="text-2xl font-extrabold text-gray-900">{superAdminStats.totalUsers.toLocaleString()}</p>
+            </div>
+          </div>
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center">
+            <div className="w-12 h-12 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center text-xl mr-4 shrink-0">
+              <MdVerified />
+            </div>
+            <div>
+              <p className="text-xs text-gray-500 font-semibold uppercase">Total Scholars</p>
+              <p className="text-2xl font-extrabold text-gray-900">{superAdminStats.totalScholars.toLocaleString()}</p>
+            </div>
+          </div>
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center">
+            <div className="w-12 h-12 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xl mr-4 shrink-0">
+              <MdLibraryBooks />
+            </div>
+            <div>
+              <p className="text-xs text-gray-500 font-semibold uppercase">Publications</p>
+              <p className="text-2xl font-extrabold text-gray-900">{superAdminStats.totalPublications.toLocaleString()}</p>
+            </div>
+          </div>
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center">
+            <div className="w-12 h-12 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-xl mr-4 shrink-0">
+              <MdAnalytics />
+            </div>
+            <div>
+              <p className="text-xs text-gray-500 font-semibold uppercase">Audit Logs</p>
+              <p className="text-2xl font-extrabold text-gray-900">{superAdminStats.totalLogs.toLocaleString()}</p>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
@@ -306,6 +391,22 @@ export default function Dashboard() {
           )}
         </div>
       </div>
+
+      {role === 'super_admin' && (
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+            <div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">Maintenance Mode</h3>
+              <p className="text-gray-500 text-sm">
+                When activated, non-admin users will be unable to access the site and will see a maintenance screen. 
+                Use this during critical database migrations or severe security incidents.
+              </p>
+            </div>
+            
+            <MaintenanceToggle initialState={platformConfig?.maintenance_mode === true} />
+          </div>
+        </div>
+      )}
     </div>
   );
 

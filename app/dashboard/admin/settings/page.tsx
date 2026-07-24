@@ -55,11 +55,13 @@ export default function HomepageSettings() {
     show_featured_scholars_gsp: true,
     show_cta_banner: true,
     enable_carousel_autoplay: true,
+    enable_dynamic_hero_stats: false,
     faq_title: '',
     faq_subtitle: '',
     faqs: [] as { question: string; answer: string }[],
     explore_categories: [] as { title: string; count: string; image: string; link: string }[],
     subject_categories: [] as { id: string; name: string; image: string }[],
+    enable_dynamic_subject_categories: false,
     hero_slides: [] as any[],
     hero_ticker_items: [] as any[],
     hero_search_filters: [] as string[],
@@ -336,22 +338,41 @@ export default function HomepageSettings() {
 
               {/* Stats */}
               <div>
-                <h3 className="font-semibold text-gray-800 mb-4 border-b pb-2">Bottom Stats Bar ({settings.hero_stats?.length || 0} Stats)</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                  {(settings.hero_stats || []).map((stat, index) => (
-                    <div key={index} className="space-y-3 relative border p-3 rounded-lg">
-                      <button type="button" onClick={() => removeHeroStat(index)} className="absolute -top-2 right-2 text-xs text-red-500 hover:text-red-700">Remove</button>
-                      <div>
-                        <label className="block text-xs font-medium text-gray-500 mb-1">Number</label>
-                        <input type="text" value={stat.number || ''} onChange={(e) => handleHeroStatChange(index, 'number', e.target.value)} className="w-full border border-gray-300 rounded-md p-1.5 text-sm" />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-medium text-gray-500 mb-1">Label</label>
-                        <input type="text" value={stat.label || ''} onChange={(e) => handleHeroStatChange(index, 'label', e.target.value)} className="w-full border border-gray-300 rounded-md p-1.5 text-sm" />
-                      </div>
-                    </div>
-                  ))}
+                <div className="flex items-center justify-between border-b pb-2 mb-4">
+                  <h3 className="font-semibold text-gray-800">Bottom Stats Bar ({settings.hero_stats?.length || 0} Stats)</h3>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input 
+                      type="checkbox" 
+                      className="sr-only peer" 
+                      checked={settings.enable_dynamic_hero_stats}
+                      onChange={(e) => setSettings(prev => ({ ...prev, enable_dynamic_hero_stats: e.target.checked }))} 
+                    />
+                    <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600 relative"></div>
+                    <span className="text-sm font-medium text-gray-700">Use Auto Live Stats</span>
+                  </label>
                 </div>
+                
+                {settings.enable_dynamic_hero_stats ? (
+                  <div className="p-4 bg-indigo-50 border border-indigo-100 rounded-lg text-sm text-indigo-700">
+                    <p><strong>Auto Live Stats is ON.</strong> The homepage will automatically count and display the number of Articles, Ebooks, Magazines, and Theses in your database.</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                    {(settings.hero_stats || []).map((stat, index) => (
+                      <div key={index} className="space-y-3 relative border p-3 rounded-lg">
+                        <button type="button" onClick={() => removeHeroStat(index)} className="absolute -top-2 right-2 text-xs text-red-500 hover:text-red-700">Remove</button>
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500 mb-1">Number</label>
+                          <input type="text" value={stat.number || ''} onChange={(e) => handleHeroStatChange(index, 'number', e.target.value)} className="w-full border border-gray-300 rounded-md p-1.5 text-sm" />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500 mb-1">Label</label>
+                          <input type="text" value={stat.label || ''} onChange={(e) => handleHeroStatChange(index, 'label', e.target.value)} className="w-full border border-gray-300 rounded-md p-1.5 text-sm" />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
             </div>
@@ -427,25 +448,52 @@ export default function HomepageSettings() {
                   <input type="text" name="subject_categories_gsp_subtitle" value={settings.subject_categories_gsp_subtitle || ''} onChange={handleChange} className="w-full border border-gray-300 rounded-md p-2 text-sm" />
                 </div>
               </div>
-              {(settings.subject_categories || []).map((cat, index) => (
-                <div key={index} className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm relative">
-                  <button type="button" onClick={() => removeSubjectCategory(index)} className="absolute top-5 right-5 text-sm text-red-500 hover:text-red-700 font-medium">Remove</button>
-                  <h3 className="font-semibold text-gray-800 mb-4 border-b pb-2">Category {index + 1}: {cat.id}</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div>
-                      <label className="block text-xs font-medium text-gray-500 mb-1">Name (HTML allowed)</label>
-                      <input aria-label="Input field" type="text" value={cat.name} onChange={(e) => handleSubjectChange(index, 'name', e.target.value)} className="w-full border border-gray-300 rounded-md p-2 text-sm" />
-                    </div>
-                    <div className="md:col-span-2 mt-2">
-                      <ImageUpload 
-                        label="Background Image"
-                        value={cat.image} 
-                        onChange={(url) => handleSubjectChange(index, 'image', url)}
-                      />
-                    </div>
-                  </div>
+              <div className="flex items-center justify-between mb-6 pb-6 border-b">
+                <div>
+                  <h4 className="font-semibold text-gray-800">Use Auto Live Categories</h4>
+                  <p className="text-sm text-gray-500">Automatically pull Subject Categories and their uploaded images from the database instead of the manual list below.</p>
                 </div>
-              ))}
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input 
+                    type="checkbox" 
+                    className="sr-only peer" 
+                    checked={settings.enable_dynamic_subject_categories || false}
+                    onChange={(e) => setSettings(prev => ({ ...prev, enable_dynamic_subject_categories: e.target.checked }))} 
+                  />
+                  <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600 relative"></div>
+                </label>
+              </div>
+
+              {settings.enable_dynamic_subject_categories ? (
+                <div className="p-4 bg-indigo-50 border border-indigo-100 rounded-lg text-sm text-indigo-700">
+                  <p><strong>Auto Live Categories is ON.</strong> The homepage will automatically pull the top categories and their uploaded background images directly from your Categories database.</p>
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  {(settings.subject_categories || []).map((cat, index) => (
+                    <div key={index} className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm relative">
+                      <button type="button" onClick={() => removeSubjectCategory(index)} className="absolute top-5 right-5 text-sm text-red-500 hover:text-red-700 font-medium">Remove</button>
+                      <h3 className="font-semibold text-gray-800 mb-4 border-b pb-2">Category {index + 1}: {cat.id}</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500 mb-1">Name (HTML allowed)</label>
+                          <input aria-label="Input field" type="text" value={cat.name || ''} onChange={(e) => handleSubjectChange(index, 'name', e.target.value)} className="w-full border border-gray-300 rounded-md p-2 text-sm" />
+                        </div>
+                        <div className="md:col-span-2 mt-2">
+                          <ImageUpload 
+                            label="Background Image"
+                            value={cat.image || ''} 
+                            onChange={(url) => handleSubjectChange(index, 'image', url)}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  <button type="button" onClick={addSubjectCategory} className="w-full py-3 border-2 border-dashed border-gray-300 rounded-xl text-gray-600 font-medium hover:border-indigo-500 hover:text-indigo-600 transition-colors">
+                    + Add Subject Category
+                  </button>
+                </div>
+              )}
             </div>
           </details>
         </div>

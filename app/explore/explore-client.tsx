@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import SaveButton from "@/components/save-button";
@@ -33,16 +34,31 @@ export default function ExploreClient({
   publications, 
   allCategories, 
   contentTypes,
-  initialCategory,
-  initialSearch
+  totalCount,
+  currentPage,
+  initialSearch,
+  initialCategories,
+  initialTypes,
+  initialSort,
+  allAuthors = []
 }: { 
   publications: Publication[];
   allCategories: {id: string, name: string}[];
   contentTypes: {name: string, slug: string}[];
-  initialCategory?: string;
+  totalCount: number;
+  currentPage: number;
   initialSearch?: string;
+  initialCategories?: string[];
+  initialTypes?: string[];
+  initialSort?: string;
+  allAuthors?: string[];
 }) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
   const [searchQuery, setSearchQuery] = useState(initialSearch || "");
+  const [scholarSearchQuery, setScholarSearchQuery] = useState("");
   
   const [filters, setFilters] = useState<{
     subjects: string[]
@@ -50,49 +66,49 @@ export default function ExploreClient({
     authors: string[]
     types: string[]
     yearRange: [number, number]
-  }>(() => {
-    const initialSubjects: string[] = [];
-    const initialTypes: string[] = [];
-    
-    if (initialCategory) {
-      // Check if it matches a content type (accounting for singular/plural mismatches like 'theses' vs 'thesis', 'articles' vs 'article')
-      const matchedType = contentTypes.find(ct => 
-        ct.slug === initialCategory || 
-        ct.slug + 's' === initialCategory || 
-        initialCategory.replace(/s$/, '') === ct.slug ||
-        (ct.slug === 'thesis' && initialCategory === 'theses') ||
-        (ct.slug === 'magazine' && initialCategory === 'magazines')
-      );
-      if (matchedType) {
-        initialTypes.push(matchedType.slug);
-      }
-      // Check if it matches a subject category
-      const slugify = (text: string) => text.toLowerCase().replace(/&/g, '&amp;').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-      const matchedSubject = allCategories.find(c => {
-         const cleanName = c.name.toString().replace(/<[^>]*>?/gm, '').replace(/&amp;/g, '&');
-         const slug = cleanName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-         return slug === initialCategory;
-      });
-      if (matchedSubject) {
-        // use the exact display name because the filter logic looks for exact name
-        initialSubjects.push(matchedSubject.name);
-      }
-    }
-    
-    return {
-      subjects: initialSubjects,
-      subcategories: [],
-      authors: [],
-      types: initialTypes,
-      yearRange: [2000, new Date().getFullYear()],
-    };
+  }>({
+    subjects: initialCategories || [],
+    subcategories: [],
+    authors: [],
+    types: initialTypes || [],
+    yearRange: [2000, new Date().getFullYear()],
   });
 
   const [isListView, setIsListView] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [sortOrder, setSortOrder] = useState<'newest' | 'oldest' | 'views' | 'downloads'>('newest');
-  const [currentPage, setCurrentPage] = useState(1);
+  const [sortOrder, setSortOrder] = useState<'newest' | 'oldest' | 'views' | 'downloads'>((initialSort as any) || 'newest');
+  
   const ITEMS_PER_PAGE = 12;
+
+  // Debounced URL update
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const params = new URLSearchParams();
+      if (searchQuery) params.set('q', searchQuery);
+      if (filters.subjects.length > 0) {
+        filters.subjects.forEach(c => params.append('category', c));
+      }
+      if (filters.types.length > 0) {
+        filters.types.forEach(t => params.append('type', t));
+      }
+      if (currentPage > 1) {
+        params.set('page', currentPage.toString());
+      }
+      if (sortOrder && sortOrder !== 'newest') {
+        params.set('sort', sortOrder);
+      }
+      
+      const currentQuery = searchParams.toString();
+      const newQuery = params.toString();
+      
+      // Prevent infinite loops by checking if the query actually changed
+      if (currentQuery !== newQuery && (currentQuery || newQuery)) {
+        router.push(`${pathname}?${newQuery}`);
+      }
+    }, 500);
+    
+    return () => clearTimeout(timer);
+  }, [searchQuery, filters, currentPage, sortOrder, pathname, router, searchParams]);
 
   const availableSubjects = useMemo(() => {
     const sorted = allCategories.map(c => c.name).sort();
@@ -105,38 +121,17 @@ export default function ExploreClient({
   }, [allCategories]);
 
   const availableAuthors = useMemo(() => {
-    return Array.from(new Set(publications.map(p => p.scholars?.users?.raw_user_meta_data?.full_name || p.scholars?.users?.raw_user_meta_data?.name))).filter(Boolean).sort() as string[];
-  }, [publications]);
+    return allAuthors;
+  }, [allAuthors]);
+
+  const filteredAuthors = useMemo(() => {
+    if (!scholarSearchQuery) return availableAuthors;
+    return availableAuthors.filter(a => a.toLowerCase().includes(scholarSearchQuery.toLowerCase()));
+  }, [availableAuthors, scholarSearchQuery]);
 
   const availableTypes = useMemo(() => {
-    return contentTypes.map(ct => ({ value: ct.slug, label: ct.name }));
+    return contentTypes.map(ct => ({ value: ct.name, label: ct.name }));
   }, [contentTypes]);
-
-  // Client-side filtering
-  const filteredPublications = useMemo(() => {
-    return publications.filter(p => {
-      const pubYear = new Date(p.created_at).getFullYear();
-      const authorName = p.scholars?.users?.raw_user_meta_data?.full_name || p.scholars?.users?.raw_user_meta_data?.name || "Unknown Author";
-      const categoryName = p.categories?.name || "General";
-
-      const matchesSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                            p.abstract?.toLowerCase().includes(searchQuery.toLowerCase());
-
-      const matchesSubject = filters.subjects.length === 0 || filters.subjects.some(s => s.toLowerCase() === categoryName.toLowerCase());
-      const matchesAuthor = filters.authors.length === 0 || filters.authors.some(a => a.toLowerCase() === authorName.toLowerCase());
-      const matchesType = filters.types.length === 0 || filters.types.some(t => t.toLowerCase() === (p.content_type || "").toLowerCase());
-      const matchesYear = pubYear >= filters.yearRange[0] && pubYear <= filters.yearRange[1];
-
-      return matchesSearch && matchesSubject && matchesAuthor && matchesType && matchesYear;
-    }).sort((a, b) => {
-      if (sortOrder === 'views') return (b.views || 0) - (a.views || 0);
-      if (sortOrder === 'downloads') return (b.downloads || 0) - (a.downloads || 0);
-      
-      const dateA = new Date(a.created_at).getTime();
-      const dateB = new Date(b.created_at).getTime();
-      return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
-    });
-  }, [publications, searchQuery, filters, sortOrder]);
 
   const toggleFilter = (type: keyof typeof filters, value: string) => {
     setFilters(prev => {
@@ -147,20 +142,21 @@ export default function ExploreClient({
         return { ...prev, [type]: [...currentList, value] };
       }
     });
-    setCurrentPage(1);
   };
 
   const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = parseInt(e.target.value);
     setFilters(prev => ({ ...prev, yearRange: [prev.yearRange[0], val] }));
-    setCurrentPage(1);
   };
 
-  const paginatedPublications = useMemo(() => {
-    return filteredPublications.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
-  }, [filteredPublications, currentPage]);
+  const handlePageChange = (newPage: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('page', newPage.toString());
+    router.push(`${pathname}?${params.toString()}`);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
   
-  const totalPages = Math.ceil(filteredPublications.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
   return (
     <>
@@ -182,7 +178,7 @@ export default function ExploreClient({
 
               <div className="ph-stats" aria-label="Repository statistics">
                 <div className="ph-stat">
-                  <div className="ph-stat-n">{publications.length}</div>
+                  <div className="ph-stat-n">{totalCount}</div>
                   <div className="ph-stat-l">PUBLICATIONS</div>
                 </div>
                 <div className="ph-stat">
@@ -218,14 +214,12 @@ export default function ExploreClient({
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
-                  setCurrentPage(1);
                 }}
               />
               <div className="ph-search-actions">
                 {searchQuery && (
                   <button className="ph-search-clear" onClick={() => {
                     setSearchQuery("");
-                    setCurrentPage(1);
                   }} aria-label="Clear search">Clear</button>
                 )}
                 <button className="ph-search-btn">Search</button>
@@ -344,38 +338,42 @@ export default function ExploreClient({
             {/* Scholars */}
             <div className="sb-block">
               <div className="sb-block-title">Scholar</div>
-              {availableAuthors.slice(0, 5).map((author) => (
-                <label key={author} className="filter-row">
-                  <input 
-                    type="checkbox" 
-                    checked={filters.authors.includes(author)}
-                    onChange={() => toggleFilter('authors', author)}
-                  />
-                  <span className="fcheck"></span>
-                  <span className="filter-label">{author}</span>
-                </label>
-              ))}
-              {availableAuthors.length > 5 && (
-                <details className="group cursor-pointer">
-                  <summary className="show-more list-none mt-2">
-                    Show {availableAuthors.length - 5} more
-                    <svg className="group-open:rotate-180 transition-transform inline-block ml-1" width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                  </summary>
-                  <div className="mt-2 space-y-2">
-                    {availableAuthors.slice(5).map((author) => (
-                      <label key={author} className="filter-row">
-                        <input 
-                          type="checkbox" 
-                          checked={filters.authors.includes(author)}
-                          onChange={() => toggleFilter('authors', author)}
-                        />
-                        <span className="fcheck"></span>
-                        <span className="filter-label">{author}</span>
-                      </label>
-                    ))}
-                  </div>
-                </details>
-              )}
+              
+              <div className="mb-3 relative">
+                <input 
+                  type="text" 
+                  placeholder="Search scholars..." 
+                  className="w-full text-sm py-1.5 px-3 pr-8 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  value={scholarSearchQuery}
+                  onChange={(e) => setScholarSearchQuery(e.target.value)}
+                />
+                {scholarSearchQuery && (
+                  <button 
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-xs"
+                    onClick={() => setScholarSearchQuery("")}
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+
+              <div className="max-h-60 overflow-y-auto custom-scrollbar pr-2 space-y-1">
+                {filteredAuthors.length === 0 ? (
+                  <div className="text-sm text-gray-500 italic py-2">No scholars found.</div>
+                ) : (
+                  filteredAuthors.map((author) => (
+                    <label key={author} className="filter-row">
+                      <input 
+                        type="checkbox" 
+                        checked={filters.authors.includes(author)}
+                        onChange={() => toggleFilter('authors', author)}
+                      />
+                      <span className="fcheck"></span>
+                      <span className="filter-label">{author}</span>
+                    </label>
+                  ))
+                )}
+              </div>
             </div>
             <div className="sb-hr"></div>
 
@@ -418,7 +416,7 @@ export default function ExploreClient({
               </button>
 
               <p className="toolbar-count">
-                <strong>{filteredPublications.length}</strong> publications found
+                <strong>{publications.length}</strong> publications found
               </p>
 
               <div className="sort-wrap">
@@ -457,11 +455,11 @@ export default function ExploreClient({
               </div>
             </div>
 
-            {filteredPublications.length === 0 && (
+            {publications.length === 0 && (
               <div className="flex justify-center py-12 text-gray-500">No publications found matching your filters.</div>
             )}
             <div id="pubGrid" className={isListView ? "list-mode" : ""}>
-              {paginatedPublications.map(pub => (
+              {publications.map(pub => (
                 <Link href={`/publications/${pub.id}`} key={pub.id} className="pub-card reveal in-view">
                   <div className="pc-img">
                     <span className="pc-type-badge pbadge-type">{pub.content_type || 'PUBLICATION'}</span>
@@ -519,10 +517,7 @@ export default function ExploreClient({
             {totalPages > 1 && (
               <div className="flex justify-center items-center space-x-2 mt-12 mb-8">
                 <button 
-                  onClick={() => {
-                    setCurrentPage(prev => Math.max(prev - 1, 1));
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
+                  onClick={() => handlePageChange(Math.max(currentPage - 1, 1))}
                   disabled={currentPage === 1}
                   className="px-4 py-2 border rounded-md disabled:opacity-50 hover:bg-gray-50 transition-colors"
                 >
@@ -532,10 +527,7 @@ export default function ExploreClient({
                   Page {currentPage} of {totalPages}
                 </div>
                 <button 
-                  onClick={() => {
-                    setCurrentPage(prev => Math.min(prev + 1, totalPages));
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
+                  onClick={() => handlePageChange(Math.min(currentPage + 1, totalPages))}
                   disabled={currentPage === totalPages}
                   className="px-4 py-2 border rounded-md disabled:opacity-50 hover:bg-gray-50 transition-colors"
                 >
