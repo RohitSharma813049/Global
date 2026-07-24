@@ -56,8 +56,8 @@ export default function Header() {
   // Define role checking safely
   const role = session?.user?.role || 'user';
 
-  // Hide the main header completely if the user is inside the dashboard, because dashboard has its own header.
-  if (pathname.startsWith('/dashboard')) {
+  // Hide the main header completely if the user is inside the dashboard or library, because they use the dashboard layout header.
+  if (pathname.startsWith('/dashboard') || pathname.startsWith('/library')) {
     return null
   }
 

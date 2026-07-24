@@ -34,13 +34,11 @@ export default function DashboardSidebar() {
   const readerLinks = [
     { name: "Explore", href: "/explore", icon: MdExplore },
     { name: "My Library", href: "/library/saved", icon: MdLibraryBooks },
-    { name: "Saved Papers", href: "/library/saved", icon: MdBookmark },
   ];
 
   const scholarLinks = [
     { name: "Explore", href: "/explore", icon: MdExplore },
     { name: "My Library", href: "/library/saved", icon: MdLibraryBooks },
-    { name: "Saved Papers", href: "/library/saved", icon: MdBookmark },
     { name: "Scholar Profile", href: "/dashboard/scholar", icon: MdDescription },
     { name: "Upload Publication", href: "/dashboard/scholar/upload", icon: MdLibraryBooks },
   ];
