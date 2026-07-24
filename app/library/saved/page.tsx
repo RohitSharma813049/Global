@@ -100,7 +100,7 @@ export default function SavedPapersPage() {
                 />
               </div>
               <div className="flex items-center gap-2 w-full md:w-auto overflow-x-auto pb-2 md:pb-0 hide-scrollbar">
-                {['ALL', 'PUBLICATION', 'ARTICLE', 'THESIS'].map(type => (
+                {['ALL', 'ARTICLE', 'THESIS', 'EBOOK', 'BOOK'].map(type => (
                   <button
                     key={type}
                     onClick={() => setTypeFilter(type)}
