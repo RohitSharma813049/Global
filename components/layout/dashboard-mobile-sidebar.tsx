@@ -27,7 +27,7 @@ export default function DashboardMobileSidebar() {
 
   const readerLinks = [
     { name: "Explore", href: "/explore", icon: MdExplore },
-    { name: "My Library", href: "/library", icon: MdLibraryBooks },
+    { name: "My Library", href: "/library/saved", icon: MdLibraryBooks },
     { name: "Saved Papers", href: "/library/saved", icon: MdBookmark },
   ];
 
@@ -59,10 +59,10 @@ export default function DashboardMobileSidebar() {
       </SheetTrigger>
       <SheetContent side="left" className="w-64 p-0 bg-white flex flex-col">
         <SheetTitle className="sr-only">Dashboard Navigation</SheetTitle>
-        <div className="p-6 border-b border-gray-100 h-24 flex items-center">
-          <div>
-            <h2 className="text-2xl font-extrabold text-indigo-700 tracking-tight">Global Scholar</h2>
-            <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{role}</span>
+        <div className="flex items-center justify-between p-5 border-b border-gray-100">
+          <div className="whitespace-nowrap flex flex-col justify-center w-full px-1">
+            <img src="/logo1.png" alt="Global Scholar" className="h-10 w-auto object-contain object-left mb-1" />
+            <span className="text-[10px] font-bold text-purple-600 uppercase tracking-wider ml-1">{role.replace('_', ' ')} Dashboard</span>
           </div>
         </div>
 

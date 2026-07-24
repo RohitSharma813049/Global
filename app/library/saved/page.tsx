@@ -22,6 +22,15 @@ interface SavedPublication {
 export default function SavedPapersPage() {
   const [savedPapers, setSavedPapers] = useState<SavedPublication[]>([])
   const [isLoaded, setIsLoaded] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("")
+  const [typeFilter, setTypeFilter] = useState("ALL")
+
+  const filteredPapers = savedPapers.filter(paper => {
+    const matchesSearch = paper.title?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                          paper.author?.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesType = typeFilter === "ALL" || (paper.type || 'PUBLICATION').toUpperCase().includes(typeFilter);
+    return matchesSearch && matchesType;
+  });
 
   useEffect(() => {
     const saved = localStorage.getItem('saved_publications')
@@ -78,40 +87,72 @@ export default function SavedPapersPage() {
             </Link>
           </div>
         ) : (
-          <div id="pubGrid" className="grid list-mode">
-            {savedPapers.map((paper) => (
-              <Link href={paper.url} key={paper.id} className="pub-card reveal in-view !opacity-100 !translate-y-0 relative">
-                <div className="pc-img">
-                  <span className="pc-type-badge pbadge-type">{paper.type || 'PUBLICATION'}</span>
-                  <SaveButton publication={paper} variant="card" />
-                  <img 
-                    src={paper.cover_image || "/placeholder.svg"} 
-                    alt={paper.title} 
-                  />
-                </div>
-                <div className="pc-body">
-                  <div className="pc-meta">
-                    <span className="pc-subject">{paper.subject || 'GENERAL'}</span>
-                  </div>
-                  <h3 className="pc-title">{paper.title}</h3>
-                  <div className="pc-author">
-                    <div className="pc-avatar">
+          <>
+            <div className="mb-8 flex flex-col md:flex-row gap-4 items-center justify-between bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+              <div className="relative w-full md:w-96">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <input 
+                  type="text" 
+                  placeholder="Search saved papers..." 
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-indigo-500/20 transition-all outline-none"
+                />
+              </div>
+              <div className="flex items-center gap-2 w-full md:w-auto overflow-x-auto pb-2 md:pb-0 hide-scrollbar">
+                {['ALL', 'PUBLICATION', 'ARTICLE', 'THESIS'].map(type => (
+                  <button
+                    key={type}
+                    onClick={() => setTypeFilter(type)}
+                    className={`px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all ${typeFilter === type ? 'bg-indigo-600 text-white shadow-md' : 'bg-gray-50 text-gray-600 hover:bg-gray-100'}`}
+                  >
+                    {type === 'ALL' ? 'All Types' : type.charAt(0) + type.slice(1).toLowerCase()}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {filteredPapers.length === 0 ? (
+               <div className="text-center py-12 text-gray-500 bg-white rounded-3xl border border-gray-100">
+                 <p>No saved papers match your search and filters.</p>
+               </div>
+            ) : (
+              <div id="pubGrid" className="grid list-mode">
+                {filteredPapers.map((paper) => (
+                  <Link href={paper.url} key={paper.id} className="pub-card reveal in-view !opacity-100 !translate-y-0 relative">
+                    <div className="pc-img">
+                      <span className="pc-type-badge pbadge-type">{paper.type || 'PUBLICATION'}</span>
+                      <SaveButton publication={paper} variant="card" />
                       <img 
-                        src={paper.author_avatar || "/placeholder-user.jpg"} 
-                        alt={paper.author || "Author"} 
+                        src={paper.cover_image || "/placeholder.svg"} 
+                        alt={paper.title} 
                       />
                     </div>
-                    <span className="pc-author-name">
-                      {paper.author || "Unknown Author"}
-                    </span>
-                  </div>
-                  <div className="pc-desc">
-                    <p>{paper.abstract || "No description available."}</p>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
+                    <div className="pc-body">
+                      <div className="pc-meta">
+                        <span className="pc-subject">{paper.subject || 'GENERAL'}</span>
+                      </div>
+                      <h3 className="pc-title">{paper.title}</h3>
+                      <div className="pc-author">
+                        <div className="pc-avatar">
+                          <img 
+                            src={paper.author_avatar || "/placeholder-user.jpg"} 
+                            alt={paper.author || "Author"} 
+                          />
+                        </div>
+                        <span className="pc-author-name">
+                          {paper.author || "Unknown Author"}
+                        </span>
+                      </div>
+                      <div className="pc-desc">
+                        <p>{paper.abstract || "No description available."}</p>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </>
         )}
       </main>
       <Footer />

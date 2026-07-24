@@ -1,26 +1,39 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { MdNotificationsNone, MdCheckCircle, MdInfo, MdWarning } from "react-icons/md";
-
-// Dummy data for notifications
-const initialNotifications: any[] = [];
+import { getNotifications, markNotificationAsRead, markAllNotificationsAsRead } from "@/app/actions/notifications";
+import Link from "next/link";
 
 export default function NotificationsPage() {
-  const [notifications, setNotifications] = useState(initialNotifications);
+  const [notifications, setNotifications] = useState<any[]>([]);
   
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const fetchNotifications = async () => {
+    const data = await getNotifications();
+    setNotifications(data);
+  };
 
-  const handleMarkAllAsRead = () => {
-    setNotifications(notifications.map(n => ({ ...n, read: true })));
+  useEffect(() => {
+    fetchNotifications();
+    const interval = setInterval(fetchNotifications, 60000);
+    return () => clearInterval(interval);
+  }, []);
+  
+  const unreadCount = notifications.filter(n => !n.is_read).length;
+
+  const handleMarkAllAsRead = async () => {
+    await markAllNotificationsAsRead();
+    setNotifications(notifications.map(n => ({ ...n, is_read: true })));
   };
 
   const handleClearAll = () => {
+    // We don't have a delete action yet, so just clear local state for now
     setNotifications([]);
   };
 
-  const handleMarkAsRead = (id: string) => {
-    setNotifications(notifications.map(n => n.id === id ? { ...n, read: true } : n));
+  const handleMarkAsRead = async (id: string) => {
+    await markNotificationAsRead(id);
+    setNotifications(notifications.map(n => n.id === id ? { ...n, is_read: true } : n));
   };
 
   const getIcon = (type: string) => {
@@ -70,25 +83,25 @@ export default function NotificationsPage() {
             notifications.map((notification) => (
               <div 
                 key={notification.id} 
-                className={`p-6 hover:bg-gray-50 transition-colors flex gap-4 ${notification.read ? 'bg-white' : 'bg-indigo-50/20'}`}
+                className={`p-6 hover:bg-gray-50 transition-colors flex gap-4 ${notification.is_read ? 'bg-white' : 'bg-indigo-50/20'}`}
               >
                 <div className="shrink-0 mt-1">
                   {getIcon(notification.type)}
                 </div>
                 <div className="flex-1">
                   <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-1">
-                    <h3 className={`text-base ${notification.read ? 'text-gray-800 font-medium' : 'text-gray-900 font-bold'}`}>
+                    <h3 className={`text-base ${notification.is_read ? 'text-gray-800 font-medium' : 'text-gray-900 font-bold'}`}>
                       {notification.title}
                     </h3>
                     <span className="text-xs font-medium text-gray-500 whitespace-nowrap">
-                      {notification.time}
+                      {new Date(notification.created_at).toLocaleDateString()}
                     </span>
                   </div>
-                  <p className={`mt-1 text-sm ${notification.read ? 'text-gray-500' : 'text-gray-700'}`}>
-                    {notification.description}
+                  <p className={`mt-1 text-sm ${notification.is_read ? 'text-gray-500' : 'text-gray-700'}`}>
+                    {notification.message}
                   </p>
                   
-                  {!notification.read && (
+                  {!notification.is_read && (
                     <div className="mt-3 flex gap-3">
                       <button onClick={() => handleMarkAsRead(notification.id)} className="text-xs font-medium text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-md transition-colors">
                         Mark as read

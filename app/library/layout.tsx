@@ -1,6 +1,8 @@
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { redirect } from "next/navigation"
+import { SidebarProvider } from "@/components/sidebar-context"
+import { DashboardLayoutWrapper } from "@/components/layout/dashboard-layout-wrapper"
 
 export default async function LibraryLayout({
   children,
@@ -14,8 +16,10 @@ export default async function LibraryLayout({
   }
 
   return (
-    <>
-      {children}
-    </>
+    <SidebarProvider>
+      <DashboardLayoutWrapper>
+        {children}
+      </DashboardLayoutWrapper>
+    </SidebarProvider>
   )
 }

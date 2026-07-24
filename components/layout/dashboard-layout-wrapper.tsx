@@ -35,30 +35,19 @@ export function DashboardLayoutWrapper({ children }: { children: React.ReactNode
   
   return (
     <div className="flex min-h-screen bg-gray-50 overflow-x-hidden max-w-[100vw]">
-      {role !== 'user' && <DashboardSidebar />}
-      <div className={`flex-1 min-w-0 transition-all duration-300 ease-in-out ${role === 'user' ? 'ml-0' : (isPinned ? 'md:ml-64' : 'md:ml-20')} ml-0 flex flex-col min-h-screen`}>
+      <DashboardSidebar />
+      <div className={`flex-1 min-w-0 transition-all duration-300 ease-in-out ${isPinned ? 'md:ml-64' : 'md:ml-20'} ml-0 flex flex-col min-h-screen`}>
         {/* Top Header Placeholder */}
         <header className="h-16 bg-white border-b border-gray-200 flex items-center px-4 md:px-8 shadow-sm shrink-0 justify-between">
           <div className="flex items-center gap-4">
-            {role !== 'user' && (
               <button 
                 className="md:hidden p-2 -ml-2 text-gray-600 hover:bg-gray-100 rounded-lg"
                 onClick={() => setIsMobileMenuOpen(true)}
               >
                 <MdMenu className="w-6 h-6" />
               </button>
-            )}
 
-            {role === 'user' && (
-              <Link href="/" className="flex items-center gap-3 md:mr-8 hover:opacity-90 transition-opacity">
-                <div className="w-9 h-9 flex items-center justify-center shrink-0">
-                  <img src="/logo1.png" alt="Global Scholar" className="w-full h-full object-contain" />
-                </div>
-                <div className="hidden md:block">
-                  <h2 className="text-xl font-bold text-gray-900 tracking-tight leading-tight">Global Scholar</h2>
-                </div>
-              </Link>
-            )}
+            {/* Logo removed since sidebar is now visible for all users */}
 
             <div className="hidden sm:block flex-1 max-w-md">
               <input aria-label="Input field" 
@@ -114,9 +103,7 @@ export function DashboardLayoutWrapper({ children }: { children: React.ReactNode
           {children}
         </main>
         
-        {role !== 'super_admin' && role !== 'admin' && (
-          <DashboardBottomNav />
-        )}
+        {/* DashboardBottomNav removed as per user request to use mobile sidebar */}
       </div>
     </div>
   );

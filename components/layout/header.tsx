@@ -134,10 +134,10 @@ export default function Header() {
                       </DropdownMenuItem>
                     )}
                     <DropdownMenuItem asChild>
-                      <Link href="/library" className="flex items-center cursor-pointer">
-                        <BookMarked className="mr-2 h-4 w-4" />
-                        <span>My Library</span>
-                      </Link>
+                        <Link href="/library/saved" className="flex items-center cursor-pointer">
+                          <BookMarked className="mr-2 h-4 w-4" />
+                          <span>My Library</span>
+                        </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link href="/dashboard/settings" className="flex items-center cursor-pointer">

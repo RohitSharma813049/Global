@@ -33,13 +33,13 @@ export default function DashboardSidebar() {
 
   const readerLinks = [
     { name: "Explore", href: "/explore", icon: MdExplore },
-    { name: "My Library", href: "/library", icon: MdLibraryBooks },
+    { name: "My Library", href: "/library/saved", icon: MdLibraryBooks },
     { name: "Saved Papers", href: "/library/saved", icon: MdBookmark },
   ];
 
   const scholarLinks = [
     { name: "Explore", href: "/explore", icon: MdExplore },
-    { name: "My Library", href: "/library", icon: MdLibraryBooks },
+    { name: "My Library", href: "/library/saved", icon: MdLibraryBooks },
     { name: "Saved Papers", href: "/library/saved", icon: MdBookmark },
     { name: "Scholar Profile", href: "/dashboard/scholar", icon: MdDescription },
     { name: "Upload Publication", href: "/dashboard/scholar/upload", icon: MdLibraryBooks },
@@ -88,18 +88,13 @@ export default function DashboardSidebar() {
       >
       <div className={`p-5 border-b border-gray-100 flex items-center ${isExpanded ? 'justify-between' : 'justify-center'} overflow-hidden h-20`}>
         {isExpanded ? (
-          <div className="whitespace-nowrap flex items-center gap-3 transition-opacity duration-300">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0">
-              <img src="/logo1.png" alt="Global Scholar" className="w-full h-full object-contain" />
-            </div>
-            <div>
-              <h2 className="text-base font-bold text-gray-900 tracking-tight leading-tight">Global Scholar</h2>
-              <span className="text-[10px] font-bold text-purple-600 uppercase tracking-wider">{role.replace('_', ' ')}</span>
-            </div>
+          <div className="whitespace-nowrap flex flex-col justify-center transition-opacity duration-300 w-full px-2 mt-2">
+            <img src="/logo1.png" alt="Global Scholar" className="h-10 w-auto object-contain object-left mb-1" />
+            <span className="text-[10px] font-bold text-purple-600 uppercase tracking-wider ml-1">{role.replace('_', ' ')} Dashboard</span>
           </div>
         ) : (
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0">
-            <img src="/logo1.png" alt="Global Scholar" className="w-full h-full object-contain" />
+          <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0">
+            <img src="/favicon.png" alt="Global Scholar" className="w-full h-full object-contain" />
           </div>
         )}
         
@@ -151,17 +146,6 @@ export default function DashboardSidebar() {
       </nav>
 
       <div className={`p-4 border-t border-gray-100 ${(!isExpanded && !isMobileMenuOpen) ? 'flex flex-col items-center' : ''}`}>
-        {role === "user" && (
-          <BecomeScholarModal>
-            <button 
-              className={`flex items-center py-2.5 rounded-lg text-purple-700 bg-purple-50 hover:bg-purple-100 transition-all duration-200 mb-2 ${isExpanded || isMobileMenuOpen ? 'w-full px-3 text-sm font-semibold' : 'justify-center w-10 h-10'}`}
-              title={!isExpanded && !isMobileMenuOpen ? "Become a Scholar" : ""}
-            >
-              <MdSchool className={`text-lg ${isExpanded || isMobileMenuOpen ? 'mr-3' : ''}`} /> 
-              {(isExpanded || isMobileMenuOpen) && <span className="whitespace-nowrap">Become Scholar</span>}
-            </button>
-          </BecomeScholarModal>
-        )}
         <Link 
           href="/dashboard/settings"
           onClick={() => setIsMobileMenuOpen(false)}
