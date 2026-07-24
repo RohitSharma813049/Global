@@ -40,7 +40,8 @@ export default function ExploreClient({
   initialCategories,
   initialTypes,
   initialSort,
-  allAuthors = []
+  allAuthors = [],
+  typeCounts = {}
 }: { 
   publications: Publication[];
   allCategories: {id: string, name: string}[];
@@ -52,6 +53,7 @@ export default function ExploreClient({
   initialTypes?: string[];
   initialSort?: string;
   allAuthors?: string[];
+  typeCounts?: Record<string, number>;
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -158,6 +160,8 @@ export default function ExploreClient({
   
   const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
+  const getCountForType = (type: string) => typeCounts[type] || 0;
+
   return (
     <>
       <div className="explore-wrapper">
@@ -178,20 +182,20 @@ export default function ExploreClient({
 
               <div className="ph-stats" aria-label="Repository statistics">
                 <div className="ph-stat">
-                  <div className="ph-stat-n">{totalCount}</div>
-                  <div className="ph-stat-l">PUBLICATIONS</div>
+                  <div className="ph-stat-n">{getCountForType('Article') || getCountForType('ARTICLE')}</div>
+                  <div className="ph-stat-l">ARTICLES</div>
                 </div>
                 <div className="ph-stat">
-                  <div className="ph-stat-n">350+</div>
-                  <div className="ph-stat-l">JOURNALS</div>
+                  <div className="ph-stat-n">{getCountForType('Thesis') || getCountForType('THESIS')}</div>
+                  <div className="ph-stat-l">THESES</div>
                 </div>
                 <div className="ph-stat">
-                  <div className="ph-stat-n">25K+</div>
-                  <div className="ph-stat-l">RESEARCHERS</div>
+                  <div className="ph-stat-n">{getCountForType('Ebook') || getCountForType('EBOOK')}</div>
+                  <div className="ph-stat-l">EBOOKS</div>
                 </div>
                 <div className="ph-stat">
-                  <div className="ph-stat-n">80+</div>
-                  <div className="ph-stat-l">COUNTRIES</div>
+                  <div className="ph-stat-n">{getCountForType('Magazine') || getCountForType('MAGAZINE')}</div>
+                  <div className="ph-stat-l">MAGAZINES</div>
                 </div>
               </div>
             </div>

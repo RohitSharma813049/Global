@@ -30,6 +30,7 @@ export default async function ExplorePage({
       initialTypes={types || []}
       initialSort={sort}
       allAuthors={data.allAuthors}
+      typeCounts={data.typeCounts}
     />
   );
 }

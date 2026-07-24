@@ -43,7 +43,7 @@ export async function getAdvancedSearchData(params: SearchParams) {
     if (params.sort === 'views') orderBy = { views: 'desc' };
     if (params.sort === 'downloads') orderBy = { downloads: 'desc' };
 
-    const [totalCount, data, catsResponse, typesResponse, allScholarsResponse, uniqueAuthorNames] = await Promise.all([
+    const [totalCount, data, catsResponse, typesResponse, allScholarsResponse, uniqueAuthorNames, typeCounts] = await Promise.all([
       prisma.publications.count({ where: whereClause }),
       prisma.publications.findMany({
         where: whereClause,
@@ -71,6 +71,11 @@ export async function getAdvancedSearchData(params: SearchParams) {
         where: { status: 'published', deleted_at: null },
         select: { author_name: true },
         distinct: ['author_name']
+      }),
+      prisma.publications.groupBy({
+        by: ['content_type'],
+        _count: { id: true },
+        where: { status: 'published', deleted_at: null }
       })
     ]);
 
@@ -110,12 +115,18 @@ export async function getAdvancedSearchData(params: SearchParams) {
       ...uniqueAuthorNames.map(p => p.author_name)
     ])).filter(Boolean).sort() as string[];
 
+    const formattedTypeCounts = typeCounts.reduce((acc, curr) => {
+      acc[curr.content_type] = curr._count.id;
+      return acc;
+    }, {} as Record<string, number>);
+
     return {
       publications: formattedPublications,
       totalCount,
       categories: catsResponse || [],
       contentTypes: typesResponse || [],
-      allAuthors
+      allAuthors,
+      typeCounts: formattedTypeCounts
     }
   } catch (error: any) {
     console.error('[getAdvancedSearchData] Error fetching data:', error)

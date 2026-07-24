@@ -222,7 +222,7 @@ export default function SettingsPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                     <div className="space-y-2">
-                      <label className="text-xs sm:text-sm font-medium text-gray-700">Full Name</label>
+                      <label className="block text-xs sm:text-sm font-medium text-gray-700">Full Name</label>
                       <input aria-label="Input field" 
                         type="text" 
                         value={name}
@@ -231,7 +231,7 @@ export default function SettingsPage() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs sm:text-sm font-medium text-gray-700">Email Address</label>
+                      <label className="block text-xs sm:text-sm font-medium text-gray-700">Email Address</label>
                       <input aria-label="Input field" 
                         type="email" 
                         value={email}
@@ -243,7 +243,7 @@ export default function SettingsPage() {
                   </div>
 
                     <div className="space-y-2">
-                      <label className="text-xs sm:text-sm font-medium text-gray-700">Bio</label>
+                      <label className="block text-xs sm:text-sm font-medium text-gray-700">Bio</label>
                       <textarea aria-label="Input field" 
                         rows={4}
                         value={bio}
@@ -255,7 +255,7 @@ export default function SettingsPage() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mt-4">
                       <div className="space-y-2">
-                        <label className="text-xs sm:text-sm font-medium text-gray-700">Country</label>
+                        <label className="block text-xs sm:text-sm font-medium text-gray-700">Country</label>
                         <input aria-label="Input field" 
                           type="text" 
                           value={country}
@@ -275,7 +275,7 @@ export default function SettingsPage() {
                         
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 bg-purple-50/50 p-6 rounded-xl border border-purple-100/50">
                           <div className="space-y-2">
-                            <label className="text-xs sm:text-sm font-medium text-gray-700">Professional Role / Qualification</label>
+                            <label className="block text-xs sm:text-sm font-medium text-gray-700">Professional Role / Qualification</label>
                             <input aria-label="Input field" 
                               type="text" 
                               value={qualification}
@@ -285,7 +285,7 @@ export default function SettingsPage() {
                             />
                           </div>
                           <div className="space-y-2">
-                            <label className="text-xs sm:text-sm font-medium text-gray-700">Institution / Company</label>
+                            <label className="block text-xs sm:text-sm font-medium text-gray-700">Institution / Company</label>
                             <input aria-label="Input field" 
                               type="text" 
                               value={institution}
@@ -295,7 +295,7 @@ export default function SettingsPage() {
                             />
                           </div>
                           <div className="space-y-2 md:col-span-2">
-                            <label className="text-xs sm:text-sm font-medium text-gray-700">Specialization / Domain</label>
+                            <label className="block text-xs sm:text-sm font-medium text-gray-700">Specialization / Domain</label>
                             <input aria-label="Input field" 
                               type="text" 
                               value={specialization}
@@ -306,7 +306,7 @@ export default function SettingsPage() {
                           </div>
                           
                           <div className="space-y-2 md:col-span-2 mt-2 pt-6 border-t border-purple-100">
-                            <label className="text-xs sm:text-sm font-medium text-gray-700">Featured Video</label>
+                            <label className="block text-xs sm:text-sm font-medium text-gray-700">Featured Video</label>
                             <div className="flex flex-col sm:flex-row gap-3">
                               <input aria-label="Input field" 
                                 type="url" 
@@ -364,7 +364,7 @@ export default function SettingsPage() {
                             
                             {/* Gallery Images */}
                             <div className="space-y-3 bg-white p-4 rounded-lg border border-gray-200">
-                              <label className="text-xs sm:text-sm font-medium text-gray-700">Gallery Photos</label>
+                              <label className="block text-xs sm:text-sm font-medium text-gray-700">Gallery Photos</label>
                               <div className="flex flex-col sm:flex-row gap-3">
                                 <input 
                                   type="file" 
@@ -433,7 +433,7 @@ export default function SettingsPage() {
 
                             {/* Gallery Videos */}
                             <div className="space-y-3 bg-white p-4 rounded-lg border border-gray-200">
-                              <label className="text-xs sm:text-sm font-medium text-gray-700">Gallery Videos</label>
+                              <label className="block text-xs sm:text-sm font-medium text-gray-700">Gallery Videos</label>
                               <div className="flex flex-col sm:flex-row gap-3">
                                 <input 
                                   type="file" 
@@ -548,7 +548,7 @@ export default function SettingsPage() {
                 </div>
                 <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
                   <div className="space-y-2">
-                    <label className="text-xs sm:text-sm font-medium text-gray-700">New Password</label>
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700">New Password</label>
                     <input aria-label="Input field" 
                       type="password" 
                       value={newPassword}
@@ -557,7 +557,7 @@ export default function SettingsPage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs sm:text-sm font-medium text-gray-700">Confirm New Password</label>
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700">Confirm New Password</label>
                     <input aria-label="Input field" 
                       type="password" 
                       value={confirmPassword}
