@@ -114,9 +114,9 @@ export default async function AdminScholarsPage({
                     </TableCell>
                     <TableCell>
                       {scholar.username ? (
-                        <div className="text-sm font-semibold text-indigo-600">@{scholar.username}</div>
+                        <div className="text-sm font-semibold text-[var(--color-gsp-text-inverse)]">@{scholar.username}</div>
                       ) : (
-                        <div className="text-sm italic text-gray-400">No username</div>
+                        <div className="text-sm italic text-[var(--color-gsp-text-secondary)]">No username</div>
                       )}
                       <div className="text-xs text-muted-foreground">{scholar.users?.email}</div>
                     </TableCell>

@@ -26,7 +26,7 @@ export default function FeatureToggle({ scholarId, isFeatured }: { scholarId: st
         onCheckedChange={handleToggle} 
         disabled={isPending}
       />
-      <span className="text-sm text-gray-500">
+      <span className="text-sm text-[var(--color-gsp-text-secondary)]">
         {isPending ? 'Updating...' : isFeatured ? 'Featured' : 'Not Featured'}
       </span>
     </div>

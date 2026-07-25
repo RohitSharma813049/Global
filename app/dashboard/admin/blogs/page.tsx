@@ -58,36 +58,36 @@ export default function BlogsManager() {
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold">Blogs Manager</h1>
-          <p className="text-gray-600 text-sm mt-1">Manage platform blog posts.</p>
+          <p className="text-[var(--color-gsp-text-secondary)] text-sm mt-1">Manage platform blog posts.</p>
         </div>
         <button 
           onClick={() => setShowModal(true)}
-          className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700"
+          className="bg-[var(--color-gsp-text-inverse)] text-white px-4 py-2 rounded-[var(--radius-lg)] hover:bg-indigo-700"
         >
           + New Blog
         </button>
       </div>
 
-      <div className="bg-white rounded-lg shadow overflow-hidden border border-gray-200">
+      <div className="bg-[var(--color-gsp-surface-muted)] rounded-[var(--radius-lg)] shadow overflow-hidden border border-[var(--color-gsp-border-muted)]">
         {loading ? (
-          <div className="p-8 text-center text-gray-500">Loading...</div>
+          <div className="p-8 text-center text-[var(--color-gsp-text-secondary)]">Loading...</div>
         ) : blogs.length > 0 ? (
           <div className="w-full overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+            <thead className="bg-[var(--color-gsp-surface-raised)]">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Title</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Slug</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Created</th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-gsp-text-secondary)] uppercase">Title</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-gsp-text-secondary)] uppercase">Slug</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-gsp-text-secondary)] uppercase">Created</th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-[var(--color-gsp-text-secondary)] uppercase">Actions</th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-[var(--color-gsp-surface-muted)] divide-y divide-gray-200">
               {blogs.map(blog => (
                 <tr key={blog.id}>
-                  <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{blog.title}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{blog.slug}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap font-medium text-[var(--color-gsp-text-primary)]">{blog.title}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--color-gsp-text-secondary)]">{blog.slug}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--color-gsp-text-secondary)]">
                     {new Date(blog.created_at).toLocaleDateString()}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -99,22 +99,22 @@ export default function BlogsManager() {
             </table>
           </div>
         ) : (
-          <div className="p-8 text-center text-gray-500">No blogs found.</div>
+          <div className="p-8 text-center text-[var(--color-gsp-text-secondary)]">No blogs found.</div>
         )}
       </div>
 
       {showModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full p-6">
+          <div className="bg-[var(--color-gsp-surface-muted)] rounded-[var(--radius-xl)] shadow-xl max-w-2xl w-full p-6">
             <h2 className="text-xl font-bold mb-4">Create New Blog</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium mb-1">Title</label>
-                <input aria-label="Input field" type="text" value={newBlog.title} onChange={e => setNewBlog({...newBlog, title: e.target.value})} className="w-full border rounded-lg p-2" required />
+                <input aria-label="Input field" type="text" value={newBlog.title} onChange={e => setNewBlog({...newBlog, title: e.target.value})} className="w-full border rounded-[var(--radius-lg)] p-2" required />
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1">Slug (URL)</label>
-                <input aria-label="Input field" type="text" value={newBlog.slug} onChange={e => setNewBlog({...newBlog, slug: e.target.value})} className="w-full border rounded-lg p-2" required />
+                <input aria-label="Input field" type="text" value={newBlog.slug} onChange={e => setNewBlog({...newBlog, slug: e.target.value})} className="w-full border rounded-[var(--radius-lg)] p-2" required />
               </div>
               <div>
                 <ImageUpload 
@@ -125,11 +125,11 @@ export default function BlogsManager() {
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1">Content (Markdown/Text)</label>
-                <textarea aria-label="Input field" rows={6} value={newBlog.content} onChange={e => setNewBlog({...newBlog, content: e.target.value})} className="w-full border rounded-lg p-2" required />
+                <textarea aria-label="Input field" rows={6} value={newBlog.content} onChange={e => setNewBlog({...newBlog, content: e.target.value})} className="w-full border rounded-[var(--radius-lg)] p-2" required />
               </div>
               <div className="flex justify-end gap-3 pt-4">
-                <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 text-gray-600">Cancel</button>
-                <button type="submit" disabled={saving} className="bg-indigo-600 text-white px-4 py-2 rounded-lg">{saving ? 'Saving...' : 'Create'}</button>
+                <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 text-[var(--color-gsp-text-secondary)]">Cancel</button>
+                <button type="submit" disabled={saving} className="bg-[var(--color-gsp-text-inverse)] text-white px-4 py-2 rounded-[var(--radius-lg)]">{saving ? 'Saving...' : 'Create'}</button>
               </div>
             </form>
           </div>

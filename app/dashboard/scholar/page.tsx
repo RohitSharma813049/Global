@@ -32,31 +32,31 @@ export default async function ScholarDashboard() {
       <div className="p-6 max-w-4xl mx-auto space-y-8">
         <div>
           <h1 className="text-3xl font-bold mb-2">Scholar Application</h1>
-          <p className="text-gray-600">Apply to become a verified scholar to publish your research.</p>
+          <p className="text-[var(--color-gsp-text-secondary)]">Apply to become a verified scholar to publish your research.</p>
         </div>
 
         {applicationState?.status === 'rejected' && (
-          <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg shadow-sm">
+          <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg shadow-[var(--shadow-1)]">
             <h3 className="text-sm font-medium text-red-800">Your Scholar Application was not approved</h3>
             <p className="mt-2 text-sm text-red-700"><strong>Reason:</strong> {applicationState.admin_notes}</p>
           </div>
         )}
 
         {applicationState?.status === 'pending' && (
-          <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg shadow-sm">
+          <div className="bg-[#F4F1FA] border-l-4 border-blue-500 p-4 rounded-r-lg shadow-[var(--shadow-1)]">
             <h3 className="text-sm font-medium text-blue-800">Scholar Application Pending Review</h3>
             <p className="mt-2 text-sm text-blue-700">Your application is currently being reviewed by our team. We'll let you know once a decision has been made.</p>
           </div>
         )}
 
         {(!applicationState || (applicationState.status !== 'pending' && applicationState.status !== 'approved')) && (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col items-center justify-center text-center">
-            <h2 className="text-xl font-bold text-gray-900 mb-2">
+          <div className="bg-[var(--color-gsp-surface-muted)] rounded-[var(--radius-xl)] shadow-[var(--shadow-1)] border border-[var(--color-gsp-border-muted)] p-6 flex flex-col items-center justify-center text-center">
+            <h2 className="text-xl font-bold text-[var(--color-gsp-text-primary)] mb-2">
               {applicationState?.status === 'rejected' ? 'Update your application' : 'Ready to share your research?'}
             </h2>
-            <p className="text-gray-500 mb-6">Fill out our scholar application form to get verified.</p>
+            <p className="text-[var(--color-gsp-text-secondary)] mb-6">Fill out our scholar application form to get verified.</p>
             <BecomeScholarModal initialData={applicationState}>
-              <button className="px-6 py-3 bg-[#2F115D] text-white font-semibold rounded-lg hover:bg-[#3d167a] transition-colors">
+              <button className="px-6 py-3 bg-[#2F115D] text-white font-semibold rounded-[var(--radius-lg)] hover:bg-[#3d167a] transition-colors">
                 {applicationState?.status === 'rejected' ? 'Resubmit Application' : 'Open Application Form'}
               </button>
             </BecomeScholarModal>
@@ -93,7 +93,7 @@ export default async function ScholarDashboard() {
       return (
         <div className="p-6">
           <h1 className="text-2xl font-bold mb-4 text-red-600">Profile Not Found</h1>
-          <p className="text-gray-600">Your scholar profile could not be initialized. Please contact an administrator.</p>
+          <p className="text-[var(--color-gsp-text-secondary)]">Your scholar profile could not be initialized. Please contact an administrator.</p>
         </div>
       )
     }
@@ -104,21 +104,21 @@ export default async function ScholarDashboard() {
     <div className="p-6 max-w-4xl mx-auto space-y-8 animate-fade-in-up">
       <div>
         <h1 className="text-3xl font-bold mb-2">Scholar Profile</h1>
-        <p className="text-gray-600">Manage your public profile information, qualifications, and biography.</p>
+        <p className="text-[var(--color-gsp-text-secondary)]">Manage your public profile information, qualifications, and biography.</p>
       </div>
 
       {/* Metrics Row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center justify-center">
-          <span className="text-sm font-medium text-gray-500 uppercase">Total Views</span>
+        <div className="bg-[var(--color-gsp-surface-muted)] p-6 rounded-[var(--radius-xl)] shadow-[var(--shadow-1)] border border-[var(--color-gsp-border-muted)] flex flex-col items-center justify-center">
+          <span className="text-sm font-medium text-[var(--color-gsp-text-secondary)] uppercase">Total Views</span>
           <span className="text-4xl font-bold text-[#2F115D] mt-2">{scholar.total_views}</span>
         </div>
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center justify-center">
-          <span className="text-sm font-medium text-gray-500 uppercase">Total Downloads</span>
-          <span className="text-4xl font-bold text-purple-600 mt-2">{scholar.total_downloads}</span>
+        <div className="bg-[var(--color-gsp-surface-muted)] p-6 rounded-[var(--radius-xl)] shadow-[var(--shadow-1)] border border-[var(--color-gsp-border-muted)] flex flex-col items-center justify-center">
+          <span className="text-sm font-medium text-[var(--color-gsp-text-secondary)] uppercase">Total Downloads</span>
+          <span className="text-4xl font-bold text-[var(--color-gsp-text-inverse)] mt-2">{scholar.total_downloads}</span>
         </div>
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center justify-center">
-          <span className="text-sm font-medium text-gray-500 uppercase">Status</span>
+        <div className="bg-[var(--color-gsp-surface-muted)] p-6 rounded-[var(--radius-xl)] shadow-[var(--shadow-1)] border border-[var(--color-gsp-border-muted)] flex flex-col items-center justify-center">
+          <span className="text-sm font-medium text-[var(--color-gsp-text-secondary)] uppercase">Status</span>
           <span className={`text-xl font-bold mt-2 ${scholar.verified ? 'text-green-600' : 'text-yellow-600'}`}>
             {scholar.verified ? 'Verified Scholar' : 'Pending Verification'}
           </span>
@@ -126,10 +126,10 @@ export default async function ScholarDashboard() {
       </div>
 
       {/* Profile Edit Form */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-100 bg-gray-50">
-          <h2 className="text-lg font-semibold text-gray-900">Public Profile Information</h2>
-          <p className="text-sm text-gray-500">This information will be visible on your public Wikipedia-style scholar page.</p>
+      <div className="bg-[var(--color-gsp-surface-muted)] rounded-[var(--radius-xl)] shadow-[var(--shadow-1)] border border-[var(--color-gsp-border-muted)] overflow-hidden">
+        <div className="px-6 py-4 border-b border-[var(--color-gsp-border-muted)] bg-[var(--color-gsp-surface-raised)]">
+          <h2 className="text-lg font-semibold text-[var(--color-gsp-text-primary)]">Public Profile Information</h2>
+          <p className="text-sm text-[var(--color-gsp-text-secondary)]">This information will be visible on your public Wikipedia-style scholar page.</p>
         </div>
         <div className="p-6">
           <ScholarProfileForm scholar={scholar} />

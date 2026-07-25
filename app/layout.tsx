@@ -36,7 +36,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="bg-background">
-      <body className={`${spaceGrotesk.variable} ${cormorantGaramond.variable} font-sans antialiased text-foreground overflow-x-hidden min-h-screen`}>
+      <body suppressHydrationWarning className={`${spaceGrotesk.variable} ${cormorantGaramond.variable} font-sans antialiased text-foreground overflow-x-hidden min-h-screen`}>
         <Providers>
           <Header/>
           <main className="pb-16 md:pb-0 flex-1 flex flex-col">

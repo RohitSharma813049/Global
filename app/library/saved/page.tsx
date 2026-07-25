@@ -59,15 +59,15 @@ export default function SavedPapersPage() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-[var(--color-gsp-surface-raised)] flex flex-col">
       <BackButton />
       <main className="flex-1 max-w-5xl mx-auto w-full px-6 py-12">
         <div className="text-center mb-12">
-          <div className="w-20 h-20 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
-            <BookMarked className="w-10 h-10 text-indigo-600" />
+          <div className="w-20 h-20 bg-[#F4F1FA] rounded-full flex items-center justify-center mx-auto mb-6 shadow-[var(--shadow-1)]">
+            <BookMarked className="w-10 h-10 text-[var(--color-gsp-text-inverse)]" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">Saved Library</h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-[var(--color-gsp-text-primary)] mb-4">Saved Library</h1>
+          <p className="text-lg text-[var(--color-gsp-text-secondary)] max-w-2xl mx-auto">
             Your personal collection of saved research papers, articles, and thesis.
           </p>
         </div>
@@ -77,26 +77,26 @@ export default function SavedPapersPage() {
             <div className="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
           </div>
         ) : savedPapers.length === 0 ? (
-          <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-12 md:p-20 text-center">
-            <h3 className="text-2xl font-bold text-gray-900 mb-3">No saved papers yet</h3>
-            <p className="text-gray-500 mb-8 max-w-md mx-auto">
+          <div className="bg-[var(--color-gsp-surface-muted)] rounded-3xl shadow-[var(--shadow-1)] border border-[var(--color-gsp-border-muted)] p-12 md:p-20 text-center">
+            <h3 className="text-2xl font-bold text-[var(--color-gsp-text-primary)] mb-3">No saved papers yet</h3>
+            <p className="text-[var(--color-gsp-text-secondary)] mb-8 max-w-md mx-auto">
               When you find an interesting paper while exploring, click the "Save to Library" button to bookmark it here for later reading.
             </p>
-            <Link href="/explore" className="inline-flex items-center px-8 py-4 text-base font-bold rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 transition-all shadow-md hover:-translate-y-0.5">
+            <Link href="/explore" className="inline-flex items-center px-8 py-4 text-base font-bold rounded-[var(--radius-xl)] text-white bg-[var(--color-gsp-text-inverse)] hover:bg-indigo-700 transition-all shadow-[var(--shadow-2)] hover:-translate-y-0.5">
               <Search className="w-5 h-5 mr-2" /> Explore Research
             </Link>
           </div>
         ) : (
           <>
-            <div className="mb-8 flex flex-col md:flex-row gap-4 items-center justify-between bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+            <div className="mb-8 flex flex-col md:flex-row gap-4 items-center justify-between bg-[var(--color-gsp-surface-muted)] p-4 rounded-[var(--radius-2xl)] shadow-[var(--shadow-1)] border border-[var(--color-gsp-border-muted)]">
               <div className="relative w-full md:w-96">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-gsp-text-secondary)] w-5 h-5" />
                 <input 
                   type="text" 
                   placeholder="Search saved papers..." 
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-indigo-500/20 transition-all outline-none"
+                  className="w-full pl-10 pr-4 py-2.5 bg-[var(--color-gsp-surface-raised)] border border-[var(--color-gsp-border-muted)] rounded-[var(--radius-xl)] focus:ring-2 focus:ring-indigo-500/20 transition-all outline-none"
                 />
               </div>
               <div className="flex items-center gap-2 w-full md:w-auto overflow-x-auto pb-2 md:pb-0 hide-scrollbar">
@@ -104,7 +104,7 @@ export default function SavedPapersPage() {
                   <button
                     key={type}
                     onClick={() => setTypeFilter(type)}
-                    className={`px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all ${typeFilter === type ? 'bg-indigo-600 text-white shadow-md' : 'bg-gray-50 text-gray-600 hover:bg-gray-100'}`}
+                    className={`px-4 py-2 rounded-[var(--radius-xl)] text-sm font-medium whitespace-nowrap transition-all ${typeFilter === type ? 'bg-[var(--color-gsp-text-inverse)] text-white shadow-[var(--shadow-2)]' : 'bg-[var(--color-gsp-surface-raised)] text-[var(--color-gsp-text-secondary)] hover:bg-gray-100'}`}
                   >
                     {type === 'ALL' ? 'All Types' : type.charAt(0) + type.slice(1).toLowerCase()}
                   </button>
@@ -113,7 +113,7 @@ export default function SavedPapersPage() {
             </div>
 
             {filteredPapers.length === 0 ? (
-               <div className="text-center py-12 text-gray-500 bg-white rounded-3xl border border-gray-100">
+               <div className="text-center py-12 text-[var(--color-gsp-text-secondary)] bg-[var(--color-gsp-surface-muted)] rounded-3xl border border-[var(--color-gsp-border-muted)]">
                  <p>No saved papers match your search and filters.</p>
                </div>
             ) : (

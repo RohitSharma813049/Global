@@ -26,7 +26,7 @@ export default function ScholarSearch() {
   return (
     <div className="relative w-full max-w-sm mb-6">
       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-        <Search className="h-4 w-4 text-gray-400" />
+        <Search className="h-4 w-4 text-[var(--color-gsp-text-secondary)]" />
       </div>
       <Input
         type="text"

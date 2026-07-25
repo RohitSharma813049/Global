@@ -39,7 +39,7 @@ export default function MaintenanceToggle({ initialState }: { initialState: bool
         } ${loading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
       >
         <span
-          className={`inline-block h-8 w-8 transform rounded-full bg-white transition-transform ${
+          className={`inline-block h-8 w-8 transform rounded-full bg-[var(--color-gsp-surface-muted)] transition-transform ${
             isMaintenance ? 'translate-x-11' : 'translate-x-1'
           }`}
         />

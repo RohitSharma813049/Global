@@ -33,7 +33,7 @@ export async function updateScholarProfile(formData: FormData) {
       const buffer = Buffer.from(await videoFile.arrayBuffer())
       try {
         const { uploadFileToR2 } = await import('@/lib/r2');
-        videoUrl = await uploadFileToR2(buffer, videoFile.name, 'videos', videoFile.type);
+        videoUrl = await uploadFileToR2(buffer, videoFile.name, `scholars/${session.user.id}/videos`, videoFile.type);
       } catch (err: any) {
         console.error("R2 Upload failed:", err);
         throw new Error("Cloud storage upload failed: " + (err.message || "Unknown error"));
@@ -49,7 +49,7 @@ export async function updateScholarProfile(formData: FormData) {
           const buffer = Buffer.from(await gImg.arrayBuffer())
           try {
             const { uploadFileToR2 } = await import('@/lib/r2');
-            const imgUrl = await uploadFileToR2(buffer, gImg.name, 'images', gImg.type);
+            const imgUrl = await uploadFileToR2(buffer, gImg.name, `scholars/${session.user.id}/images`, gImg.type);
             galleryImageUrls.push(imgUrl);
           } catch (err: any) {
             console.error("R2 Upload failed:", err);
@@ -68,7 +68,7 @@ export async function updateScholarProfile(formData: FormData) {
           const buffer = Buffer.from(await gVid.arrayBuffer())
           try {
             const { uploadFileToR2 } = await import('@/lib/r2');
-            const vUrl = await uploadFileToR2(buffer, gVid.name, 'videos', gVid.type);
+            const vUrl = await uploadFileToR2(buffer, gVid.name, `scholars/${session.user.id}/videos`, gVid.type);
             galleryVideoUrls.push(vUrl);
           } catch (err: any) {
             console.error("R2 Upload failed:", err);
@@ -81,9 +81,14 @@ export async function updateScholarProfile(formData: FormData) {
     // Fetch existing scholar profile to append images instead of replacing
     const { data: existingScholar } = await supabaseAdmin
       .from('scholars')
-      .select('gallery_images, gallery_videos')
+      .select('video_url, gallery_images, gallery_videos')
       .eq('user_id', session.user.id)
       .single()
+
+    let deletedMediaUrls: string[] = []
+    try {
+      deletedMediaUrls = JSON.parse((formData.get('deletedMedia') as string) || '[]')
+    } catch(e) {}
 
     // Build update payload
     const updateData: any = {
@@ -93,14 +98,24 @@ export async function updateScholarProfile(formData: FormData) {
       specialization
     }
 
+    // Process video deletions and additions
+    if (existingScholar?.video_url && deletedMediaUrls.includes(existingScholar.video_url)) {
+      updateData.video_url = null
+    }
     if (videoUrl) updateData.video_url = videoUrl
     
-    if (galleryImageUrls.length > 0) {
-      updateData.gallery_images = [...(existingScholar?.gallery_images || []), ...galleryImageUrls]
+    // Process gallery image deletions and additions
+    const existingImages = existingScholar?.gallery_images || []
+    const keptImages = existingImages.filter((url: string) => !deletedMediaUrls.includes(url))
+    if (keptImages.length !== existingImages.length || galleryImageUrls.length > 0) {
+      updateData.gallery_images = [...keptImages, ...galleryImageUrls]
     }
     
-    if (galleryVideoUrls.length > 0) {
-      updateData.gallery_videos = [...(existingScholar?.gallery_videos || []), ...galleryVideoUrls]
+    // Process gallery video deletions and additions
+    const existingVideos = existingScholar?.gallery_videos || []
+    const keptVideos = existingVideos.filter((url: string) => !deletedMediaUrls.includes(url))
+    if (keptVideos.length !== existingVideos.length || galleryVideoUrls.length > 0) {
+      updateData.gallery_videos = [...keptVideos, ...galleryVideoUrls]
     }
 
     const { error } = await supabaseAdmin

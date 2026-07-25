@@ -101,12 +101,12 @@ export default function AdminUsersPage() {
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold">User Management</h1>
-          <p className="text-gray-600 text-sm mt-1">Manage user access, block accounts, and assign roles.</p>
+          <p className="text-[var(--color-gsp-text-secondary)] text-sm mt-1">Manage user access, block accounts, and assign roles.</p>
         </div>
         {isSuperAdmin && (
           <button
             onClick={() => setShowAddAdmin(true)}
-            className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 font-medium text-sm transition-colors"
+            className="bg-[var(--color-gsp-text-inverse)] text-white px-4 py-2 rounded-[var(--radius-lg)] hover:bg-indigo-700 font-medium text-sm transition-colors"
           >
             + Add Admin
           </button>
@@ -115,38 +115,38 @@ export default function AdminUsersPage() {
 
       {showAddAdmin && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
+          <div className="bg-[var(--color-gsp-surface-muted)] rounded-[var(--radius-xl)] shadow-xl max-w-md w-full p-6">
             <h2 className="text-xl font-bold mb-4">Add New Administrator</h2>
             <form onSubmit={handleAddAdmin} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                <label className="block text-sm font-medium text-[var(--color-gsp-text-primary)] mb-1">Name</label>
                 <input aria-label="Input field" 
                   type="text" 
                   value={newAdmin.name} 
                   onChange={(e) => setNewAdmin({ ...newAdmin, name: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg p-2"
+                  className="w-full border border-[var(--color-gsp-border-default)] rounded-[var(--radius-lg)] p-2"
                   placeholder="Admin Name"
                   required 
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <label className="block text-sm font-medium text-[var(--color-gsp-text-primary)] mb-1">Email</label>
                 <input aria-label="Input field" 
                   type="email" 
                   value={newAdmin.email} 
                   onChange={(e) => setNewAdmin({ ...newAdmin, email: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg p-2"
+                  className="w-full border border-[var(--color-gsp-border-default)] rounded-[var(--radius-lg)] p-2"
                   placeholder="admin@example.com"
                   required 
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                <label className="block text-sm font-medium text-[var(--color-gsp-text-primary)] mb-1">Password</label>
                 <input aria-label="Input field" 
                   type="password" 
                   value={newAdmin.password} 
                   onChange={(e) => setNewAdmin({ ...newAdmin, password: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg p-2"
+                  className="w-full border border-[var(--color-gsp-border-default)] rounded-[var(--radius-lg)] p-2"
                   placeholder="Secure password"
                   required 
                   minLength={6}
@@ -156,14 +156,14 @@ export default function AdminUsersPage() {
                 <button 
                   type="button" 
                   onClick={() => setShowAddAdmin(false)}
-                  className="px-4 py-2 text-gray-600 hover:text-gray-800"
+                  className="px-4 py-2 text-[var(--color-gsp-text-secondary)] hover:text-[var(--color-gsp-text-primary)]"
                 >
                   Cancel
                 </button>
                 <button 
                   type="submit"
                   disabled={addingAdmin}
-                  className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 disabled:opacity-50"
+                  className="bg-[var(--color-gsp-text-inverse)] text-white px-4 py-2 rounded-[var(--radius-lg)] hover:bg-indigo-700 disabled:opacity-50"
                 >
                   {addingAdmin ? 'Creating...' : 'Create Admin'}
                 </button>
@@ -173,37 +173,37 @@ export default function AdminUsersPage() {
         </div>
       )}
 
-      <div className="bg-white rounded-lg shadow border border-gray-200 overflow-hidden">
+      <div className="bg-[var(--color-gsp-surface-muted)] rounded-[var(--radius-lg)] shadow border border-[var(--color-gsp-border-muted)] overflow-hidden">
         {loading ? (
-          <div className="p-8 text-center text-gray-500">Loading users...</div>
+          <div className="p-8 text-center text-[var(--color-gsp-text-secondary)]">Loading users...</div>
         ) : users.length > 0 ? (
           <div className="w-full overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+              <thead className="bg-[var(--color-gsp-surface-raised)]">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-gsp-text-secondary)] uppercase tracking-wider">User</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-gsp-text-secondary)] uppercase tracking-wider">Email</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-gsp-text-secondary)] uppercase tracking-wider">Role</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-gsp-text-secondary)] uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-[var(--color-gsp-text-secondary)] uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-[var(--color-gsp-surface-muted)] divide-y divide-gray-200">
                 {users.map((user) => (
                   <tr key={user.id}>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{user.name}</div>
-                      <div className="text-xs text-gray-500">ID: {user.id.substring(0, 8)}...</div>
+                      <div className="text-sm font-medium text-[var(--color-gsp-text-primary)]">{user.name}</div>
+                      <div className="text-xs text-[var(--color-gsp-text-secondary)]">ID: {user.id.substring(0, 8)}...</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{user.email}</div>
+                      <div className="text-sm text-[var(--color-gsp-text-primary)]">{user.email}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {canEditRoles && session?.user?.id !== user.id ? (
                         <select
                           value={user.role}
                           onChange={(e) => handleRoleChange(user.id, e.target.value)}
-                          className="text-sm border-gray-300 rounded-md"
+                          className="text-sm border-[var(--color-gsp-border-default)] rounded-md"
                         >
                           <option value="user">User</option>
                           <option value="scholar">Scholar</option>
@@ -257,7 +257,7 @@ export default function AdminUsersPage() {
             </table>
           </div>
         ) : (
-          <div className="p-8 text-center text-gray-500">No users found.</div>
+          <div className="p-8 text-center text-[var(--color-gsp-text-secondary)]">No users found.</div>
         )}
       </div>
     </div>

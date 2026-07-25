@@ -17,6 +17,36 @@
 }
 
 :root {
+  /* GSP Design System Tokens */
+  --color-gsp-text-primary: lab(3.00391 0.421643 -2.14076);
+  --color-gsp-text-secondary: #0a0a0a;
+  --color-gsp-surface-base: #000000;
+  --color-gsp-text-inverse: #2f115d;
+  --color-gsp-surface-muted: #ffffff;
+  --color-gsp-surface-raised: lab(85.1236 -0.612259 -3.7138);
+  --color-gsp-surface-strong: lab(97.6675 0.338405 0.00327826);
+  --color-gsp-border-default: lab(90.7074 0.338435 0.00326633);
+  --color-gsp-border-muted: #e2dff0;
+  --color-gsp-border-strong: #eceaf4;
+  
+  --spacing-1: 4px;
+  --spacing-2: 5px;
+  --spacing-3: 7px;
+  --spacing-4: 8px;
+  --spacing-5: 9px;
+  --spacing-6: 10px;
+  --spacing-7: 12px;
+  --spacing-8: 14px;
+  
+  --radius-xs: 3px;
+  --radius-sm: 6px;
+  --radius-md: 7px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-step7: 18px;
+  --radius-step8: 50px;
+
   --violet: #2F115D;
   --gold: #B8893E;
   --ink: #0A0A0A;

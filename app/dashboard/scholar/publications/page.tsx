@@ -41,7 +41,7 @@ export default async function ScholarPublications() {
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold">My Publications</h1>
-          <p className="text-gray-600 text-sm mt-1">Track the status of your submissions and download your publication certificates.</p>
+          <p className="text-[var(--color-gsp-text-secondary)] text-sm mt-1">Track the status of your submissions and download your publication certificates.</p>
         </div>
         <Link 
           href="/dashboard/scholar/upload" 
@@ -51,24 +51,24 @@ export default async function ScholarPublications() {
         </Link>
       </div>
 
-      <div className="bg-white rounded-lg shadow border border-gray-200 overflow-hidden">
+      <div className="bg-[var(--color-gsp-surface-muted)] rounded-[var(--radius-lg)] shadow border border-[var(--color-gsp-border-muted)] overflow-hidden">
         {publications && publications.length > 0 ? (
           <div className="max-h-[600px] w-full overflow-x-auto overflow-y-auto">
             <table className="min-w-full divide-y divide-gray-200 relative">
-              <thead className="bg-gray-50 sticky top-0 z-10 shadow-sm">
+              <thead className="bg-[var(--color-gsp-surface-raised)] sticky top-0 z-10 shadow-[var(--shadow-1)]">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase bg-gray-50">Title</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase bg-gray-50">Type</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase bg-gray-50">Status</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase bg-gray-50">DOI</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase bg-gray-50">Action</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-gsp-text-secondary)] uppercase bg-[var(--color-gsp-surface-raised)]">Title</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-gsp-text-secondary)] uppercase bg-[var(--color-gsp-surface-raised)]">Type</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-gsp-text-secondary)] uppercase bg-[var(--color-gsp-surface-raised)]">Status</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-[var(--color-gsp-text-secondary)] uppercase bg-[var(--color-gsp-surface-raised)]">DOI</th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-[var(--color-gsp-text-secondary)] uppercase bg-[var(--color-gsp-surface-raised)]">Action</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-[var(--color-gsp-surface-muted)] divide-y divide-gray-200">
               {publications.map((pub: any) => (
                 <tr key={pub.id}>
                   <td className="px-6 py-4">
-                    <div className="text-sm font-medium text-gray-900">{pub.title}</div>
+                    <div className="text-sm font-medium text-[var(--color-gsp-text-primary)]">{pub.title}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800 capitalize">
@@ -84,7 +84,7 @@ export default async function ScholarPublications() {
                       {pub.status.replace('_', ' ').toUpperCase()}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--color-gsp-text-secondary)]">
                     {pub.doi || 'Pending'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex justify-end items-center gap-4">
@@ -97,12 +97,12 @@ export default async function ScholarPublications() {
                         Download Certificate
                       </Link>
                     ) : (
-                      <span className="text-gray-400">Not Available</span>
+                      <span className="text-[var(--color-gsp-text-secondary)]">Not Available</span>
                     )}
                     
                     <Link 
                       href={`/dashboard/scholar/publications/${pub.id}/edit`}
-                      className="text-blue-600 hover:text-blue-800 font-semibold bg-blue-50 px-3 py-1 rounded-md hover:bg-blue-100 transition-colors"
+                      className="text-[var(--color-gsp-text-inverse)] hover:text-blue-800 font-semibold bg-[#F4F1FA] px-3 py-1 rounded-md hover:bg-blue-100 transition-colors"
                     >
                       Edit
                     </Link>
@@ -122,7 +122,7 @@ export default async function ScholarPublications() {
             </table>
           </div>
         ) : (
-          <div className="p-8 text-center text-gray-500">
+          <div className="p-8 text-center text-[var(--color-gsp-text-secondary)]">
             You haven't uploaded any publications yet.
           </div>
         )}

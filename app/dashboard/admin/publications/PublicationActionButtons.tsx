@@ -59,7 +59,7 @@ export default function PublicationActionButtons({
         <button
           onClick={() => handleUpdate('under_review')}
           disabled={loading}
-          className="text-white bg-purple-600 hover:bg-purple-700 px-3 py-1 rounded-md text-xs font-medium disabled:opacity-50"
+          className="text-white bg-[var(--color-gsp-text-inverse)] hover:bg-purple-700 px-3 py-1 rounded-md text-xs font-medium disabled:opacity-50"
         >
           {loading ? '...' : 'Start Review'}
         </button>
@@ -87,7 +87,7 @@ export default function PublicationActionButtons({
       <button
         onClick={() => handleUpdate('rejected')}
         disabled={loading}
-        className="text-gray-700 bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-md text-xs font-medium border border-gray-300 disabled:opacity-50"
+        className="text-[var(--color-gsp-text-primary)] bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-md text-xs font-medium border border-[var(--color-gsp-border-default)] disabled:opacity-50"
       >
         Reject
       </button>

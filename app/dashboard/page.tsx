@@ -104,7 +104,7 @@ export default function Dashboard() {
   const renderReaderDashboard = () => (
     <div className="space-y-8 animate-fade-in-up">
       {applicationState?.status === 'rejected' && (
-        <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg shadow-sm">
+        <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg shadow-[var(--shadow-1)]">
           <div className="flex">
             <div className="shrink-0">
               <MdWarning className="h-5 w-5 text-red-500" />
@@ -129,7 +129,7 @@ export default function Dashboard() {
       )}
 
       {applicationState?.status === 'pending' && (
-        <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg shadow-sm">
+        <div className="bg-[#F4F1FA] border-l-4 border-blue-500 p-4 rounded-r-lg shadow-[var(--shadow-1)]">
           <div className="flex">
             <div className="shrink-0">
               <MdVerified className="h-5 w-5 text-blue-500" />
@@ -146,50 +146,50 @@ export default function Dashboard() {
         </div>
       )}
 
-      <div className="bg-linear-to-r from-blue-600 to-indigo-700 rounded-2xl p-8 text-white shadow-lg">
+      <div className="bg-linear-to-r from-blue-600 to-indigo-700 rounded-[var(--radius-2xl)] p-8 text-white shadow-[var(--shadow-2)]">
         <h1 className="text-3xl font-bold mb-2">Welcome back, {session?.user?.name}!</h1>
         <p className="text-blue-100 text-lg">Continue your learning journey today.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+        <div className="bg-[var(--color-gsp-surface-muted)] rounded-[var(--radius-2xl)] p-6 shadow-[var(--shadow-1)] border border-[var(--color-gsp-border-muted)]">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold text-gray-900 flex items-center">
-              <MdMenuBook className="text-indigo-600 mr-2" /> Continue Reading
+            <h2 className="text-xl font-bold text-[var(--color-gsp-text-primary)] flex items-center">
+              <MdMenuBook className="text-[var(--color-gsp-text-inverse)] mr-2" /> Continue Reading
             </h2>
-            <button className="text-sm text-indigo-600 font-semibold hover:underline">View All</button>
+            <button className="text-sm text-[var(--color-gsp-text-inverse)] font-semibold hover:underline">View All</button>
           </div>
           {history.length > 0 ? history.map((item, index) => {
             const pub = item.publications;
             if (!pub) return null;
             return (
               <Link href={`/explore`} key={index}>
-                <div className="p-4 mb-4 border rounded-xl hover:shadow-md transition-shadow cursor-pointer bg-gray-50 hover:bg-white">
-                  <h3 className="font-semibold text-gray-900">{pub.title}</h3>
-                  <p className="text-sm text-gray-500 mt-1">
+                <div className="p-4 mb-4 border rounded-[var(--radius-xl)] hover:shadow-[var(--shadow-2)] transition-shadow cursor-pointer bg-[var(--color-gsp-surface-raised)] hover:bg-[var(--color-gsp-surface-muted)]">
+                  <h3 className="font-semibold text-[var(--color-gsp-text-primary)]">{pub.title}</h3>
+                  <p className="text-sm text-[var(--color-gsp-text-secondary)] mt-1">
                     {pub.scholars?.users?.raw_user_meta_data?.full_name || "Unknown Author"} • {pub.categories?.name || "General"}
                   </p>
-                  <p className="text-[10px] text-gray-400 mt-1">
+                  <p className="text-[10px] text-[var(--color-gsp-text-secondary)] mt-1">
                     Viewed on {new Date(item.last_read_at).toLocaleDateString()}
                   </p>
                 </div>
               </Link>
             )
           }) : (
-            <div className="p-4 text-center text-gray-500">
+            <div className="p-4 text-center text-[var(--color-gsp-text-secondary)]">
               You haven't viewed any publications yet.
             </div>
           )}
         </div>
 
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-          <h2 className="text-xl font-bold text-gray-900 flex items-center mb-6">
-            <MdLibraryBooks className="text-indigo-600 mr-2" /> Recommended for You
+        <div className="bg-[var(--color-gsp-surface-muted)] rounded-[var(--radius-2xl)] p-6 shadow-[var(--shadow-1)] border border-[var(--color-gsp-border-muted)]">
+          <h2 className="text-xl font-bold text-[var(--color-gsp-text-primary)] flex items-center mb-6">
+            <MdLibraryBooks className="text-[var(--color-gsp-text-inverse)] mr-2" /> Recommended for You
           </h2>
-          <div className="p-8 text-center bg-gray-50 rounded-xl border border-dashed border-gray-300">
-            <p className="text-gray-500">Read more papers to get personalized recommendations!</p>
+          <div className="p-8 text-center bg-[var(--color-gsp-surface-raised)] rounded-[var(--radius-xl)] border border-dashed border-[var(--color-gsp-border-default)]">
+            <p className="text-[var(--color-gsp-text-secondary)]">Read more papers to get personalized recommendations!</p>
             <Link href="/explore">
-              <button className="mt-4 px-6 py-2 bg-indigo-50 text-indigo-700 font-semibold rounded-full hover:bg-indigo-100 transition-colors">
+              <button className="mt-4 px-6 py-2 bg-[#F4F1FA] text-indigo-700 font-semibold rounded-full hover:bg-indigo-100 transition-colors">
                 Explore Categories
               </button>
             </Link>
@@ -198,7 +198,7 @@ export default function Dashboard() {
       </div>
 
       {(!applicationState || (applicationState.status !== 'pending' && applicationState.status !== 'approved')) && (
-        <div className="bg-indigo-50 border border-indigo-100 rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between mt-8">
+        <div className="bg-[#F4F1FA] border border-indigo-100 rounded-[var(--radius-2xl)] p-6 md:p-8 flex flex-col md:flex-row items-center justify-between mt-8">
           <div className="mb-4 md:mb-0">
             <h2 className="text-xl font-bold text-indigo-900 mb-2">Want to contribute?</h2>
             <p className="text-indigo-700">Apply to become a verified scholar and share your research with the world.</p>
@@ -212,7 +212,7 @@ export default function Dashboard() {
   const renderScholarDashboard = () => (
     <div className="space-y-6 animate-fade-in-up">
       {/* Header Banner */}
-      <div className="bg-[#5c1c9b] rounded-2xl p-8 flex flex-col md:flex-row justify-between items-start md:items-center text-white shadow-md relative overflow-hidden">
+      <div className="bg-[#5c1c9b] rounded-[var(--radius-2xl)] p-8 flex flex-col md:flex-row justify-between items-start md:items-center text-white shadow-[var(--shadow-2)] relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-[#2F115D] to-[#6a29ab] opacity-90"></div>
         <div className="relative z-10 mb-4 md:mb-0">
           <h1 className="text-3xl font-bold mb-2">Scholar Dashboard</h1>
@@ -220,7 +220,7 @@ export default function Dashboard() {
         </div>
         <Link 
           href="/dashboard/scholar/upload"
-          className="relative z-10 flex items-center gap-2 bg-white text-[#2F115D] px-6 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors shadow-sm"
+          className="relative z-10 flex items-center gap-2 bg-[var(--color-gsp-surface-muted)] text-[#2F115D] px-6 py-3 rounded-[var(--radius-lg)] font-semibold hover:bg-[var(--color-gsp-surface-raised)] transition-colors shadow-[var(--shadow-1)]"
         >
           <MdPublish className="w-5 h-5" />
           Submit Paper
@@ -229,60 +229,60 @@ export default function Dashboard() {
 
       {/* Metrics Row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between">
+        <div className="bg-[var(--color-gsp-surface-muted)] p-6 rounded-[var(--radius-2xl)] shadow-[var(--shadow-1)] border border-[var(--color-gsp-border-muted)] flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center text-[#2F115D]">
               <MdLibraryBooks className="w-6 h-6" />
             </div>
             <div>
-              <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">Published</p>
-              <p className="text-3xl font-bold text-gray-900 mt-1">{scholarStats?.published || 0}</p>
+              <p className="text-xs font-bold text-[var(--color-gsp-text-secondary)] uppercase tracking-wide">Published</p>
+              <p className="text-3xl font-bold text-[var(--color-gsp-text-primary)] mt-1">{scholarStats?.published || 0}</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between">
+        <div className="bg-[var(--color-gsp-surface-muted)] p-6 rounded-[var(--radius-2xl)] shadow-[var(--shadow-1)] border border-[var(--color-gsp-border-muted)] flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-500">
               <MdAnalytics className="w-6 h-6" />
             </div>
             <div>
-              <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">Total Views</p>
-              <p className="text-3xl font-bold text-gray-900 mt-1">{scholarStats?.views || 0}</p>
+              <p className="text-xs font-bold text-[var(--color-gsp-text-secondary)] uppercase tracking-wide">Total Views</p>
+              <p className="text-3xl font-bold text-[var(--color-gsp-text-primary)] mt-1">{scholarStats?.views || 0}</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between">
+        <div className="bg-[var(--color-gsp-surface-muted)] p-6 rounded-[var(--radius-2xl)] shadow-[var(--shadow-1)] border border-[var(--color-gsp-border-muted)] flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full bg-purple-50 flex items-center justify-center text-[#8e44ad]">
+            <div className="w-12 h-12 rounded-full bg-[#F4F1FA] flex items-center justify-center text-[#8e44ad]">
               <MdVerified className="w-6 h-6" />
             </div>
             <div>
-              <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">Downloads</p>
-              <p className="text-3xl font-bold text-gray-900 mt-1">{scholarStats?.downloads || 0}</p>
+              <p className="text-xs font-bold text-[var(--color-gsp-text-secondary)] uppercase tracking-wide">Downloads</p>
+              <p className="text-3xl font-bold text-[var(--color-gsp-text-primary)] mt-1">{scholarStats?.downloads || 0}</p>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="px-6 py-5 border-b border-gray-100">
-          <h2 className="text-lg font-bold text-gray-900">Recent Drafts</h2>
+      <div className="bg-[var(--color-gsp-surface-muted)] rounded-[var(--radius-2xl)] shadow-[var(--shadow-1)] border border-[var(--color-gsp-border-muted)] overflow-hidden">
+        <div className="px-6 py-5 border-b border-[var(--color-gsp-border-muted)]">
+          <h2 className="text-lg font-bold text-[var(--color-gsp-text-primary)]">Recent Drafts</h2>
         </div>
         <div className="p-6">
           {scholarStats?.drafts?.length > 0 ? (
             <div className="space-y-4">
               {scholarStats.drafts.map((draft: any) => (
-                <div key={draft.id} className="p-4 border rounded-xl flex justify-between items-center">
+                <div key={draft.id} className="p-4 border rounded-[var(--radius-xl)] flex justify-between items-center">
                   <span className="font-semibold">{draft.title}</span>
-                  <Link href={`/dashboard/scholar/upload?id=${draft.id}`} className="text-purple-600 hover:underline">Edit</Link>
+                  <Link href={`/dashboard/scholar/upload?id=${draft.id}`} className="text-[var(--color-gsp-text-inverse)] hover:underline">Edit</Link>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="border-2 border-dashed border-gray-200 rounded-xl p-12 flex items-center justify-center text-center">
-              <p className="text-gray-500">You don't have any drafts right now.</p>
+            <div className="border-2 border-dashed border-[var(--color-gsp-border-muted)] rounded-[var(--radius-xl)] p-12 flex items-center justify-center text-center">
+              <p className="text-[var(--color-gsp-text-secondary)]">You don't have any drafts right now.</p>
             </div>
           )}
         </div>
@@ -292,7 +292,7 @@ export default function Dashboard() {
 
   const renderAdminDashboard = () => (
     <div className="space-y-8 animate-fade-in-up">
-      <div className="bg-linear-to-r from-gray-800 to-gray-900 rounded-2xl p-8 text-white shadow-lg">
+      <div className="bg-linear-to-r from-gray-800 to-gray-900 rounded-[var(--radius-2xl)] p-8 text-white shadow-[var(--shadow-2)]">
         <h1 className="text-3xl font-bold mb-2">
           {role === 'super_admin' ? 'Super Admin Control Center' : 'Admin Control Center'}
         </h1>
@@ -304,7 +304,7 @@ export default function Dashboard() {
       </div>
 
       {role === 'super_admin' && platformConfig?.maintenance_mode && (
-        <div className="bg-red-50 border border-red-200 rounded-2xl p-6 flex items-start gap-4 shadow-sm">
+        <div className="bg-red-50 border border-red-200 rounded-[var(--radius-2xl)] p-6 flex items-start gap-4 shadow-[var(--shadow-1)]">
           <MdWarning className="text-3xl text-red-500 shrink-0 mt-1" />
           <div>
             <h3 className="text-lg font-bold text-red-800 mb-1">MAINTENANCE MODE ACTIVE</h3>
@@ -315,68 +315,68 @@ export default function Dashboard() {
 
       {role === 'super_admin' && superAdminStats && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center">
-            <div className="w-12 h-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xl mr-4 shrink-0">
+          <div className="bg-[var(--color-gsp-surface-muted)] rounded-[var(--radius-2xl)] p-6 shadow-[var(--shadow-1)] border border-[var(--color-gsp-border-muted)] flex items-center">
+            <div className="w-12 h-12 rounded-full bg-blue-100 text-[var(--color-gsp-text-inverse)] flex items-center justify-center text-xl mr-4 shrink-0">
               <MdGroup />
             </div>
             <div>
-              <p className="text-xs text-gray-500 font-semibold uppercase">Total Users</p>
-              <p className="text-2xl font-extrabold text-gray-900">{superAdminStats.totalUsers.toLocaleString()}</p>
+              <p className="text-xs text-[var(--color-gsp-text-secondary)] font-semibold uppercase">Total Users</p>
+              <p className="text-2xl font-extrabold text-[var(--color-gsp-text-primary)]">{superAdminStats.totalUsers.toLocaleString()}</p>
             </div>
           </div>
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center">
-            <div className="w-12 h-12 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center text-xl mr-4 shrink-0">
+          <div className="bg-[var(--color-gsp-surface-muted)] rounded-[var(--radius-2xl)] p-6 shadow-[var(--shadow-1)] border border-[var(--color-gsp-border-muted)] flex items-center">
+            <div className="w-12 h-12 rounded-full bg-purple-100 text-[var(--color-gsp-text-inverse)] flex items-center justify-center text-xl mr-4 shrink-0">
               <MdVerified />
             </div>
             <div>
-              <p className="text-xs text-gray-500 font-semibold uppercase">Total Scholars</p>
-              <p className="text-2xl font-extrabold text-gray-900">{superAdminStats.totalScholars.toLocaleString()}</p>
+              <p className="text-xs text-[var(--color-gsp-text-secondary)] font-semibold uppercase">Total Scholars</p>
+              <p className="text-2xl font-extrabold text-[var(--color-gsp-text-primary)]">{superAdminStats.totalScholars.toLocaleString()}</p>
             </div>
           </div>
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center">
-            <div className="w-12 h-12 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xl mr-4 shrink-0">
+          <div className="bg-[var(--color-gsp-surface-muted)] rounded-[var(--radius-2xl)] p-6 shadow-[var(--shadow-1)] border border-[var(--color-gsp-border-muted)] flex items-center">
+            <div className="w-12 h-12 rounded-full bg-indigo-100 text-[var(--color-gsp-text-inverse)] flex items-center justify-center text-xl mr-4 shrink-0">
               <MdLibraryBooks />
             </div>
             <div>
-              <p className="text-xs text-gray-500 font-semibold uppercase">Publications</p>
-              <p className="text-2xl font-extrabold text-gray-900">{superAdminStats.totalPublications.toLocaleString()}</p>
+              <p className="text-xs text-[var(--color-gsp-text-secondary)] font-semibold uppercase">Publications</p>
+              <p className="text-2xl font-extrabold text-[var(--color-gsp-text-primary)]">{superAdminStats.totalPublications.toLocaleString()}</p>
             </div>
           </div>
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center">
+          <div className="bg-[var(--color-gsp-surface-muted)] rounded-[var(--radius-2xl)] p-6 shadow-[var(--shadow-1)] border border-[var(--color-gsp-border-muted)] flex items-center">
             <div className="w-12 h-12 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-xl mr-4 shrink-0">
               <MdAnalytics />
             </div>
             <div>
-              <p className="text-xs text-gray-500 font-semibold uppercase">Audit Logs</p>
-              <p className="text-2xl font-extrabold text-gray-900">{superAdminStats.totalLogs.toLocaleString()}</p>
+              <p className="text-xs text-[var(--color-gsp-text-secondary)] font-semibold uppercase">Audit Logs</p>
+              <p className="text-2xl font-extrabold text-[var(--color-gsp-text-primary)]">{superAdminStats.totalLogs.toLocaleString()}</p>
             </div>
           </div>
         </div>
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-          <h2 className="text-xl font-bold text-gray-900 flex items-center mb-6">
-            <MdGroup className="text-indigo-600 mr-2" /> User Statistics
+        <div className="bg-[var(--color-gsp-surface-muted)] rounded-[var(--radius-2xl)] p-6 shadow-[var(--shadow-1)] border border-[var(--color-gsp-border-muted)]">
+          <h2 className="text-xl font-bold text-[var(--color-gsp-text-primary)] flex items-center mb-6">
+            <MdGroup className="text-[var(--color-gsp-text-inverse)] mr-2" /> User Statistics
           </h2>
           <div className="space-y-4">
-            <div className="flex justify-between items-center p-4 bg-gray-50 rounded-xl">
-              <span className="text-gray-600 font-semibold">Total Scholars</span>
-              <span className="text-xl font-bold text-indigo-600">{adminStats?.totalScholars || 0}</span>
+            <div className="flex justify-between items-center p-4 bg-[var(--color-gsp-surface-raised)] rounded-[var(--radius-xl)]">
+              <span className="text-[var(--color-gsp-text-secondary)] font-semibold">Total Scholars</span>
+              <span className="text-xl font-bold text-[var(--color-gsp-text-inverse)]">{adminStats?.totalScholars || 0}</span>
             </div>
-            <div className="flex justify-between items-center p-4 bg-gray-50 rounded-xl">
-              <span className="text-gray-600 font-semibold">Total Readers</span>
+            <div className="flex justify-between items-center p-4 bg-[var(--color-gsp-surface-raised)] rounded-[var(--radius-xl)]">
+              <span className="text-[var(--color-gsp-text-secondary)] font-semibold">Total Readers</span>
               <span className="text-xl font-bold text-green-600">{adminStats?.totalReaders || 0}</span>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-          <h2 className="text-xl font-bold text-gray-900 flex items-center mb-6">
-            <MdLibraryBooks className="text-indigo-600 mr-2" /> Pending Approvals
+        <div className="bg-[var(--color-gsp-surface-muted)] rounded-[var(--radius-2xl)] p-6 shadow-[var(--shadow-1)] border border-[var(--color-gsp-border-muted)]">
+          <h2 className="text-xl font-bold text-[var(--color-gsp-text-primary)] flex items-center mb-6">
+            <MdLibraryBooks className="text-[var(--color-gsp-text-inverse)] mr-2" /> Pending Approvals
           </h2>
           {adminStats?.pendingPublications > 0 ? (
-            <div className="p-8 text-center bg-orange-50 rounded-xl border border-orange-200">
+            <div className="p-8 text-center bg-orange-50 rounded-[var(--radius-xl)] border border-orange-200">
               <p className="text-orange-800 font-semibold text-lg">{adminStats.pendingPublications} publications pending review</p>
               <Link href="/dashboard/admin/publications">
                 <button className="mt-4 px-6 py-2 bg-orange-600 text-white font-semibold rounded-full hover:bg-orange-700 transition-colors">
@@ -385,19 +385,19 @@ export default function Dashboard() {
               </Link>
             </div>
           ) : (
-            <div className="p-8 text-center bg-gray-50 rounded-xl border border-dashed border-gray-300">
-              <p className="text-gray-500">All caught up! No pending publications.</p>
+            <div className="p-8 text-center bg-[var(--color-gsp-surface-raised)] rounded-[var(--radius-xl)] border border-dashed border-[var(--color-gsp-border-default)]">
+              <p className="text-[var(--color-gsp-text-secondary)]">All caught up! No pending publications.</p>
             </div>
           )}
         </div>
       </div>
 
       {role === 'super_admin' && (
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+        <div className="bg-[var(--color-gsp-surface-muted)] rounded-[var(--radius-2xl)] p-6 shadow-[var(--shadow-1)] border border-[var(--color-gsp-border-muted)]">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <div>
-              <h3 className="text-lg font-bold text-gray-900 mb-2">Maintenance Mode</h3>
-              <p className="text-gray-500 text-sm">
+              <h3 className="text-lg font-bold text-[var(--color-gsp-text-primary)] mb-2">Maintenance Mode</h3>
+              <p className="text-[var(--color-gsp-text-secondary)] text-sm">
                 When activated, non-admin users will be unable to access the site and will see a maintenance screen. 
                 Use this during critical database migrations or severe security incidents.
               </p>

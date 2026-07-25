@@ -59,41 +59,41 @@ export default function EditPublicationPage({ params }: { params: { id: string }
     }
   }
 
-  if (loading) return <div className="p-8 text-center text-gray-500">Loading publication details...</div>
+  if (loading) return <div className="p-8 text-center text-[var(--color-gsp-text-secondary)]">Loading publication details...</div>
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
       <div className="mb-6 flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Edit Publication</h1>
-          <p className="text-gray-600 mt-1">Full control over publication content.</p>
+          <h1 className="text-2xl font-bold text-[var(--color-gsp-text-primary)]">Edit Publication</h1>
+          <p className="text-[var(--color-gsp-text-secondary)] mt-1">Full control over publication content.</p>
         </div>
-        <Link href="/dashboard/admin/publications" className="text-indigo-600 hover:text-indigo-800">
+        <Link href="/dashboard/admin/publications" className="text-[var(--color-gsp-text-inverse)] hover:text-indigo-800">
           Back to List
         </Link>
       </div>
 
-      <div className="bg-white rounded-xl shadow border border-gray-100 p-6">
+      <div className="bg-[var(--color-gsp-surface-muted)] rounded-[var(--radius-xl)] shadow border border-[var(--color-gsp-border-muted)] p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+            <label className="block text-sm font-medium text-[var(--color-gsp-text-primary)] mb-1">Title</label>
             <input 
               type="text" 
               value={formData.title}
               onChange={e => setFormData({...formData, title: e.target.value})}
               required 
-              className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-indigo-500 outline-none"
+              className="w-full p-2 border border-[var(--color-gsp-border-default)] rounded focus:ring-2 focus:ring-indigo-500 outline-none"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Content Type</label>
+              <label className="block text-sm font-medium text-[var(--color-gsp-text-primary)] mb-1">Content Type</label>
               <select 
                 value={formData.content_type}
                 onChange={e => setFormData({...formData, content_type: e.target.value})}
                 required
-                className="w-full p-2 border border-gray-300 bg-white rounded focus:ring-2 focus:ring-indigo-500 outline-none"
+                className="w-full p-2 border border-[var(--color-gsp-border-default)] bg-[var(--color-gsp-surface-muted)] rounded focus:ring-2 focus:ring-indigo-500 outline-none"
               >
                 <option value="thesis">Thesis</option>
                 <option value="article">Research Article</option>
@@ -103,11 +103,11 @@ export default function EditPublicationPage({ params }: { params: { id: string }
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+              <label className="block text-sm font-medium text-[var(--color-gsp-text-primary)] mb-1">Category</label>
               <select 
                 value={formData.category_id}
                 onChange={e => setFormData({...formData, category_id: e.target.value})}
-                className="w-full p-2 border border-gray-300 bg-white rounded focus:ring-2 focus:ring-indigo-500 outline-none"
+                className="w-full p-2 border border-[var(--color-gsp-border-default)] bg-[var(--color-gsp-surface-muted)] rounded focus:ring-2 focus:ring-indigo-500 outline-none"
               >
                 <option value="">None</option>
                 {categories.map(c => (
@@ -118,21 +118,21 @@ export default function EditPublicationPage({ params }: { params: { id: string }
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Abstract</label>
+            <label className="block text-sm font-medium text-[var(--color-gsp-text-primary)] mb-1">Abstract</label>
             <textarea 
               value={formData.abstract}
               onChange={e => setFormData({...formData, abstract: e.target.value})}
               rows={8} 
               required 
-              className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-indigo-500 outline-none"
+              className="w-full p-2 border border-[var(--color-gsp-border-default)] rounded focus:ring-2 focus:ring-indigo-500 outline-none"
             />
           </div>
 
-          <div className="flex justify-end pt-4 border-t border-gray-100">
+          <div className="flex justify-end pt-4 border-t border-[var(--color-gsp-border-muted)]">
             <button
               type="submit"
               disabled={saving}
-              className="px-6 py-2 bg-indigo-600 text-white rounded font-medium hover:bg-indigo-700 disabled:opacity-50"
+              className="px-6 py-2 bg-[var(--color-gsp-text-inverse)] text-white rounded font-medium hover:bg-indigo-700 disabled:opacity-50"
             >
               {saving ? 'Saving...' : 'Save Changes'}
             </button>

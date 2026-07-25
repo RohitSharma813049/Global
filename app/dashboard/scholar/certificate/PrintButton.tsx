@@ -7,7 +7,7 @@ export default function PrintButton() {
         onClick={() => {
           if (typeof window !== 'undefined') window.print()
         }} 
-        className="bg-emerald-600 text-white px-6 py-3 rounded-lg shadow-lg font-bold hover:bg-emerald-700 transition"
+        className="bg-emerald-600 text-white px-6 py-3 rounded-[var(--radius-lg)] shadow-[var(--shadow-2)] font-bold hover:bg-emerald-700 transition"
       >
         Print / Save as PDF
       </button>
