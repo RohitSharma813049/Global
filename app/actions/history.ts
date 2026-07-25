@@ -54,16 +54,17 @@ export async function trackPublicationView(publicationId: string) {
       const pub = await prisma.publications.findUnique({
         where: { id: publicationId },
         select: { scholar_id: true }
-    });
-
-    if (pub?.scholar_id) {
-      await prisma.scholars.update({
-        where: { id: pub.scholar_id },
-        data: { total_views: { increment: 1 } }
       });
+
+      if (pub?.scholar_id) {
+        await prisma.scholars.update({
+          where: { id: pub.scholar_id },
+          data: { total_views: { increment: 1 } }
+        });
+      }
+    } catch (incError) {
+      console.error('Failed to increment views:', incError);
     }
-  } catch (incError) {
-    console.error('Failed to increment views:', incError);
   }
 
   return { success: true }
