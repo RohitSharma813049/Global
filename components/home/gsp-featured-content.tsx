@@ -6,11 +6,12 @@ import Link from 'next/link'
 interface GspFeaturedContentProps {
   title?: string;
   subtitle?: string;
+  description?: string;
   autoplay?: boolean;
   publications?: any[];
 }
 
-export default function GspFeaturedContent({ title, subtitle, autoplay = true, publications = [] }: GspFeaturedContentProps) {
+export default function GspFeaturedContent({ title, subtitle, description, autoplay = true, publications = [] }: GspFeaturedContentProps) {
   const [filter, setFilter] = useState('All')
   const gridRef = useRef<HTMLDivElement>(null)
   const [activeDot, setActiveDot] = useState(0)
@@ -54,7 +55,7 @@ export default function GspFeaturedContent({ title, subtitle, autoplay = true, p
       desc: 'A cross-cultural framework examining ethical accountability in AI systems deployed across divergent regulatory and academic research contexts.',
       img: '/placeholder.svg',
       views: '2.3k reads',
-      link: '/publications?category=thesis'
+      link: '/explore?type=Thesis'
     },
     {
       type: 'Article',
@@ -65,7 +66,7 @@ export default function GspFeaturedContent({ title, subtitle, autoplay = true, p
       desc: 'An incisive look at restructuring curricula and research methodology to center indigenous African epistemologies in higher education.',
       img: '/placeholder.svg',
       views: '4.1k reads',
-      link: '/publications?category=article'
+      link: '/explore?type=Article'
     },
     {
       type: 'eBook',
@@ -76,7 +77,7 @@ export default function GspFeaturedContent({ title, subtitle, autoplay = true, p
       desc: "A comprehensive eBook tracing the GCC's structural shift away from hydrocarbon dependency through Vision 2030's policy levers.",
       img: '/placeholder.svg',
       views: '3.7k reads',
-      link: '/publications?category=e-book'
+      link: '/explore?type=Ebook'
     },
     {
       type: 'Magazine',
@@ -87,21 +88,19 @@ export default function GspFeaturedContent({ title, subtitle, autoplay = true, p
       desc: "GSP's exclusive interview series feature exploring realistic decarbonisation pathways for emerging and transition economies.",
       img: '/placeholder.svg',
       views: '1.9k reads',
-      link: '/publications?category=magazine'
+      link: '/explore?type=Magazine'
     }
   ];
 
   const displayPublications = publications && publications.length > 0 ? publications : defaultPublications;
 
+  const dynamicFilters = ['All', ...Array.from(new Set(displayPublications.map(p => p.subject?.split(' · ')[0] || p.subject))).filter(Boolean).slice(0, 4)] as string[];
+
   const filteredPublications = filter === 'All' 
     ? displayPublications 
     : displayPublications.filter(p => {
-        const pType = (p.type || '').toLowerCase();
-        if (filter === 'Theses') return pType === 'thesis' || pType === 'theses';
-        if (filter === 'Articles') return pType === 'article' || pType === 'articles';
-        if (filter === 'eBooks') return pType === 'ebook' || pType === 'ebooks';
-        if (filter === 'Magazines') return pType === 'magazine' || pType === 'magazines';
-        return true;
+        const pSub = p.subject || '';
+        return pSub.includes(filter);
       });
 
   return (
@@ -111,7 +110,7 @@ export default function GspFeaturedContent({ title, subtitle, autoplay = true, p
           <div className="gsp-section-head-left gsp-reveal">
             <p className="gsp-eyebrow"><span className="gsp-eyebrow-line"></span>{subtitle || 'Handpicked This Month'}</p>
             <h2 className="gsp-section-h2" dangerouslySetInnerHTML={{ __html: title || 'Featured <em>Publications</em>' }} />
-            <p className="gsp-section-sub">A curated selection of distinguished research, eBooks and editorial work from scholars across 80 countries.</p>
+            <p className="gsp-section-sub">{description || 'A curated selection of distinguished research, eBooks and editorial work from scholars across 80 countries.'}</p>
           </div>
           <Link href="/publications" className="gsp-section-link gsp-reveal">
             View All Publications
@@ -122,7 +121,7 @@ export default function GspFeaturedContent({ title, subtitle, autoplay = true, p
         </div>
 
         <div className="gsp-pub-filter-row gsp-reveal">
-          {['All', 'Theses', 'Articles', 'eBooks', 'Magazines'].map(f => (
+          {dynamicFilters.map(f => (
             <button 
               key={f} 
               className={`gsp-pfpill ${filter === f ? 'on' : ''}`}

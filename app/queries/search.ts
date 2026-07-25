@@ -40,26 +40,40 @@ export async function getAdvancedSearchData(params: SearchParams) {
     }
 
     if (params.authors && params.authors.length > 0) {
-      const lowerAuthors = params.authors.map(a => a.toLowerCase());
-      const allScholarsForFilter = await prisma.scholars.findMany({
-        where: { deleted_at: null },
-        select: { id: true, users: { select: { raw_user_meta_data: true } } }
-      });
-      const validScholarIds = allScholarsForFilter.filter(s => {
-        const name = (s.users?.raw_user_meta_data as any)?.full_name || (s.users?.raw_user_meta_data as any)?.name;
-        return name && lowerAuthors.includes(name.toLowerCase());
-      }).map(s => s.id);
-
+      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      const authorIds = params.authors.filter(a => uuidRegex.test(a));
+      const authorNames = params.authors.filter(a => !uuidRegex.test(a));
+      
       whereClause.AND = whereClause.AND || [];
+      const orConditions: any[] = [];
       
-      const authorOrs = params.authors.map(a => ({ author_name: { equals: a, mode: 'insensitive' } }));
+      if (authorIds.length > 0) {
+        orConditions.push({ scholar_id: { in: authorIds } });
+      }
       
-      whereClause.AND.push({
-        OR: [
-          ...authorOrs,
-          { scholar_id: { in: validScholarIds.length > 0 ? validScholarIds : ['00000000-0000-0000-0000-000000000000'] } }
-        ]
-      });
+      if (authorNames.length > 0) {
+        // Find if any of these names map to scholars to catch legacy URLs that pass names
+        const lowerAuthors = authorNames.map(a => a.toLowerCase());
+        const allScholarsForFilter = await prisma.scholars.findMany({
+          where: { deleted_at: null },
+          select: { id: true, users: { select: { raw_user_meta_data: true } } }
+        });
+        const validScholarIds = allScholarsForFilter.filter(s => {
+          const name = (s.users?.raw_user_meta_data as any)?.full_name || (s.users?.raw_user_meta_data as any)?.name;
+          return name && lowerAuthors.includes(name.toLowerCase());
+        }).map(s => s.id);
+
+        if (validScholarIds.length > 0) {
+          orConditions.push({ scholar_id: { in: validScholarIds } });
+        }
+        
+        const authorOrs = authorNames.map(a => ({ author_name: { equals: a, mode: 'insensitive' } }));
+        orConditions.push(...authorOrs);
+      }
+      
+      if (orConditions.length > 0) {
+        whereClause.AND.push({ OR: orConditions });
+      }
     }
 
     let orderBy: any = { created_at: 'desc' };
@@ -89,7 +103,7 @@ export async function getAdvancedSearchData(params: SearchParams) {
       prisma.content_types.findMany({ orderBy: { name: 'asc' } }),
       prisma.scholars.findMany({
         where: { deleted_at: null },
-        select: { users: { select: { raw_user_meta_data: true } } }
+        select: { id: true, users: { select: { raw_user_meta_data: true } } }
       }),
       prisma.publications.findMany({
         where: { status: 'published', deleted_at: null },
@@ -134,10 +148,26 @@ export async function getAdvancedSearchData(params: SearchParams) {
       } : null
     }));
 
-    const allAuthors = Array.from(new Set([
-      ...allScholarsResponse.map(s => (s.users?.raw_user_meta_data as any)?.full_name || (s.users?.raw_user_meta_data as any)?.name),
-      ...uniqueAuthorNames.map(p => p.author_name)
-    ])).filter(Boolean).sort() as string[];
+    const scholarsMapped = allScholarsResponse.map(s => {
+      const name = (s.users?.raw_user_meta_data as any)?.full_name || (s.users?.raw_user_meta_data as any)?.name || 'Unknown';
+      return { id: s.id, name };
+    });
+    
+    // Add legacy string names by using their name as the ID
+    const legacyMapped = uniqueAuthorNames.filter(p => p.author_name).map(p => ({
+      id: p.author_name as string,
+      name: p.author_name as string
+    }));
+
+    // Deduplicate by ID
+    const allAuthorsMap = new Map<string, { id: string, name: string }>();
+    [...scholarsMapped, ...legacyMapped].forEach(a => {
+      if (a.id && !allAuthorsMap.has(a.id)) {
+        allAuthorsMap.set(a.id, a);
+      }
+    });
+
+    const allAuthors = Array.from(allAuthorsMap.values()).sort((a, b) => a.name.localeCompare(b.name));
 
     const formattedTypeCounts = typeCounts.reduce((acc, curr) => {
       const typeKey = (curr.content_type || '').toLowerCase();

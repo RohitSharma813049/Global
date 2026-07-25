@@ -3,12 +3,19 @@
 import React, { useState, useEffect } from 'react'
 import { getAllScholarsForAdmin, toggleScholarFeaturedStatus } from '@/app/actions/cms'
 import toast from 'react-hot-toast'
-import { MoreVertical, Star, StarOff } from 'lucide-react'
+import { MoreVertical, Star, StarOff, Edit } from 'lucide-react'
+import Link from 'next/link'
 
 export default function FeaturedScholarsManager() {
   const [scholars, setScholars] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [openMenuId, setOpenMenuId] = useState<string | null>(null)
+  
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 10
+  const totalPages = Math.ceil(scholars.length / itemsPerPage)
+  const paginatedScholars = scholars.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
 
   useEffect(() => {
     function handleClickOutside() {
@@ -70,7 +77,7 @@ export default function FeaturedScholarsManager() {
               </tr>
             </thead>
             <tbody className="bg-(--color-gsp-surface-muted) divide-y divide-gray-200">
-              {scholars.map(scholar => {
+            {paginatedScholars.map(scholar => {
                  
                 const name = (scholar.users?.raw_user_meta_data as any)?.name || scholar.users?.email || 'Unknown User'
                 return (
@@ -82,44 +89,58 @@ export default function FeaturedScholarsManager() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-(--color-gsp-text-secondary)">{scholar.specialization || 'N/A'}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-(--color-gsp-text-secondary)">{scholar._count?.publications || 0}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <div className="relative inline-block text-left">
+                      <div className="flex justify-end">
                         <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setOpenMenuId(openMenuId === scholar.id ? null : scholar.id);
+                          onClick={(e) => { 
+                            e.stopPropagation(); 
+                            handleToggle(scholar.id, !!scholar.is_featured); 
                           }}
-                          className="p-1 rounded-md hover:bg-gray-100 transition-colors"
+                          className={`px-3 py-1.5 rounded-md text-sm font-medium flex items-center gap-2 transition-colors ${scholar.is_featured ? 'text-amber-700 bg-amber-50 hover:bg-amber-100' : 'text-gray-600 hover:text-amber-600 hover:bg-amber-50'}`}
                         >
-                          <MoreVertical className="w-5 h-5 text-gray-500" />
+                          {scholar.is_featured ? (
+                            <><StarOff className="w-4 h-4 text-amber-500" /> Un-feature</>
+                          ) : (
+                            <><Star className="w-4 h-4 text-amber-500" /> Feature</>
+                          )}
                         </button>
-
-                        {openMenuId === scholar.id && (
-                          <div 
-                            className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50 py-1"
-                            onMouseDown={(e) => e.stopPropagation()}
-                          >
-                            <button
-                              onClick={() => { setOpenMenuId(null); handleToggle(scholar.id, !!scholar.is_featured); }}
-                              className="w-full text-left px-4 py-2 text-sm text-(--color-gsp-text-secondary) hover:text-(--color-gsp-text-primary) hover:bg-violet-soft flex items-center gap-2"
-                            >
-                              {scholar.is_featured ? (
-                                <><StarOff className="w-4 h-4 text-amber-500" /> Un-feature Scholar</>
-                              ) : (
-                                <><Star className="w-4 h-4 text-amber-500" /> Feature Scholar</>
-                              )}
-                            </button>
-                          </div>
-                        )}
+                        <Link href={`/scholars/${scholar.username || scholar.id}`} className="ml-2 px-3 py-1.5 rounded-md text-sm font-medium flex items-center gap-2 transition-colors text-indigo-600 hover:bg-indigo-50 hover:text-indigo-700">
+                          <Edit className="w-4 h-4" /> Edit Profile
+                        </Link>
                       </div>
                     </td>
                   </tr>
                 )
               })}
-            </tbody>
+              </tbody>
             </table>
           </div>
         ) : (
           <div className="p-8 text-center text-(--color-gsp-text-secondary)">No scholars found.</div>
+        )}
+        
+        {/* Pagination UI */}
+        {totalPages > 1 && !loading && scholars.length > 0 && (
+          <div className="px-6 py-4 flex items-center justify-between border-t border-(--color-gsp-border-muted) bg-(--color-gsp-surface-raised)">
+            <div className="text-sm text-(--color-gsp-text-secondary)">
+              Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, scholars.length)} of {scholars.length} entries
+            </div>
+            <div className="flex gap-2">
+              <button 
+                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="px-3 py-1 rounded-md border border-(--color-gsp-border-default) disabled:opacity-50 text-sm font-medium hover:bg-(--color-gsp-surface-muted)"
+              >
+                Previous
+              </button>
+              <button 
+                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                disabled={currentPage === totalPages}
+                className="px-3 py-1 rounded-md border border-(--color-gsp-border-default) disabled:opacity-50 text-sm font-medium hover:bg-(--color-gsp-surface-muted)"
+              >
+                Next
+              </button>
+            </div>
+          </div>
         )}
       </div>
     </div>

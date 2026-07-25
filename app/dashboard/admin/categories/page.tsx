@@ -115,6 +115,7 @@ export default function CategoriesAdminPage() {
     setCategoryType(cat.parent_id ? 'sub' : 'parent')
     setFormData({ name: cat.name, slug: cat.slug, parent_id: cat.parent_id || '', content_types: cat.content_types || [], image_url: cat.image_url || '' })
     setIsCustomSlug(true)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   const filteredCategories = categories.filter(c => 

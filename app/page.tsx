@@ -91,7 +91,87 @@ export default async function Page() {
     image: cat.image_url || "/placeholder-user.jpg"
   }));
 
+  const dynamicExploreCategories = [
+    {
+      title: 'Research Articles',
+      count: `${statsData.articleCount}+ Papers`,
+      image: settings.explore_categories?.[0]?.image || '/placeholder.svg',
+      link: '/explore?type=article'
+    },
+    {
+      title: 'eBooks',
+      count: `${statsData.ebookCount}+ Books`,
+      image: settings.explore_categories?.[1]?.image || '/placeholder.svg',
+      link: '/explore?type=ebook'
+    },
+    {
+      title: 'Magazines',
+      count: `${statsData.magazineCount}+ Issues`,
+      image: settings.explore_categories?.[2]?.image || '/placeholder.svg',
+      link: '/explore?type=magazine'
+    },
+    {
+      title: 'Theses',
+      count: `${statsData.thesisCount}+ Papers`,
+      image: settings.explore_categories?.[3]?.image || '/placeholder.svg',
+      link: '/explore?type=thesis'
+    }
+  ];
+
+  const exploreCategoriesToUse = settings.enable_dynamic_explore_categories !== false 
+    ? dynamicExploreCategories 
+    : settings.explore_categories;
+
   console.log("Rendering homepage with dynamic categories", formattedCategories);
+
+  const finalScholars = () => {
+    if (settings.featured_scholars_mode === 'hidden' || !settings.show_featured_scholars_gsp) return null;
+    if (settings.featured_scholars_mode === 'manual') return settings.pinned_scholars || [];
+    
+    // Dynamic or Random
+    const baseScholars = scholarsData || [];
+    if (settings.featured_scholars_mode === 'random') {
+      return [...baseScholars].sort(() => 0.5 - Math.random());
+    }
+    return baseScholars;
+  };
+  const scholarsToRender = finalScholars();
+
+  const finalBlogs = () => {
+    if (settings.featured_blogs_mode === 'hidden' || !settings.show_recent_blogs) return null;
+    if (settings.featured_blogs_mode === 'manual') {
+      return (settings.pinned_blogs || []).map((b: any, i: number) => ({
+        id: `pinned-${i}`,
+        title: b.title || '',
+        slug: '#',
+        cover_image: b.image || null,
+        created_at: b.date ? new Date(b.date) : new Date(),
+        type: b.badge?.toLowerCase() === 'news' ? 'news' : 'blog',
+        excerpt: b.description || '',
+        author_name: b.author || 'GSP Editorial',
+      }));
+    }
+    
+    // Dynamic or Random
+    const baseBlogs = recentItems;
+    if (settings.featured_blogs_mode === 'random') {
+      return [...baseBlogs].sort(() => 0.5 - Math.random());
+    }
+    return baseBlogs;
+  };
+  const blogsToRender = finalBlogs();
+
+  const finalHeroSlides = settings.hero_carousel_mode === 'manual' 
+    ? settings.hero_slides 
+    : dbPublications.slice(0, 5).map((pub: any) => ({
+        label: `Latest ${pub.content_type || 'Publication'}`,
+        title: pub.title,
+        author: pub.author_name || pub.scholars?.users?.raw_user_meta_data?.full_name || 'Anonymous',
+        cred: pub.scholars?.qualification || '',
+        badge: pub.content_type || 'Article',
+        avatar: pub.scholars?.users?.raw_user_meta_data?.avatar_url || pub.scholars?.users?.raw_user_meta_data?.picture || pub.scholars?.users?.raw_user_meta_data?.image || '/placeholder-user.jpg',
+        image: pub.cover_image || '/placeholder.svg'
+      }));
 
   return (
     <main className="w-full">
@@ -100,7 +180,7 @@ export default async function Page() {
           title={settings.hero_title}
           subtitle={settings.hero_subtitle}
           eyebrow={settings.hero_eyebrow}
-          slidesData={settings.hero_slides}
+          slidesData={finalHeroSlides}
           tickerItems={settings.hero_ticker_items}
           searchPlaceholder={settings.hero_search_placeholder}
           searchFilters={settings.hero_search_filters}
@@ -117,7 +197,7 @@ export default async function Page() {
           <GspExploreCategories 
             title={settings.explore_categories_gsp_title} 
             subtitle={settings.explore_categories_gsp_subtitle} 
-            categories={settings.explore_categories}
+            categories={exploreCategoriesToUse}
           />
         </ScrollAnimation>
       )}
@@ -149,6 +229,7 @@ export default async function Page() {
           <GspFeaturedContent 
             title={settings.featured_content_gsp_title}
             subtitle={settings.featured_content_gsp_subtitle}
+            description={settings.featured_content_gsp_desc}
             publications={formattedPublications.length > 0 ? formattedPublications : settings.featured_publications}
             autoplay={settings.enable_carousel_autoplay}
           />
@@ -163,21 +244,21 @@ export default async function Page() {
         />
       )}
 
-      {recentItems.length > 0 && (
+      {blogsToRender && blogsToRender.length > 0 && (
         <ScrollAnimation>
           <RecentNewsBlogs 
-            items={recentItems} 
+            items={blogsToRender} 
             autoplay={settings.enable_carousel_autoplay} 
           />
         </ScrollAnimation>
       )}
       
-      {settings.show_featured_scholars_gsp && (
+      {scholarsToRender && scholarsToRender.length > 0 && (
         <ScrollAnimation>
           <GspFeaturedScholars 
             title={settings.featured_scholars_gsp_title}
             subtitle={settings.featured_scholars_gsp_subtitle}
-            scholars={scholarsData}
+            scholars={scholarsToRender}
             autoplay={settings.enable_carousel_autoplay}
           />
         </ScrollAnimation>

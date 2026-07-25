@@ -6,9 +6,11 @@ interface ImageUploadProps {
   value: string
   onChange: (url: string) => void
   label?: string
+  linksOnly?: boolean
+  hideLink?: boolean
 }
 
-export default function ImageUpload({ value, onChange, label = 'Image URL' }: ImageUploadProps) {
+export default function ImageUpload({ value, onChange, label = 'Image', linksOnly = false, hideLink = true }: ImageUploadProps) {
   const [isUploading, setIsUploading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   
@@ -65,22 +67,16 @@ export default function ImageUpload({ value, onChange, label = 'Image URL' }: Im
     <div className="space-y-2 relative">
       <label className="block text-sm font-medium text-gray-700">{label}</label>
       <div className="flex gap-2 items-center flex-wrap">
-        <input aria-label="Input field" 
-          type="text" 
-          value={value || ''} 
-          onChange={(e) => onChange(e.target.value)} 
-          className="flex-1 min-w-50 border border-gray-300 rounded-lg p-2 text-sm"
-          placeholder="https://example.com/image.jpg"
-        />
-        <span className="text-sm text-gray-500 font-medium">OR</span>
+        {!hideLink && (
+          <input aria-label="Input field" 
+            type="text" 
+            value={value || ''} 
+            onChange={(e) => onChange(e.target.value)} 
+            className="flex-1 min-w-50 border border-gray-300 rounded-lg p-2 text-sm"
+            placeholder="https://example.com/image.jpg"
+          />
+        )}
         <div className="flex gap-2">
-          <button 
-            type="button" 
-            onClick={openGallery}
-            className="px-4 py-2 bg-white border border-indigo-200 text-indigo-700 rounded-lg text-sm font-semibold hover:bg-indigo-50 transition-colors"
-          >
-            Library
-          </button>
           <div className="relative">
             <input aria-label="Input field" 
               type="file" 
@@ -94,7 +90,7 @@ export default function ImageUpload({ value, onChange, label = 'Image URL' }: Im
               disabled={isUploading}
               className="px-4 py-2 bg-indigo-50 text-indigo-700 rounded-lg text-sm font-semibold hover:bg-indigo-100 transition-colors disabled:opacity-50"
             >
-              {isUploading ? 'Uploading...' : 'Upload File'}
+              {isUploading ? 'Uploading...' : 'Upload Image'}
             </button>
           </div>
         </div>

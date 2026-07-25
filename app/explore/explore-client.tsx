@@ -54,7 +54,7 @@ export default function ExploreClient({
   initialTypes?: string[];
   initialAuthors?: string[];
   initialSort?: string;
-  allAuthors?: string[];
+  allAuthors?: { id: string, name: string }[];
   typeCounts?: Record<string, number>;
 }) {
   const router = useRouter();
@@ -118,7 +118,18 @@ export default function ExploreClient({
   }, [searchQuery, filters, currentPage, sortOrder, pathname, router, searchParams]);
 
   const availableSubjects = useMemo(() => {
-    const sorted = allCategories.map(c => c.name).sort();
+    // Deduplicate by lowercase to prevent issues if admin accidentally created "agriculture" and "Agriculture"
+    const uniqueNamesMap = new Map<string, string>();
+    
+    allCategories.forEach(c => {
+      const lower = c.name.toLowerCase();
+      // Prefer the capitalized/longer version if there's a conflict
+      if (!uniqueNamesMap.has(lower) || c.name > uniqueNamesMap.get(lower)!) {
+        uniqueNamesMap.set(lower, c.name);
+      }
+    });
+
+    const sorted = Array.from(uniqueNamesMap.values()).sort();
     const otherIndex = sorted.findIndex(name => name.toLowerCase() === 'other' || name.toLowerCase() === 'others');
     if (otherIndex !== -1) {
       const otherItem = sorted.splice(otherIndex, 1)[0];
@@ -128,16 +139,16 @@ export default function ExploreClient({
   }, [allCategories]);
 
   const availableAuthors = useMemo(() => {
-    return allAuthors;
+    return allAuthors || [];
   }, [allAuthors]);
 
   const filteredAuthors = useMemo(() => {
     if (!scholarSearchQuery) return availableAuthors;
-    return availableAuthors.filter(a => a.toLowerCase().includes(scholarSearchQuery.toLowerCase()));
+    return availableAuthors.filter(a => a.name.toLowerCase().includes(scholarSearchQuery.toLowerCase()));
   }, [availableAuthors, scholarSearchQuery]);
 
   const availableTypes = useMemo(() => {
-    return contentTypes.map(ct => ({ value: ct.name, label: ct.name }));
+    return contentTypes.map(ct => ({ value: ct.slug, label: ct.name }));
   }, [contentTypes]);
 
   const toggleFilter = (type: keyof typeof filters, value: string) => {
@@ -271,12 +282,15 @@ export default function ExploreClient({
                         <span className="active-chip-x" onClick={() => toggleFilter('subjects', s)}>✕</span>
                       </div>
                     ))}
-                    {filters.authors.map(a => (
-                      <div key={`auth-${a}`} className="active-chip">
-                        {a}
-                        <span className="active-chip-x" onClick={() => toggleFilter('authors', a)}>✕</span>
-                      </div>
-                    ))}
+                    {filters.authors.map(a => {
+                      const authorName = (allAuthors || []).find(author => author.id === a)?.name || a;
+                      return (
+                        <div key={`auth-${a}`} className="active-chip">
+                          {authorName}
+                          <span className="active-chip-x" onClick={() => toggleFilter('authors', a)}>✕</span>
+                        </div>
+                      );
+                    })}
                     {filters.yearRange[1] < new Date().getFullYear() && (
                       <div className="active-chip">
                         Up to {filters.yearRange[1]}
@@ -370,15 +384,11 @@ export default function ExploreClient({
                 {filteredAuthors.length === 0 ? (
                   <div className="text-sm text-gray-500 italic py-2">No scholars found.</div>
                 ) : (
-                  filteredAuthors.map((author) => (
-                    <label key={author} className="filter-row">
-                      <input 
-                        type="checkbox" 
-                        checked={filters.authors.includes(author)}
-                        onChange={() => toggleFilter('authors', author)}
-                      />
+                  filteredAuthors.map(author => (
+                    <label key={author.id} className="filter-row">
+                      <input type="checkbox" checked={filters.authors.includes(author.id)} onChange={() => toggleFilter('authors', author.id)} />
                       <span className="fcheck"></span>
-                      <span className="filter-label">{author}</span>
+                      <span className="filter-label">{author.name}</span>
                     </label>
                   ))
                 )}

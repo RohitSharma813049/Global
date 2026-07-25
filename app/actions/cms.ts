@@ -22,13 +22,13 @@ export async function getHomepageSettings() {
   const defaultSettings = {
     hero_title: 'Empowering Global Research & Knowledge Sharing',
     hero_subtitle: 'Explore millions of peer-reviewed papers, thesis, articles, and eBooks.',
-    hero_image_url: 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=2070',
+    hero_image_url: '/placeholder-user.jpg',
     hero_slides: [
-      { label: 'Featured Article', title: 'ESG Integration in GCC Markets: A Framework for Sustainable Finance', author: 'Dr. Priya Nair-Kapoor', cred: 'Hon. D.B.A.', badge: 'eBook', avatar: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=60&h=60&fit=crop&crop=face&auto=format&q=80', image: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1200&h=900&fit=crop&auto=format&q=85' },
-      { label: 'Research Paper', title: 'Decolonising Knowledge Systems: Toward an African Academic Paradigm', author: 'Dr. Ngozi Adeyemi', cred: 'Ph.D., FAAN', badge: 'Article', avatar: 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=60&h=60&fit=crop&face&auto=format&q=80', image: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=1200&h=900&fit=crop&auto=format&q=85' },
-      { label: 'GSP Interview Series', title: 'Climate Policy in Transition Economies: Pathways to Net Zero by 2050', author: 'Dr. Amira Al-Rashidi', cred: 'Hon. D.Sc.', badge: 'Magazine', avatar: 'https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=60&h=60&fit=crop&crop=face&auto=format&q=80', image: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1200&h=900&fit=crop&auto=format&q=85' },
-      { label: 'Featured eBook', title: 'GCC Economic Diversification: Vision 2030 and Beyond', author: 'Prof. Khalid Al-Mansouri', cred: 'Hon. D.B.A.', badge: 'eBook', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=60&h=60&fit=crop&crop=face&auto=format&q=80', image: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1200&h=900&fit=crop&auto=format&q=85' },
-      { label: 'Doctoral Thesis', title: 'Artificial Intelligence Ethics in Cross-Cultural Research Environments', author: 'Prof. Li Wei', cred: 'Ph.D.', badge: 'Thesis', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=60&h=60&fit=crop&crop=face&auto=format&q=80', image: 'https://images.unsplash.com/photo-1532619187608-e5375cab36aa?w=1200&h=900&fit=crop&auto=format&q=85' }
+      { label: 'Featured Article', title: 'ESG Integration in GCC Markets: A Framework for Sustainable Finance', author: 'Dr. Priya Nair-Kapoor', cred: 'Hon. D.B.A.', badge: 'eBook', avatar: '/placeholder-user.jpg', image: '/placeholder.svg' },
+      { label: 'Research Paper', title: 'Decolonising Knowledge Systems: Toward an African Academic Paradigm', author: 'Dr. Ngozi Adeyemi', cred: 'Ph.D., FAAN', badge: 'Article', avatar: '/placeholder-user.jpg', image: '/placeholder.svg' },
+      { label: 'GSP Interview Series', title: 'Climate Policy in Transition Economies: Pathways to Net Zero by 2050', author: 'Dr. Amira Al-Rashidi', cred: 'Hon. D.Sc.', badge: 'Magazine', avatar: '/placeholder-user.jpg', image: '/placeholder.svg' },
+      { label: 'Featured eBook', title: 'GCC Economic Diversification: Vision 2030 and Beyond', author: 'Prof. Khalid Al-Mansouri', cred: 'Hon. D.B.A.', badge: 'eBook', avatar: '/placeholder-user.jpg', image: '/placeholder.svg' },
+      { label: 'Doctoral Thesis', title: 'Artificial Intelligence Ethics in Cross-Cultural Research Environments', author: 'Prof. Li Wei', cred: 'Ph.D.', badge: 'Thesis', avatar: '/placeholder-user.jpg', image: '/placeholder.svg' }
     ],
     hero_ticker_items: [
       { prefix: 'New', text: 'ESG & Sustainable Finance — Dr. Priya Nair-Kapoor' },
@@ -36,16 +36,16 @@ export async function getHomepageSettings() {
       { prefix: 'Open Access', text: 'Decolonising Knowledge Systems — Dr. Ngozi Adeyemi' }
     ],
     hero_search_placeholder: 'Search journals, papers, authors, books…',
-    hero_search_filters: ['All', 'Articles', 'eBooks', 'Theses', 'Magazines', 'Scholars'],
+    hero_search_filters: ['All', 'Agriculture', 'Computer Science', 'Business', 'Humanities', 'Scholars'],
     hero_top_pill: 'Open Access 2026',
     hero_cta_primary_text: 'Explore Publications',
     hero_cta_secondary_text: 'Meet Our Scholars',
     hero_trust_text: '<strong>25,000+ researchers</strong> published<br />across 80 countries this year',
     hero_trust_avatars: [
-      'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=64&h=64&fit=crop&crop=face&auto=format&q=80',
-      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&h=64&fit=crop&crop=face&auto=format&q=80',
-      'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=64&h=64&fit=crop&crop=face&auto=format&q=80',
-      'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=64&h=64&fit=crop&crop=face&auto=format&q=80'
+      '/placeholder-user.jpg',
+      '/placeholder-user.jpg',
+      '/placeholder-user.jpg',
+      '/placeholder-user.jpg'
     ],
     hero_stats: [
       { number: '12K+', label: 'Publications' },
@@ -101,10 +101,10 @@ export async function getHomepageSettings() {
     ],
 
     explore_categories: [
-      { title: 'Featured<br/>Thesis', count: '1,240+ Theses', image: '/placeholder.svg', link: '/explore?category=theses' },
-      { title: 'Trending<br/>Articles', count: '3,860+ Articles', image: '/placeholder.svg', link: '/explore?category=articles' },
-      { title: 'Latest<br/>eBooks', count: '980+ eBooks', image: '/placeholder.svg', link: '/explore?category=ebooks' },
-      { title: 'Latest<br/>Magazine', count: '410+ Issues', image: '/placeholder.svg', link: '/explore?category=magazine' }
+      { title: 'Featured<br/>Agriculture', count: '1,240+ Papers', image: '/placeholder.svg', link: '/explore?category=agriculture' },
+      { title: 'Trending<br/>Computer Science', count: '3,860+ Papers', image: '/placeholder.svg', link: '/explore?category=computer-science-ai' },
+      { title: 'Latest<br/>Business', count: '980+ Papers', image: '/placeholder.svg', link: '/explore?category=business-management' },
+      { title: 'Latest<br/>Humanities', count: '410+ Papers', image: '/placeholder.svg', link: '/explore?category=humanities' }
     ],
 
     subject_categories: [
@@ -171,10 +171,19 @@ export async function updateHomepageSettings(newSettings: any) {
 // ---- BLOGS ----
 
 export async function getBlogs() {
-  return await prisma.blogs.findMany({
+  const existing = await prisma.homepage_settings.findFirst()
+  const settings = (existing?.settings as any) || {}
+  const pinned = Array.isArray(settings.featured_blog_ids) ? settings.featured_blog_ids : []
+  
+  const blogs = await prisma.blogs.findMany({
     orderBy: { created_at: 'desc' },
     take: 500
   })
+  
+  return blogs.map(b => ({
+    ...b,
+    is_featured: pinned.includes(b.id)
+  }))
 }
 
 export async function createBlog(data: { title: string, slug: string, content: string, cover_image?: string }) {
@@ -220,13 +229,45 @@ export async function deleteBlog(id: string) {
   revalidatePath('/dashboard/admin/blogs')
 }
 
+export async function toggleBlogFeaturedStatus(id: string, is_featured: boolean) {
+  await checkAdmin()
+  const existing = await prisma.homepage_settings.findFirst()
+  let settings = (existing?.settings as any) || {}
+  let pinned = Array.isArray(settings.featured_blog_ids) ? settings.featured_blog_ids : []
+  
+  if (is_featured) {
+    if (!pinned.includes(id)) pinned.push(id)
+  } else {
+    pinned = pinned.filter((p: string) => p !== id)
+  }
+  
+  settings.featured_blog_ids = pinned
+  
+  if (existing) {
+    await prisma.homepage_settings.update({ where: { id: existing.id }, data: { settings } })
+  } else {
+    await prisma.homepage_settings.create({ data: { settings } })
+  }
+  revalidatePath('/')
+  revalidatePath('/dashboard/admin/blogs')
+}
+
 // ---- NEWS ----
 
 export async function getNews() {
-  return await prisma.news.findMany({
+  const existing = await prisma.homepage_settings.findFirst()
+  const settings = (existing?.settings as any) || {}
+  const pinned = Array.isArray(settings.featured_news_ids) ? settings.featured_news_ids : []
+  
+  const news = await prisma.news.findMany({
     orderBy: { created_at: 'desc' },
     take: 500
   })
+  
+  return news.map(n => ({
+    ...n,
+    is_featured: pinned.includes(n.id)
+  }))
 }
 
 export async function createNews(data: { title: string, slug: string, content: string, cover_image?: string }) {
@@ -272,13 +313,45 @@ export async function deleteNews(id: string) {
   revalidatePath('/dashboard/admin/news')
 }
 
+export async function toggleNewsFeaturedStatus(id: string, is_featured: boolean) {
+  await checkAdmin()
+  const existing = await prisma.homepage_settings.findFirst()
+  let settings = (existing?.settings as any) || {}
+  let pinned = Array.isArray(settings.featured_news_ids) ? settings.featured_news_ids : []
+  
+  if (is_featured) {
+    if (!pinned.includes(id)) pinned.push(id)
+  } else {
+    pinned = pinned.filter((p: string) => p !== id)
+  }
+  
+  settings.featured_news_ids = pinned
+  
+  if (existing) {
+    await prisma.homepage_settings.update({ where: { id: existing.id }, data: { settings } })
+  } else {
+    await prisma.homepage_settings.create({ data: { settings } })
+  }
+  revalidatePath('/')
+  revalidatePath('/dashboard/admin/news')
+}
+
 // ---- TESTIMONIALS ----
 
 export async function getTestimonials() {
-  return await prisma.testimonials.findMany({
+  const existing = await prisma.homepage_settings.findFirst()
+  const settings = (existing?.settings as any) || {}
+  const pinned = Array.isArray(settings.featured_testimonial_ids) ? settings.featured_testimonial_ids : []
+
+  const test = await prisma.testimonials.findMany({
     orderBy: { created_at: 'desc' },
     take: 500
   })
+
+  return test.map(t => ({
+    ...t,
+    is_featured: pinned.includes(t.id)
+  }))
 }
 
 export async function createTestimonial(data: { quote: string, author: string, role: string, rating: number, image?: string }) {
@@ -296,6 +369,29 @@ export async function createTestimonial(data: { quote: string, author: string, r
 export async function deleteTestimonial(id: string) {
   await checkAdmin()
   await prisma.testimonials.delete({ where: { id } })
+  revalidatePath('/')
+  revalidatePath('/dashboard/admin/testimonials')
+}
+
+export async function toggleTestimonialFeaturedStatus(id: string, is_featured: boolean) {
+  await checkAdmin()
+  const existing = await prisma.homepage_settings.findFirst()
+  let settings = (existing?.settings as any) || {}
+  let pinned = Array.isArray(settings.featured_testimonial_ids) ? settings.featured_testimonial_ids : []
+  
+  if (is_featured) {
+    if (!pinned.includes(id)) pinned.push(id)
+  } else {
+    pinned = pinned.filter((p: string) => p !== id)
+  }
+  
+  settings.featured_testimonial_ids = pinned
+  
+  if (existing) {
+    await prisma.homepage_settings.update({ where: { id: existing.id }, data: { settings } })
+  } else {
+    await prisma.homepage_settings.create({ data: { settings } })
+  }
   revalidatePath('/')
   revalidatePath('/dashboard/admin/testimonials')
 }

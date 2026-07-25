@@ -78,7 +78,7 @@ export async function updateProfile(
     // Update user metadata in Supabase
     const { error } = await supabaseAdmin.auth.admin.updateUserById(
       session.user.id,
-      { user_metadata: { ...existingMeta, name, first_name: firstName, last_name: lastName, designation, bio, avatar_url: avatar_url || existingMeta.avatar_url, video_url: scholarData?.video_url || existingMeta.video_url } }
+      { user_metadata: { ...existingMeta, name, first_name: firstName, last_name: lastName, designation, bio, avatar_url: avatar_url !== undefined ? avatar_url : existingMeta.avatar_url, video_url: scholarData?.video_url !== undefined ? scholarData.video_url : existingMeta.video_url } }
     )
 
     if (error) throw error

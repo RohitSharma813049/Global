@@ -85,13 +85,7 @@ export default function Header() {
           <Link href="/updates" className="text-sm text-foreground/70 transition hover:text-foreground">
             Blogs & News
           </Link>
-          {session && (
-            <>
-              <Link href="/library" className="text-sm text-foreground/70 transition hover:text-foreground">
-                My Library
-              </Link>
-            </>
-          )}
+          {/* Removed My Library link to save space */}
           <Link href="/scholars" className="text-sm text-foreground/70 transition hover:text-foreground">
             Scholars
           </Link>

@@ -115,7 +115,7 @@ export default function DashboardSidebar() {
           className={`flex items-center py-2.5 rounded-(--radius-sm) transition-all duration-200 ${isExpanded || isMobileMenuOpen ? 'px-3 text-(--font-size-md)' : 'justify-center px-0'} ${pathname === "/dashboard" ? "bg-violet-soft text-(--color-gsp-text-inverse) font-semibold" : "text-(--color-gsp-text-primary) hover:bg-gray-50 hover:text-(--color-gsp-text-secondary)"}`}
           title={!isExpanded && !isMobileMenuOpen ? "Overview" : ""}
         >
-          <MdDashboard className={`text-lg ${isExpanded || isMobileMenuOpen ? 'mr-3' : ''}`} /> 
+          <MdDashboard className={`text-lg ${isExpanded || isMobileMenuOpen ? 'mr-2' : ''}`} /> 
           {(isExpanded || isMobileMenuOpen) && <span className="font-medium whitespace-nowrap">Overview</span>}
         </Link>
         
@@ -137,21 +137,21 @@ export default function DashboardSidebar() {
               className={`flex items-center py-2.5 rounded-(--radius-sm) transition-all duration-200 ${isExpanded || isMobileMenuOpen ? 'px-3 text-(--font-size-md)' : 'justify-center px-0'} ${isActive ? "bg-violet-soft text-(--color-gsp-text-inverse) font-semibold" : "text-(--color-gsp-text-primary) hover:bg-gray-50 hover:text-(--color-gsp-text-secondary)"}`}
               title={!isExpanded && !isMobileMenuOpen ? link.name : ""}
             >
-              <Icon className={`text-lg ${isExpanded || isMobileMenuOpen ? 'mr-3' : ''}`} /> 
+              <Icon className={`text-lg ${isExpanded || isMobileMenuOpen ? 'mr-2' : ''}`} /> 
               {(isExpanded || isMobileMenuOpen) && <span className="font-medium whitespace-nowrap">{link.name}</span>}
             </Link>
           );
         })}
       </nav>
 
-      <div className={`p-4 border-t border-(--color-gsp-border-muted) ${(!isExpanded && !isMobileMenuOpen) ? 'flex flex-col items-center' : ''}`}>
+      <div className={`p-4 pb-24 border-t border-(--color-gsp-border-muted) ${(!isExpanded && !isMobileMenuOpen) ? 'flex flex-col items-center' : ''}`}>
         <Link 
           href={role === 'admin' || role === 'super_admin' ? '/dashboard/admin/settings' : '/dashboard/settings'}
           onClick={() => setIsMobileMenuOpen(false)}
           className={`flex items-center py-2.5 rounded-(--radius-sm) transition-all duration-200 mb-1 ${isExpanded || isMobileMenuOpen ? 'px-3 text-(--font-size-md) font-medium w-full' : 'justify-center w-10 h-10 px-0'} ${(pathname === "/dashboard/settings" || pathname === "/dashboard/admin/settings") ? "bg-violet-soft text-(--color-gsp-text-inverse) font-semibold" : "text-(--color-gsp-text-primary) hover:bg-gray-50 hover:text-(--color-gsp-text-secondary)"}`}
           title={!isExpanded && !isMobileMenuOpen ? "Settings" : ""}
         >
-          <MdSettings className={`text-lg ${isExpanded || isMobileMenuOpen ? 'mr-3' : ''}`} /> 
+          <MdSettings className={`text-lg ${isExpanded || isMobileMenuOpen ? 'mr-2' : ''}`} /> 
           {(isExpanded || isMobileMenuOpen) && <span className="whitespace-nowrap">Settings</span>}
         </Link>
         <button
@@ -159,7 +159,7 @@ export default function DashboardSidebar() {
           className={`flex items-center py-2.5 rounded-lg text-red-600 hover:bg-red-50 hover:text-red-700 transition-all duration-200 ${isExpanded || isMobileMenuOpen ? 'w-full px-3 text-sm font-medium' : 'justify-center w-10 h-10 px-0'}`}
           title={!isExpanded && !isMobileMenuOpen ? "Logout" : ""}
         >
-          <MdLogout className={`text-lg ${isExpanded || isMobileMenuOpen ? 'mr-3' : ''}`} /> 
+          <MdLogout className={`text-lg ${isExpanded || isMobileMenuOpen ? 'mr-2' : ''}`} /> 
           {(isExpanded || isMobileMenuOpen) && <span className="whitespace-nowrap">Logout</span>}
         </button>
       </div>

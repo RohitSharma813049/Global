@@ -5,11 +5,17 @@ import { updateHomepageSettings, getHomepageSettings } from '@/app/actions/cms'
 import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import toast from 'react-hot-toast'
+import RecordPicker, { RecordItem } from '@/components/shared/record-picker'
+import { getPublishedPublications } from '@/app/actions/publications'
+import { getBlogs, getNews, getAllScholarsForAdmin } from '@/app/actions/cms'
 
 const ImageUpload = dynamic(() => import('@/components/image-upload'), { 
   ssr: false, 
   loading: () => <div className="h-32 w-full bg-gray-100 rounded-(--radius-lg) animate-pulse border-2 border-dashed border-(--color-gsp-border-muted)"></div> 
 })
+
+import 'react-quill-new/dist/quill.snow.css'
+const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false, loading: () => <p>Loading Editor...</p> })
 
 export default function HomepageSettings() {
   const [loading, setLoading] = useState(true)
@@ -26,12 +32,14 @@ export default function HomepageSettings() {
     featured_subtitle: '',
     featured_content_gsp_title: '',
     featured_content_gsp_subtitle: '',
+    featured_content_gsp_desc: '',
     categories_title: '',
     categories_subtitle: '',
     explore_categories_gsp_title: '',
     explore_categories_gsp_subtitle: '',
     subject_categories_gsp_title: '',
     subject_categories_gsp_subtitle: '',
+    subject_categories_gsp_desc: '',
     how_it_works_title: '',
     how_it_works_subtitle: '',
     scholars_title: '',
@@ -53,6 +61,7 @@ export default function HomepageSettings() {
     show_featured_content_gsp: true,
     show_how_it_works: true,
     show_featured_scholars_gsp: true,
+    show_recent_blogs: true,
     show_cta_banner: true,
     enable_carousel_autoplay: true,
     enable_dynamic_hero_stats: false,
@@ -69,18 +78,58 @@ export default function HomepageSettings() {
     hero_stats: [] as any[],
     hero_search_placeholder: '',
     hero_top_pill: '',
+    hero_carousel_mode: 'auto',
     hero_cta_primary_text: '',
     hero_cta_secondary_text: '',
     hero_trust_text: '',
     featured_publications: [] as any[],
     how_it_works_steps: [] as { title: string; description: string }[],
+    featured_scholars_mode: 'manual' as 'manual' | 'dynamic',
+    pinned_scholars: [] as any[],
+    featured_blogs_mode: 'recent' as 'recent' | 'manual' | 'random',
+    pinned_blogs: [] as any[],
+    pinned_news: [] as any[],
   })
+
+  const [recordOptions, setRecordOptions] = useState<RecordItem[]>([])
 
   useEffect(() => {
     async function load() {
       try {
-        const data = await getHomepageSettings()
+        const [data, pubs, scholars, blogs, news] = await Promise.all([
+          getHomepageSettings(),
+          getPublishedPublications(),
+          getAllScholarsForAdmin(),
+          getBlogs(),
+          getNews()
+        ])
         setSettings(data)
+
+        const options: RecordItem[] = []
+        if (pubs && Array.isArray(pubs)) {
+          pubs.forEach((p: any) => options.push({
+            id: p.id, title: p.title, subtitle: p.author_name || 'Publication', image: p.cover_image, type: 'Publication', originalData: p
+          }))
+        }
+        if (scholars && Array.isArray(scholars)) {
+          scholars.forEach((s: any) => {
+            const name = s.users?.raw_user_meta_data?.name || s.users?.email?.split('@')[0] || 'Scholar'
+            options.push({
+              id: s.id, title: name, subtitle: s.institution || 'Scholar', image: s.users?.raw_user_meta_data?.avatar_url, type: 'Scholar', originalData: s
+            })
+          })
+        }
+        if (blogs && Array.isArray(blogs)) {
+          blogs.forEach((b: any) => options.push({
+            id: b.id, title: b.title, subtitle: 'Blog', image: b.cover_image, type: 'Blog', originalData: b
+          }))
+        }
+        if (news && Array.isArray(news)) {
+          news.forEach((n: any) => options.push({
+            id: n.id, title: n.title, subtitle: 'News', image: n.cover_image, type: 'News', originalData: n
+          }))
+        }
+        setRecordOptions(options)
       } catch (e: any) {
         toast.error('Failed to load settings')
       } finally {
@@ -103,7 +152,7 @@ export default function HomepageSettings() {
     }
   }
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target
     if (type === 'checkbox') {
       setSettings(prev => ({ ...prev, [name]: (e.target as HTMLInputElement).checked }))
@@ -211,8 +260,26 @@ export default function HomepageSettings() {
   const removeFaq = (index: number) => {
     setSettings(prev => ({
       ...prev,
-      faqs: (prev.faqs || []).filter((_, i) => i !== index)
+      faqs: (prev.faqs || []).filter((_: any, i: number) => i !== index)
     }))
+  }
+
+  const addPinnedScholar = () => setSettings(prev => ({ ...prev, pinned_scholars: [...(prev.pinned_scholars || []), {}] as any }))
+  const removePinnedScholar = (index: number) => setSettings(prev => ({ ...prev, pinned_scholars: (prev.pinned_scholars || []).filter((_: any, i: number) => i !== index) }))
+  const handlePinnedScholarChange = (index: number, field: string, value: string) => {
+    const newScholars = [...(settings.pinned_scholars || [])]
+    if (!newScholars[index]) newScholars[index] = {}
+    newScholars[index] = { ...newScholars[index], [field]: value }
+    setSettings(prev => ({ ...prev, pinned_scholars: newScholars }))
+  }
+
+  const addPinnedBlog = () => setSettings(prev => ({ ...prev, pinned_blogs: [...(prev.pinned_blogs || []), {}] as any }))
+  const removePinnedBlog = (index: number) => setSettings(prev => ({ ...prev, pinned_blogs: (prev.pinned_blogs || []).filter((_: any, i: number) => i !== index) }))
+  const handlePinnedBlogChange = (index: number, field: string, value: string) => {
+    const newBlogs = [...(settings.pinned_blogs || [])]
+    if (!newBlogs[index]) newBlogs[index] = {}
+    newBlogs[index] = { ...newBlogs[index], [field]: value }
+    setSettings(prev => ({ ...prev, pinned_blogs: newBlogs }))
   }
 
   if (loading) return (
@@ -271,7 +338,7 @@ export default function HomepageSettings() {
                 </div>
                 <div className="md:col-span-2">
                   <label className="block text-xs font-medium text-(--color-gsp-text-secondary) mb-1">Search Filters (Comma separated)</label>
-                  <input type="text" value={(settings.hero_search_filters || []).join(', ')} onChange={(e) => handleHeroSearchFilterChange(e.target.value)} className="w-full border border-(--color-gsp-border-default) rounded-md p-1.5 text-sm" placeholder="All, Articles, eBooks, Theses, Magazines, Scholars" />
+                  <input type="text" value={(settings.hero_search_filters || []).join(', ')} onChange={(e) => handleHeroSearchFilterChange(e.target.value)} className="w-full border border-(--color-gsp-border-default) rounded-md p-1.5 text-sm" placeholder="All, Agriculture, Computer Science, Business, Humanities, Scholars" />
                 </div>
                 <div className="md:col-span-2">
                   <label className="block text-xs font-medium text-(--color-gsp-text-secondary) mb-1">Top Pill Label (Over the images)</label>
@@ -330,7 +397,7 @@ export default function HomepageSettings() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {(settings.hero_trust_avatars || []).map((avatar, index) => (
                     <div key={index}>
-                      <ImageUpload label={`Avatar ${index + 1}`} value={avatar || ''} onChange={(url) => handleHeroTrustAvatarChange(index, url)} />
+                      <ImageUpload label={`Avatar ${index + 1}`} value={avatar || ''} onChange={(url) => handleHeroTrustAvatarChange(index, url)} linksOnly={false} hideLink={true} />
                     </div>
                   ))}
                 </div>
@@ -339,40 +406,12 @@ export default function HomepageSettings() {
               {/* Stats */}
               <div>
                 <div className="flex items-center justify-between border-b pb-2 mb-4">
-                  <h3 className="font-semibold text-(--color-gsp-text-primary)">Bottom Stats Bar ({settings.hero_stats?.length || 0} Stats)</h3>
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input 
-                      type="checkbox" 
-                      className="sr-only peer" 
-                      checked={settings.enable_dynamic_hero_stats}
-                      onChange={(e) => setSettings(prev => ({ ...prev, enable_dynamic_hero_stats: e.target.checked }))} 
-                    />
-                    <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-(--color-gsp-surface-muted) after:border-(--color-gsp-border-default) after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-(--color-gsp-text-inverse) relative"></div>
-                    <span className="text-sm font-medium text-(--color-gsp-text-primary)">Use Auto Live Stats</span>
-                  </label>
+                  <h3 className="font-semibold text-(--color-gsp-text-primary)">Bottom Stats Bar</h3>
                 </div>
                 
-                {settings.enable_dynamic_hero_stats ? (
-                  <div className="p-4 bg-violet-soft border border-indigo-100 rounded-(--radius-lg) text-sm text-indigo-700">
-                    <p><strong>Auto Live Stats is ON.</strong> The homepage will automatically count and display the number of Articles, Ebooks, Magazines, and Theses in your database.</p>
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                    {(settings.hero_stats || []).map((stat, index) => (
-                      <div key={index} className="space-y-3 relative border p-3 rounded-(--radius-lg)">
-                        <button type="button" onClick={() => removeHeroStat(index)} className="absolute -top-2 right-2 text-xs text-red-500 hover:text-red-700">Remove</button>
-                        <div>
-                          <label className="block text-xs font-medium text-(--color-gsp-text-secondary) mb-1">Number</label>
-                          <input type="text" value={stat.number || ''} onChange={(e) => handleHeroStatChange(index, 'number', e.target.value)} className="w-full border border-(--color-gsp-border-default) rounded-md p-1.5 text-sm" />
-                        </div>
-                        <div>
-                          <label className="block text-xs font-medium text-(--color-gsp-text-secondary) mb-1">Label</label>
-                          <input type="text" value={stat.label || ''} onChange={(e) => handleHeroStatChange(index, 'label', e.target.value)} className="w-full border border-(--color-gsp-border-default) rounded-md p-1.5 text-sm" />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                <div className="p-4 bg-violet-soft border border-indigo-100 rounded-(--radius-lg) text-sm text-indigo-700">
+                  <p><strong>Auto Live Stats is ON.</strong> The homepage will automatically count and display the number of Articles, Ebooks, Magazines, and Theses in your database.</p>
+                </div>
               </div>
 
             </div>
@@ -383,48 +422,56 @@ export default function HomepageSettings() {
         <div className="border border-(--color-gsp-border-muted) rounded-(--radius-xl) overflow-hidden">
           <details className="group">
             <summary className="p-4 bg-(--color-gsp-surface-raised) font-semibold text-lg cursor-pointer flex justify-between items-center group-open:border-b">
-              Explore Categories ({settings.explore_categories?.length || 0} Formats)
+              Explore Categories
               <span className="text-sm text-(--color-gsp-text-secondary) font-normal group-open:hidden">Click to expand</span>
               <span className="text-sm text-(--color-gsp-text-secondary) font-normal hidden group-open:inline">Click to collapse</span>
             </summary>
             <div className="p-6 space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6 pb-6 border-b">
-                <div>
-                  <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Section Title</label>
-                  <input type="text" name="explore_categories_gsp_title" value={settings.explore_categories_gsp_title || ''} onChange={handleChange} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm font-semibold" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Section Subtitle</label>
-                  <input type="text" name="explore_categories_gsp_subtitle" value={settings.explore_categories_gsp_subtitle || ''} onChange={handleChange} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm" />
-                </div>
-              </div>
-              {(settings.explore_categories || []).map((cat, index) => (
-                <div key={index} className="bg-(--color-gsp-surface-muted) p-5 rounded-(--radius-xl) border border-(--color-gsp-border-muted) shadow-(--shadow-1) relative">
-                  <button type="button" onClick={() => removeExploreCategory(index)} className="absolute top-5 right-5 text-sm text-red-500 hover:text-red-700 font-medium">Remove</button>
-                  <h3 className="font-semibold text-(--color-gsp-text-primary) mb-4 border-b pb-2">Format {index + 1}</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div>
-                      <label className="block text-xs font-medium text-(--color-gsp-text-secondary) mb-1">Title (HTML allowed)</label>
-                      <input aria-label="Input field" type="text" value={cat.title} onChange={(e) => handleExploreChange(index, 'title', e.target.value)} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm" />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-medium text-(--color-gsp-text-secondary) mb-1">Count Text</label>
-                      <input aria-label="Input field" type="text" value={cat.count} onChange={(e) => handleExploreChange(index, 'count', e.target.value)} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm" />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-medium text-(--color-gsp-text-secondary) mb-1">Link URL</label>
-                      <input aria-label="Input field" type="text" value={cat.link} onChange={(e) => handleExploreChange(index, 'link', e.target.value)} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm" />
-                    </div>
-                    <div className="md:col-span-2 mt-2">
-                      <ImageUpload 
-                        label="Background Image"
-                        value={cat.image} 
-                        onChange={(url) => handleExploreChange(index, 'image', url)}
-                      />
-                    </div>
+              <div className="flex items-center justify-between mb-6 pb-6 border-b">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5 w-full">
+                  <div>
+                    <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Section Title</label>
+                    <input type="text" name="explore_categories_gsp_title" value={settings.explore_categories_gsp_title || ''} onChange={handleChange} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm font-semibold" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Section Subtitle</label>
+                    <input type="text" name="explore_categories_gsp_subtitle" value={settings.explore_categories_gsp_subtitle || ''} onChange={handleChange} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm" />
                   </div>
                 </div>
-              ))}
+              </div>
+              <div className="flex items-center justify-between pb-2 mb-4 border-b">
+                <h3 className="font-semibold text-(--color-gsp-text-primary)">Category Background Images</h3>
+              </div>
+              <div className="p-4 bg-violet-soft border border-indigo-100 rounded-(--radius-lg) text-sm text-indigo-700 mb-6">
+                <p><strong>Auto Live Formats is ON.</strong> The homepage will automatically generate cards for Research Articles, eBooks, Magazines, and Theses with their respective live counts. You can change their background images below.</p>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {(settings.explore_categories || []).slice(0, 4).map((cat, index) => {
+                const labels = ["Research Articles", "eBooks", "Magazines", "Theses"];
+                return (
+                  <div key={index} className="bg-(--color-gsp-surface-muted) p-5 rounded-(--radius-xl) border border-(--color-gsp-border-muted) shadow-(--shadow-1) relative">
+                    <div className="mb-4 space-y-3">
+                      <div>
+                        <label className="block text-xs font-medium text-(--color-gsp-text-secondary) mb-1">Title</label>
+                        <input type="text" value={cat.title || ''} onChange={(e) => handleExploreChange(index, 'title', e.target.value)} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm" placeholder={labels[index]} />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-(--color-gsp-text-secondary) mb-1">Link URL</label>
+                        <input type="text" value={cat.link || ''} onChange={(e) => handleExploreChange(index, 'link', e.target.value)} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm" placeholder="/explore" />
+                      </div>
+                    </div>
+                    <ImageUpload 
+                      label="Background Image"
+                      value={cat.image || ''} 
+                      onChange={(url) => handleExploreChange(index, 'image', url)}
+                      linksOnly={false}
+                      hideLink={true}
+                    />
+                  </div>
+                )
+              })}
+              </div>
             </div>
           </details>
         </div>
@@ -433,35 +480,40 @@ export default function HomepageSettings() {
         <div className="border border-(--color-gsp-border-muted) rounded-(--radius-xl) overflow-hidden">
           <details className="group">
             <summary className="p-4 bg-(--color-gsp-surface-raised) font-semibold text-lg cursor-pointer flex justify-between items-center group-open:border-b">
-              Subject Categories ({settings.subject_categories?.length || 0} Disciplines)
+              Subject Categories
               <span className="text-sm text-(--color-gsp-text-secondary) font-normal group-open:hidden">Click to expand</span>
               <span className="text-sm text-(--color-gsp-text-secondary) font-normal hidden group-open:inline">Click to collapse</span>
             </summary>
             <div className="p-6 space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6 pb-6 border-b">
-                <div>
-                  <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Section Title</label>
-                  <input type="text" name="subject_categories_gsp_title" value={settings.subject_categories_gsp_title || ''} onChange={handleChange} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm font-semibold" />
+              <div className="grid grid-cols-1 gap-5 w-full mb-6 pb-6 border-b">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <div>
+                    <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Section Title</label>
+                    <input type="text" name="subject_categories_gsp_title" value={settings.subject_categories_gsp_title || ''} onChange={handleChange} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm font-semibold" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Section Subtitle (Eyebrow)</label>
+                    <input type="text" name="subject_categories_gsp_subtitle" value={settings.subject_categories_gsp_subtitle || ''} onChange={handleChange} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm" />
+                  </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Section Subtitle</label>
-                  <input type="text" name="subject_categories_gsp_subtitle" value={settings.subject_categories_gsp_subtitle || ''} onChange={handleChange} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm" />
+                  <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Section Description</label>
+                  <textarea name="subject_categories_gsp_desc" value={settings.subject_categories_gsp_desc || ''} onChange={handleChange} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm" rows={2} />
                 </div>
               </div>
               <div className="flex items-center justify-between mb-6 pb-6 border-b">
                 <div>
-                  <h4 className="font-semibold text-(--color-gsp-text-primary)">Use Auto Live Categories</h4>
-                  <p className="text-sm text-(--color-gsp-text-secondary)">Automatically pull Subject Categories and their uploaded images from the database instead of the manual list below.</p>
+                  <h4 className="font-semibold text-(--color-gsp-text-primary)">Live Categories</h4>
+                  <p className="text-sm text-(--color-gsp-text-secondary)">Subject Categories and their uploaded images are automatically pulled from the Categories database.</p>
                 </div>
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input 
-                    type="checkbox" 
-                    className="sr-only peer" 
-                    checked={settings.enable_dynamic_subject_categories || false}
-                    onChange={(e) => setSettings(prev => ({ ...prev, enable_dynamic_subject_categories: e.target.checked }))} 
-                  />
-                  <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-(--color-gsp-surface-muted) after:border-(--color-gsp-border-default) after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-(--color-gsp-text-inverse) relative"></div>
-                </label>
+              </div>
+
+              <div className="mb-6 pb-6 border-b">
+                <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Display Mode</label>
+                <select name="enable_dynamic_subject_categories" value={settings.enable_dynamic_subject_categories ? 'true' : 'false'} onChange={(e) => setSettings(prev => ({ ...prev, enable_dynamic_subject_categories: e.target.value === 'true' }))} className="w-full md:w-1/2 border border-(--color-gsp-border-default) rounded-md p-2 text-sm bg-white">
+                  <option value="true">Auto (Pull from Database)</option>
+                  <option value="false">Manual Pin (Select Specific)</option>
+                </select>
               </div>
 
               {settings.enable_dynamic_subject_categories ? (
@@ -469,28 +521,28 @@ export default function HomepageSettings() {
                   <p><strong>Auto Live Categories is ON.</strong> The homepage will automatically pull the top categories and their uploaded background images directly from your Categories database.</p>
                 </div>
               ) : (
-                <div className="space-y-6">
+                <div className="space-y-4">
                   {(settings.subject_categories || []).map((cat, index) => (
                     <div key={index} className="bg-(--color-gsp-surface-muted) p-5 rounded-(--radius-xl) border border-(--color-gsp-border-muted) shadow-(--shadow-1) relative">
                       <button type="button" onClick={() => removeSubjectCategory(index)} className="absolute top-5 right-5 text-sm text-red-500 hover:text-red-700 font-medium">Remove</button>
-                      <h3 className="font-semibold text-(--color-gsp-text-primary) mb-4 border-b pb-2">Category {index + 1}: {cat.id}</h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                      <h3 className="font-semibold text-(--color-gsp-text-primary) mb-4 border-b pb-2">Category {index + 1}</h3>
+                      <div className="grid grid-cols-1 gap-4">
                         <div>
-                          <label className="block text-xs font-medium text-(--color-gsp-text-secondary) mb-1">Name (HTML allowed)</label>
-                          <input aria-label="Input field" type="text" value={cat.name || ''} onChange={(e) => handleSubjectChange(index, 'name', e.target.value)} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm" />
+                          <label className="block text-xs font-medium text-(--color-gsp-text-secondary) mb-1">Category Name</label>
+                          <input type="text" value={cat.name || ''} onChange={(e) => handleSubjectChange(index, 'name', e.target.value)} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm" />
                         </div>
-                        <div className="md:col-span-2 mt-2">
-                          <ImageUpload 
-                            label="Background Image"
-                            value={cat.image || ''} 
-                            onChange={(url) => handleSubjectChange(index, 'image', url)}
-                          />
-                        </div>
+                        <ImageUpload 
+                          label="Background Image"
+                          value={cat.image || ''} 
+                          onChange={(url) => handleSubjectChange(index, 'image', url)}
+                          linksOnly={false}
+                          hideLink={true}
+                        />
                       </div>
                     </div>
                   ))}
-                  <button type="button" onClick={addSubjectCategory} className="w-full py-3 border-2 border-dashed border-(--color-gsp-border-default) rounded-(--radius-xl) text-(--color-gsp-text-secondary) font-medium hover:border-indigo-500 hover:text-(--color-gsp-text-inverse) transition-colors">
-                    + Add Subject Category
+                  <button type="button" onClick={addSubjectCategory} className="w-full py-2 border border-dashed border-(--color-gsp-border-default) rounded-(--radius-lg) text-sm font-medium text-(--color-gsp-text-primary) hover:bg-(--color-gsp-surface-raised)">
+                    + Add Category
                   </button>
                 </div>
               )}
@@ -502,45 +554,89 @@ export default function HomepageSettings() {
         <div className="border border-(--color-gsp-border-muted) rounded-(--radius-xl) overflow-hidden">
           <details className="group">
             <summary className="p-4 bg-(--color-gsp-surface-raised) font-semibold text-lg cursor-pointer flex justify-between items-center group-open:border-b">
-              Hero Carousel Slides ({settings.hero_slides?.length || 0} Slides)
+              Hero Carousel Slides ({settings.hero_carousel_mode === 'manual' ? (settings.hero_slides?.length || 0) : 'Auto'} Slides)
               <span className="text-sm text-(--color-gsp-text-secondary) font-normal group-open:hidden">Click to expand</span>
               <span className="text-sm text-(--color-gsp-text-secondary) font-normal hidden group-open:inline">Click to collapse</span>
             </summary>
             <div className="p-6 space-y-6">
-              {(settings.hero_slides || []).map((slide, index) => (
-                <div key={index} className="bg-(--color-gsp-surface-muted) p-5 rounded-(--radius-xl) border border-(--color-gsp-border-muted) shadow-(--shadow-1) relative">
-                  <button type="button" onClick={() => removeHeroSlide(index)} className="absolute top-5 right-5 text-sm text-red-500 hover:text-red-700 font-medium">Remove</button>
-                  <h3 className="font-semibold text-(--color-gsp-text-primary) mb-4 border-b pb-2">Slide {index + 1}</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div>
-                      <label className="block text-xs font-medium text-(--color-gsp-text-secondary) mb-1">Label (e.g. Featured Article)</label>
-                      <input type="text" value={slide.label || ''} onChange={(e) => handleHeroSlideChange(index, 'label', e.target.value)} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm" />
+              
+              <div className="mb-6 pb-6 border-b">
+                <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Display Mode</label>
+                <select name="hero_carousel_mode" value={settings.hero_carousel_mode || 'auto'} onChange={handleChange} className="w-full md:w-1/2 border border-(--color-gsp-border-default) rounded-md p-2 text-sm bg-white">
+                  <option value="auto">Auto (Latest Publications)</option>
+                  <option value="manual">Manual Pin (Select Specific)</option>
+                </select>
+                <p className="text-xs text-(--color-gsp-text-secondary) mt-2">
+                  {settings.hero_carousel_mode === 'auto' ? 'The carousel will automatically pull the 5 most recent publications.' : 'You are manually controlling the slides.'}
+                </p>
+              </div>
+
+              {settings.hero_carousel_mode === 'manual' && (
+                <>
+                  {(settings.hero_slides || []).map((slide, index) => (
+                    <div key={index} className="bg-(--color-gsp-surface-muted) p-5 rounded-(--radius-xl) border border-(--color-gsp-border-muted) shadow-(--shadow-1) relative">
+                      <button type="button" onClick={() => removeHeroSlide(index)} className="absolute top-5 right-5 text-sm text-red-500 hover:text-red-700 font-medium">Remove</button>
+                      <h3 className="font-semibold text-(--color-gsp-text-primary) mb-4 border-b pb-2">Slide {index + 1}</h3>
+                      <div className="mb-5 pb-5 border-b border-gray-100">
+                        <RecordPicker 
+                          label="Auto-fill from existing record (Optional)" 
+                          items={recordOptions}
+                          placeholder="Search for a publication, scholar, blog..."
+                          onSelect={(item) => {
+                            handleHeroSlideChange(index, 'title', item.title)
+                            handleHeroSlideChange(index, 'author', item.subtitle || '')
+                            if (item.image) {
+                              handleHeroSlideChange(index, 'image', item.image)
+                            }
+                            if (item.type === 'Scholar') {
+                              handleHeroSlideChange(index, 'badge', 'Featured Scholar')
+                              handleHeroSlideChange(index, 'label', 'Scholar')
+                              handleHeroSlideChange(index, 'avatar', item.image || '')
+                            } else if (item.type === 'Publication') {
+                              handleHeroSlideChange(index, 'badge', item.originalData?.content_type || 'Article')
+                              handleHeroSlideChange(index, 'label', 'Featured Publication')
+                            } else {
+                              handleHeroSlideChange(index, 'badge', item.type || '')
+                              handleHeroSlideChange(index, 'label', 'Featured')
+                            }
+                          }}
+                        />
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div>
+                          <label className="block text-xs font-medium text-(--color-gsp-text-secondary) mb-1">Label (e.g. Featured Article)</label>
+                          <input type="text" value={slide.label || ''} onChange={(e) => handleHeroSlideChange(index, 'label', e.target.value)} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm" />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-(--color-gsp-text-secondary) mb-1">Badge (e.g. eBook)</label>
+                          <input type="text" value={slide.badge || ''} onChange={(e) => handleHeroSlideChange(index, 'badge', e.target.value)} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm" />
+                        </div>
+                        <div className="md:col-span-2">
+                          <label className="block text-xs font-medium text-(--color-gsp-text-secondary) mb-1">Title</label>
+                          <input type="text" value={slide.title || ''} onChange={(e) => handleHeroSlideChange(index, 'title', e.target.value)} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm" />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-(--color-gsp-text-secondary) mb-1">Author Name</label>
+                          <input type="text" value={slide.author || ''} onChange={(e) => handleHeroSlideChange(index, 'author', e.target.value)} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm" />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-(--color-gsp-text-secondary) mb-1">Credentials (e.g. Ph.D.)</label>
+                          <input type="text" value={slide.cred || ''} onChange={(e) => handleHeroSlideChange(index, 'cred', e.target.value)} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm" />
+                        </div>
+                        <div className="md:col-span-2 mt-2">
+                          <ImageUpload label="Author Avatar Image" value={slide.avatar || ''} onChange={(url) => handleHeroSlideChange(index, 'avatar', url)} linksOnly={false} hideLink={true} />
+                        </div>
+                        <div className="md:col-span-2 mt-2">
+                          <ImageUpload label="Slide Background Image" value={slide.image || ''} onChange={(url) => handleHeroSlideChange(index, 'image', url)} linksOnly={false} hideLink={true} />
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <label className="block text-xs font-medium text-(--color-gsp-text-secondary) mb-1">Badge (e.g. eBook)</label>
-                      <input type="text" value={slide.badge || ''} onChange={(e) => handleHeroSlideChange(index, 'badge', e.target.value)} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm" />
-                    </div>
-                    <div className="md:col-span-2">
-                      <label className="block text-xs font-medium text-(--color-gsp-text-secondary) mb-1">Title</label>
-                      <input type="text" value={slide.title || ''} onChange={(e) => handleHeroSlideChange(index, 'title', e.target.value)} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm" />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-medium text-(--color-gsp-text-secondary) mb-1">Author Name</label>
-                      <input type="text" value={slide.author || ''} onChange={(e) => handleHeroSlideChange(index, 'author', e.target.value)} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm" />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-medium text-(--color-gsp-text-secondary) mb-1">Credentials (e.g. Ph.D.)</label>
-                      <input type="text" value={slide.cred || ''} onChange={(e) => handleHeroSlideChange(index, 'cred', e.target.value)} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm" />
-                    </div>
-                    <div className="md:col-span-2 mt-2">
-                      <ImageUpload label="Author Avatar Image" value={slide.avatar || ''} onChange={(url) => handleHeroSlideChange(index, 'avatar', url)} />
-                    </div>
-                    <div className="md:col-span-2 mt-2">
-                      <ImageUpload label="Slide Background Image" value={slide.image || ''} onChange={(url) => handleHeroSlideChange(index, 'image', url)} />
-                    </div>
-                  </div>
-                </div>
-              ))}
+                  ))}
+                  <button type="button" onClick={addHeroSlide} className="w-full py-2 border border-dashed border-(--color-gsp-border-default) rounded-(--radius-lg) text-sm font-medium text-(--color-gsp-text-primary) hover:bg-(--color-gsp-surface-raised)">
+                    + Add Slide
+                  </button>
+                </>
+              )}
             </div>
           </details>
         </div>
@@ -549,59 +645,30 @@ export default function HomepageSettings() {
         <div className="border border-(--color-gsp-border-muted) rounded-(--radius-xl) overflow-hidden">
           <details className="group">
             <summary className="p-4 bg-(--color-gsp-surface-raised) font-semibold text-lg cursor-pointer flex justify-between items-center group-open:border-b">
-              Featured Publications ({settings.featured_publications?.length || 0} Cards)
+              Featured Publications
               <span className="text-sm text-(--color-gsp-text-secondary) font-normal group-open:hidden">Click to expand</span>
               <span className="text-sm text-(--color-gsp-text-secondary) font-normal hidden group-open:inline">Click to collapse</span>
             </summary>
             <div className="p-6 space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6 pb-6 border-b">
-                <div>
-                  <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Section Title</label>
-                  <input type="text" name="featured_content_gsp_title" value={settings.featured_content_gsp_title || ''} onChange={handleChange} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm font-semibold" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Section Subtitle</label>
-                  <input type="text" name="featured_content_gsp_subtitle" value={settings.featured_content_gsp_subtitle || ''} onChange={handleChange} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm" />
-                </div>
-              </div>
-              {(settings.featured_publications || []).map((pub, index) => (
-                <div key={index} className="bg-(--color-gsp-surface-muted) p-5 rounded-(--radius-xl) border border-(--color-gsp-border-muted) shadow-(--shadow-1) relative">
-                  <button type="button" onClick={() => removeFeaturedPub(index)} className="absolute top-5 right-5 text-sm text-red-500 hover:text-red-700 font-medium">Remove</button>
-                  <h3 className="font-semibold text-(--color-gsp-text-primary) mb-4 border-b pb-2">Publication {index + 1}</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div>
-                      <label className="block text-xs font-medium text-(--color-gsp-text-secondary) mb-1">Type (e.g. Thesis)</label>
-                      <input type="text" value={pub.type || ''} onChange={(e) => handlePubChange(index, 'type', e.target.value)} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm" />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-medium text-(--color-gsp-text-secondary) mb-1">Subject</label>
-                      <input type="text" value={pub.subject || ''} onChange={(e) => handlePubChange(index, 'subject', e.target.value)} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm" />
-                    </div>
-                    <div className="md:col-span-2">
-                      <label className="block text-xs font-medium text-(--color-gsp-text-secondary) mb-1">Title</label>
-                      <input type="text" value={pub.title || ''} onChange={(e) => handlePubChange(index, 'title', e.target.value)} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm" />
-                    </div>
-                    <div className="md:col-span-2">
-                      <label className="block text-xs font-medium text-(--color-gsp-text-secondary) mb-1">Description</label>
-                      <textarea value={pub.desc || ''} onChange={(e) => handlePubChange(index, 'desc', e.target.value)} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm" rows={2} />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-medium text-(--color-gsp-text-secondary) mb-1">Author</label>
-                      <input type="text" value={pub.author || ''} onChange={(e) => handlePubChange(index, 'author', e.target.value)} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm" />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-medium text-(--color-gsp-text-secondary) mb-1">Views Text</label>
-                      <input type="text" value={pub.views || ''} onChange={(e) => handlePubChange(index, 'views', e.target.value)} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm" />
-                    </div>
-                    <div className="md:col-span-2 mt-2">
-                      <ImageUpload label="Author Avatar" value={pub.authorImg || ''} onChange={(url) => handlePubChange(index, 'authorImg', url)} />
-                    </div>
-                    <div className="md:col-span-2 mt-2">
-                      <ImageUpload label="Publication Cover Image" value={pub.img || ''} onChange={(url) => handlePubChange(index, 'img', url)} />
-                    </div>
+              <div className="grid grid-cols-1 gap-5 mb-6 pb-6 border-b">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <div>
+                    <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Section Title</label>
+                    <input type="text" name="featured_content_gsp_title" value={settings.featured_content_gsp_title || ''} onChange={handleChange} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm font-semibold" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Section Subtitle (Eyebrow)</label>
+                    <input type="text" name="featured_content_gsp_subtitle" value={settings.featured_content_gsp_subtitle || ''} onChange={handleChange} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm" />
                   </div>
                 </div>
-              ))}
+                <div>
+                  <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Section Description</label>
+                  <textarea name="featured_content_gsp_desc" value={settings.featured_content_gsp_desc || ''} onChange={handleChange} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm" rows={2} />
+                </div>
+              </div>
+              <div className="p-4 bg-violet-soft border border-indigo-100 rounded-(--radius-lg) text-sm text-indigo-700">
+                <p><strong>Auto Live Content is ON.</strong> The homepage will automatically pull the latest published Research Articles, eBooks, Magazines, and Theses directly from your database.</p>
+              </div>
             </div>
           </details>
         </div>
@@ -680,9 +747,11 @@ export default function HomepageSettings() {
                     <label className="block text-xs font-medium text-(--color-gsp-text-secondary) mb-1">Question</label>
                     <input aria-label="Input field" type="text" value={faq.question} onChange={(e) => handleFaqChange(index, 'question', e.target.value)} className="w-full border border-(--color-gsp-border-default) rounded-md p-1.5 text-sm" placeholder="e.g. What is this?" />
                   </div>
-                  <div>
+                  <div className="md:col-span-2">
                     <label className="block text-xs font-medium text-(--color-gsp-text-secondary) mb-1">Answer</label>
-                    <textarea aria-label="Input field" value={faq.answer} onChange={(e) => handleFaqChange(index, 'answer', e.target.value)} className="w-full border border-(--color-gsp-border-default) rounded-md p-1.5 text-sm min-h-15" placeholder="Answer goes here..." />
+                    <div className="bg-white rounded-md">
+                      <ReactQuill theme="snow" value={faq.answer || ''} onChange={(val) => handleFaqChange(index, 'answer', val)} className="h-32 mb-10" />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -706,7 +775,14 @@ export default function HomepageSettings() {
             <div className="p-6 space-y-6">
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div className="md:col-span-2"><h3 className="font-semibold text-(--color-gsp-text-primary) border-b pb-1">GSP Featured Scholars</h3></div>
+                <div className="md:col-span-2 flex items-center justify-between border-b pb-1">
+                  <h3 className="font-semibold text-(--color-gsp-text-primary)">GSP Featured Scholars</h3>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" name="show_featured_scholars_gsp" checked={settings.show_featured_scholars_gsp ?? true} onChange={handleChange} className="sr-only peer" />
+                    <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-(--color-gsp-surface-muted) after:border-(--color-gsp-border-default) after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600 relative"></div>
+                    <span className="text-sm font-medium">Show Section</span>
+                  </label>
+                </div>
                 <div>
                   <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Title</label>
                   <input type="text" name="featured_scholars_gsp_title" value={settings.featured_scholars_gsp_title || ''} onChange={handleChange} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm font-semibold" />
@@ -715,6 +791,148 @@ export default function HomepageSettings() {
                   <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Subtitle</label>
                   <input type="text" name="featured_scholars_gsp_subtitle" value={settings.featured_scholars_gsp_subtitle || ''} onChange={handleChange} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm" />
                 </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Display Mode</label>
+                  <select name="featured_scholars_mode" value={settings.featured_scholars_mode || 'dynamic'} onChange={handleChange} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm bg-white">
+                    <option value="dynamic">Auto (Latest First)</option>
+                    <option value="random">Randomize (Shuffle Latest)</option>
+                    <option value="manual">Manual Pin (Select Specific)</option>
+                    <option value="hidden">Hidden</option>
+                  </select>
+                </div>
+                
+                {settings.featured_scholars_mode === 'manual' && (
+                  <div className="md:col-span-2 space-y-4">
+                    <h4 className="text-sm font-medium text-(--color-gsp-text-secondary)">Pinned Scholars ({settings.pinned_scholars?.length || 0})</h4>
+                    {(settings.pinned_scholars || []).map((scholar: any, index: number) => (
+                      <div key={index} className="bg-(--color-gsp-surface-muted) p-4 rounded-(--radius-lg) border border-(--color-gsp-border-muted) relative">
+                        <button type="button" onClick={() => removePinnedScholar(index)} className="absolute top-4 right-4 text-xs text-red-500 hover:text-red-700 font-medium z-10">Remove</button>
+                        <div className="mb-4 pr-12">
+                          <RecordPicker 
+                            label="Auto-fill from existing scholar (Optional)" 
+                            items={recordOptions.filter(r => r.type === 'Scholar')}
+                            placeholder="Search for a scholar..."
+                            onSelect={(item) => {
+                              handlePinnedScholarChange(index, 'name', item.title)
+                              if (item.subtitle) handlePinnedScholarChange(index, 'university', item.subtitle)
+                              if (item.image) handlePinnedScholarChange(index, 'image', item.image)
+                              if (item.originalData) {
+                                if (item.originalData.qualification) handlePinnedScholarChange(index, 'credentials', item.originalData.qualification)
+                                if (item.originalData._count?.publications) handlePinnedScholarChange(index, 'papers_count', String(item.originalData._count.publications))
+                              }
+                            }}
+                          />
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2 pr-12">
+                          <div>
+                            <label className="block text-xs font-medium text-(--color-gsp-text-secondary) mb-1">Name</label>
+                            <input type="text" value={scholar.name || ''} onChange={(e) => handlePinnedScholarChange(index, 'name', e.target.value)} className="w-full border border-(--color-gsp-border-default) rounded-md p-1.5 text-sm" placeholder="e.g. Dr. Priya Nair-Kapoor" />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-medium text-(--color-gsp-text-secondary) mb-1">Credentials / Degrees</label>
+                            <input type="text" value={scholar.credentials || ''} onChange={(e) => handlePinnedScholarChange(index, 'credentials', e.target.value)} className="w-full border border-(--color-gsp-border-default) rounded-md p-1.5 text-sm" placeholder="e.g. Hon. D.B.A." />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-medium text-(--color-gsp-text-secondary) mb-1">University / Department</label>
+                            <input type="text" value={scholar.university || ''} onChange={(e) => handlePinnedScholarChange(index, 'university', e.target.value)} className="w-full border border-(--color-gsp-border-default) rounded-md p-1.5 text-sm" placeholder="e.g. Indian Institute of Management" />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-medium text-(--color-gsp-text-secondary) mb-1">Stats/Papers (e.g. 42)</label>
+                            <input type="text" value={scholar.papers_count || ''} onChange={(e) => handlePinnedScholarChange(index, 'papers_count', e.target.value)} className="w-full border border-(--color-gsp-border-default) rounded-md p-1.5 text-sm" placeholder="42" />
+                          </div>
+                          <div className="md:col-span-2 mt-2">
+                            <ImageUpload label="Scholar Photo" value={scholar.image || ''} onChange={(url) => handlePinnedScholarChange(index, 'image', url)} linksOnly={false} hideLink={true} />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                    <button type="button" onClick={addPinnedScholar} className="w-full py-2 border border-dashed border-(--color-gsp-border-default) rounded-(--radius-lg) text-sm font-medium text-(--color-gsp-text-primary) hover:bg-(--color-gsp-surface-raised)">
+                      + Add Pinned Scholar
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-6 border-t">
+                <div className="md:col-span-2 flex items-center justify-between border-b pb-1">
+                  <h3 className="font-semibold text-(--color-gsp-text-primary)">From The GSP Blog (News)</h3>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" name="show_recent_blogs" checked={settings.show_recent_blogs ?? true} onChange={handleChange} className="sr-only peer" />
+                    <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-(--color-gsp-surface-muted) after:border-(--color-gsp-border-default) after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600 relative"></div>
+                    <span className="text-sm font-medium">Show Section</span>
+                  </label>
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Display Mode</label>
+                  <select name="featured_blogs_mode" value={settings.featured_blogs_mode || 'dynamic'} onChange={handleChange} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm bg-white">
+                    <option value="dynamic">Auto (Latest First)</option>
+                    <option value="random">Randomize (Shuffle Latest)</option>
+                    <option value="manual">Manual Pin (Select Specific)</option>
+                    <option value="hidden">Hidden</option>
+                  </select>
+                </div>
+                
+                {settings.featured_blogs_mode === 'manual' && (
+                  <div className="md:col-span-2 space-y-4">
+                    <h4 className="text-sm font-medium text-(--color-gsp-text-secondary)">Pinned Blogs ({settings.pinned_blogs?.length || 0})</h4>
+                    {(settings.pinned_blogs || []).map((blog: any, index: number) => (
+                      <div key={index} className="bg-(--color-gsp-surface-muted) p-4 rounded-(--radius-lg) border border-(--color-gsp-border-muted) relative">
+                        <button type="button" onClick={() => removePinnedBlog(index)} className="absolute top-4 right-4 text-xs text-red-500 hover:text-red-700 font-medium z-10">Remove</button>
+                        <div className="mb-4 pr-12">
+                          <RecordPicker 
+                            label="Auto-fill from existing blog/news (Optional)" 
+                            items={recordOptions.filter(r => r.type === 'Blog' || r.type === 'News')}
+                            placeholder="Search for a post..."
+                            onSelect={(item) => {
+                              handlePinnedBlogChange(index, 'title', item.title)
+                              handlePinnedBlogChange(index, 'badge', item.type || 'News')
+                              if (item.image) handlePinnedBlogChange(index, 'image', item.image)
+                              if (item.originalData) {
+                                if (item.originalData.content) {
+                                  // Basic HTML strip for description
+                                  const text = item.originalData.content.replace(/<[^>]*>?/gm, '')
+                                  handlePinnedBlogChange(index, 'description', text.substring(0, 100) + '...')
+                                }
+                                if (item.originalData.published_at) {
+                                  handlePinnedBlogChange(index, 'date', new Date(item.originalData.published_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }))
+                                }
+                                handlePinnedBlogChange(index, 'author', item.type === 'Blog' ? 'GSP Author' : 'GSP Editorial')
+                              }
+                            }}
+                          />
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2 pr-12">
+                          <div>
+                            <label className="block text-xs font-medium text-(--color-gsp-text-secondary) mb-1">Badge (e.g. News)</label>
+                            <input type="text" value={blog.badge || ''} onChange={(e) => handlePinnedBlogChange(index, 'badge', e.target.value)} className="w-full border border-(--color-gsp-border-default) rounded-md p-1.5 text-sm" placeholder="News" />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-medium text-(--color-gsp-text-secondary) mb-1">Title</label>
+                            <input type="text" value={blog.title || ''} onChange={(e) => handlePinnedBlogChange(index, 'title', e.target.value)} className="w-full border border-(--color-gsp-border-default) rounded-md p-1.5 text-sm" placeholder="e.g. Annual Research Grant..." />
+                          </div>
+                          <div className="md:col-span-2">
+                            <label className="block text-xs font-medium text-(--color-gsp-text-secondary) mb-1">Description</label>
+                            <textarea value={blog.description || ''} onChange={(e) => handlePinnedBlogChange(index, 'description', e.target.value)} className="w-full border border-(--color-gsp-border-default) rounded-md p-1.5 text-sm" rows={2} />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-medium text-(--color-gsp-text-secondary) mb-1">Author Name (e.g. GSP Editorial)</label>
+                            <input type="text" value={blog.author || ''} onChange={(e) => handlePinnedBlogChange(index, 'author', e.target.value)} className="w-full border border-(--color-gsp-border-default) rounded-md p-1.5 text-sm" placeholder="GSP Editorial" />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-medium text-(--color-gsp-text-secondary) mb-1">Date</label>
+                            <input type="text" value={blog.date || ''} onChange={(e) => handlePinnedBlogChange(index, 'date', e.target.value)} className="w-full border border-(--color-gsp-border-default) rounded-md p-1.5 text-sm" placeholder="Jun 15, 2026" />
+                          </div>
+                          <div className="md:col-span-2 mt-2">
+                            <ImageUpload label="Blog Cover Image" value={blog.image || ''} onChange={(url) => handlePinnedBlogChange(index, 'image', url)} linksOnly={false} hideLink={true} />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                    <button type="button" onClick={addPinnedBlog} className="w-full py-2 border border-dashed border-(--color-gsp-border-default) rounded-(--radius-lg) text-sm font-medium text-(--color-gsp-text-primary) hover:bg-(--color-gsp-surface-raised)">
+                      + Add Pinned Blog
+                    </button>
+                  </div>
+                )}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-6 border-t">

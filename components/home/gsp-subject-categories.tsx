@@ -7,6 +7,7 @@ import Image from 'next/image'
 interface SubjectCategory {
   id: string;
   name: React.ReactNode;
+  rawName?: string;
   slug?: string;
   image?: string;
   icon?: React.ReactNode;
@@ -16,6 +17,7 @@ const defaultCategories: SubjectCategory[] = [
   {
     id: "01",
     name: <>Computer Science<br/>&amp; AI</>,
+    rawName: "Computer Science & AI",
     slug: "computer-science-ai",
     image: "/placeholder-user.jpg",
     icon: <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="8" rx="1.3" stroke="currentColor" strokeWidth="1.3"/><line x1="5.5" y1="13.5" x2="10.5" y2="13.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/><line x1="8" y1="11" x2="8" y2="13.5" stroke="currentColor" strokeWidth="1.3"/></svg>
@@ -23,6 +25,7 @@ const defaultCategories: SubjectCategory[] = [
   {
     id: "02",
     name: <>Engineering<br/>&amp; Technology</>,
+    rawName: "Engineering & Technology",
     slug: "engineering-technology",
     image: "/placeholder-user.jpg",
     icon: <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2L8 4.5M8 14L8 11.5M2 8L4.5 8M14 8L11.5 8" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/><circle cx="8" cy="8" r="3.2" stroke="currentColor" strokeWidth="1.3"/></svg>
@@ -30,6 +33,7 @@ const defaultCategories: SubjectCategory[] = [
   {
     id: "03",
     name: <>Medical &amp;<br/>Health Sciences</>,
+    rawName: "Medical & Health Sciences",
     slug: "medical-health-sciences",
     image: "/placeholder-user.jpg",
     icon: <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2.5v11M2.5 8h11" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/></svg>
@@ -37,6 +41,7 @@ const defaultCategories: SubjectCategory[] = [
   {
     id: "04",
     name: <>Business &amp;<br/>Management</>,
+    rawName: "Business & Management",
     slug: "business-management",
     image: "/placeholder-user.jpg",
     icon: <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2.5" y="6.5" width="11" height="7" rx="1" stroke="currentColor" strokeWidth="1.3"/><path d="M5.5 6.5V4.8C5.5 4 6.2 3.3 7 3.3h2c.8 0 1.5.7 1.5 1.5v1.7" stroke="currentColor" strokeWidth="1.3"/></svg>
@@ -44,6 +49,7 @@ const defaultCategories: SubjectCategory[] = [
   {
     id: "05",
     name: <>Social<br/>Sciences</>,
+    rawName: "Social Sciences",
     slug: "social-sciences",
     image: "/placeholder-user.jpg",
     icon: <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="6" cy="6" r="2" stroke="currentColor" strokeWidth="1.3"/><circle cx="11" cy="7.5" r="1.6" stroke="currentColor" strokeWidth="1.3"/><path d="M2.5 13c0-2 1.6-3.5 3.5-3.5s3.5 1.5 3.5 3.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/><path d="M9.8 10c1.6.1 2.7 1.4 2.7 3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/></svg>
@@ -51,6 +57,7 @@ const defaultCategories: SubjectCategory[] = [
   {
     id: "06",
     name: <>Education</>,
+    rawName: "Education",
     slug: "education",
     image: "/placeholder-user.jpg",
     icon: <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3L2 6l6 3 6-3-6-3z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round"/><path d="M4.5 7.5v3.2c0 .5 1.5 1.6 3.5 1.6s3.5-1.1 3.5-1.6V7.5" stroke="currentColor" strokeWidth="1.3"/></svg>
@@ -58,6 +65,7 @@ const defaultCategories: SubjectCategory[] = [
   {
     id: "07",
     name: <>Humanities</>,
+    rawName: "Humanities",
     slug: "humanities",
     image: "/placeholder-user.jpg",
     icon: <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="3" y="2.5" width="10" height="11" rx="1" stroke="currentColor" strokeWidth="1.3"/><line x1="5.5" y1="5.5" x2="10.5" y2="5.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/><line x1="5.5" y1="8" x2="10.5" y2="8" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>
@@ -65,6 +73,7 @@ const defaultCategories: SubjectCategory[] = [
   {
     id: "08",
     name: <>Law</>,
+    rawName: "Law",
     slug: "law",
     image: "/placeholder-user.jpg",
     icon: <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><line x1="8" y1="2.5" x2="8" y2="13.5" stroke="currentColor" strokeWidth="1.3"/><path d="M4 4.5L1.5 9h5L4 4.5z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round"/><path d="M12 4.5L9.5 9h5L12 4.5z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round"/><line x1="4.5" y1="13.5" x2="11.5" y2="13.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/></svg>
@@ -72,6 +81,7 @@ const defaultCategories: SubjectCategory[] = [
   {
     id: "09",
     name: <>Agriculture</>,
+    rawName: "Agriculture",
     slug: "agriculture",
     image: "/placeholder-user.jpg",
     icon: <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 13.5V6" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/><path d="M8 6C8 6 4.5 6 4.5 3.5C4.5 3.5 8 3.5 8 6Z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round"/><path d="M8 6C8 6 11.5 6 11.5 3.5C11.5 3.5 8 3.5 8 6Z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round"/></svg>
@@ -79,6 +89,7 @@ const defaultCategories: SubjectCategory[] = [
   {
     id: "10",
     name: <>Environmental<br/>Studies</>,
+    rawName: "Environmental Studies",
     slug: "environmental-studies",
     image: "/placeholder-user.jpg",
     icon: <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="currentColor" strokeWidth="1.3"/><path d="M2.5 8h11M8 2.5c1.8 1.6 1.8 9.4 0 11M8 2.5c-1.8 1.6-1.8 9.4 0 11" stroke="currentColor" strokeWidth="1.1"/></svg>
@@ -86,6 +97,7 @@ const defaultCategories: SubjectCategory[] = [
   {
     id: "11",
     name: <>Other<br/>Disciplines</>,
+    rawName: "Other",
     slug: "other",
     image: "/placeholder-user.jpg",
     icon: <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="4" cy="8" r="1.3" fill="currentColor"/><circle cx="8" cy="8" r="1.3" fill="currentColor"/><circle cx="12" cy="8" r="1.3" fill="currentColor"/></svg>
@@ -107,6 +119,7 @@ export default function GSPSubjectCategories({ title, subtitle, categories, auto
         return {
           id: String(i + 1).padStart(2, '0'), // Presentational ID like '01', '02'
           slug: (cat as any).slug || defaultMatch.slug,
+          rawName: typeof cat.name === 'string' ? cat.name : defaultMatch.rawName,
           name: typeof cat.name === 'string' ? cat.name : defaultMatch.name,
           image: (cat as any).image || defaultMatch.image,
           icon: (cat as any).icon || defaultMatch.icon
@@ -292,7 +305,7 @@ export default function GSPSubjectCategories({ title, subtitle, categories, auto
         <div className="sub-carousel-track" id="subjects-track" ref={trackRef}>
           {displayCategories.map((cat, i) => {
               return (
-              <Link href={`/publications?category=${cat.slug || cat.id}`} key={cat.id} prefetch={false} className="subject-card">
+              <Link href={`/publications?category=${encodeURIComponent(cat.rawName || cat.slug || cat.id)}`} key={cat.id} prefetch={false} className="subject-card">
               <div className="sub-photo-wrap">
                 <Image src={cat.image} alt="Category" width={400} height={400} className="w-full h-full object-cover" />
                 <div className="sub-photo-gradient"></div>
@@ -301,7 +314,13 @@ export default function GSPSubjectCategories({ title, subtitle, categories, auto
                   {cat.icon}
                 </span>
                 <div className="sub-info">
-                  <p className="sub-name">{cat.name}</p>
+                  <p className="sub-name">
+                    {typeof cat.name === 'string' ? (
+                      <span dangerouslySetInnerHTML={{ __html: cat.name }} />
+                    ) : (
+                      cat.name
+                    )}
+                  </p>
                   <span className="sub-view">View
                     <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5h7M5.5 2l3 3-3 3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/></svg>
                   </span>

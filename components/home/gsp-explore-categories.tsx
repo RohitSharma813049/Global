@@ -52,7 +52,7 @@ export default function GspExploreCategories({ title, subtitle, categories }: Gs
             <h2 className="gsp-section-h2" dangerouslySetInnerHTML={{ __html: title || 'Publication <em>Categories</em>' }} />
             <p className="gsp-section-sub">Explore scholarly work across theses, research articles, eBooks and magazines — curated from 350+ peer-reviewed journals.</p>
           </div>
-          <Link href="/publications" className="gsp-section-link gsp-reveal">
+          <Link href="/explore" className="gsp-section-link gsp-reveal">
             View All Categories
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
               <path d="M2 7h10M8 3l4 4-4 4" stroke="#2F115D" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>

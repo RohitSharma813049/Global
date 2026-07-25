@@ -8,13 +8,13 @@ export const getHomepageSettings = unstable_cache(
       hero_title: 'Advancing Global<br /><em>Scholarly Excellence</em>',
       hero_eyebrow: 'Peer-Reviewed · Open Access · Global Impact',
       hero_subtitle: 'A home for distinguished scholars, honorary doctorate holders, and original research voices — connecting ideas across 80 nations and 350+ peer-reviewed journals.',
-      hero_image_url: 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=2070',
+      hero_image_url: '/placeholder-user.jpg',
       hero_slides: [
-        { label: 'Featured Article', title: 'ESG Integration in GCC Markets: A Framework for Sustainable Finance', author: 'Dr. Priya Nair-Kapoor', cred: 'Hon. D.B.A.', badge: 'eBook', avatar: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=60&h=60&fit=crop&crop=face&auto=format&q=80', image: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1200&h=900&fit=crop&auto=format&q=85' },
-        { label: 'Research Paper', title: 'Decolonising Knowledge Systems: Toward an African Academic Paradigm', author: 'Dr. Ngozi Adeyemi', cred: 'Ph.D., FAAN', badge: 'Article', avatar: 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=60&h=60&fit=crop&face&auto=format&q=80', image: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=1200&h=900&fit=crop&auto=format&q=85' },
-        { label: 'GSP Interview Series', title: 'Climate Policy in Transition Economies: Pathways to Net Zero by 2050', author: 'Dr. Amira Al-Rashidi', cred: 'Hon. D.Sc.', badge: 'Magazine', avatar: 'https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=60&h=60&fit=crop&crop=face&auto=format&q=80', image: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1200&h=900&fit=crop&auto=format&q=85' },
-        { label: 'Featured eBook', title: 'GCC Economic Diversification: Vision 2030 and Beyond', author: 'Prof. Khalid Al-Mansouri', cred: 'Hon. D.B.A.', badge: 'eBook', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=60&h=60&fit=crop&crop=face&auto=format&q=80', image: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1200&h=900&fit=crop&auto=format&q=85' },
-        { label: 'Doctoral Thesis', title: 'Artificial Intelligence Ethics in Cross-Cultural Research Environments', author: 'Prof. Li Wei', cred: 'Ph.D.', badge: 'Thesis', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=60&h=60&fit=crop&crop=face&auto=format&q=80', image: 'https://images.unsplash.com/photo-1532619187608-e5375cab36aa?w=1200&h=900&fit=crop&auto=format&q=85' }
+        { label: 'Featured Article', title: 'ESG Integration in GCC Markets: A Framework for Sustainable Finance', author: 'Dr. Priya Nair-Kapoor', cred: 'Hon. D.B.A.', badge: 'eBook', avatar: '/placeholder-user.jpg', image: '/placeholder-user.jpg' },
+        { label: 'Research Paper', title: 'Decolonising Knowledge Systems: Toward an African Academic Paradigm', author: 'Dr. Ngozi Adeyemi', cred: 'Ph.D., FAAN', badge: 'Article', avatar: '/placeholder-user.jpg', image: '/placeholder-user.jpg' },
+        { label: 'GSP Interview Series', title: 'Climate Policy in Transition Economies: Pathways to Net Zero by 2050', author: 'Dr. Amira Al-Rashidi', cred: 'Hon. D.Sc.', badge: 'Magazine', avatar: '/placeholder-user.jpg', image: '/placeholder-user.jpg' },
+        { label: 'Featured eBook', title: 'GCC Economic Diversification: Vision 2030 and Beyond', author: 'Prof. Khalid Al-Mansouri', cred: 'Hon. D.B.A.', badge: 'eBook', avatar: '/placeholder-user.jpg', image: '/placeholder-user.jpg' },
+        { label: 'Doctoral Thesis', title: 'Artificial Intelligence Ethics in Cross-Cultural Research Environments', author: 'Prof. Li Wei', cred: 'Ph.D.', badge: 'Thesis', avatar: '/placeholder-user.jpg', image: '/placeholder-user.jpg' }
       ],
       hero_ticker_items: [
         { prefix: 'New', text: 'ESG & Sustainable Finance — Dr. Priya Nair-Kapoor' },
@@ -22,16 +22,16 @@ export const getHomepageSettings = unstable_cache(
         { prefix: 'Open Access', text: 'Decolonising Knowledge Systems — Dr. Ngozi Adeyemi' }
       ],
       hero_search_placeholder: 'Search journals, papers, authors, books…',
-      hero_search_filters: ['All', 'Articles', 'eBooks', 'Theses', 'Magazines', 'Scholars'],
+      hero_search_filters: ['All', 'Agriculture', 'Computer Science', 'Business', 'Humanities', 'Scholars'],
       hero_top_pill: 'Open Access 2026',
       hero_cta_primary_text: 'Explore Publications',
       hero_cta_secondary_text: 'Meet Our Scholars',
       hero_trust_text: '<strong>25,000+ researchers</strong> published<br />across 80 countries this year',
       hero_trust_avatars: [
-        'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=64&h=64&fit=crop&crop=face&auto=format&q=80',
-        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&h=64&fit=crop&crop=face&auto=format&q=80',
-        'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=64&h=64&fit=crop&crop=face&auto=format&q=80',
-        'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=64&h=64&fit=crop&crop=face&auto=format&q=80'
+        '/placeholder-user.jpg',
+        '/placeholder-user.jpg',
+        '/placeholder-user.jpg',
+        '/placeholder-user.jpg'
       ],
       hero_stats: [
         { number: '12K+', label: 'Publications' },
@@ -51,7 +51,8 @@ export const getHomepageSettings = unstable_cache(
 
       show_featured_content_gsp: true,
       featured_content_gsp_title: 'Featured <em>Research</em>',
-      featured_content_gsp_subtitle: 'Curated Content',
+      featured_content_gsp_subtitle: 'CURATED CONTENT',
+      featured_content_gsp_desc: 'A curated selection of distinguished research, eBooks and editorial work from scholars across 80 countries.',
       
       show_categories_section: true,
       categories_title: 'Explore by Category',
@@ -83,7 +84,9 @@ export const getHomepageSettings = unstable_cache(
       show_featured_scholars_gsp: true,
       featured_scholars_gsp_title: 'Featured <em>Scholars</em>',
       featured_scholars_gsp_subtitle: 'Global Excellence',
-      
+      featured_scholars_mode: 'dynamic', // 'dynamic', 'random', 'manual', 'hidden'
+      pinned_scholars: [],
+
       show_testimonials: true,
       testimonials_title: 'What Scholars Say',
       testimonials_subtitle: 'Success Stories',
@@ -106,10 +109,10 @@ export const getHomepageSettings = unstable_cache(
       ],
 
       explore_categories: [
-        { title: 'Featured<br/>Thesis', count: '1,240+ Theses', image: '/placeholder.svg', link: '/explore?category=theses' },
-        { title: 'Trending<br/>Articles', count: '3,860+ Articles', image: '/placeholder.svg', link: '/explore?category=articles' },
-        { title: 'Latest<br/>eBooks', count: '980+ eBooks', image: '/placeholder.svg', link: '/explore?category=ebooks' },
-        { title: 'Latest<br/>Magazine', count: '410+ Issues', image: '/placeholder.svg', link: '/explore?category=magazine' }
+        { title: 'Featured<br/>Agriculture', count: '1,240+ Papers', image: '/placeholder.svg', link: '/explore?category=agriculture' },
+        { title: 'Trending<br/>Computer Science', count: '3,860+ Papers', image: '/placeholder.svg', link: '/explore?category=computer-science-ai' },
+        { title: 'Latest<br/>Business', count: '980+ Papers', image: '/placeholder.svg', link: '/explore?category=business-management' },
+        { title: 'Latest<br/>Humanities', count: '410+ Papers', image: '/placeholder.svg', link: '/explore?category=humanities' }
       ],
 
       subject_categories: [
@@ -128,7 +131,10 @@ export const getHomepageSettings = unstable_cache(
 
       show_cta_banner: true,
 
-      enable_carousel_autoplay: true
+      enable_carousel_autoplay: true,
+
+      featured_blogs_mode: 'dynamic', // 'dynamic', 'random', 'manual', 'hidden'
+      pinned_blogs: []
     }
 
     const settingsRow = await prisma.homepage_settings.findFirst({
@@ -151,7 +157,9 @@ export const getHomepageSettings = unstable_cache(
       hero_trust_avatars: Array.isArray(dbSettings.hero_trust_avatars) ? dbSettings.hero_trust_avatars : defaultSettings.hero_trust_avatars,
       hero_stats: Array.isArray(dbSettings.hero_stats) ? dbSettings.hero_stats : defaultSettings.hero_stats,
       featured_publications: Array.isArray(dbSettings.featured_publications) ? dbSettings.featured_publications : defaultSettings.featured_publications,
-      how_it_works_steps: Array.isArray(dbSettings.how_it_works_steps) ? dbSettings.how_it_works_steps : defaultSettings.how_it_works_steps
+      how_it_works_steps: Array.isArray(dbSettings.how_it_works_steps) ? dbSettings.how_it_works_steps : defaultSettings.how_it_works_steps,
+      pinned_scholars: Array.isArray(dbSettings.pinned_scholars) ? dbSettings.pinned_scholars : defaultSettings.pinned_scholars,
+      pinned_blogs: Array.isArray(dbSettings.pinned_blogs) ? dbSettings.pinned_blogs : defaultSettings.pinned_blogs
     }
   },
   ['cms-homepage-settings'],
@@ -193,13 +201,10 @@ export const getTestimonials = unstable_cache(
 
 export const getFeaturedScholars = unstable_cache(
   async () => {
-    // Fetch all featured scholars or top scholars if none featured
+    // Fetch only featured scholars, as selected in the admin panel
     const scholars = await prisma.scholars.findMany({
       where: { 
-        OR: [
-          { is_featured: true },
-          { verified: true }
-        ]
+        is_featured: true 
       },
       include: {
         users: { select: { email: true, raw_user_meta_data: true } },

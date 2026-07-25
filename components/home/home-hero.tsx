@@ -149,9 +149,9 @@ export default function HomeHero({
               aria-label="Search publications"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && router.push(`/publications?search=${encodeURIComponent(searchQuery)}`)}
+              onKeyDown={(e) => e.key === 'Enter' && router.push(`/publications?q=${encodeURIComponent(searchQuery)}`)}
             />
-            <button className="search-btn-inline" onClick={() => router.push(`/publications?search=${encodeURIComponent(searchQuery)}`)}>Search</button>
+            <button className="search-btn-inline" onClick={() => router.push(`/publications?q=${encodeURIComponent(searchQuery)}`)}>Search</button>
           </div>
 
           <div className="filter-pills">
@@ -163,7 +163,7 @@ export default function HomeHero({
                   setFilter(f)
                   if (f === 'Scholars') router.push('/scholars')
                   else if (f === 'All') router.push('/publications')
-                  else router.push(`/publications?category=${f.toLowerCase()}`)
+                  else router.push(`/publications?category=${encodeURIComponent(f)}`)
                 }}
               >
                 {f}

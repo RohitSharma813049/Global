@@ -111,19 +111,37 @@ export default function GSPFeaturedScholars({ title, subtitle, scholars = [], au
   const trackRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
   
-  const hasValidScholars = scholars && scholars.length > 0 && scholars.some(s => s.users?.raw_user_meta_data?.name || s.users?.email);
-  const displayScholars = hasValidScholars ? scholars.map(s => ({
-    username: s.username,
-    id: s.id,
-    name: s.users?.raw_user_meta_data?.name || s.users?.email || 'Unknown',
-    image: s.profile_photo_url || s.users?.raw_user_meta_data?.avatar_url || s.users?.raw_user_meta_data?.picture || s.users?.raw_user_meta_data?.image || '/placeholder-user.jpg',
-    country: s.users?.raw_user_meta_data?.country || 'Global',
-    countryFlag: s.users?.raw_user_meta_data?.countryFlag || '🌍',
-    publications: s._count?.publications || 0,
-    credential: s.qualification || 'Scholar',
-    institution: s.institution || 'Independent',
-    field: s.specialization || 'Research'
-  })) : defaultScholars;
+  const hasValidScholars = scholars && scholars.length > 0;
+  const displayScholars = hasValidScholars ? scholars.map(s => {
+    // If it's a manual pinned scholar from settings
+    if (s.name && !s.users) {
+      return {
+        username: '',
+        id: '',
+        name: s.name,
+        image: s.image || '/placeholder-user.jpg',
+        country: 'Global',
+        countryFlag: '🌍',
+        publications: Number(s.papers_count) || 0,
+        credential: s.credentials || '',
+        institution: s.university || '',
+        field: ''
+      };
+    }
+    // If it's from DB
+    return {
+      username: s.username,
+      id: s.id,
+      name: s.users?.raw_user_meta_data?.name || s.users?.email || 'Unknown',
+      image: s.profile_photo_url || s.users?.raw_user_meta_data?.avatar_url || s.users?.raw_user_meta_data?.picture || s.users?.raw_user_meta_data?.image || '/placeholder-user.jpg',
+      country: s.users?.raw_user_meta_data?.country || 'Global',
+      countryFlag: s.users?.raw_user_meta_data?.countryFlag || '🌍',
+      publications: s._count?.publications || 0,
+      credential: s.qualification || 'Scholar',
+      institution: s.institution || 'Independent',
+      field: s.specialization || 'Research'
+    };
+  }) : defaultScholars;
 
   const [index, setIndex] = useState(0);
   const [maxIndex, setMaxIndex] = useState(0);

@@ -1,10 +1,10 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { getTestimonials, createTestimonial, deleteTestimonial, updateTestimonial } from '@/app/actions/cms'
+import { getTestimonials, createTestimonial, deleteTestimonial, updateTestimonial, toggleTestimonialFeaturedStatus } from '@/app/actions/cms'
 import toast from 'react-hot-toast'
 import ImageUpload from '@/components/image-upload'
-import { MoreVertical, Edit2, Trash2 } from 'lucide-react'
+import { MoreVertical, Edit2, Trash2, Star, StarOff } from 'lucide-react'
 
 export default function TestimonialsManager() {
   const [items, setItems] = useState<any[]>([])
@@ -14,6 +14,12 @@ export default function TestimonialsManager() {
   const [isEditing, setIsEditing] = useState(false)
   const [saving, setSaving] = useState(false)
   const [openMenuId, setOpenMenuId] = useState<string | null>(null)
+  
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 10
+  const totalPages = Math.ceil(items.length / itemsPerPage)
+  const paginatedItems = items.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
 
   useEffect(() => {
     function handleClickOutside() {
@@ -70,6 +76,16 @@ export default function TestimonialsManager() {
     }
   }
 
+  const handleToggleFeature = async (id: string, currentStatus: boolean) => {
+    try {
+      await toggleTestimonialFeaturedStatus(id, !currentStatus)
+      toast.success(currentStatus ? 'Testimonial un-featured' : 'Testimonial featured!')
+      setItems(items.map(item => item.id === id ? { ...item, is_featured: !currentStatus } : item))
+    } catch (e: any) {
+      toast.error(e.message)
+    }
+  }
+
   return (
     <div className="p-4 md:p-6 w-full max-w-5xl mx-auto">
       <div className="flex justify-between items-center mb-6">
@@ -104,7 +120,7 @@ export default function TestimonialsManager() {
               </tr>
             </thead>
             <tbody className="bg-(--color-gsp-surface-muted) divide-y divide-gray-200">
-              {items.map(item => (
+            {paginatedItems.map(item => (
                 <tr key={item.id}>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
@@ -120,36 +136,39 @@ export default function TestimonialsManager() {
                   <td className="px-6 py-4 text-sm text-(--color-gsp-text-secondary) truncate max-w-xs">{item.quote}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-(--color-gsp-text-secondary)">{item.rating}/5</td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <div className="relative inline-block text-left">
+                    <div className="flex items-center justify-end gap-2">
                       <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setOpenMenuId(openMenuId === item.id ? null : item.id);
+                        onClick={(e) => { 
+                          e.stopPropagation(); 
+                          handleToggleFeature(item.id, !!item.is_featured); 
                         }}
-                        className="p-1 rounded-md hover:bg-gray-100 transition-colors"
+                        className={`p-1.5 rounded-md transition-colors ${item.is_featured ? 'text-amber-600 bg-amber-50 hover:bg-amber-100' : 'text-gray-600 hover:text-amber-600 hover:bg-amber-50'}`}
+                        title={item.is_featured ? "Un-feature" : "Feature"}
                       >
-                        <MoreVertical className="w-5 h-5 text-gray-500" />
+                        {item.is_featured ? <Star className="w-4 h-4 fill-amber-500 text-amber-500" /> : <StarOff className="w-4 h-4" />}
                       </button>
-
-                      {openMenuId === item.id && (
-                        <div 
-                          className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded-md shadow-lg z-50 py-1"
-                          onMouseDown={(e) => e.stopPropagation()}
-                        >
-                          <button
-                            onClick={() => { setOpenMenuId(null); setNewItem(item); setIsEditing(true); setShowModal(true); }}
-                            className="w-full text-left px-4 py-2 text-sm text-(--color-gsp-text-secondary) hover:text-(--color-gsp-text-inverse) hover:bg-violet-soft flex items-center gap-2"
-                          >
-                            <Edit2 className="w-4 h-4" /> Edit
-                          </button>
-                          <button
-                            onClick={() => { setOpenMenuId(null); handleDelete(item.id); }}
-                            className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
-                          >
-                            <Trash2 className="w-4 h-4" /> Delete
-                          </button>
-                        </div>
-                      )}
+                      <button
+                        onClick={(e) => { 
+                          e.stopPropagation();
+                          setNewItem(item); 
+                          setIsEditing(true); 
+                          setShowModal(true); 
+                        }}
+                        className="p-1.5 rounded-md text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 transition-colors"
+                        title="Edit"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={(e) => { 
+                          e.stopPropagation();
+                          handleDelete(item.id); 
+                        }}
+                        className="p-1.5 rounded-md text-gray-600 hover:text-red-600 hover:bg-red-50 transition-colors"
+                        title="Delete"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -162,9 +181,30 @@ export default function TestimonialsManager() {
         )}
       </div>
 
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex justify-center mt-6 gap-2">
+          <button 
+            disabled={currentPage === 1} 
+            onClick={() => setCurrentPage(p => p - 1)}
+            className="px-3 py-1 rounded border hover:bg-gray-50 disabled:opacity-50"
+          >
+            Prev
+          </button>
+          <span className="px-3 py-1 text-sm text-gray-600">Page {currentPage} of {totalPages}</span>
+          <button 
+            disabled={currentPage === totalPages} 
+            onClick={() => setCurrentPage(p => p + 1)}
+            className="px-3 py-1 rounded border hover:bg-gray-50 disabled:opacity-50"
+          >
+            Next
+          </button>
+        </div>
+      )}
+
       {showModal && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-(--color-gsp-surface-muted) rounded-(--radius-xl) shadow-xl max-w-2xl w-full p-6">
+        <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4">
+          <div className="bg-(--color-gsp-surface-muted) rounded-(--radius-xl) shadow-xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto">
             <h2 className="text-xl font-bold mb-4">{isEditing ? 'Edit Testimonial' : 'Add Testimonial'}</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
@@ -192,7 +232,7 @@ export default function TestimonialsManager() {
                   onChange={url => setNewItem({...newItem, image: url})} 
                 />
               </div>
-              <div className="flex justify-end gap-3 pt-4">
+              <div className="flex justify-end gap-3 pt-4 sticky bottom-0 bg-(--color-gsp-surface-muted) pb-2 border-t mt-4">
                 <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 text-(--color-gsp-text-secondary)">Cancel</button>
                 <button type="submit" disabled={saving} className="bg-(--color-gsp-text-inverse) text-white px-4 py-2 rounded-(--radius-lg)">{saving ? 'Saving...' : (isEditing ? 'Update' : 'Create')}</button>
               </div>
