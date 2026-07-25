@@ -1,4 +1,4 @@
-import { uploadFileToR2 } from './lib/r2.ts';
+import { uploadFileToR2 } from './lib/r2';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
