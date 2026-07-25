@@ -1,6 +1,9 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import dynamic from 'next/dynamic';
+
+const HTMLFlipBook = dynamic(() => import('react-pageflip'), { ssr: false }) as any;
 
 interface PublicationViewerProps {
   publication: any;
@@ -131,7 +134,88 @@ export default function PublicationViewer({ publication, isVideo }: PublicationV
 
   // Simple Page Navigation State
   const [page, setPage] = useState(1);
-  const totalPages = 312; // Example static total pages, ideally from publication metadata
+  const [totalPages, setTotalPages] = useState(1);
+  const [bookPages, setBookPages] = useState<string[]>([]);
+  const bookRef = useRef<any>(null);
+
+  // Split DOCX HTML into pages for the book view
+  useEffect(() => {
+    if (!docxContent) return;
+    
+    // Fallback simple character chunking for HTML
+    const chunkHtml = (html: string, maxChars = 1200) => {
+      const chunks = [];
+      let currentChunk = "";
+      
+      // Simple regex to split by paragraphs or headings to avoid breaking tags
+      const blocks = html.match(/<(p|h[1-6]|ul|ol|table|div)[^>]*>[\s\S]*?<\/\1>/gi);
+      
+      if (blocks && blocks.length > 0) {
+        for (const block of blocks) {
+          if (currentChunk.length + block.length > maxChars && currentChunk.length > 0) {
+            chunks.push(currentChunk);
+            currentChunk = block;
+          } else {
+            currentChunk += block;
+          }
+        }
+        if (currentChunk) chunks.push(currentChunk);
+      } else {
+        // If no blocks, just chunk the text directly
+        let idx = 0;
+        while (idx < html.length) {
+          chunks.push(html.substring(idx, idx + maxChars));
+          idx += maxChars;
+        }
+      }
+      return chunks.length > 0 ? chunks : [html];
+    };
+
+    const pages = chunkHtml(docxContent);
+    // Ensure we have an even number of pages for the book spread
+    if (pages.length % 2 !== 0) {
+      pages.push("<div class='text-center py-20 text-zinc-300'>[Blank Page]</div>");
+    }
+    
+    setBookPages(pages);
+    setTotalPages(pages.length);
+  }, [docxContent]);
+
+  const playPageTurnSound = () => {
+    try {
+      const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioContext) return;
+      const ctx = new AudioContext();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
+      
+      // Create a "swish/paper" sound using a noise buffer
+      const bufferSize = ctx.sampleRate * 0.2; // 0.2 seconds
+      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1;
+      }
+      const noise = ctx.createBufferSource();
+      noise.buffer = buffer;
+      
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(1000, ctx.currentTime);
+      filter.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.15);
+      
+      gain.gain.setValueAtTime(0.5, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+      
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+      
+      noise.start(ctx.currentTime);
+    } catch (e) {
+      console.log("Audio not supported or blocked");
+    }
+  };
 
   const handleZoom = (dir: number) => {
     // Placeholder zoom logic
@@ -139,7 +223,15 @@ export default function PublicationViewer({ publication, isVideo }: PublicationV
   };
 
   const handlePageNav = (dir: number) => {
-    setPage(prev => Math.max(1, Math.min(totalPages, prev + dir)));
+    if (activeTab === 'book' && bookRef.current?.pageFlip()) {
+      if (dir > 0) {
+        bookRef.current.pageFlip().flipNext();
+      } else {
+        bookRef.current.pageFlip().flipPrev();
+      }
+    } else {
+      setPage(prev => Math.max(1, Math.min(totalPages, prev + dir)));
+    }
   };
 
   const getSimulatedContent = (pageNum: number) => {
@@ -298,13 +390,13 @@ export default function PublicationViewer({ publication, isVideo }: PublicationV
           <div className="pdf-bar">
              <button className="ptbtn" onClick={() => handlePageNav(-2)}><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M8 2L4 6l4 4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg></button>
              <button className="ptbtn" onClick={() => handlePageNav(2)}><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M4 2l4 4-4 4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg></button>
-             <span className="pdf-pi">Pages <span>{page}-{page+1}</span> of {totalPages}</span>
+             <span className="pdf-pi">Pages <span>{page}-{Math.min(page+1, totalPages)}</span> of {totalPages}</span>
              <span className="pdf-sp"></span>
 
              <div className="ml-auto flex items-center space-x-2">
               <button 
                 className={`ptbtn px-3 py-1 flex items-center space-x-1.5 rounded-full font-bold transition-colors ${isReading ? 'bg-red-100 text-red-600 hover:bg-red-200' : 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100'}`}
-                onClick={() => handleReadAloud(getSimulatedContent(page) + " " + getSimulatedContent(page + 1))}
+                onClick={() => handleReadAloud(bookPages[page - 1] + " " + (bookPages[page] || ""))}
                 title={isReading ? "Stop Audio" : "Read Aloud"}
               >
                 {isReading ? (
@@ -327,41 +419,42 @@ export default function PublicationViewer({ publication, isVideo }: PublicationV
             </div>
           </div>
           <div className="book-view-wrapper">
-             <div className="book-container">
-                {/* Left Page */}
-                <div className="book-page">
-                   <div className="text-[10px] font-bold text-zinc-400 mb-4">{page}</div>
-                   <div className="eb-body text-sm flex-1 overflow-auto">
-                     {isDocxLoading ? (
-                       <div className="flex justify-center items-center py-20">
-                         <div className="w-8 h-8 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
+             {isDocxLoading ? (
+               <div className="flex justify-center items-center py-20 w-full h-full">
+                 <div className="w-8 h-8 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
+               </div>
+             ) : (
+               <div className="book-container flex items-center justify-center">
+                 <HTMLFlipBook 
+                   width={400} 
+                   height={540} 
+                   size="stretch"
+                   minWidth={315}
+                   maxWidth={1000}
+                   minHeight={400}
+                   maxHeight={1533}
+                   maxShadowOpacity={0.5}
+                   showCover={true}
+                   mobileScrollSupport={true}
+                   ref={bookRef}
+                   onFlip={(e: any) => {
+                     setPage(e.data + 1);
+                     playPageTurnSound();
+                   }}
+                 >
+                   {bookPages.map((pageHtml, index) => (
+                     <div className="book-page" key={index}>
+                       <div className={`text-[10px] font-bold text-zinc-400 mb-4 ${index % 2 !== 0 ? 'text-right' : ''}`}>
+                         {index + 1}
                        </div>
-                     ) : (
-                       <>
-                         <div dangerouslySetInnerHTML={{ __html: getSimulatedContent(page) }} />
-                       </>
-                     )}
-                   </div>
-                </div>
-                
-                {/* Right Page */}
-                <div className="book-page">
-                   <div className="text-[10px] font-bold text-zinc-400 mb-4 text-right">{page + 1}</div>
-                   <div className="eb-body text-sm flex-1 overflow-auto">
-                     {isDocxLoading ? (
-                       <div className="flex justify-center items-center py-20">
-                         <div className="w-8 h-8 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
+                       <div className="eb-body text-sm flex-1 overflow-auto pointer-events-none">
+                         <div dangerouslySetInnerHTML={{ __html: pageHtml }} />
                        </div>
-                     ) : (
-                       <>
-                         <div dangerouslySetInnerHTML={{ __html: getSimulatedContent(page + 1) }} />
-                       </>
-                     )}
-                   </div>
-                </div>
-
-                <div className="book-spine"></div>
-             </div>
+                     </div>
+                   ))}
+                 </HTMLFlipBook>
+               </div>
+             )}
           </div>
         </div>
 
