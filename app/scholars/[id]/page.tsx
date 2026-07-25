@@ -161,7 +161,7 @@ export default async function ScholarProfilePage({ params }: Props) {
       is_featured: s.is_featured ?? false,
       total_views: s.total_views ?? 0,
       total_downloads: s.total_downloads ?? 0,
-      avatar_url: rawMetaData.avatar_url || rawMetaData.picture || rawMetaData.image || ''
+      avatar_url: s.profile_photo_url || rawMetaData.avatar_url || rawMetaData.picture || rawMetaData.image || ''
     };
   });
 

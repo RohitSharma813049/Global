@@ -116,7 +116,7 @@ export default function GSPFeaturedScholars({ title, subtitle, scholars = [], au
     username: s.username,
     id: s.id,
     name: s.users?.raw_user_meta_data?.name || s.users?.email || 'Unknown',
-    image: s.users?.raw_user_meta_data?.avatar_url || s.users?.raw_user_meta_data?.picture || s.users?.raw_user_meta_data?.image || '/placeholder-user.jpg',
+    image: s.profile_photo_url || s.users?.raw_user_meta_data?.avatar_url || s.users?.raw_user_meta_data?.picture || s.users?.raw_user_meta_data?.image || '/placeholder-user.jpg',
     country: s.users?.raw_user_meta_data?.country || 'Global',
     countryFlag: s.users?.raw_user_meta_data?.countryFlag || '🌍',
     publications: s._count?.publications || 0,

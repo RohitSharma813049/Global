@@ -61,7 +61,7 @@ export async function getRecommendations() {
         p.id, p.title, p.abstract, p.content_type, p.created_at,
         p.views, p.downloads, p.file_url, p.cover_image, p.author_name, p.institution, p.email_address, p.status,
         c.name as category_name, c.slug as category_slug,
-        s.id as scholar_id, s.user_id as scholar_user_id,
+        s.id as scholar_id, s.user_id as scholar_user_id, s.profile_photo_url,
         u.raw_user_meta_data
       FROM public.publications p
       LEFT JOIN public.categories c ON p.category_id = c.id
@@ -87,6 +87,7 @@ export async function getRecommendations() {
       scholars: p.scholar_id ? {
         id: p.scholar_id,
         user_id: p.scholar_user_id,
+        profile_photo_url: p.profile_photo_url,
         users: {
           raw_user_meta_data: p.raw_user_meta_data || { 
             name: "Unknown Author",
