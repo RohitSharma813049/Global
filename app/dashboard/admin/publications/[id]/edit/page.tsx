@@ -7,7 +7,7 @@ import { getCategories } from '@/app/actions/taxonomy'
 import toast from 'react-hot-toast'
 import Link from 'next/link'
 
-export default function EditPublicationPage({ params }: { params: { id: string } }) {
+export default function EditPublicationPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -19,9 +19,11 @@ export default function EditPublicationPage({ params }: { params: { id: string }
     category_id: ''
   })
 
+  const resolvedParams = React.use(params)
+  
   useEffect(() => {
     Promise.all([
-      getPublication(params.id),
+      getPublication(resolvedParams.id),
       getCategories()
     ]).then(([pubRes, catRes]) => {
       if (pubRes.error) {
@@ -37,13 +39,13 @@ export default function EditPublicationPage({ params }: { params: { id: string }
       setCategories(catRes || [])
       setLoading(false)
     }).catch(console.error)
-  }, [params.id])
+  }, [resolvedParams.id])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setSaving(true)
     
-    const result = await updatePublicationContent(params.id, {
+    const result = await updatePublicationContent(resolvedParams.id, {
       title: formData.title,
       abstract: formData.abstract,
       content_type: formData.content_type,
