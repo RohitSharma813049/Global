@@ -1,6 +1,8 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState, useRef } from 'react'
+import { toast } from 'sonner'
+import { getScholarPublications } from '@/app/actions/publications'
 import {
   BarChart,
   Bar,
@@ -12,7 +14,29 @@ import {
   ResponsiveContainer
 } from 'recharts'
 
-export default function AnalyticsClient({ publications }: { publications: any[] }) {
+export default function AnalyticsClient({ publications: initialPublications }: { publications: any[] }) {
+  const [publications, setPublications] = useState(initialPublications)
+  
+  useEffect(() => {
+    const fetchRealData = async () => {
+      try {
+        const { data, error } = await getScholarPublications()
+        if (error) {
+          throw new Error(error)
+        }
+        if (data && JSON.stringify(data) !== JSON.stringify(publications)) {
+          setPublications(data)
+        }
+      } catch (err: any) {
+        console.error('Polling error:', err)
+        toast.error('Failed to update analytics data. Server might be down.')
+      }
+    }
+
+    const intervalId = setInterval(fetchRealData, 5000)
+    return () => clearInterval(intervalId)
+  }, [publications])
+
   // Calculate top-level metrics
   const totalViews = publications.reduce((acc, pub) => acc + (pub.views || 0), 0)
   const totalDownloads = publications.reduce((acc, pub) => acc + (pub.downloads || 0), 0)
@@ -67,14 +91,14 @@ export default function AnalyticsClient({ publications }: { publications: any[] 
                   dataKey="name" 
                   angle={-45} 
                   textAnchor="end" 
-                  height={60} 
+                  height={80} 
                   tick={{ fill: '#6B7280', fontSize: 12 }} 
                 />
                 <YAxis tick={{ fill: '#6B7280', fontSize: 12 }} />
                 <Tooltip 
                   contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                 />
-                <Legend wrapperStyle={{ paddingTop: '20px' }} />
+                <Legend verticalAlign="top" height={36} />
                 <Bar dataKey="views" name="Views" fill="#2F115D" radius={[4, 4, 0, 0]} />
                 <Bar dataKey="downloads" name="Downloads" fill="#10B981" radius={[4, 4, 0, 0]} />
               </BarChart>
