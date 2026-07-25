@@ -50,7 +50,6 @@ export default function DashboardSidebar() {
     { name: "Scholar Applications", href: "/dashboard/admin/scholar-applications", icon: MdPeople },
     { name: "Review Publications", href: "/dashboard/admin/publications", icon: MdPendingActions },
     { name: "Categories", href: "/dashboard/admin/categories", icon: MdBookmark },
-    { name: "Homepage Settings", href: "/dashboard/admin/settings", icon: MdWeb },
     { name: "Featured Scholars", href: "/dashboard/admin/featured-scholars", icon: MdPerson },
     { name: "Testimonials", href: "/dashboard/admin/testimonials", icon: MdStar },
     { name: "Blogs", href: "/dashboard/admin/blogs", icon: MdArticle },
@@ -147,9 +146,9 @@ export default function DashboardSidebar() {
 
       <div className={`p-4 border-t border-[var(--color-gsp-border-muted)] ${(!isExpanded && !isMobileMenuOpen) ? 'flex flex-col items-center' : ''}`}>
         <Link 
-          href="/dashboard/settings"
+          href={role === 'admin' || role === 'super_admin' ? '/dashboard/admin/settings' : '/dashboard/settings'}
           onClick={() => setIsMobileMenuOpen(false)}
-          className={`flex items-center py-2.5 rounded-[var(--radius-sm)] transition-all duration-200 mb-1 ${isExpanded || isMobileMenuOpen ? 'px-3 text-[var(--font-size-md)] font-medium w-full' : 'justify-center w-10 h-10 px-0'} ${pathname === "/dashboard/settings" ? "bg-[#F4F1FA] text-[var(--color-gsp-text-inverse)] font-semibold" : "text-[var(--color-gsp-text-primary)] hover:bg-gray-50 hover:text-[var(--color-gsp-text-secondary)]"}`}
+          className={`flex items-center py-2.5 rounded-[var(--radius-sm)] transition-all duration-200 mb-1 ${isExpanded || isMobileMenuOpen ? 'px-3 text-[var(--font-size-md)] font-medium w-full' : 'justify-center w-10 h-10 px-0'} ${(pathname === "/dashboard/settings" || pathname === "/dashboard/admin/settings") ? "bg-[#F4F1FA] text-[var(--color-gsp-text-inverse)] font-semibold" : "text-[var(--color-gsp-text-primary)] hover:bg-gray-50 hover:text-[var(--color-gsp-text-secondary)]"}`}
           title={!isExpanded && !isMobileMenuOpen ? "Settings" : ""}
         >
           <MdSettings className={`text-lg ${isExpanded || isMobileMenuOpen ? 'mr-3' : ''}`} /> 

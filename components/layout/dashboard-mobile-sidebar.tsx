@@ -111,8 +111,8 @@ export default function DashboardMobileSidebar() {
           )}
           <SheetClose asChild>
             <Link 
-              href="/dashboard/settings"
-              className={`flex items-center py-3 px-4 rounded-xl transition-all duration-200 mb-2 w-full text-sm font-medium ${pathname === "/dashboard/settings" ? "bg-indigo-50 text-indigo-700" : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"}`}
+              href={role === 'admin' || role === 'super_admin' ? '/dashboard/admin/settings' : '/dashboard/settings'}
+              className={`flex items-center py-3 px-4 rounded-xl transition-all duration-200 mb-2 w-full text-sm font-medium ${(pathname === "/dashboard/settings" || pathname === "/dashboard/admin/settings") ? "bg-indigo-50 text-indigo-700" : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"}`}
             >
               <MdSettings className="text-xl mr-3 text-lg" /> 
               <span className="whitespace-nowrap">Settings</span>

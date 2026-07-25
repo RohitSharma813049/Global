@@ -133,14 +133,16 @@ export default function Header() {
                         </Link>
                       </DropdownMenuItem>
                     )}
+                    {role !== 'admin' && role !== 'super_admin' && (
+                      <DropdownMenuItem asChild>
+                          <Link href="/library/saved" className="flex items-center cursor-pointer">
+                            <BookMarked className="mr-2 h-4 w-4" />
+                            <span>My Library</span>
+                          </Link>
+                      </DropdownMenuItem>
+                    )}
                     <DropdownMenuItem asChild>
-                        <Link href="/library/saved" className="flex items-center cursor-pointer">
-                          <BookMarked className="mr-2 h-4 w-4" />
-                          <span>My Library</span>
-                        </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link href="/dashboard/settings" className="flex items-center cursor-pointer">
+                      <Link href={role === 'admin' || role === 'super_admin' ? '/dashboard/admin/settings' : '/dashboard/settings'} className="flex items-center cursor-pointer">
                         <MdSettings className="mr-2 h-4 w-4" />
                         <span>Settings</span>
                       </Link>
