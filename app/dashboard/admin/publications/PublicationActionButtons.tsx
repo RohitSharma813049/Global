@@ -3,8 +3,9 @@
 import React, { useState } from 'react'
 import { updatePublicationStatus, deletePublication } from '@/app/actions/publications'
 import toast from 'react-hot-toast'
-import { MoreVertical, CheckCircle, FileEdit, XCircle, Trash2, Undo2, PlayCircle } from 'lucide-react'
+import { MoreVertical, CheckCircle, FileEdit, XCircle, Trash2, Undo2, PlayCircle, Edit } from 'lucide-react'
 import { useEffect, useRef } from 'react'
+import Link from 'next/link'
 
 export default function PublicationActionButtons({ 
   publicationId, 
@@ -79,6 +80,13 @@ export default function PublicationActionButtons({
 
       {showMenu && (
         <div className="absolute right-0 mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50 py-1">
+          <Link
+            href={`/dashboard/admin/publications/${publicationId}/edit`}
+            className="w-full text-left px-4 py-2 text-sm text-indigo-700 hover:bg-indigo-50 flex items-center gap-2"
+          >
+            <Edit className="w-4 h-4" /> Edit Publication
+          </Link>
+
           {currentStatus === 'submitted' && (
             <button
               onClick={() => { setShowMenu(false); handleUpdate('under_review'); }}

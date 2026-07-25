@@ -158,7 +158,12 @@ export const authOptions: NextAuthOptions = {
       if (trigger === "update") {
         if (session?.image) {
           token.picture = session.image;
-        } else if (token.id) {
+        }
+        if (session?.role) {
+          token.role = session.role;
+        }
+
+        if (token.id && !session?.image && !session?.role) {
           // Force sync with database only if no specific image was provided
           try {
             const { createClient } = require('@supabase/supabase-js');
@@ -172,6 +177,9 @@ export const authOptions: NextAuthOptions = {
             }
             if (userData?.user?.user_metadata?.name) {
               token.name = userData.user.user_metadata.name;
+            }
+            if (userData?.user?.user_metadata?.role) {
+              token.role = userData.user.user_metadata.role;
             }
           } catch (e) {
             console.error("Failed to sync session with DB on update", e);

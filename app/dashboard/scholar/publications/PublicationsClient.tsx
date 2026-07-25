@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts'
 import { updatePublicationContent } from '@/app/actions/publications'
+import { toast } from 'react-hot-toast'
 
 export default function PublicationsClient({ initialPublications }: { initialPublications: any[] }) {
   return (
@@ -30,14 +31,14 @@ function PublicationsClientInner({ initialPublications }: { initialPublications:
     try {
       const res = await updatePublicationContent(id, { status: 'pending' })
       if (res?.error) {
-        alert(res.error)
+        toast.error(res.error)
       } else {
-        alert('Publication submitted for review!')
+        toast.success('Publication submitted for review!')
         setPublications(pubs => pubs.map(p => p.id === id ? { ...p, status: 'pending' } : p))
         setSelectedPub(null)
       }
     } catch (err: any) {
-      alert(err.message)
+      toast.error(err.message)
     }
     setIsPublishing(false)
   }

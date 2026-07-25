@@ -103,7 +103,7 @@ export default function PublicationViewer({ publication, isVideo }: PublicationV
             <button className="ptbtn" onClick={() => handleZoom(1)}><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><line x1="6" y1="3" x2="6" y2="9" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/><line x1="3" y1="6" x2="9" y2="6" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></svg></button>
           </div>
           <div className="pdf-vp relative">
-            <div className="pdf-pg flex flex-col justify-center items-center">
+            <div className="pdf-pg flex flex-col justify-center items-center min-h-[800px] w-full">
               {isValidFileUrl ? (
                 <iframe 
                   src={`${publication.file_url}#toolbar=0`} 
@@ -111,7 +111,7 @@ export default function PublicationViewer({ publication, isVideo }: PublicationV
                   title={publication.title}
                 ></iframe>
               ) : (
-                <div className="flex flex-col items-center justify-center text-zinc-400 h-full w-full bg-zinc-50 border-2 border-dashed border-zinc-200 rounded-lg">
+                <div className="flex flex-col items-center justify-center text-zinc-400 absolute inset-4 bg-zinc-50 border-2 border-dashed border-zinc-200 rounded-lg">
                   <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="mb-4 opacity-50"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
                   <p>Document not available for preview</p>
                 </div>

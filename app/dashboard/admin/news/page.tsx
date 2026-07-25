@@ -1,16 +1,17 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { getNews, createNews, deleteNews } from '@/app/actions/cms'
+import { getNews, createNews, updateNews, deleteNews } from '@/app/actions/cms'
 import toast from 'react-hot-toast'
 import ImageUpload from '@/components/image-upload'
-import { MoreVertical, Trash2 } from 'lucide-react'
+import { MoreVertical, Trash2, Edit2 } from 'lucide-react'
 
 export default function NewsManager() {
   const [newsList, setNewsList] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
-  const [newItem, setNewItem] = useState({ title: '', slug: '', content: '', cover_image: '' })
+  const [formData, setFormData] = useState({ title: '', slug: '', content: '', cover_image: '' })
+  const [editingId, setEditingId] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
   const [openMenuId, setOpenMenuId] = useState<string | null>(null)
 
@@ -40,10 +41,16 @@ export default function NewsManager() {
     e.preventDefault()
     setSaving(true)
     try {
-      await createNews(newItem)
-      toast.success('News item created!')
+      if (editingId) {
+        await updateNews(editingId, formData)
+        toast.success('News item updated!')
+      } else {
+        await createNews(formData)
+        toast.success('News item created!')
+      }
       setShowModal(false)
-      setNewItem({ title: '', slug: '', content: '', cover_image: '' })
+      setFormData({ title: '', slug: '', content: '', cover_image: '' })
+      setEditingId(null)
       loadNews()
     } catch (e: any) {
       toast.error(e.message)
@@ -71,7 +78,11 @@ export default function NewsManager() {
           <p className="text-[var(--color-gsp-text-secondary)] text-sm mt-1">Manage platform announcements and news.</p>
         </div>
         <button 
-          onClick={() => setShowModal(true)}
+          onClick={() => {
+            setFormData({ title: '', slug: '', content: '', cover_image: '' })
+            setEditingId(null)
+            setShowModal(true)
+          }}
           className="bg-[var(--color-gsp-text-inverse)] text-white px-4 py-2 rounded-[var(--radius-lg)] hover:bg-indigo-700"
         >
           + Add News Item
@@ -118,6 +129,17 @@ export default function NewsManager() {
                           onMouseDown={(e) => e.stopPropagation()}
                         >
                           <button
+                            onClick={() => { 
+                              setOpenMenuId(null); 
+                              setFormData({ title: item.title, slug: item.slug, content: item.content, cover_image: item.cover_image || '' });
+                              setEditingId(item.id);
+                              setShowModal(true);
+                            }}
+                            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                          >
+                            <Edit2 className="w-4 h-4" /> Edit
+                          </button>
+                          <button
                             onClick={() => { setOpenMenuId(null); handleDelete(item.id); }}
                             className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
                           >
@@ -140,30 +162,30 @@ export default function NewsManager() {
       {showModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-[var(--color-gsp-surface-muted)] rounded-[var(--radius-xl)] shadow-xl max-w-2xl w-full p-6">
-            <h2 className="text-xl font-bold mb-4">Create News Item</h2>
+            <h2 className="text-xl font-bold mb-4">{editingId ? 'Edit News Item' : 'Create News Item'}</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium mb-1">Title</label>
-                <input aria-label="Input field" type="text" value={newItem.title} onChange={e => setNewItem({...newItem, title: e.target.value})} className="w-full border rounded-[var(--radius-lg)] p-2" required />
+                <input aria-label="Input field" type="text" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="w-full border rounded-[var(--radius-lg)] p-2" required />
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1">Slug (URL)</label>
-                <input aria-label="Input field" type="text" value={newItem.slug} onChange={e => setNewItem({...newItem, slug: e.target.value})} className="w-full border rounded-[var(--radius-lg)] p-2" required />
+                <input aria-label="Input field" type="text" value={formData.slug} onChange={e => setFormData({...formData, slug: e.target.value})} className="w-full border rounded-[var(--radius-lg)] p-2" required />
               </div>
               <div>
                 <ImageUpload 
                   label="Cover Image (Upload or URL)"
-                  value={newItem.cover_image} 
-                  onChange={url => setNewItem({...newItem, cover_image: url})} 
+                  value={formData.cover_image} 
+                  onChange={url => setFormData({...formData, cover_image: url})} 
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1">Content</label>
-                <textarea aria-label="Input field" rows={6} value={newItem.content} onChange={e => setNewItem({...newItem, content: e.target.value})} className="w-full border rounded-[var(--radius-lg)] p-2" required />
+                <textarea aria-label="Input field" rows={6} value={formData.content} onChange={e => setFormData({...formData, content: e.target.value})} className="w-full border rounded-[var(--radius-lg)] p-2" required />
               </div>
               <div className="flex justify-end gap-3 pt-4">
                 <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 text-[var(--color-gsp-text-secondary)]">Cancel</button>
-                <button type="submit" disabled={saving} className="bg-[var(--color-gsp-text-inverse)] text-white px-4 py-2 rounded-[var(--radius-lg)]">{saving ? 'Saving...' : 'Create'}</button>
+                <button type="submit" disabled={saving} className="bg-[var(--color-gsp-text-inverse)] text-white px-4 py-2 rounded-[var(--radius-lg)]">{saving ? 'Saving...' : (editingId ? 'Update' : 'Create')}</button>
               </div>
             </form>
           </div>

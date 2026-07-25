@@ -338,36 +338,28 @@ export default function GSPDistinguishedScholars({ scholar, videos = [], publica
         </div>
 
         {/* Published works */}
-        <div className="mb-24">
-          <h2 className="text-[17px] font-serif mb-6 text-black">Published works on Global Scholar Publications</h2>
-          <div className="flex flex-col gap-6 border-t border-[#F0F0F0] pt-6">
-            {publications.length > 0 ? publications.map((pub, i) => (
-              <div key={i} className="flex justify-between items-start gap-4 text-[13px]">
-                <div>
-                  <a href={`/publications/${pub.id}`} className="text-[#0A66C2] hover:underline mb-1 inline-block">
-                    {pub.title}
-                  </a>
-                  <p className="text-black">
-                    Global Scholar Publications · {new Date().getFullYear()} · DOI: 10.XXXX/gsp.2024.0{i+1}
-                  </p>
+        {publications.length > 0 && (
+          <div className="mb-24">
+            <h2 className="text-[17px] font-serif mb-6 text-black">Published works on Global Scholar Publications</h2>
+            <div className="flex flex-col gap-6 border-t border-[#F0F0F0] pt-6">
+              {publications.map((pub, i) => (
+                <div key={i} className="flex justify-between items-start gap-4 text-[13px]">
+                  <div>
+                    <a href={`/publications/${pub.id}`} className="text-[#0A66C2] hover:underline mb-1 inline-block">
+                      {pub.title}
+                    </a>
+                    <p className="text-black">
+                      Global Scholar Publications · {new Date().getFullYear()} · DOI: 10.XXXX/gsp.2024.0{i+1}
+                    </p>
+                  </div>
+                  <span className="px-3 py-1 bg-[#E8F5E9] text-[#1B5E20] rounded-full text-[10px] font-medium whitespace-nowrap">
+                    {pub.tag || 'Article'}
+                  </span>
                 </div>
-                <span className="px-3 py-1 bg-[#E8F5E9] text-[#1B5E20] rounded-full text-[10px] font-medium whitespace-nowrap">
-                  {pub.tag}
-                </span>
-              </div>
-            )) : (
-              <div className="flex justify-between items-start gap-4 text-[13px]">
-                <div>
-                  <a href="#" className="text-[#0A66C2] hover:underline mb-1 inline-block">
-                    Sustainable Finance Frameworks for Emerging Markets — A GCC Practitioner's View
-                  </a>
-                  <p className="text-black">Global Scholar Publications · 2024 · DOI: 10.XXXX/gsp.2024.018</p>
-                </div>
-                <span className="px-3 py-1 bg-[#E8F5E9] text-[#1B5E20] rounded-full text-[10px] font-medium">Article</span>
-              </div>
-            )}
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* DISTINGUISHED SCHOLARS - RECOMMENDED ROW */}
         <div className="mb-24">

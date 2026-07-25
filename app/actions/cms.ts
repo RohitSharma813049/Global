@@ -195,6 +195,24 @@ export async function createBlog(data: { title: string, slug: string, content: s
   revalidatePath('/dashboard/admin/blogs')
 }
 
+export async function updateBlog(id: string, data: { title: string, slug: string, content: string, cover_image?: string }) {
+  await checkAdmin()
+  const parsed = blogSchema.safeParse(data)
+  if (!parsed.success) {
+    const firstError = Object.values(parsed.error.flatten().fieldErrors)[0]?.[0] || 'Validation failed'
+    throw new Error(firstError)
+  }
+  await prisma.blogs.update({
+    where: { id },
+    data: {
+      ...data,
+      updated_at: new Date()
+    }
+  })
+  revalidatePath('/blog')
+  revalidatePath('/dashboard/admin/blogs')
+}
+
 export async function deleteBlog(id: string) {
   await checkAdmin()
   await prisma.blogs.update({ where: { id }, data: { deleted_at: new Date() } })
@@ -223,6 +241,24 @@ export async function createNews(data: { title: string, slug: string, content: s
       ...data,
       published_at: new Date(),
       status: 'published'
+    }
+  })
+  revalidatePath('/news')
+  revalidatePath('/dashboard/admin/news')
+}
+
+export async function updateNews(id: string, data: { title: string, slug: string, content: string, cover_image?: string }) {
+  await checkAdmin()
+  const parsed = newsSchema.safeParse(data)
+  if (!parsed.success) {
+    const firstError = Object.values(parsed.error.flatten().fieldErrors)[0]?.[0] || 'Validation failed'
+    throw new Error(firstError)
+  }
+  await prisma.news.update({
+    where: { id },
+    data: {
+      ...data,
+      updated_at: new Date()
     }
   })
   revalidatePath('/news')

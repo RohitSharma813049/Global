@@ -36,15 +36,16 @@ export async function getScholarStats() {
 
   if (!scholar) return { published: 0, views: 0, downloads: 0, drafts: [] }
 
-  const publishedCount = scholar.publications.filter(p => p.status === 'published').length
-  const drafts = scholar.publications.filter(p => p.status === 'draft')
+  const activePublications = scholar.publications.filter(p => p.deleted_at === null)
+  const publishedCount = activePublications.filter(p => p.status === 'published').length
+  const drafts = activePublications.filter(p => p.status === 'draft')
   
   return {
     published: publishedCount,
     views: scholar.total_views || 0,
     downloads: scholar.total_downloads || 0,
     drafts: drafts,
-    publications: scholar.publications.map(p => ({
+    publications: activePublications.map(p => ({
       title: p.title,
       views: p.views || 0,
       downloads: p.downloads || 0,

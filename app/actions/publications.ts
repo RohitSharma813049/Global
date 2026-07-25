@@ -531,6 +531,7 @@ export async function getScholarPublications() {
     .from('publications')
     .select('id, title, abstract, content_type, status, views, downloads, created_at, cover_image, file_url, video_url')
     .eq('scholar_id', scholar.id)
+    .is('deleted_at', null)
     .order('created_at', { ascending: false });
 
   if (error) return { error: error.message, data: [] };

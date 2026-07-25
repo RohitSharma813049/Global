@@ -15,7 +15,7 @@ import MaintenanceToggle from "./super-admin/MaintenanceToggle";
 import Link from "next/link";
 
 export default function Dashboard() {
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
   const router = useRouter();
   const [applicationState, setApplicationState] = useState<any>(null);
   const [history, setHistory] = useState<any[]>([]);
@@ -35,6 +35,9 @@ export default function Dashboard() {
               if (JSON.stringify(prev) !== JSON.stringify(appData)) return appData;
               return prev;
             });
+            if (appData.status === 'approved' && session?.user?.role === 'user') {
+              update({ role: 'scholar' });
+            }
           }
 
           const historyData = await getReadingHistory();
@@ -148,7 +151,7 @@ export default function Dashboard() {
       )}
 
       <div className="bg-linear-to-r from-blue-600 to-indigo-700 rounded-[var(--radius-2xl)] p-8 text-white shadow-[var(--shadow-2)]">
-        <h1 className="text-3xl font-bold mb-2">Welcome back, {session?.user?.name}!</h1>
+        <h1 className="text-3xl font-bold mb-2 min-h-[36px]">Welcome back, {session?.user?.name}!</h1>
         <p className="text-blue-100 text-lg">Continue your learning journey today.</p>
       </div>
 
@@ -237,7 +240,7 @@ export default function Dashboard() {
             </div>
             <div>
               <p className="text-xs font-bold text-[var(--color-gsp-text-secondary)] uppercase tracking-wide">Published</p>
-              <p className="text-3xl font-bold text-[var(--color-gsp-text-primary)] mt-1">{scholarStats?.published || 0}</p>
+              <p className="text-3xl font-bold text-[var(--color-gsp-text-primary)] mt-1 min-h-[36px]">{scholarStats?.published || 0}</p>
             </div>
           </div>
         </div>
@@ -249,7 +252,7 @@ export default function Dashboard() {
             </div>
             <div>
               <p className="text-xs font-bold text-[var(--color-gsp-text-secondary)] uppercase tracking-wide">Total Views</p>
-              <p className="text-3xl font-bold text-[var(--color-gsp-text-primary)] mt-1">{scholarStats?.views || 0}</p>
+              <p className="text-3xl font-bold text-[var(--color-gsp-text-primary)] mt-1 min-h-[36px]">{scholarStats?.views || 0}</p>
             </div>
           </div>
         </div>
@@ -261,7 +264,7 @@ export default function Dashboard() {
             </div>
             <div>
               <p className="text-xs font-bold text-[var(--color-gsp-text-secondary)] uppercase tracking-wide">Downloads</p>
-              <p className="text-3xl font-bold text-[var(--color-gsp-text-primary)] mt-1">{scholarStats?.downloads || 0}</p>
+              <p className="text-3xl font-bold text-[var(--color-gsp-text-primary)] mt-1 min-h-[36px]">{scholarStats?.downloads || 0}</p>
             </div>
           </div>
         </div>
