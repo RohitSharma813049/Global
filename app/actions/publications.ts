@@ -205,6 +205,10 @@ export async function uploadPublication(formData: FormData) {
       }
     }
 
+    // Generate serial number
+    const prefix = contentType === 'thesis' ? 'TH' : contentType === 'article' ? 'AR' : contentType === 'ebook' ? 'EB' : 'MG';
+    const serialNumber = `GSP-${prefix}-${Date.now().toString().slice(-6)}-${Math.floor(Math.random() * 1000)}`;
+
     // Insert into publications table
     const { error: dbError } = await supabaseAdmin
       .from('publications')
@@ -220,6 +224,7 @@ export async function uploadPublication(formData: FormData) {
         gallery_images: galleryImageUrls,
         gallery_videos: galleryVideoUrls,
         doi: doi,
+        serial_number: serialNumber,
         video_url: videoUrl,
         author_name: authorName,
         institution,

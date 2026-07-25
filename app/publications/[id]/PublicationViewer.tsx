@@ -58,7 +58,7 @@ export default function PublicationViewer({ publication, isVideo }: PublicationV
   }
 
   return (
-    <div>
+    <div className="select-none" onContextMenu={(e) => e.preventDefault()}>
       <div className="viewer-tabs" role="tablist">
         <button 
           className={`vtab ${activeTab === 'pdf' ? 'on' : ''}`} 

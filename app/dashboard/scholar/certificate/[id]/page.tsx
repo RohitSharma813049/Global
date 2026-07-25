@@ -78,6 +78,7 @@ export default async function CertificatePage({ params }: { params: { id: string
               <p className="text-xs font-bold text-[var(--color-gsp-text-secondary)] uppercase tracking-widest mb-1">Publication Details</p>
               <p className="text-sm text-[var(--color-gsp-text-primary)] font-medium"><span className="text-[var(--color-gsp-text-secondary)]">Date:</span> {dateStr}</p>
               <p className="text-sm text-[var(--color-gsp-text-primary)] font-medium"><span className="text-[var(--color-gsp-text-secondary)]">Content Type:</span> <span className="capitalize">{pub.content_type}</span></p>
+              <p className="text-sm text-[var(--color-gsp-text-primary)] font-medium"><span className="text-[var(--color-gsp-text-secondary)]">Serial Number:</span> {pub.serial_number || 'N/A'}</p>
               <p className="text-sm text-[var(--color-gsp-text-primary)] font-medium"><span className="text-[var(--color-gsp-text-secondary)]">Platform ID:</span> GSP-{pub.id.substring(0,8).toUpperCase()}</p>
               {pub.doi && <p className="text-sm text-[var(--color-gsp-text-primary)] font-medium"><span className="text-[var(--color-gsp-text-secondary)]">DOI:</span> {pub.doi}</p>}
             </div>

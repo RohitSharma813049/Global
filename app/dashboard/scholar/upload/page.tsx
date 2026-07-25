@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { uploadPublication, uploadSingleFileToR2 } from '@/app/actions/publications'
+import { uploadPublication, uploadSingleFileToR2, getScholarPublications } from '@/app/actions/publications'
 import { getCategories } from '@/app/actions/taxonomy'
 import { getScholarProfile } from '@/app/actions/settings'
 import { useRouter } from 'next/navigation'
@@ -19,6 +19,7 @@ export default function ScholarUploadPage() {
   const [uploadProgress, setUploadProgress] = useState(0)
   const [error, setError] = useState('')
   const [categories, setCategories] = useState<{id: string, name: string}[]>([])
+  const [hasPublishedArticle, setHasPublishedArticle] = useState(false)
   const [abstract, setAbstract] = useState('')
   const [coverName, setCoverName] = useState('')
   const [bannerName, setBannerName] = useState('')
@@ -39,6 +40,11 @@ export default function ScholarUploadPage() {
 
   useEffect(() => {
     getCategories().then(data => setCategories(data || [])).catch(console.error)
+    getScholarPublications().then(res => {
+      if (res?.data) {
+        setHasPublishedArticle(res.data.some(p => p.status === 'published' && p.content_type === 'article'))
+      }
+    }).catch(console.error)
   }, [])
 
   const nextStep = () => {
@@ -74,6 +80,14 @@ export default function ScholarUploadPage() {
           }
         }
         return;
+      }
+
+      if (currentStep === 1) {
+        const contentType = document.getElementById('content_type') as HTMLSelectElement
+        if (contentType?.value === 'thesis' && !hasPublishedArticle) {
+          setError("You must publish a research paper before submitting a thesis.")
+          return
+        }
       }
     }
     
@@ -280,6 +294,16 @@ export default function ScholarUploadPage() {
                       <option value="" disabled>Loading categories...</option>
                     )}
                   </select>
+                </div>
+                <div>
+                  <label htmlFor="doi" className="block text-sm font-medium text-[var(--color-gsp-text-primary)]">DOI (Optional)</label>
+                  <input aria-label="Input field" 
+                    type="text" 
+                    name="doi" 
+                    id="doi" 
+                    placeholder="Enter DOI if you already have one (e.g. 10.1234/abc)"
+                    className="mt-1 block w-full px-4 py-3 border border-[var(--color-gsp-border-default)] rounded-md shadow-[var(--shadow-1)] focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm" 
+                  />
                 </div>
               </div>
             </div>
