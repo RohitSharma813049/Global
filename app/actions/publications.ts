@@ -12,6 +12,7 @@ import { unlink } from "fs/promises"
 import { createNotification } from "./notifications"
 import { prisma } from "@/lib/db"
 import { publicationSchema, updatePublicationSchema } from "@/lib/validations/publication"
+import { z } from 'zod'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
@@ -56,13 +57,22 @@ export async function uploadPublication(formData: FormData) {
     const copyrightDeclaration = formData.get('copyright_declaration') === 'true'
     const termsAcceptance = formData.get('terms_acceptance') === 'true'
     const doi = formData.get('doi') as string | null
+    const status = (formData.get('status') as string) || 'submitted'
 
-    // Zod Validation
-    const validation = publicationSchema.safeParse({
-      title, abstract, content_type: contentType, category_id: categoryId,
-      author_name: authorName, institution, email_address: emailAddress, doi,
-      originality_declaration: originalityDeclaration, copyright_declaration: copyrightDeclaration, terms_acceptance: termsAcceptance
-    })
+    // Zod Validation - relaxed for drafts
+    let validation;
+    if (status === 'draft') {
+      const draftSchema = z.object({
+        title: z.string().min(1, "Title is required for a draft").max(200, "Title must be less than 200 characters"),
+      });
+      validation = draftSchema.safeParse({ title });
+    } else {
+      validation = publicationSchema.safeParse({
+        title, abstract, content_type: contentType, category_id: categoryId,
+        author_name: authorName, institution, email_address: emailAddress, doi,
+        originality_declaration: originalityDeclaration, copyright_declaration: copyrightDeclaration, terms_acceptance: termsAcceptance
+      });
+    }
 
     if (!validation.success) {
       const firstError = Object.values(validation.error.flatten().fieldErrors)[0]?.[0] || 'Validation failed'
@@ -76,7 +86,7 @@ export async function uploadPublication(formData: FormData) {
     const galleryVideos = formData.getAll('gallery_videos') as File[]
     const videoFile = formData.get('video_file') as File | null
     
-    if ((!file || file.size === 0) && (!videoFile || videoFile.size === 0)) {
+    if (status !== 'draft' && (!file || file.size === 0) && (!videoFile || videoFile.size === 0)) {
       return { error: 'Please upload a valid document file or a main video file.' }
     }
 
@@ -186,7 +196,7 @@ export async function uploadPublication(formData: FormData) {
         originality_declaration: originalityDeclaration,
         copyright_declaration: copyrightDeclaration,
         terms_acceptance: termsAcceptance,
-        status: 'submitted' // Submitting it for admin review
+        status: status
       })
 
     if (dbError) {
@@ -478,3 +488,21 @@ export async function deletePublication(id: string) {
     return { error: error.message || 'Failed to delete publication' }
   }
 }
+
+export async function getScholarPublications() {
+  const session = await getServerSession(authOptions);
+  if (!session || session.user.role !== 'scholar') return { error: 'Unauthorized', data: [] };
+  
+  const { data: scholar } = await supabaseAdmin.from('scholars').select('id').eq('user_id', session.user.id).single();
+  if (!scholar) return { error: 'Not found', data: [] };
+
+  const { data, error } = await supabaseAdmin
+    .from('publications')
+    .select('id, title, abstract, content_type, status, views, downloads, created_at, cover_image, file_url, video_url')
+    .eq('scholar_id', scholar.id)
+    .order('created_at', { ascending: false });
+
+  if (error) return { error: error.message, data: [] };
+  return { data };
+}
+

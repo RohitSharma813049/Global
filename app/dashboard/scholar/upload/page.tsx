@@ -5,11 +5,13 @@ import { uploadPublication } from '@/app/actions/publications'
 import { getCategories } from '@/app/actions/taxonomy'
 import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
+import { useSession } from 'next-auth/react'
 import 'react-quill-new/dist/quill.snow.css'
 
 const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false })
 
 export default function ScholarUploadPage() {
+  const { data: session } = useSession()
   const [currentStep, setCurrentStep] = useState(1)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -58,6 +60,10 @@ export default function ScholarUploadPage() {
     setError('')
     
     const formData = new FormData(e.currentTarget)
+    const submitter = (e.nativeEvent as any).submitter as HTMLButtonElement | undefined;
+    if (submitter && submitter.name === 'status') {
+      formData.set('status', submitter.value);
+    }
     
     const MAX_SIZE = 5 * 1024 * 1024; // 5MB
     const checkSize = (file: File | null, label: string) => {
@@ -187,7 +193,23 @@ export default function ScholarUploadPage() {
 
             {/* Step 2: Author Details */}
             <div id="step-2" className={currentStep === 2 ? 'block' : 'hidden'}>
-              <h2 className="text-xl font-bold text-[var(--color-gsp-text-primary)] mb-6 border-b pb-2">Author Details</h2>
+              <div className="flex items-center justify-between mb-6 border-b pb-2">
+                <h2 className="text-xl font-bold text-[var(--color-gsp-text-primary)]">Author Details</h2>
+                {session?.user && (
+                  <button 
+                    type="button"
+                    onClick={() => {
+                      const nameInput = document.getElementById('author_name') as HTMLInputElement;
+                      const emailInput = document.getElementById('email_address') as HTMLInputElement;
+                      if (nameInput && session.user.name) nameInput.value = session.user.name;
+                      if (emailInput && session.user.email) emailInput.value = session.user.email;
+                    }}
+                    className="text-sm px-3 py-1 bg-purple-100 text-purple-700 rounded-full hover:bg-purple-200 font-medium transition-colors"
+                  >
+                    Autofill from my account
+                  </button>
+                )}
+              </div>
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
@@ -401,13 +423,27 @@ export default function ScholarUploadPage() {
                   Continue
                 </button>
               ) : (
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="py-2 px-8 rounded-md font-medium text-white bg-emerald-600 hover:bg-emerald-700 shadow-[var(--shadow-1)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-colors disabled:opacity-50"
-                >
-                  {loading ? 'Submitting...' : 'Submit Publication'}
-                </button>
+                <div className="flex gap-4">
+                  <button
+                    type="submit"
+                    name="status"
+                    value="draft"
+                    formNoValidate
+                    disabled={loading}
+                    className="py-2 px-6 rounded-md font-medium text-[var(--color-gsp-text-primary)] bg-[var(--color-gsp-surface-muted)] hover:bg-[var(--color-gsp-surface-raised)] border border-[var(--color-gsp-border-default)] shadow-[var(--shadow-1)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors disabled:opacity-50"
+                  >
+                    Save as Draft
+                  </button>
+                  <button
+                    type="submit"
+                    name="status"
+                    value="submitted"
+                    disabled={loading}
+                    className="py-2 px-8 rounded-md font-medium text-white bg-emerald-600 hover:bg-emerald-700 shadow-[var(--shadow-1)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-colors disabled:opacity-50"
+                  >
+                    {loading ? 'Submitting...' : 'Submit Publication'}
+                  </button>
+                </div>
               )}
             </div>
 

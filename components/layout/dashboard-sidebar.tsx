@@ -40,7 +40,9 @@ export default function DashboardSidebar() {
     { name: "Explore", href: "/explore", icon: MdExplore },
     { name: "My Library", href: "/library/saved", icon: MdLibraryBooks },
     { name: "Scholar Profile", href: "/dashboard/scholar", icon: MdDescription },
-    { name: "Upload Publication", href: "/dashboard/scholar/upload", icon: MdLibraryBooks },
+    { name: "My Publications", href: "/dashboard/scholar/publications", icon: MdLibraryBooks },
+    { name: "Upload Publication", href: "/dashboard/scholar/upload", icon: MdBookmark },
+    { name: "Analytics", href: "/dashboard/scholar/analytics", icon: MdAnalytics },
   ];
 
   const adminLinks = [

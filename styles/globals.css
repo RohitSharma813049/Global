@@ -23,7 +23,7 @@
   --color-gsp-surface-base: #000000;
   --color-gsp-text-inverse: #2f115d;
   --color-gsp-surface-muted: #ffffff;
-  --color-gsp-surface-raised: lab(85.1236 -0.612259 -3.7138);
+  --color-gsp-surface-raised: #F9F8F8;
   --color-gsp-surface-strong: lab(97.6675 0.338405 0.00327826);
   --color-gsp-border-default: lab(90.7074 0.338435 0.00326633);
   --color-gsp-border-muted: #e2dff0;

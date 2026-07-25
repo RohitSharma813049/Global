@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { MdLibraryBooks, MdMenuBook, MdPublish, MdAnalytics, MdGroup, MdVerified, MdWarning } from "react-icons/md";
 import { getMyApplicationStatus } from "@/app/actions/scholar-applications";
 import { BecomeScholarModal } from "@/components/become-scholar-modal";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer } from 'recharts';
 
 import { getReadingHistory } from "@/app/actions/history";
 import { getAdminStats, getScholarStats } from "@/app/actions/dashboard";
@@ -266,25 +267,56 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="bg-[var(--color-gsp-surface-muted)] rounded-[var(--radius-2xl)] shadow-[var(--shadow-1)] border border-[var(--color-gsp-border-muted)] overflow-hidden">
-        <div className="px-6 py-5 border-b border-[var(--color-gsp-border-muted)]">
-          <h2 className="text-lg font-bold text-[var(--color-gsp-text-primary)]">Recent Drafts</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="bg-[var(--color-gsp-surface-muted)] rounded-[var(--radius-2xl)] shadow-[var(--shadow-1)] border border-[var(--color-gsp-border-muted)] overflow-hidden">
+          <div className="px-6 py-5 border-b border-[var(--color-gsp-border-muted)]">
+            <h2 className="text-lg font-bold text-[var(--color-gsp-text-primary)]">Recent Drafts</h2>
+          </div>
+          <div className="p-6">
+            {scholarStats?.drafts?.length > 0 ? (
+              <div className="space-y-4">
+                {scholarStats.drafts.map((draft: any) => (
+                  <div key={draft.id} className="p-4 border rounded-[var(--radius-xl)] flex justify-between items-center">
+                    <span className="font-semibold">{draft.title}</span>
+                    <Link href={`/dashboard/scholar/upload?id=${draft.id}`} className="text-[var(--color-gsp-text-inverse)] hover:underline">Edit</Link>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="border-2 border-dashed border-[var(--color-gsp-border-muted)] rounded-[var(--radius-xl)] p-12 flex items-center justify-center text-center">
+                <p className="text-[var(--color-gsp-text-secondary)]">You don't have any drafts right now.</p>
+              </div>
+            )}
+          </div>
         </div>
-        <div className="p-6">
-          {scholarStats?.drafts?.length > 0 ? (
-            <div className="space-y-4">
-              {scholarStats.drafts.map((draft: any) => (
-                <div key={draft.id} className="p-4 border rounded-[var(--radius-xl)] flex justify-between items-center">
-                  <span className="font-semibold">{draft.title}</span>
-                  <Link href={`/dashboard/scholar/upload?id=${draft.id}`} className="text-[var(--color-gsp-text-inverse)] hover:underline">Edit</Link>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="border-2 border-dashed border-[var(--color-gsp-border-muted)] rounded-[var(--radius-xl)] p-12 flex items-center justify-center text-center">
-              <p className="text-[var(--color-gsp-text-secondary)]">You don't have any drafts right now.</p>
-            </div>
-          )}
+
+        <div className="bg-[var(--color-gsp-surface-muted)] rounded-[var(--radius-2xl)] shadow-[var(--shadow-1)] border border-[var(--color-gsp-border-muted)] overflow-hidden flex flex-col">
+          <div className="px-6 py-5 border-b border-[var(--color-gsp-border-muted)]">
+            <h2 className="text-lg font-bold text-[var(--color-gsp-text-primary)]">Analytics Overview</h2>
+          </div>
+          <div className="p-6 flex-1 min-h-[300px]">
+            {scholarStats?.publications && scholarStats.publications.length > 0 ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={scholarStats.publications}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
+                  <XAxis 
+                    dataKey="title" 
+                    tick={{ fontSize: 12, fill: '#6B7280' }}
+                    tickFormatter={(value) => value.length > 15 ? value.substring(0, 15) + '...' : value}
+                  />
+                  <YAxis tick={{ fontSize: 12, fill: '#6B7280' }} />
+                  <RechartsTooltip />
+                  <Legend />
+                  <Bar dataKey="views" name="Views" fill="#2F115D" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="downloads" name="Downloads" fill="#8e44ad" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="h-full border-2 border-dashed border-[var(--color-gsp-border-muted)] rounded-[var(--radius-xl)] p-12 flex items-center justify-center text-center">
+                <p className="text-[var(--color-gsp-text-secondary)]">No analytics data available yet.</p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

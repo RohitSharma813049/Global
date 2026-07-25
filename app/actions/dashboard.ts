@@ -43,6 +43,12 @@ export async function getScholarStats() {
     published: publishedCount,
     views: scholar.total_views || 0,
     downloads: scholar.total_downloads || 0,
-    drafts: drafts
+    drafts: drafts,
+    publications: scholar.publications.map(p => ({
+      title: p.title,
+      views: p.views || 0,
+      downloads: p.downloads || 0,
+      status: p.status
+    }))
   }
 }

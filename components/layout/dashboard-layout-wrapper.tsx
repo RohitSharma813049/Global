@@ -50,11 +50,7 @@ export function DashboardLayoutWrapper({ children }: { children: React.ReactNode
             {/* Logo removed since sidebar is now visible for all users */}
 
             <div className="hidden sm:block flex-1 max-w-md">
-              <input aria-label="Input field" 
-              type="text" 
-                placeholder="Search..." 
-                className="w-full px-4 py-2 bg-white border border-[var(--color-gsp-border-muted)] rounded-[var(--radius-sm)] text-[var(--font-size-md)] text-[var(--color-gsp-text-primary)] placeholder-[var(--color-gsp-text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-gsp-text-inverse)] focus:bg-white transition-all"
-              />
+              {/* Search functionality is planned for a future update */}
             </div>
           </div>
           <div className="flex items-center space-x-3 md:space-x-5">
