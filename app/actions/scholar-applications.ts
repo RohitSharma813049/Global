@@ -65,20 +65,36 @@ export async function submitScholarApplication(formData: FormData) {
     let document_link = null;
 
     if (documentFile && documentFile.size > 0) {
-      // Create uploads directory if it doesn't exist
-      const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'scholar-applications');
-      await mkdir(uploadDir, { recursive: true });
-
       // Create a unique filename
       const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
       const filename = `${uniqueSuffix}-${documentFile.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
-      const filepath = path.join(uploadDir, filename);
 
-      const buffer = Buffer.from(await documentFile.arrayBuffer())
-      await require('fs/promises').writeFile(filepath, buffer)
+      const buffer = Buffer.from(await documentFile.arrayBuffer());
+
+      // Ensure bucket exists
+      const { data: buckets } = await supabaseAdmin.storage.listBuckets();
+      if (!buckets?.find(b => b.name === 'scholar_applications')) {
+        await supabaseAdmin.storage.createBucket('scholar_applications', { public: true });
+      }
+
+      const { error: uploadError } = await supabaseAdmin.storage
+        .from('scholar_applications')
+        .upload(filename, buffer, {
+          contentType: documentFile.type,
+          upsert: true
+        });
+
+      if (uploadError) {
+        console.error("Upload error:", uploadError);
+        throw new Error("Failed to upload document");
+      }
       
       // The public URL path
-      document_link = `/uploads/scholar-applications/${filename}`;
+      const { data: { publicUrl } } = supabaseAdmin.storage
+        .from('scholar_applications')
+        .getPublicUrl(filename);
+        
+      document_link = publicUrl;
     }
 
     // Check if user already has an application
