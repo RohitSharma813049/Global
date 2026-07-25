@@ -19,11 +19,14 @@ interface SavedPublication {
   subject?: string
 }
 
+import { useSession } from "next-auth/react"
+
 export default function SavedPapersPage() {
   const [savedPapers, setSavedPapers] = useState<SavedPublication[]>([])
   const [isLoaded, setIsLoaded] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
   const [typeFilter, setTypeFilter] = useState("ALL")
+  const { data: session } = useSession()
 
   const filteredPapers = savedPapers.filter(paper => {
     const matchesSearch = paper.title?.toLowerCase().includes(searchQuery.toLowerCase()) || 
@@ -33,19 +36,22 @@ export default function SavedPapersPage() {
   });
 
   useEffect(() => {
-    const saved = localStorage.getItem('saved_publications')
+    const storageKey = session?.user?.id ? `saved_publications_${session.user.id}` : 'saved_publications'
+    const saved = localStorage.getItem(storageKey)
     if (saved) {
       try {
         setSavedPapers(JSON.parse(saved))
       } catch (e) {
         // ignore
       }
+    } else {
+      setSavedPapers([])
     }
     setIsLoaded(true)
 
     // Listen for storage changes in case they are updated in another tab
     const handleStorage = () => {
-      const updated = localStorage.getItem('saved_publications')
+      const updated = localStorage.getItem(storageKey)
       if (updated) {
         try {
           setSavedPapers(JSON.parse(updated))
@@ -56,7 +62,7 @@ export default function SavedPapersPage() {
     }
     window.addEventListener('storage', handleStorage)
     return () => window.removeEventListener('storage', handleStorage)
-  }, [])
+  }, [session?.user?.id])
 
   return (
     <div className="min-h-screen bg-[var(--color-gsp-surface-raised)] flex flex-col">

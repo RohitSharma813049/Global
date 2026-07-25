@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { BookMarked, Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { useSession } from 'next-auth/react'
 
 interface SavedPublication {
   id: string
@@ -24,9 +25,11 @@ interface Props {
 
 export default function SaveButton({ publication, variant = 'full', className }: Props) {
   const [isSaved, setIsSaved] = useState(false)
+  const { data: session } = useSession()
+  const storageKey = session?.user?.id ? `saved_publications_${session.user.id}` : 'saved_publications'
 
   useEffect(() => {
-    const saved = localStorage.getItem('saved_publications')
+    const saved = localStorage.getItem(storageKey)
     if (saved) {
       try {
         const parsed = JSON.parse(saved)
@@ -34,14 +37,16 @@ export default function SaveButton({ publication, variant = 'full', className }:
       } catch (e) {
         // ignore
       }
+    } else {
+      setIsSaved(false)
     }
-  }, [publication.id])
+  }, [publication.id, storageKey])
 
   const toggleSave = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
     
-    const saved = localStorage.getItem('saved_publications')
+    const saved = localStorage.getItem(storageKey)
     let parsed: SavedPublication[] = []
     if (saved) {
       try {
@@ -57,7 +62,8 @@ export default function SaveButton({ publication, variant = 'full', className }:
       setIsSaved(true)
     }
 
-    localStorage.setItem('saved_publications', JSON.stringify(parsed))
+    localStorage.setItem(storageKey, JSON.stringify(parsed))
+    window.dispatchEvent(new Event('storage')) // Trigger re-render in other components if needed
   }
 
   if (variant === 'icon') {
