@@ -19,13 +19,13 @@ export interface Scholar {
   is_featured: boolean;
   total_views?: number;
   total_downloads?: number;
-  avatar_url?: string;
-  banner_url?: string;
+  avatar_url?: string | null;
+  banner_url?: string | null;
   gallery_images?: string[];
   gallery_videos?: string[];
-  linkedin_url?: string;
-  twitter_url?: string;
-  website_url?: string;
+  linkedin_url?: string | null;
+  twitter_url?: string | null;
+  website_url?: string | null;
 }
 
 export interface ScholarVideo {
