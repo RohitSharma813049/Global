@@ -136,13 +136,12 @@ export default function GSPSubjectCategories({ title, subtitle, categories, auto
     if (index > newMaxIndex) {
       setIndex(newMaxIndex);
     }
-  }, [index]);
+  }, [index, displayCategories.length]);
 
   useEffect(() => {
     measure();
     window.addEventListener('resize', measure);
     return () => window.removeEventListener('resize', measure);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [measure]);
 
   const updateCarousel = useCallback((newIndex: number) => {
