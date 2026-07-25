@@ -4,6 +4,7 @@ export interface SearchParams {
   query?: string;
   categories?: string[];
   types?: string[];
+  authors?: string[];
   page?: number;
   limit?: number;
   sort?: string;
@@ -36,6 +37,25 @@ export async function getAdvancedSearchData(params: SearchParams) {
 
     if (params.types && params.types.length > 0) {
       whereClause.content_type = { in: params.types, mode: 'insensitive' };
+    }
+
+    if (params.authors && params.authors.length > 0) {
+      const allScholarsForFilter = await prisma.scholars.findMany({
+        where: { deleted_at: null },
+        select: { id: true, users: { select: { raw_user_meta_data: true } } }
+      });
+      const validScholarIds = allScholarsForFilter.filter(s => {
+        const name = (s.users?.raw_user_meta_data as any)?.full_name || (s.users?.raw_user_meta_data as any)?.name;
+        return params.authors!.includes(name);
+      }).map(s => s.id);
+
+      whereClause.AND = whereClause.AND || [];
+      whereClause.AND.push({
+        OR: [
+          { author_name: { in: params.authors } },
+          { scholar_id: { in: validScholarIds.length > 0 ? validScholarIds : ['00000000-0000-0000-0000-000000000000'] } }
+        ]
+      });
     }
 
     let orderBy: any = { created_at: 'desc' };

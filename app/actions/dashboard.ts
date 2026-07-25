@@ -39,11 +39,13 @@ export async function getScholarStats() {
   const activePublications = scholar.publications.filter(p => p.deleted_at === null)
   const publishedCount = activePublications.filter(p => p.status === 'published').length
   const drafts = activePublications.filter(p => p.status === 'draft')
+  const totalViews = activePublications.reduce((sum, p) => sum + (p.views || 0), 0);
+  const totalDownloads = activePublications.reduce((sum, p) => sum + (p.downloads || 0), 0);
   
   return {
     published: publishedCount,
-    views: scholar.total_views || 0,
-    downloads: scholar.total_downloads || 0,
+    views: totalViews,
+    downloads: totalDownloads,
     drafts: drafts,
     publications: activePublications.map(p => ({
       title: p.title,

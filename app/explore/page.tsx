@@ -13,10 +13,11 @@ export default async function ExplorePage({
   const query = typeof params.q === 'string' ? params.q : undefined;
   const categories = typeof params.category === 'string' ? [params.category] : Array.isArray(params.category) ? params.category : undefined;
   const types = typeof params.type === 'string' ? [params.type] : Array.isArray(params.type) ? params.type : undefined;
+  const authors = typeof params.author === 'string' ? [params.author] : Array.isArray(params.author) ? params.author : undefined;
   const page = typeof params.page === 'string' ? parseInt(params.page, 10) : 1;
   const sort = typeof params.sort === 'string' ? params.sort : 'newest';
 
-  const data = await getAdvancedSearchData({ query, categories, types, page, sort });
+  const data = await getAdvancedSearchData({ query, categories, types, authors, page, sort });
 
   return (
     <ExploreClient 
@@ -28,6 +29,7 @@ export default async function ExplorePage({
       initialSearch={query || ""}
       initialCategories={categories || []}
       initialTypes={types || []}
+      initialAuthors={authors || []}
       initialSort={sort}
       allAuthors={data.allAuthors}
       typeCounts={data.typeCounts}

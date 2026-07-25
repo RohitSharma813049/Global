@@ -39,6 +39,7 @@ export default function ExploreClient({
   initialSearch,
   initialCategories,
   initialTypes,
+  initialAuthors,
   initialSort,
   allAuthors = [],
   typeCounts = {}
@@ -51,6 +52,7 @@ export default function ExploreClient({
   initialSearch?: string;
   initialCategories?: string[];
   initialTypes?: string[];
+  initialAuthors?: string[];
   initialSort?: string;
   allAuthors?: string[];
   typeCounts?: Record<string, number>;
@@ -71,7 +73,7 @@ export default function ExploreClient({
   }>({
     subjects: initialCategories || [],
     subcategories: [],
-    authors: [],
+    authors: initialAuthors || [],
     types: initialTypes || [],
     yearRange: [2000, new Date().getFullYear()],
   });
@@ -92,6 +94,9 @@ export default function ExploreClient({
       }
       if (filters.types.length > 0) {
         filters.types.forEach(t => params.append('type', t));
+      }
+      if (filters.authors.length > 0) {
+        filters.authors.forEach(a => params.append('author', a));
       }
       if (currentPage > 1) {
         params.set('page', currentPage.toString());

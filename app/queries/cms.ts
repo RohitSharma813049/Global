@@ -193,15 +193,26 @@ export const getTestimonials = unstable_cache(
 
 export const getFeaturedScholars = unstable_cache(
   async () => {
-    return await prisma.scholars.findMany({
-      where: { is_featured: true },
+    // Fetch all featured scholars or top scholars if none featured
+    const scholars = await prisma.scholars.findMany({
+      where: { 
+        OR: [
+          { is_featured: true },
+          { verified: true }
+        ]
+      },
       include: {
         users: { select: { email: true, raw_user_meta_data: true } },
         _count: { select: { publications: true } }
       },
-      orderBy: { total_views: 'desc' },
-      take: 6
-    })
+      take: 20
+    });
+
+    // Randomize the scholars array
+    const shuffled = scholars.sort(() => 0.5 - Math.random());
+    
+    // Return top 6 random scholars
+    return shuffled.slice(0, 6);
   },
   ['cms-featured-scholars'],
   { revalidate: 60, tags: ['cms-featured-scholars'] }
