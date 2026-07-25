@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface PublicationViewerProps {
   publication: any;
@@ -10,6 +10,124 @@ interface PublicationViewerProps {
 export default function PublicationViewer({ publication, isVideo }: PublicationViewerProps) {
   const [activeTab, setActiveTab] = useState<'pdf' | 'ebook' | 'book'>('pdf');
   const [isLoading, setIsLoading] = useState(true);
+  const [docxContent, setDocxContent] = useState<string | null>(null);
+  const [isDocxLoading, setIsDocxLoading] = useState(false);
+  const [docxError, setDocxError] = useState<string | null>(null);
+
+  // Text-to-Speech State
+  const [isReading, setIsReading] = useState(false);
+  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
+  const [selectedVoice, setSelectedVoice] = useState<string>('');
+
+  useEffect(() => {
+    const updateVoices = () => {
+      if (typeof window === 'undefined' || !window.speechSynthesis) return;
+      const availableVoices = window.speechSynthesis.getVoices();
+      setVoices(availableVoices);
+      if (availableVoices.length > 0 && !selectedVoice) {
+        // Prefer a natural English voice if available
+        const preferred = availableVoices.find(v => v.lang.includes('en-') && (v.name.includes('Natural') || v.name.includes('Google'))) || availableVoices[0];
+        setSelectedVoice(preferred.voiceURI);
+      }
+    };
+
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
+      updateVoices();
+      window.speechSynthesis.onvoiceschanged = updateVoices;
+    }
+    
+    return () => {
+      if (typeof window !== 'undefined' && window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
+    }
+  }, [selectedVoice]);
+
+  useEffect(() => {
+    const fetchAndParse = async () => {
+      if (!publication?.file_url) return;
+      
+      const fileUrl = publication.file_url;
+      const isDocx = fileUrl.toLowerCase().endsWith('.docx') || fileUrl.toLowerCase().endsWith('.doc');
+      const isPdf = fileUrl.toLowerCase().endsWith('.pdf');
+      
+      if (!isDocx && !isPdf) return;
+      
+      setIsDocxLoading(true);
+      setDocxError(null);
+      
+      try {
+        if (isDocx) {
+          // Use our robust Node.js backend parser for DOCX to avoid browser bundling issues
+          const docxResponse = await fetch(`/api/parse-docx?url=${encodeURIComponent(fileUrl)}`);
+          if (!docxResponse.ok) throw new Error("Backend DOCX parsing failed.");
+          const docxData = await docxResponse.json();
+          if (docxData.error) throw new Error(docxData.error);
+          setDocxContent(docxData.html);
+        } else if (isPdf) {
+          // Use client-side PDF.js for PDF extraction
+          const response = await fetch(`/api/pdf-proxy?url=${encodeURIComponent(fileUrl)}`);
+          if (!response.ok) throw new Error("Failed to fetch document file.");
+          const arrayBuffer = await response.arrayBuffer();
+
+          const pdfjsLib = await import('pdfjs-dist');
+          pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
+          
+          const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
+          let fullText = "";
+          for (let i = 1; i <= pdf.numPages; i++) {
+            const page = await pdf.getPage(i);
+            const content = await page.getTextContent();
+            const pageText = content.items.map((item: any) => item.str).join(" ");
+            fullText += `<p class="mb-4">${pageText}</p>`;
+          }
+          setDocxContent(fullText);
+        }
+      } catch (err: any) {
+        console.error("Extraction error:", err);
+        setDocxError(err.message || "Failed to parse document content.");
+      } finally {
+        setIsDocxLoading(false);
+      }
+    };
+
+    fetchAndParse();
+  }, [publication?.file_url]);
+
+  const handleReadAloud = (textHTML: string) => {
+    if (typeof window === 'undefined' || !window.speechSynthesis) return;
+    
+    window.speechSynthesis.cancel();
+    
+    if (isReading) {
+      setIsReading(false);
+      return;
+    }
+
+    const cleanText = textHTML.replace(/<[^>]+>/g, ' ').trim();
+    if (!cleanText) return;
+    
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    const voice = voices.find(v => v.voiceURI === selectedVoice);
+    if (voice) utterance.voice = voice;
+    
+    utterance.onboundary = (event) => {
+      if (event.name !== 'word') return;
+      // Scroll proportionally based on how much text has been read
+      const percent = event.charIndex / cleanText.length;
+      const containers = document.querySelectorAll('.eb-body, .bk-content');
+      containers.forEach(container => {
+        const targetScroll = (container.scrollHeight - container.clientHeight) * percent;
+        // Add a small offset so the spoken word is closer to the middle of the screen
+        container.scrollTo({ top: targetScroll + 100, behavior: 'smooth' });
+      });
+    };
+
+    utterance.onend = () => setIsReading(false);
+    
+    setIsReading(true);
+    window.speechSynthesis.speak(utterance);
+  };
 
   // Simple Page Navigation State
   const [page, setPage] = useState(1);
@@ -25,21 +143,23 @@ export default function PublicationViewer({ publication, isVideo }: PublicationV
   };
 
   const getSimulatedContent = (pageNum: number) => {
-    const abstractText = publication.abstract || "<p>No content available.</p>";
-    const chunks = [
-      abstractText,
-      "<p>The methodology applied in this research involves a comprehensive analysis of the existing literature and empirical data gathered over the course of several months. We utilized both qualitative and quantitative approaches to ensure a robust framework.</p>",
-      "<p>Results indicate a significant correlation between the variables tested. The statistical significance suggests that the initial hypothesis holds true under the specified conditions, pointing towards a new understanding of the core mechanisms.</p>",
-      "<p>Discussion of these results suggests that further investigation is warranted. While the current data provides a strong foundation, edge cases and outliers must be examined in greater detail to formulate a universal theory.</p>",
-      "<p>Conclusion: The findings provide a robust framework for future studies. By establishing this baseline, subsequent research can focus on refining the parameters and exploring the broader implications of these discoveries in real-world scenarios.</p>",
-      "<p>References and citations used throughout this work demonstrate the extensive background research that informed our approach. Key foundational texts provided the necessary theoretical backing for our methodology.</p>"
-    ];
-    // Return a chunk based on the page number so it changes as the user turns pages
-    return chunks[(pageNum - 1) % chunks.length];
+    if (docxError) {
+      return `<div class="text-center py-20 px-8">
+        <h3 class="text-xl font-bold text-red-600 mb-2">Error parsing document</h3>
+        <p class="text-zinc-500 max-w-md mx-auto leading-relaxed">${docxError}</p>
+      </div>`;
+    }
+    // Return the parsed HTML for both PDF and DOCX
+    if (docxContent) {
+      return docxContent;
+    }
+    return `<div class="text-center py-20 text-zinc-500"><p>No content available.</p></div>`;
   };
 
   const isValidFileUrl = publication.file_url && (
     publication.file_url.toLowerCase().endsWith('.pdf') || 
+    publication.file_url.toLowerCase().endsWith('.docx') || 
+    publication.file_url.toLowerCase().endsWith('.doc') || 
     publication.file_url.includes('supabase.co') ||
     publication.file_url.startsWith('blob:') ||
     publication.file_url.startsWith('http') && !publication.file_url.includes(typeof window !== 'undefined' ? window.location.hostname : '')
@@ -47,19 +167,17 @@ export default function PublicationViewer({ publication, isVideo }: PublicationV
 
   if (isVideo) {
     return (
-      <div className="viewer-shell bg-black flex items-center justify-center h-[600px] md:h-[700px] relative">
-        {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center z-10 bg-black/50">
-             <div className="w-10 h-10 border-4 border-white/20 border-t-white rounded-full animate-spin"></div>
-          </div>
-        )}
-        <iframe 
+      <div className="viewer-shell bg-black flex items-center justify-center aspect-video w-full max-h-[75vh] relative rounded-lg overflow-hidden group">
+        <video 
           src={publication.file_url} 
-          className="w-full h-full border-0"
-          allowFullScreen
-          onLoad={() => setIsLoading(false)}
+          className="w-full h-full object-contain"
+          controls
+          controlsList="nodownload"
+          autoPlay={false}
           title={publication.title}
-        ></iframe>
+        >
+          Your browser does not support the video tag.
+        </video>
       </div>
     );
   }
@@ -100,31 +218,18 @@ export default function PublicationViewer({ publication, isVideo }: PublicationV
 
         {/* ── PDF viewer ── */}
         <div className={`viewer-panel ${activeTab === 'pdf' ? 'on' : ''}`}>
-          <div className="pdf-bar">
-            <button className="ptbtn" onClick={() => handlePageNav(-1)}><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M8 2L4 6l4 4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg></button>
-            <button className="ptbtn" onClick={() => handlePageNav(1)}><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M4 2l4 4-4 4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg></button>
-            <span className="pdf-pi">Page <span>{page}</span> of {totalPages}</span>
-            <span className="pdf-sp"></span>
-            <button className="ptbtn" onClick={() => handleZoom(-1)}><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><line x1="3" y1="6" x2="9" y2="6" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></svg></button>
-            <span className="pdf-zl">100%</span>
-            <button className="ptbtn" onClick={() => handleZoom(1)}><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><line x1="6" y1="3" x2="6" y2="9" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/><line x1="3" y1="6" x2="9" y2="6" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></svg></button>
-          </div>
-          <div className="pdf-vp relative">
-            <div className="pdf-pg flex flex-col justify-center items-center min-h-[800px] w-full relative">
+          <div className="pdf-vp relative h-full">
+            <div className="pdf-pg flex flex-col justify-center items-center w-full relative">
               {isValidFileUrl ? (
-                <>
-                  {isLoading && (
-                    <div className="absolute inset-0 flex items-center justify-center z-10 bg-zinc-50">
-                       <div className="w-10 h-10 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
-                    </div>
-                  )}
-                  <iframe 
-                    src={`https://docs.google.com/viewer?url=${encodeURIComponent(publication.file_url)}&embedded=true`} 
-                    className="w-full h-full absolute inset-0 mix-blend-multiply"
-                    onLoad={() => setIsLoading(false)}
-                    title={publication.title}
-                  ></iframe>
-                </>
+                <iframe 
+                  src={
+                    publication.file_url.toLowerCase().endsWith('.docx') || publication.file_url.toLowerCase().endsWith('.doc')
+                      ? `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(publication.file_url)}`
+                      : `/api/pdf-proxy?url=${encodeURIComponent(publication.file_url)}#toolbar=1&navpanes=0`
+                  }
+                  className="w-full h-full absolute inset-0 mix-blend-multiply border-0"
+                  title={publication.title}
+                ></iframe>
               ) : (
                 <div className="flex flex-col items-center justify-center text-zinc-400 absolute inset-4 bg-zinc-50 border-2 border-dashed border-zinc-200 rounded-lg">
                   <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="mb-4 opacity-50"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
@@ -141,15 +246,46 @@ export default function PublicationViewer({ publication, isVideo }: PublicationV
             <button className="ptbtn" onClick={() => handlePageNav(-1)}><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M8 2L4 6l4 4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg></button>
             <button className="ptbtn" onClick={() => handlePageNav(1)}><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M4 2l4 4-4 4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg></button>
             <div className="eb-prog"><div className="eb-fill" style={{ width: `${(page / totalPages) * 100}%` }}></div></div>
-            <span className="eb-lbl">Progress {Math.round((page / totalPages) * 100)}%</span>
+            <span className="eb-lbl hidden sm:inline">Progress {Math.round((page / totalPages) * 100)}%</span>
+            
+            <div className="ml-auto flex items-center space-x-2 border-l border-zinc-200 pl-3">
+              <button 
+                className={`ptbtn px-3 py-1 flex items-center space-x-1.5 rounded-full font-bold transition-colors ${isReading ? 'bg-red-100 text-red-600 hover:bg-red-200' : 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100'}`}
+                onClick={() => handleReadAloud(getSimulatedContent(page))}
+                title={isReading ? "Stop Audio" : "Read Aloud"}
+              >
+                {isReading ? (
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+                ) : (
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                )}
+                <span className="text-[10px] uppercase tracking-wider">{isReading ? 'Turn Off' : 'Turn On'}</span>
+              </button>
+              <select 
+                className="text-[10px] bg-transparent border-none outline-none text-zinc-500 font-medium max-w-[80px] truncate cursor-pointer hidden sm:block"
+                value={selectedVoice}
+                onChange={(e) => setSelectedVoice(e.target.value)}
+                title="Select Voice"
+              >
+                {voices.filter(v => v.lang.includes('en')).map(v => (
+                  <option key={v.voiceURI} value={v.voiceURI}>{v.name.replace('Microsoft ', '').replace('Google ', '')}</option>
+                ))}
+              </select>
+            </div>
           </div>
           <div className="eb-vp">
             <p className="text-[9.5px] font-bold tracking-[0.18em] uppercase text-[#2F115D] mb-[9px]">
-              {page === 1 ? 'Introduction' : `Section ${Math.ceil(page / 5)}`}
+              Publication Text
             </p>
             {page === 1 && <h2 className="eb-ct">{publication.title}</h2>}
             <div className="eb-body">
-              <div dangerouslySetInnerHTML={{ __html: getSimulatedContent(page) }} />
+              {isDocxLoading ? (
+                <div className="flex justify-center items-center py-20">
+                  <div className="w-8 h-8 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
+                </div>
+              ) : (
+                <div dangerouslySetInnerHTML={{ __html: getSimulatedContent(page) }} />
+              )}
             </div>
           </div>
         </div>
@@ -161,25 +297,63 @@ export default function PublicationViewer({ publication, isVideo }: PublicationV
              <button className="ptbtn" onClick={() => handlePageNav(2)}><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M4 2l4 4-4 4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg></button>
              <span className="pdf-pi">Pages <span>{page}-{page+1}</span> of {totalPages}</span>
              <span className="pdf-sp"></span>
+
+             <div className="ml-auto flex items-center space-x-2">
+              <button 
+                className={`ptbtn px-3 py-1 flex items-center space-x-1.5 rounded-full font-bold transition-colors ${isReading ? 'bg-red-100 text-red-600 hover:bg-red-200' : 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100'}`}
+                onClick={() => handleReadAloud(getSimulatedContent(page) + " " + getSimulatedContent(page + 1))}
+                title={isReading ? "Stop Audio" : "Read Aloud"}
+              >
+                {isReading ? (
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+                ) : (
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                )}
+                <span className="text-[10px] uppercase tracking-wider">{isReading ? 'Turn Off' : 'Turn On'}</span>
+              </button>
+              <select 
+                className="text-[10px] bg-transparent border-none outline-none text-zinc-500 font-medium max-w-[80px] truncate cursor-pointer hidden sm:block"
+                value={selectedVoice}
+                onChange={(e) => setSelectedVoice(e.target.value)}
+                title="Select Voice"
+              >
+                {voices.filter(v => v.lang.includes('en')).map(v => (
+                  <option key={v.voiceURI} value={v.voiceURI}>{v.name.replace('Microsoft ', '').replace('Google ', '')}</option>
+                ))}
+              </select>
+            </div>
           </div>
           <div className="book-view-wrapper">
              <div className="book-container">
                 {/* Left Page */}
                 <div className="book-page">
                    <div className="text-[10px] font-bold text-zinc-400 mb-4">{page}</div>
-                   <div className="eb-body text-sm flex-1">
-                     <p className="mb-4 italic text-xs text-gray-400">Simulated page {page}</p>
-                     {page === 1 && <h3 className="font-bold mb-2 text-lg text-zinc-800">{publication.title}</h3>}
-                     <div dangerouslySetInnerHTML={{ __html: getSimulatedContent(page) }} />
+                   <div className="eb-body text-sm flex-1 overflow-auto">
+                     {isDocxLoading ? (
+                       <div className="flex justify-center items-center py-20">
+                         <div className="w-8 h-8 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
+                       </div>
+                     ) : (
+                       <>
+                         <div dangerouslySetInnerHTML={{ __html: getSimulatedContent(page) }} />
+                       </>
+                     )}
                    </div>
                 </div>
                 
                 {/* Right Page */}
                 <div className="book-page">
                    <div className="text-[10px] font-bold text-zinc-400 mb-4 text-right">{page + 1}</div>
-                   <div className="eb-body text-sm flex-1">
-                     <p className="mb-4 italic text-xs text-gray-400">Simulated page {page + 1}</p>
-                     <div dangerouslySetInnerHTML={{ __html: getSimulatedContent(page + 1) }} />
+                   <div className="eb-body text-sm flex-1 overflow-auto">
+                     {isDocxLoading ? (
+                       <div className="flex justify-center items-center py-20">
+                         <div className="w-8 h-8 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
+                       </div>
+                     ) : (
+                       <>
+                         <div dangerouslySetInnerHTML={{ __html: getSimulatedContent(page + 1) }} />
+                       </>
+                     )}
                    </div>
                 </div>
 
