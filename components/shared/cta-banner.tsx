@@ -6,7 +6,7 @@ interface CtaBannerProps {
 
 export default function CtaBanner({ title, subtitle }: CtaBannerProps) {
   return (
-    <section className="relative overflow-hidden bg-[#2F115D] py-16 lg:py-4 mb-5 mt-5">
+    <section className="relative overflow-hidden bg-violet py-16 lg:py-4 mb-5 mt-5">
       {/* Curved Background Shape (Bottom Right) */}
       <div 
         className="absolute bottom-0 right-0 h-full w-[60%] bg-[#4A1F8C]/40"
@@ -26,7 +26,7 @@ export default function CtaBanner({ title, subtitle }: CtaBannerProps) {
         <div className="shrink-0">
           <Link 
             href="/signin" 
-            className="flex items-center gap-2 rounded-md bg-white px-8 py-4 text-sm font-bold text-[#2F115D] shadow-lg transition hover:bg-white/90"
+            className="flex items-center gap-2 rounded-md bg-white px-8 py-4 text-sm font-bold text-violet shadow-lg transition hover:bg-white/90"
           >
             Become a Scholar
           </Link>

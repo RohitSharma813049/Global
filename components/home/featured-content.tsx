@@ -142,7 +142,7 @@ export default function FeaturedContent({ title, subtitle, autoplay = true, publ
             />
             <div className="absolute inset-0 bg-gray-900/40"></div>
             <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 right-4 sm:right-6 flex items-center justify-between">
-              <span className="inline-block rounded-full bg-emerald-500/90 backdrop-blur-md px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs font-bold text-white uppercase tracking-wider shadow-sm">
+              <span className="inline-block rounded-full bg-emerald-500/90 backdrop-blur-md px-3 sm:px-4 py-1 sm:py-1.5 text-2.5 sm:text-xs font-bold text-white uppercase tracking-wider shadow-sm">
                 {current.type}
               </span>
             </div>

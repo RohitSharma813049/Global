@@ -76,29 +76,29 @@ export default function AnalyticsClient({ publications: initialPublications }: {
     <div className="space-y-8">
       {/* Metrics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-[var(--color-gsp-surface-main)] p-6 rounded-[var(--radius-xl)] shadow-[var(--shadow-1)] border border-[var(--color-gsp-border-subtle)]">
-          <p className="text-sm font-medium text-[var(--color-gsp-text-secondary)] uppercase tracking-wide">Total Views</p>
-          <p className="text-3xl font-bold text-[var(--color-gsp-text-primary)] mt-2">{totalViews.toLocaleString()}</p>
+        <div className="bg-(--color-gsp-surface-main) p-6 rounded-(--radius-xl) shadow-(--shadow-1) border border-(--color-gsp-border-subtle)">
+          <p className="text-sm font-medium text-(--color-gsp-text-secondary) uppercase tracking-wide">Total Views</p>
+          <p className="text-3xl font-bold text-(--color-gsp-text-primary) mt-2">{totalViews.toLocaleString()}</p>
         </div>
-        <div className="bg-[var(--color-gsp-surface-main)] p-6 rounded-[var(--radius-xl)] shadow-[var(--shadow-1)] border border-[var(--color-gsp-border-subtle)]">
-          <p className="text-sm font-medium text-[var(--color-gsp-text-secondary)] uppercase tracking-wide">Total Downloads</p>
-          <p className="text-3xl font-bold text-[var(--color-gsp-text-primary)] mt-2">{totalDownloads.toLocaleString()}</p>
+        <div className="bg-(--color-gsp-surface-main) p-6 rounded-(--radius-xl) shadow-(--shadow-1) border border-(--color-gsp-border-subtle)">
+          <p className="text-sm font-medium text-(--color-gsp-text-secondary) uppercase tracking-wide">Total Downloads</p>
+          <p className="text-3xl font-bold text-(--color-gsp-text-primary) mt-2">{totalDownloads.toLocaleString()}</p>
         </div>
-        <div className="bg-[var(--color-gsp-surface-main)] p-6 rounded-[var(--radius-xl)] shadow-[var(--shadow-1)] border border-[var(--color-gsp-border-subtle)]">
-          <p className="text-sm font-medium text-[var(--color-gsp-text-secondary)] uppercase tracking-wide">Published Items</p>
+        <div className="bg-(--color-gsp-surface-main) p-6 rounded-(--radius-xl) shadow-(--shadow-1) border border-(--color-gsp-border-subtle)">
+          <p className="text-sm font-medium text-(--color-gsp-text-secondary) uppercase tracking-wide">Published Items</p>
           <p className="text-3xl font-bold text-emerald-600 mt-2">{publishedCount}</p>
         </div>
-        <div className="bg-[var(--color-gsp-surface-main)] p-6 rounded-[var(--radius-xl)] shadow-[var(--shadow-1)] border border-[var(--color-gsp-border-subtle)]">
-          <p className="text-sm font-medium text-[var(--color-gsp-text-secondary)] uppercase tracking-wide">Drafts / Pending</p>
+        <div className="bg-(--color-gsp-surface-main) p-6 rounded-(--radius-xl) shadow-(--shadow-1) border border-(--color-gsp-border-subtle)">
+          <p className="text-sm font-medium text-(--color-gsp-text-secondary) uppercase tracking-wide">Drafts / Pending</p>
           <p className="text-3xl font-bold text-amber-600 mt-2">{draftCount}</p>
         </div>
       </div>
 
       {/* Chart */}
       {chartData.length > 0 ? (
-        <div className="bg-[var(--color-gsp-surface-main)] p-6 rounded-[var(--radius-xl)] shadow-[var(--shadow-1)] border border-[var(--color-gsp-border-subtle)]">
-          <h3 className="text-lg font-bold text-[var(--color-gsp-text-primary)] mb-6">Top Performing Publications</h3>
-          <div className="h-[400px] w-full overflow-x-auto">
+        <div className="bg-(--color-gsp-surface-main) p-6 rounded-(--radius-xl) shadow-(--shadow-1) border border-(--color-gsp-border-subtle)">
+          <h3 className="text-lg font-bold text-(--color-gsp-text-primary) mb-6">Top Performing Publications</h3>
+          <div className="h-100 w-full overflow-x-auto">
             <div style={{ minWidth: chartData.length > 5 ? '600px' : '100%', height: '100%' }}>
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
@@ -124,9 +124,9 @@ export default function AnalyticsClient({ publications: initialPublications }: {
           </div>
         </div>
       ) : (
-        <div className="bg-[var(--color-gsp-surface-main)] p-12 rounded-[var(--radius-xl)] shadow-[var(--shadow-1)] border border-[var(--color-gsp-border-subtle)] text-center">
-          <h3 className="text-lg font-medium text-[var(--color-gsp-text-primary)]">Not enough data to display charts</h3>
-          <p className="text-[var(--color-gsp-text-secondary)] mt-2">Upload and publish items to see performance analytics.</p>
+        <div className="bg-(--color-gsp-surface-main) p-12 rounded-(--radius-xl) shadow-(--shadow-1) border border-(--color-gsp-border-subtle) text-center">
+          <h3 className="text-lg font-medium text-(--color-gsp-text-primary)">Not enough data to display charts</h3>
+          <p className="text-(--color-gsp-text-secondary) mt-2">Upload and publish items to see performance analytics.</p>
         </div>
       )}
     </div>

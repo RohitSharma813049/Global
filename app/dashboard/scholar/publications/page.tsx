@@ -12,8 +12,8 @@ export default async function ScholarPublicationsPage() {
   return (
     <div className="p-3 md:p-6 max-w-7xl mx-auto">
       <div className="mb-6 md:mb-8">
-        <h1 className="text-3xl font-bold text-[var(--color-gsp-text-primary)]">My Publications</h1>
-        <p className="text-[var(--color-gsp-text-secondary)] mt-2">Manage your uploaded publications, drafts, and track their performance.</p>
+        <h1 className="text-3xl font-bold text-(--color-gsp-text-primary)">My Publications</h1>
+        <p className="text-(--color-gsp-text-secondary) mt-2">Manage your uploaded publications, drafts, and track their performance.</p>
       </div>
 
       {error ? (

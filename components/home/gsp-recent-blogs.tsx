@@ -62,6 +62,7 @@ export default function GspRecentBlogs({ items, autoplay = true }: { items: Cont
     measure();
     window.addEventListener('resize', measure);
     return () => window.removeEventListener('resize', measure);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items]);
 
   useEffect(() => {

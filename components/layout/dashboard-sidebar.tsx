@@ -81,15 +81,15 @@ export default function DashboardSidebar() {
       <div 
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        className={`flex flex-col h-full bg-[var(--color-gsp-surface-muted)] border-r border-[var(--color-gsp-border-muted)] shadow-[var(--shadow-2)] fixed top-0 transition-all duration-300 ease-in-out z-50 
+        className={`flex flex-col h-full bg-(--color-gsp-surface-muted) border-r border-(--color-gsp-border-muted) shadow-(--shadow-2) fixed top-0 transition-all duration-300 ease-in-out z-50 
           ${isExpanded ? 'w-64' : 'w-20'} 
           ${isMobileMenuOpen ? 'left-0 w-64' : '-left-64 md:left-0'}`}
       >
-      <div className={`p-5 border-b border-[var(--color-gsp-border-muted)] flex items-center ${isExpanded ? 'justify-between' : 'justify-center'} overflow-hidden h-20`}>
+      <div className={`p-5 border-b border-(--color-gsp-border-muted) flex items-center ${isExpanded ? 'justify-between' : 'justify-center'} overflow-hidden h-20`}>
         {isExpanded ? (
           <div className="whitespace-nowrap flex flex-col justify-center transition-opacity duration-300 w-full px-2 mt-2">
             <img src="/logo1.png" alt="Global Scholar" className="h-10 w-auto object-contain object-left mb-1" />
-            <span className="text-[10px] font-bold text-[var(--color-gsp-text-inverse)] uppercase tracking-wider ml-1">{role.replace('_', ' ')} Dashboard</span>
+            <span className="text-2.5 font-bold text-(--color-gsp-text-inverse) uppercase tracking-wider ml-1">{role.replace('_', ' ')} Dashboard</span>
           </div>
         ) : (
           <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0">
@@ -100,7 +100,7 @@ export default function DashboardSidebar() {
         {isExpanded && (
           <button 
             onClick={() => setIsPinned(!isPinned)}
-            className={`p-1.5 rounded-[var(--radius-sm)] text-[var(--color-gsp-text-primary)] hover:text-[var(--color-gsp-text-inverse)] hover:bg-[#F4F1FA] transition-all ${isPinned ? 'text-[var(--color-gsp-text-inverse)] bg-[#F4F1FA]' : ''}`}
+            className={`p-1.5 rounded-(--radius-sm) text-(--color-gsp-text-primary) hover:text-(--color-gsp-text-inverse) hover:bg-violet-soft transition-all ${isPinned ? 'text-(--color-gsp-text-inverse) bg-violet-soft' : ''}`}
             title={isPinned ? "Unpin sidebar" : "Pin sidebar"}
           >
             <MdPushPin className={`text-lg transition-transform ${isPinned ? 'rotate-45' : 'rotate-0'}`} />
@@ -112,7 +112,7 @@ export default function DashboardSidebar() {
         <Link 
           href="/dashboard"
           onClick={() => setIsMobileMenuOpen(false)}
-          className={`flex items-center py-2.5 rounded-[var(--radius-sm)] transition-all duration-200 ${isExpanded || isMobileMenuOpen ? 'px-3 text-[var(--font-size-md)]' : 'justify-center px-0'} ${pathname === "/dashboard" ? "bg-[#F4F1FA] text-[var(--color-gsp-text-inverse)] font-semibold" : "text-[var(--color-gsp-text-primary)] hover:bg-gray-50 hover:text-[var(--color-gsp-text-secondary)]"}`}
+          className={`flex items-center py-2.5 rounded-(--radius-sm) transition-all duration-200 ${isExpanded || isMobileMenuOpen ? 'px-3 text-(--font-size-md)' : 'justify-center px-0'} ${pathname === "/dashboard" ? "bg-violet-soft text-(--color-gsp-text-inverse) font-semibold" : "text-(--color-gsp-text-primary) hover:bg-gray-50 hover:text-(--color-gsp-text-secondary)"}`}
           title={!isExpanded && !isMobileMenuOpen ? "Overview" : ""}
         >
           <MdDashboard className={`text-lg ${isExpanded || isMobileMenuOpen ? 'mr-3' : ''}`} /> 
@@ -121,7 +121,7 @@ export default function DashboardSidebar() {
         
         {(isExpanded || isMobileMenuOpen) && (
           <div className="pt-5 pb-2">
-            <p className="px-3 text-[11px] font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap">Features</p>
+            <p className="px-3 text-2.75 font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap">Features</p>
           </div>
         )}
         {!isExpanded && <div className="h-4"></div>}
@@ -134,7 +134,7 @@ export default function DashboardSidebar() {
               key={link.name}
               href={link.href}
               onClick={() => setIsMobileMenuOpen(false)}
-              className={`flex items-center py-2.5 rounded-[var(--radius-sm)] transition-all duration-200 ${isExpanded || isMobileMenuOpen ? 'px-3 text-[var(--font-size-md)]' : 'justify-center px-0'} ${isActive ? "bg-[#F4F1FA] text-[var(--color-gsp-text-inverse)] font-semibold" : "text-[var(--color-gsp-text-primary)] hover:bg-gray-50 hover:text-[var(--color-gsp-text-secondary)]"}`}
+              className={`flex items-center py-2.5 rounded-(--radius-sm) transition-all duration-200 ${isExpanded || isMobileMenuOpen ? 'px-3 text-(--font-size-md)' : 'justify-center px-0'} ${isActive ? "bg-violet-soft text-(--color-gsp-text-inverse) font-semibold" : "text-(--color-gsp-text-primary) hover:bg-gray-50 hover:text-(--color-gsp-text-secondary)"}`}
               title={!isExpanded && !isMobileMenuOpen ? link.name : ""}
             >
               <Icon className={`text-lg ${isExpanded || isMobileMenuOpen ? 'mr-3' : ''}`} /> 
@@ -144,11 +144,11 @@ export default function DashboardSidebar() {
         })}
       </nav>
 
-      <div className={`p-4 border-t border-[var(--color-gsp-border-muted)] ${(!isExpanded && !isMobileMenuOpen) ? 'flex flex-col items-center' : ''}`}>
+      <div className={`p-4 border-t border-(--color-gsp-border-muted) ${(!isExpanded && !isMobileMenuOpen) ? 'flex flex-col items-center' : ''}`}>
         <Link 
           href={role === 'admin' || role === 'super_admin' ? '/dashboard/admin/settings' : '/dashboard/settings'}
           onClick={() => setIsMobileMenuOpen(false)}
-          className={`flex items-center py-2.5 rounded-[var(--radius-sm)] transition-all duration-200 mb-1 ${isExpanded || isMobileMenuOpen ? 'px-3 text-[var(--font-size-md)] font-medium w-full' : 'justify-center w-10 h-10 px-0'} ${(pathname === "/dashboard/settings" || pathname === "/dashboard/admin/settings") ? "bg-[#F4F1FA] text-[var(--color-gsp-text-inverse)] font-semibold" : "text-[var(--color-gsp-text-primary)] hover:bg-gray-50 hover:text-[var(--color-gsp-text-secondary)]"}`}
+          className={`flex items-center py-2.5 rounded-(--radius-sm) transition-all duration-200 mb-1 ${isExpanded || isMobileMenuOpen ? 'px-3 text-(--font-size-md) font-medium w-full' : 'justify-center w-10 h-10 px-0'} ${(pathname === "/dashboard/settings" || pathname === "/dashboard/admin/settings") ? "bg-violet-soft text-(--color-gsp-text-inverse) font-semibold" : "text-(--color-gsp-text-primary) hover:bg-gray-50 hover:text-(--color-gsp-text-secondary)"}`}
           title={!isExpanded && !isMobileMenuOpen ? "Settings" : ""}
         >
           <MdSettings className={`text-lg ${isExpanded || isMobileMenuOpen ? 'mr-3' : ''}`} /> 

@@ -69,29 +69,29 @@ export default function ScholarProfileForm({ scholar }: { scholar: any }) {
         )}
         
         <div>
-          <h3 className="text-sm font-medium text-[var(--color-gsp-text-secondary)] uppercase tracking-wide">Biography</h3>
-          <p className="mt-2 text-[var(--color-gsp-text-primary)] whitespace-pre-wrap">{scholar.bio || 'No biography provided.'}</p>
+          <h3 className="text-sm font-medium text-(--color-gsp-text-secondary) uppercase tracking-wide">Biography</h3>
+          <p className="mt-2 text-(--color-gsp-text-primary) whitespace-pre-wrap">{scholar.bio || 'No biography provided.'}</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           <div>
-            <h3 className="text-sm font-medium text-[var(--color-gsp-text-secondary)] uppercase tracking-wide">Institution</h3>
-            <p className="mt-1 text-[var(--color-gsp-text-primary)]">{scholar.institution || 'Not specified'}</p>
+            <h3 className="text-sm font-medium text-(--color-gsp-text-secondary) uppercase tracking-wide">Institution</h3>
+            <p className="mt-1 text-(--color-gsp-text-primary)">{scholar.institution || 'Not specified'}</p>
           </div>
           <div>
-            <h3 className="text-sm font-medium text-[var(--color-gsp-text-secondary)] uppercase tracking-wide">Highest Qualification</h3>
-            <p className="mt-1 text-[var(--color-gsp-text-primary)]">{scholar.qualification || 'Not specified'}</p>
+            <h3 className="text-sm font-medium text-(--color-gsp-text-secondary) uppercase tracking-wide">Highest Qualification</h3>
+            <p className="mt-1 text-(--color-gsp-text-primary)">{scholar.qualification || 'Not specified'}</p>
           </div>
           <div className="md:col-span-2">
-            <h3 className="text-sm font-medium text-[var(--color-gsp-text-secondary)] uppercase tracking-wide">Specialization</h3>
-            <p className="mt-1 text-[var(--color-gsp-text-primary)]">{scholar.specialization || 'Not specified'}</p>
+            <h3 className="text-sm font-medium text-(--color-gsp-text-secondary) uppercase tracking-wide">Specialization</h3>
+            <p className="mt-1 text-(--color-gsp-text-primary)">{scholar.specialization || 'Not specified'}</p>
           </div>
         </div>
 
-        <div className="flex justify-end pt-4 border-t border-[var(--color-gsp-border-muted)]">
+        <div className="flex justify-end pt-4 border-t border-(--color-gsp-border-muted)">
           <button
             onClick={() => setIsEditing(true)}
-            className="flex items-center px-4 py-2 border border-transparent rounded-[var(--radius-lg)] shadow-[var(--shadow-1)] text-sm font-medium text-white bg-[var(--color-gsp-text-inverse)] hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors"
+            className="flex items-center px-4 py-2 border border-transparent rounded-(--radius-lg) shadow-(--shadow-1) text-sm font-medium text-white bg-(--color-gsp-text-inverse) hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors"
           >
             <MdEdit className="mr-2" /> Edit Profile
           </button>
@@ -99,15 +99,15 @@ export default function ScholarProfileForm({ scholar }: { scholar: any }) {
 
         {/* Display Media in Read-only mode */}
         {(scholar.video_url || (scholar.gallery_images && scholar.gallery_images.length > 0) || (scholar.gallery_videos && scholar.gallery_videos.length > 0)) && (
-          <div className="pt-8 mt-4 border-t border-[var(--color-gsp-border-strong)]">
+          <div className="pt-8 mt-4 border-t border-(--color-gsp-border-strong)">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-semibold text-[var(--color-gsp-text-primary)]">Media Gallery</h3>
+              <h3 className="text-xl font-semibold text-(--color-gsp-text-primary)">Media Gallery</h3>
             </div>
             
             {scholar.video_url && (
               <div className="mb-10">
-                <h4 className="text-sm font-semibold text-[var(--color-gsp-text-secondary)] uppercase tracking-wider mb-4 opacity-80">Featured Video</h4>
-                <div className="w-full max-w-3xl bg-[var(--color-gsp-surface-raised)] rounded-[var(--radius-xl)] shadow-lg overflow-hidden aspect-video flex items-center justify-center border border-[var(--color-gsp-border-default)] transition-all duration-300 hover:shadow-xl">
+                <h4 className="text-sm font-semibold text-(--color-gsp-text-secondary) uppercase tracking-wider mb-4 opacity-80">Featured Video</h4>
+                <div className="w-full max-w-3xl bg-(--color-gsp-surface-raised) rounded-(--radius-xl) shadow-lg overflow-hidden aspect-video flex items-center justify-center border border-(--color-gsp-border-default) transition-all duration-300 hover:shadow-xl">
                   <video src={scholar.video_url} controls className="w-full h-full object-cover" />
                 </div>
               </div>
@@ -115,10 +115,10 @@ export default function ScholarProfileForm({ scholar }: { scholar: any }) {
 
             {scholar.gallery_images && scholar.gallery_images.length > 0 && (
               <div className="mb-10">
-                <h4 className="text-sm font-semibold text-[var(--color-gsp-text-secondary)] uppercase tracking-wider mb-4 opacity-80">Photo Gallery</h4>
+                <h4 className="text-sm font-semibold text-(--color-gsp-text-secondary) uppercase tracking-wider mb-4 opacity-80">Photo Gallery</h4>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                   {scholar.gallery_images.map((url: string, index: number) => (
-                    <div key={index} className="group relative aspect-square bg-[var(--color-gsp-surface-raised)] rounded-[var(--radius-lg)] shadow-sm overflow-hidden border border-[var(--color-gsp-border-muted)] hover:border-purple-300 transition-all duration-300 cursor-pointer">
+                    <div key={index} className="group relative aspect-square bg-(--color-gsp-surface-raised) rounded-(--radius-lg) shadow-sm overflow-hidden border border-(--color-gsp-border-muted) hover:border-purple-300 transition-all duration-300 cursor-pointer">
                       <img src={url} alt={`Gallery ${index + 1}`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
                     </div>
@@ -129,10 +129,10 @@ export default function ScholarProfileForm({ scholar }: { scholar: any }) {
 
             {scholar.gallery_videos && scholar.gallery_videos.length > 0 && (
               <div>
-                <h4 className="text-sm font-semibold text-[var(--color-gsp-text-secondary)] uppercase tracking-wider mb-4 opacity-80">Additional Videos</h4>
+                <h4 className="text-sm font-semibold text-(--color-gsp-text-secondary) uppercase tracking-wider mb-4 opacity-80">Additional Videos</h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   {scholar.gallery_videos.map((url: string, index: number) => (
-                    <div key={index} className="bg-[var(--color-gsp-surface-raised)] rounded-[var(--radius-lg)] shadow-md overflow-hidden aspect-video flex items-center justify-center border border-[var(--color-gsp-border-default)] transition-all duration-300 hover:shadow-lg">
+                    <div key={index} className="bg-(--color-gsp-surface-raised) rounded-(--radius-lg) shadow-md overflow-hidden aspect-video flex items-center justify-center border border-(--color-gsp-border-default) transition-all duration-300 hover:shadow-lg">
                       <video src={url} controls className="w-full h-full object-cover" />
                     </div>
                   ))}
@@ -154,7 +154,7 @@ export default function ScholarProfileForm({ scholar }: { scholar: any }) {
       )}
 
       <div>
-        <label htmlFor="bio" className="block text-[15px] font-semibold text-gray-800 mb-1.5">Biography</label>
+        <label htmlFor="bio" className="block text-3.75 font-semibold text-gray-800 mb-1.5">Biography</label>
         <textarea aria-label="Input field" 
           name="bio" 
           id="bio" 
@@ -167,7 +167,7 @@ export default function ScholarProfileForm({ scholar }: { scholar: any }) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label htmlFor="institution" className="block text-[15px] font-semibold text-gray-800 mb-1.5">Institution</label>
+          <label htmlFor="institution" className="block text-3.75 font-semibold text-gray-800 mb-1.5">Institution</label>
           <input aria-label="Input field" 
             type="text" 
             name="institution" 
@@ -178,7 +178,7 @@ export default function ScholarProfileForm({ scholar }: { scholar: any }) {
         </div>
 
         <div>
-          <label htmlFor="qualification" className="block text-[15px] font-semibold text-gray-800 mb-1.5">Highest Qualification</label>
+          <label htmlFor="qualification" className="block text-3.75 font-semibold text-gray-800 mb-1.5">Highest Qualification</label>
           <input aria-label="Input field" 
             type="text" 
             name="qualification" 
@@ -189,7 +189,7 @@ export default function ScholarProfileForm({ scholar }: { scholar: any }) {
         </div>
 
         <div className="md:col-span-2">
-          <label htmlFor="specialization" className="block text-[15px] font-semibold text-gray-800 mb-1.5">Specialization</label>
+          <label htmlFor="specialization" className="block text-3.75 font-semibold text-gray-800 mb-1.5">Specialization</label>
           <input aria-label="Input field" 
             type="text" 
             name="specialization" 
@@ -201,10 +201,10 @@ export default function ScholarProfileForm({ scholar }: { scholar: any }) {
       </div>
 
       <div className="pt-8 border-t border-gray-100 mt-8">
-        <h3 className="text-[20px] font-bold text-gray-900 mb-6">Social Links</h3>
+        <h3 className="text-5 font-bold text-gray-900 mb-6">Social Links</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label htmlFor="linkedin_url" className="block text-[15px] font-semibold text-gray-800 mb-1.5">LinkedIn URL</label>
+            <label htmlFor="linkedin_url" className="block text-3.75 font-semibold text-gray-800 mb-1.5">LinkedIn URL</label>
             <input aria-label="Input field" 
               type="url" 
               name="linkedin_url" 
@@ -215,7 +215,7 @@ export default function ScholarProfileForm({ scholar }: { scholar: any }) {
             />
           </div>
           <div>
-            <label htmlFor="twitter_url" className="block text-[15px] font-semibold text-gray-800 mb-1.5">Twitter (X) URL</label>
+            <label htmlFor="twitter_url" className="block text-3.75 font-semibold text-gray-800 mb-1.5">Twitter (X) URL</label>
             <input aria-label="Input field" 
               type="url" 
               name="twitter_url" 
@@ -226,7 +226,7 @@ export default function ScholarProfileForm({ scholar }: { scholar: any }) {
             />
           </div>
           <div className="md:col-span-2">
-            <label htmlFor="website_url" className="block text-[15px] font-semibold text-gray-800 mb-1.5">Personal Website URL</label>
+            <label htmlFor="website_url" className="block text-3.75 font-semibold text-gray-800 mb-1.5">Personal Website URL</label>
             <input aria-label="Input field" 
               type="url" 
               name="website_url" 
@@ -240,11 +240,11 @@ export default function ScholarProfileForm({ scholar }: { scholar: any }) {
       </div>
 
       <div className="pt-8 border-t border-gray-100 mt-8">
-        <h3 className="text-[20px] font-bold text-gray-900 mb-6">Media Gallery</h3>
+        <h3 className="text-5 font-bold text-gray-900 mb-6">Media Gallery</h3>
         
         <div className="space-y-8">
           <div>
-            <label htmlFor="profile_photo" className="block text-[15px] font-semibold text-gray-800 mb-2">Profile Photo (Optional)</label>
+            <label htmlFor="profile_photo" className="block text-3.75 font-semibold text-gray-800 mb-2">Profile Photo (Optional)</label>
             <input aria-label="Profile Photo Upload" 
               type="file" 
               name="profile_photo" 
@@ -255,15 +255,15 @@ export default function ScholarProfileForm({ scholar }: { scholar: any }) {
             />
             {scholar.profile_photo_url && !deletedMedia.includes(scholar.profile_photo_url) && (
               <div className="mt-3 flex items-center justify-between p-3 bg-white border border-gray-200 rounded-md shadow-sm">
-                <p className="text-[13px] text-gray-600 truncate mr-2">Current: {scholar.profile_photo_url.split('/').pop()}</p>
-                <button type="button" onClick={() => handleRemoveMedia(scholar.profile_photo_url)} className="text-[13px] text-[#DC2626] font-medium px-3 py-1 bg-[#FEF2F2] rounded hover:bg-red-100 transition-colors">Remove</button>
+                <p className="text-3.25 text-gray-600 truncate mr-2">Current: {scholar.profile_photo_url.split('/').pop()}</p>
+                <button type="button" onClick={() => handleRemoveMedia(scholar.profile_photo_url)} className="text-3.25 text-[#DC2626] font-medium px-3 py-1 bg-[#FEF2F2] rounded hover:bg-red-100 transition-colors">Remove</button>
               </div>
             )}
             <p className="text-xs text-gray-500 mt-2">If uploaded, this replaces your Google/GitHub avatar.</p>
           </div>
 
           <div>
-            <label htmlFor="video_file" className="block text-[15px] font-semibold text-gray-800 mb-2">Featured Video</label>
+            <label htmlFor="video_file" className="block text-3.75 font-semibold text-gray-800 mb-2">Featured Video</label>
             <input aria-label="Featured Video Upload" 
               type="file" 
               name="video_file" 
@@ -273,14 +273,14 @@ export default function ScholarProfileForm({ scholar }: { scholar: any }) {
             />
             {scholar.video_url && !deletedMedia.includes(scholar.video_url) && (
               <div className="mt-3 flex items-center justify-between p-3 bg-white border border-gray-200 rounded-md shadow-sm">
-                <p className="text-[13px] text-gray-600 truncate mr-2">Current: {scholar.video_url.split('/').pop()}</p>
-                <button type="button" onClick={() => handleRemoveMedia(scholar.video_url)} className="text-[13px] text-[#DC2626] font-medium px-3 py-1 bg-[#FEF2F2] rounded hover:bg-red-100 transition-colors">Remove</button>
+                <p className="text-3.25 text-gray-600 truncate mr-2">Current: {scholar.video_url.split('/').pop()}</p>
+                <button type="button" onClick={() => handleRemoveMedia(scholar.video_url)} className="text-3.25 text-[#DC2626] font-medium px-3 py-1 bg-[#FEF2F2] rounded hover:bg-red-100 transition-colors">Remove</button>
               </div>
             )}
           </div>
 
           <div>
-            <label htmlFor="gallery_images" className="block text-[15px] font-semibold text-gray-800 mb-2">Gallery Photos</label>
+            <label htmlFor="gallery_images" className="block text-3.75 font-semibold text-gray-800 mb-2">Gallery Photos</label>
             <div className="flex justify-center px-6 py-10 border-2 border-dashed border-gray-200 rounded-md hover:border-purple-400 transition-colors bg-[#FAFAFA] group relative cursor-pointer">
               <div className="space-y-2 text-center flex flex-col items-center">
                 <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-gray-800 group-hover:text-purple-600 transition-colors">
@@ -327,11 +327,11 @@ export default function ScholarProfileForm({ scholar }: { scholar: any }) {
             
             {scholar.gallery_images?.length > 0 && (
               <div className="mt-4 space-y-2">
-                <p className="text-[13px] font-semibold text-gray-700">Current Gallery Photos:</p>
+                <p className="text-3.25 font-semibold text-gray-700">Current Gallery Photos:</p>
                 {scholar.gallery_images.filter((url: string) => !deletedMedia.includes(url)).map((url: string, index: number) => (
                   <div key={index} className="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-md shadow-sm">
-                    <p className="text-[13px] text-[#4C1D95] truncate mr-2">Image {index + 1}: {url.split('/').pop()}</p>
-                    <button type="button" onClick={() => handleRemoveMedia(url)} className="text-[13px] text-[#DC2626] font-medium px-3 py-1 bg-[#FEF2F2] rounded hover:bg-red-100 transition-colors">Remove</button>
+                    <p className="text-3.25 text-[#4C1D95] truncate mr-2">Image {index + 1}: {url.split('/').pop()}</p>
+                    <button type="button" onClick={() => handleRemoveMedia(url)} className="text-3.25 text-[#DC2626] font-medium px-3 py-1 bg-[#FEF2F2] rounded hover:bg-red-100 transition-colors">Remove</button>
                   </div>
                 ))}
               </div>
@@ -339,7 +339,7 @@ export default function ScholarProfileForm({ scholar }: { scholar: any }) {
           </div>
 
           <div>
-            <label htmlFor="gallery_videos" className="block text-[15px] font-semibold text-gray-800 mb-2">Gallery Videos</label>
+            <label htmlFor="gallery_videos" className="block text-3.75 font-semibold text-gray-800 mb-2">Gallery Videos</label>
             <div className="flex justify-center px-6 py-10 border-2 border-dashed border-[#A855F7] rounded-md bg-[#FAFAFA] group relative cursor-pointer">
               <div className="space-y-2 text-center flex flex-col items-center">
                 <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-gray-800 group-hover:text-purple-600 transition-colors">
@@ -385,11 +385,11 @@ export default function ScholarProfileForm({ scholar }: { scholar: any }) {
             
             {scholar.gallery_videos?.length > 0 && (
               <div className="mt-4 space-y-2">
-                <p className="text-[13px] font-semibold text-gray-700">Current Gallery Videos:</p>
+                <p className="text-3.25 font-semibold text-gray-700">Current Gallery Videos:</p>
                 {scholar.gallery_videos.filter((url: string) => !deletedMedia.includes(url)).map((url: string, index: number) => (
                   <div key={index} className="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-md shadow-sm">
-                    <p className="text-[13px] text-[#4C1D95] truncate mr-2">Video {index + 1}: {url.split('/').pop()}</p>
-                    <button type="button" onClick={() => handleRemoveMedia(url)} className="text-[13px] text-[#DC2626] font-medium px-3 py-1 bg-[#FEF2F2] rounded hover:bg-red-100 transition-colors">Remove</button>
+                    <p className="text-3.25 text-[#4C1D95] truncate mr-2">Video {index + 1}: {url.split('/').pop()}</p>
+                    <button type="button" onClick={() => handleRemoveMedia(url)} className="text-3.25 text-[#DC2626] font-medium px-3 py-1 bg-[#FEF2F2] rounded hover:bg-red-100 transition-colors">Remove</button>
                   </div>
                 ))}
               </div>
@@ -412,14 +412,14 @@ export default function ScholarProfileForm({ scholar }: { scholar: any }) {
               setIsEditing(false);
             }
           }}
-          className="px-6 py-2.5 border border-gray-200 rounded-md text-[14px] font-semibold text-gray-700 bg-white hover:bg-gray-50 focus:outline-none transition-colors"
+          className="px-6 py-2.5 border border-gray-200 rounded-md text-3.5 font-semibold text-gray-700 bg-white hover:bg-gray-50 focus:outline-none transition-colors"
         >
           Cancel
         </button>
         <button
           type="submit"
           disabled={loading}
-          className="px-6 py-2.5 rounded-md text-[14px] font-semibold text-white bg-[#2D1B69] hover:bg-[#1E1246] focus:outline-none disabled:opacity-50 transition-colors shadow-sm"
+          className="px-6 py-2.5 rounded-md text-3.5 font-semibold text-white bg-[#2D1B69] hover:bg-[#1E1246] focus:outline-none disabled:opacity-50 transition-colors shadow-sm"
         >
           {loading ? 'Saving...' : 'Save Profile'}
         </button>

@@ -212,15 +212,15 @@ export default function ScholarUploadPage() {
     <TooltipProvider delayDuration={200}>
       <div className="p-6 max-w-4xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-[var(--color-gsp-text-primary)]">Upload Publication</h1>
-          <p className="text-[var(--color-gsp-text-secondary)] mt-2">Submit your thesis, article, or eBook to the Global Scholar Publications platform.</p>
+          <h1 className="text-3xl font-bold text-(--color-gsp-text-primary)">Upload Publication</h1>
+          <p className="text-(--color-gsp-text-secondary) mt-2">Submit your thesis, article, or eBook to the Global Scholar Publications platform.</p>
         </div>
 
       <div className="mb-8">
         <div className="flex items-center justify-between relative">
           <div className="absolute left-0 top-1/2 transform -translate-y-1/2 w-full h-1 bg-gray-200 z-0"></div>
           <div 
-            className="absolute left-0 top-1/2 transform -translate-y-1/2 h-1 bg-[#2F115D] z-0 transition-all duration-300"
+            className="absolute left-0 top-1/2 transform -translate-y-1/2 h-1 bg-violet z-0 transition-all duration-300"
             style={{ width: `${((currentStep - 1) / 4) * 100}%` }}
           ></div>
           
@@ -230,10 +230,10 @@ export default function ScholarUploadPage() {
             const isCompleted = currentStep > stepNum;
             return (
               <div key={index} className="relative z-10 flex flex-col items-center">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold border-2 transition-colors duration-300 ${isActive ? 'bg-[#2F115D] border-[#2F115D] text-white' : isCompleted ? 'bg-[#2F115D] border-[#2F115D] text-white opacity-80' : 'bg-[var(--color-gsp-surface-muted)] border-[var(--color-gsp-border-default)] text-[var(--color-gsp-text-secondary)]'}`}>
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold border-2 transition-colors duration-300 ${isActive ? 'bg-violet border-violet text-white' : isCompleted ? 'bg-violet border-violet text-white opacity-80' : 'bg-(--color-gsp-surface-muted) border-(--color-gsp-border-default) text-(--color-gsp-text-secondary)'}`}>
                   {isCompleted ? '✓' : stepNum}
                 </div>
-                <div className={`absolute top-12 text-xs font-medium whitespace-nowrap hidden sm:block ${isActive || isCompleted ? 'text-[var(--color-gsp-text-primary)]' : 'text-[var(--color-gsp-text-secondary)]'}`}>
+                <div className={`absolute top-12 text-xs font-medium whitespace-nowrap hidden sm:block ${isActive || isCompleted ? 'text-(--color-gsp-text-primary)' : 'text-(--color-gsp-text-secondary)'}`}>
                   {title}
                 </div>
               </div>
@@ -242,7 +242,7 @@ export default function ScholarUploadPage() {
         </div>
       </div>
 
-      <div className="bg-[var(--color-gsp-surface-muted)] rounded-[var(--radius-xl)] shadow-[var(--shadow-1)] border border-[var(--color-gsp-border-muted)] overflow-hidden sm:mt-16">
+      <div className="bg-(--color-gsp-surface-muted) rounded-(--radius-xl) shadow-(--shadow-1) border border-(--color-gsp-border-muted) overflow-hidden sm:mt-16">
         <div className="p-6 sm:p-8">
           {error && (
             <div className="mb-6 bg-red-50 text-red-600 p-4 rounded-md text-sm border border-red-100">
@@ -254,27 +254,27 @@ export default function ScholarUploadPage() {
             
             {/* Step 1: Basic Information */}
             <div id="step-1" className={currentStep === 1 ? 'block' : 'hidden'}>
-              <h2 className="text-xl font-bold text-[var(--color-gsp-text-primary)] mb-6 border-b pb-2">Basic Information</h2>
+              <h2 className="text-xl font-bold text-(--color-gsp-text-primary) mb-6 border-b pb-2">Basic Information</h2>
               <div className="space-y-6">
                 <div>
-                  <label htmlFor="title" className="block text-sm font-medium text-[var(--color-gsp-text-primary)]">Publication Title</label>
+                  <label htmlFor="title" className="block text-sm font-medium text-(--color-gsp-text-primary)">Publication Title</label>
                   <input aria-label="Input field" 
                     type="text" 
                     name="title" 
                     id="title" 
                     required={currentStep === 1}
-                    className="mt-1 block w-full px-4 py-3 border border-[var(--color-gsp-border-default)] rounded-md shadow-[var(--shadow-1)] focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm" 
+                    className="mt-1 block w-full px-4 py-3 border border-(--color-gsp-border-default) rounded-md shadow-(--shadow-1) focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm" 
                   />
                 </div>
                 <div>
-                  <label htmlFor="content_type" className="block text-sm font-medium text-[var(--color-gsp-text-primary)]">Content Type</label>
+                  <label htmlFor="content_type" className="block text-sm font-medium text-(--color-gsp-text-primary)">Content Type</label>
                   <select aria-label="Select field" 
                     name="content_type" 
                     id="content_type" 
                     required={currentStep === 1}
                     value={selectedContentType}
                     onChange={(e) => setSelectedContentType(e.target.value)}
-                    className="mt-1 block w-full px-4 py-3 border border-[var(--color-gsp-border-default)] bg-[var(--color-gsp-surface-muted)] rounded-md shadow-[var(--shadow-1)] focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+                    className="mt-1 block w-full px-4 py-3 border border-(--color-gsp-border-default) bg-(--color-gsp-surface-muted) rounded-md shadow-(--shadow-1) focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
                   >
                     <option value="thesis">Thesis</option>
                     <option value="article">Research Article</option>
@@ -283,12 +283,12 @@ export default function ScholarUploadPage() {
                   </select>
                 </div>
                 <div>
-                  <label htmlFor="category_id" className="block text-sm font-medium text-[var(--color-gsp-text-primary)]">Category</label>
+                  <label htmlFor="category_id" className="block text-sm font-medium text-(--color-gsp-text-primary)">Category</label>
                   <select aria-label="Select field" 
                     name="category_id" 
                     id="category_id" 
                     required={currentStep === 1}
-                    className="mt-1 block w-full px-4 py-3 border border-[var(--color-gsp-border-default)] bg-[var(--color-gsp-surface-muted)] rounded-md shadow-[var(--shadow-1)] focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+                    className="mt-1 block w-full px-4 py-3 border border-(--color-gsp-border-default) bg-(--color-gsp-surface-muted) rounded-md shadow-(--shadow-1) focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
                   >
                     <option value="">Select a category</option>
                     {categories.length > 0 ? categories.map(cat => (
@@ -299,7 +299,7 @@ export default function ScholarUploadPage() {
                   </select>
                 </div>
                 <div>
-                  <label htmlFor="doi" className="block text-sm font-medium text-[var(--color-gsp-text-primary)]">
+                  <label htmlFor="doi" className="block text-sm font-medium text-(--color-gsp-text-primary)">
                     {selectedContentType === 'thesis' ? 'DOI (Required)' : 'DOI (Optional)'}
                   </label>
                   <input aria-label="Input field" 
@@ -308,7 +308,7 @@ export default function ScholarUploadPage() {
                     id="doi" 
                     required={selectedContentType === 'thesis'}
                     placeholder={selectedContentType === 'thesis' ? "Enter your DOI" : "Enter DOI if you already have one (e.g. 10.1234/abc)"}
-                    className="mt-1 block w-full px-4 py-3 border border-[var(--color-gsp-border-default)] rounded-md shadow-[var(--shadow-1)] focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm" 
+                    className="mt-1 block w-full px-4 py-3 border border-(--color-gsp-border-default) rounded-md shadow-(--shadow-1) focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm" 
                   />
                 </div>
               </div>
@@ -317,7 +317,7 @@ export default function ScholarUploadPage() {
             {/* Step 2: Author Details */}
             <div id="step-2" className={currentStep === 2 ? 'block' : 'hidden'}>
               <div className="flex items-center justify-between mb-6 border-b pb-2">
-                <h2 className="text-xl font-bold text-[var(--color-gsp-text-primary)]">Author Details</h2>
+                <h2 className="text-xl font-bold text-(--color-gsp-text-primary)">Author Details</h2>
                 {session?.user && (
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -360,34 +360,34 @@ export default function ScholarUploadPage() {
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label htmlFor="author_name" className="block text-sm font-medium text-[var(--color-gsp-text-primary)]">Author Name</label>
+                    <label htmlFor="author_name" className="block text-sm font-medium text-(--color-gsp-text-primary)">Author Name</label>
                     <input aria-label="Author Name" 
                       type="text" 
                       name="author_name" 
                       id="author_name" 
                       required={currentStep === 2}
-                      className="mt-1 block w-full px-4 py-3 border border-[var(--color-gsp-border-default)] rounded-md shadow-[var(--shadow-1)] focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm" 
+                      className="mt-1 block w-full px-4 py-3 border border-(--color-gsp-border-default) rounded-md shadow-(--shadow-1) focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm" 
                     />
                   </div>
                   <div>
-                    <label htmlFor="email_address" className="block text-sm font-medium text-[var(--color-gsp-text-primary)]">Email Address</label>
+                    <label htmlFor="email_address" className="block text-sm font-medium text-(--color-gsp-text-primary)">Email Address</label>
                     <input aria-label="Email Address" 
                       type="email" 
                       name="email_address" 
                       id="email_address" 
                       required={currentStep === 2}
-                      className="mt-1 block w-full px-4 py-3 border border-[var(--color-gsp-border-default)] rounded-md shadow-[var(--shadow-1)] focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm" 
+                      className="mt-1 block w-full px-4 py-3 border border-(--color-gsp-border-default) rounded-md shadow-(--shadow-1) focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm" 
                     />
                   </div>
                 </div>
                 <div>
-                  <label htmlFor="institution" className="block text-sm font-medium text-[var(--color-gsp-text-primary)]">Institution / University Name</label>
+                  <label htmlFor="institution" className="block text-sm font-medium text-(--color-gsp-text-primary)">Institution / University Name</label>
                   <input aria-label="Institution" 
                     type="text" 
                     name="institution" 
                     id="institution" 
                     required={currentStep === 2}
-                    className="mt-1 block w-full px-4 py-3 border border-[var(--color-gsp-border-default)] rounded-md shadow-[var(--shadow-1)] focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm" 
+                    className="mt-1 block w-full px-4 py-3 border border-(--color-gsp-border-default) rounded-md shadow-(--shadow-1) focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm" 
                   />
                 </div>
               </div>
@@ -395,26 +395,26 @@ export default function ScholarUploadPage() {
 
             {/* Step 3: Content & Abstract */}
             <div id="step-3" className={currentStep === 3 ? 'block' : 'hidden'}>
-              <h2 className="text-xl font-bold text-[var(--color-gsp-text-primary)] mb-6 border-b pb-2">Content & Abstract</h2>
+              <h2 className="text-xl font-bold text-(--color-gsp-text-primary) mb-6 border-b pb-2">Content & Abstract</h2>
               <div className="space-y-6">
                 <div>
-                  <label htmlFor="abstract" className="block text-sm font-medium text-[var(--color-gsp-text-primary)] mb-1">Abstract / Summary</label>
+                  <label htmlFor="abstract" className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Abstract / Summary</label>
                   <input type="hidden" name="abstract" value={abstract} />
                   <ReactQuill 
                     theme="snow" 
                     value={abstract} 
                     onChange={setAbstract} 
-                    className="bg-[var(--color-gsp-surface-muted)] rounded-md mb-12 h-48"
+                    className="bg-(--color-gsp-surface-muted) rounded-md mb-12 h-48"
                   />
                 </div>
                 <div>
-                  <label htmlFor="doi" className="block text-sm font-medium text-[var(--color-gsp-text-primary)]">DOI (Optional)</label>
+                  <label htmlFor="doi" className="block text-sm font-medium text-(--color-gsp-text-primary)">DOI (Optional)</label>
                   <input aria-label="DOI" 
                     type="text" 
                     name="doi" 
                     id="doi" 
                     placeholder="e.g. 10.1000/xyz123"
-                    className="mt-1 block w-full px-4 py-3 border border-[var(--color-gsp-border-default)] rounded-md shadow-[var(--shadow-1)] focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm" 
+                    className="mt-1 block w-full px-4 py-3 border border-(--color-gsp-border-default) rounded-md shadow-(--shadow-1) focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm" 
                   />
                 </div>
               </div>
@@ -422,16 +422,16 @@ export default function ScholarUploadPage() {
 
             {/* Step 4: Media & Files */}
             <div id="step-4" className={currentStep === 4 ? 'block' : 'hidden'}>
-              <h2 className="text-xl font-bold text-[var(--color-gsp-text-primary)] mb-6 border-b pb-2">Media & Files</h2>
+              <h2 className="text-xl font-bold text-(--color-gsp-text-primary) mb-6 border-b pb-2">Media & Files</h2>
               <div className="space-y-6">
                 <div>
-                  <span className="block text-sm font-medium text-[var(--color-gsp-text-primary)]">Upload Document (PDF)*</span>
-                  <label htmlFor="file" className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-[var(--color-gsp-border-default)] border-dashed rounded-md hover:border-emerald-500 transition-colors bg-[var(--color-gsp-surface-raised)] cursor-pointer">
+                  <span className="block text-sm font-medium text-(--color-gsp-text-primary)">Upload Document (PDF)*</span>
+                  <label htmlFor="file" className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-(--color-gsp-border-default) border-dashed rounded-md hover:border-emerald-500 transition-colors bg-(--color-gsp-surface-raised) cursor-pointer">
                     <div className="space-y-1 text-center">
                       <svg className="mx-auto h-12 w-12 text-emerald-500" stroke="currentColor" fill="none" viewBox="0 0 48 48">
                         <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
-                      <div className="flex text-sm text-[var(--color-gsp-text-secondary)] justify-center">
+                      <div className="flex text-sm text-(--color-gsp-text-secondary) justify-center">
                         <span className="relative font-medium text-emerald-600 hover:text-emerald-500 px-2 py-1 flex items-center gap-2">
                           {fileName || "Add PDF Document"}
                           {fileName && (
@@ -456,15 +456,15 @@ export default function ScholarUploadPage() {
                           }
                         }} />
                       </div>
-                      <p className="text-xs text-[var(--color-gsp-text-secondary)]">Required: PDF, DOCX, EPUB up to 5MB</p>
+                      <p className="text-xs text-(--color-gsp-text-secondary)">Required: PDF, DOCX, EPUB up to 5MB</p>
                     </div>
                   </label>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <span className="block text-sm font-medium text-[var(--color-gsp-text-primary)]">Cover Photo</span>
-                    <label htmlFor="cover_image" className="mt-1 flex justify-center px-4 py-4 border-2 border-[var(--color-gsp-border-default)] border-dashed rounded-md hover:border-emerald-500 bg-[var(--color-gsp-surface-raised)] cursor-pointer">
+                    <span className="block text-sm font-medium text-(--color-gsp-text-primary)">Cover Photo</span>
+                    <label htmlFor="cover_image" className="mt-1 flex justify-center px-4 py-4 border-2 border-(--color-gsp-border-default) border-dashed rounded-md hover:border-emerald-500 bg-(--color-gsp-surface-raised) cursor-pointer">
                       <div className="text-center relative">
                         <span className="text-emerald-600 font-medium text-sm flex items-center justify-center gap-2">
                           {coverName || "Browse File"}
@@ -491,11 +491,11 @@ export default function ScholarUploadPage() {
                         }} />
                       </div>
                     </label>
-                    <p className="mt-2 text-xs text-[var(--color-gsp-text-secondary)] text-center">Required: JPG, PNG, WEBP up to 2MB</p>
+                    <p className="mt-2 text-xs text-(--color-gsp-text-secondary) text-center">Required: JPG, PNG, WEBP up to 2MB</p>
                   </div>
                   <div>
-                    <span className="block text-sm font-medium text-[var(--color-gsp-text-primary)]">Banner Image</span>
-                    <label htmlFor="banner_image" className="mt-1 flex justify-center px-4 py-4 border-2 border-[var(--color-gsp-border-default)] border-dashed rounded-md hover:border-emerald-500 bg-[var(--color-gsp-surface-raised)] cursor-pointer">
+                    <span className="block text-sm font-medium text-(--color-gsp-text-primary)">Banner Image</span>
+                    <label htmlFor="banner_image" className="mt-1 flex justify-center px-4 py-4 border-2 border-(--color-gsp-border-default) border-dashed rounded-md hover:border-emerald-500 bg-(--color-gsp-surface-raised) cursor-pointer">
                       <div className="text-center relative">
                         <span className="text-emerald-600 font-medium text-sm flex items-center justify-center gap-2">
                           {bannerName || "Browse File"}
@@ -521,15 +521,15 @@ export default function ScholarUploadPage() {
                           }
                         }} />
                       </div>
-                      <p className="mt-2 text-xs text-[var(--color-gsp-text-secondary)] text-center">Optional: JPG, PNG, WEBP up to 2MB</p>
+                      <p className="mt-2 text-xs text-(--color-gsp-text-secondary) text-center">Optional: JPG, PNG, WEBP up to 2MB</p>
                     </label>
                   </div>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <span className="block text-sm font-medium text-[var(--color-gsp-text-primary)]">Gallery Photos</span>
-                    <label htmlFor="gallery_images" className="mt-1 flex justify-center px-4 py-4 border-2 border-[var(--color-gsp-border-default)] border-dashed rounded-md hover:border-emerald-500 bg-[var(--color-gsp-surface-raised)] cursor-pointer">
+                    <span className="block text-sm font-medium text-(--color-gsp-text-primary)">Gallery Photos</span>
+                    <label htmlFor="gallery_images" className="mt-1 flex justify-center px-4 py-4 border-2 border-(--color-gsp-border-default) border-dashed rounded-md hover:border-emerald-500 bg-(--color-gsp-surface-raised) cursor-pointer">
                       <div className="text-center relative">
                         <span className="text-emerald-600 font-medium text-sm flex items-center justify-center gap-2 flex-wrap">
                           {galleryNames || "Browse Files (Multiple)"}
@@ -552,12 +552,12 @@ export default function ScholarUploadPage() {
                           setGalleryNames(files.map(f => f.name).join(', '));
                         }} />
                       </div>
-                      <p className="mt-2 text-xs text-[var(--color-gsp-text-secondary)] text-center">Optional: Images up to 2MB each</p>
+                      <p className="mt-2 text-xs text-(--color-gsp-text-secondary) text-center">Optional: Images up to 2MB each</p>
                     </label>
                   </div>
                   <div>
-                    <span className="block text-sm font-medium text-[var(--color-gsp-text-primary)]">Main Video</span>
-                    <label htmlFor="video_file" className="mt-1 flex justify-center px-4 py-4 border-2 border-[var(--color-gsp-border-default)] border-dashed rounded-md hover:border-emerald-500 bg-[var(--color-gsp-surface-raised)] cursor-pointer">
+                    <span className="block text-sm font-medium text-(--color-gsp-text-primary)">Main Video</span>
+                    <label htmlFor="video_file" className="mt-1 flex justify-center px-4 py-4 border-2 border-(--color-gsp-border-default) border-dashed rounded-md hover:border-emerald-500 bg-(--color-gsp-surface-raised) cursor-pointer">
                       <div className="text-center relative">
                         <span className="text-emerald-600 font-medium text-sm flex items-center justify-center gap-2">
                           {galleryVideoNames || "Browse Video File"}
@@ -583,7 +583,7 @@ export default function ScholarUploadPage() {
                           }
                         }} />
                       </div>
-                      <p className="mt-2 text-xs text-[var(--color-gsp-text-secondary)] text-center">Optional: MP4/WebM up to 20MB</p>
+                      <p className="mt-2 text-xs text-(--color-gsp-text-secondary) text-center">Optional: MP4/WebM up to 20MB</p>
                     </label>
                   </div>
                 </div>
@@ -592,10 +592,10 @@ export default function ScholarUploadPage() {
 
             {/* Step 5: Declarations & Submit */}
             <div id="step-5" className={currentStep === 5 ? 'block' : 'hidden'}>
-              <h2 className="text-xl font-bold text-[var(--color-gsp-text-primary)] mb-6 border-b pb-2">Declarations</h2>
-              <div className="space-y-4 bg-[var(--color-gsp-surface-raised)] p-6 rounded-[var(--radius-lg)] border border-[var(--color-gsp-border-muted)]">
+              <h2 className="text-xl font-bold text-(--color-gsp-text-primary) mb-6 border-b pb-2">Declarations</h2>
+              <div className="space-y-4 bg-(--color-gsp-surface-raised) p-6 rounded-(--radius-lg) border border-(--color-gsp-border-muted)">
                 
-                <div className="flex items-start pb-4 border-b border-[var(--color-gsp-border-muted)]">
+                <div className="flex items-start pb-4 border-b border-(--color-gsp-border-muted)">
                   <div className="flex items-center h-5">
                     <input
                       id="agree_all"
@@ -605,10 +605,10 @@ export default function ScholarUploadPage() {
                         const checked = e.target.checked;
                         setDeclarations({ originality: checked, copyright: checked, terms: checked });
                       }}
-                      className="w-5 h-5 text-[#2F115D] bg-[var(--color-gsp-surface-muted)] border-[var(--color-gsp-border-default)] rounded focus:ring-[#2F115D]"
+                      className="w-5 h-5 text-violet bg-(--color-gsp-surface-muted) border-(--color-gsp-border-default) rounded focus:ring-violet"
                     />
                   </div>
-                  <label htmlFor="agree_all" className="ms-3 text-sm font-bold text-[var(--color-gsp-text-primary)]">
+                  <label htmlFor="agree_all" className="ms-3 text-sm font-bold text-(--color-gsp-text-primary)">
                     Agree to all terms & conditions
                   </label>
                 </div>
@@ -623,10 +623,10 @@ export default function ScholarUploadPage() {
                       required={currentStep === 5}
                       checked={declarations.originality}
                       onChange={(e) => setDeclarations(prev => ({ ...prev, originality: e.target.checked }))}
-                      className="w-5 h-5 text-emerald-600 bg-[var(--color-gsp-surface-muted)] border-[var(--color-gsp-border-default)] rounded focus:ring-emerald-500"
+                      className="w-5 h-5 text-emerald-600 bg-(--color-gsp-surface-muted) border-(--color-gsp-border-default) rounded focus:ring-emerald-500"
                     />
                   </div>
-                  <label htmlFor="originality_declaration" className="ms-3 text-sm font-medium text-[var(--color-gsp-text-primary)] leading-relaxed">
+                  <label htmlFor="originality_declaration" className="ms-3 text-sm font-medium text-(--color-gsp-text-primary) leading-relaxed">
                     I declare that this work is original and does not infringe upon any third-party rights.
                   </label>
                 </div>
@@ -641,10 +641,10 @@ export default function ScholarUploadPage() {
                       required={currentStep === 5}
                       checked={declarations.copyright}
                       onChange={(e) => setDeclarations(prev => ({ ...prev, copyright: e.target.checked }))}
-                      className="w-5 h-5 text-emerald-600 bg-[var(--color-gsp-surface-muted)] border-[var(--color-gsp-border-default)] rounded focus:ring-emerald-500"
+                      className="w-5 h-5 text-emerald-600 bg-(--color-gsp-surface-muted) border-(--color-gsp-border-default) rounded focus:ring-emerald-500"
                     />
                   </div>
-                  <label htmlFor="copyright_declaration" className="ms-3 text-sm font-medium text-[var(--color-gsp-text-primary)] leading-relaxed">
+                  <label htmlFor="copyright_declaration" className="ms-3 text-sm font-medium text-(--color-gsp-text-primary) leading-relaxed">
                     I agree to the copyright terms of Global Scholar Publications.
                   </label>
                 </div>
@@ -659,10 +659,10 @@ export default function ScholarUploadPage() {
                       required={currentStep === 5}
                       checked={declarations.terms}
                       onChange={(e) => setDeclarations(prev => ({ ...prev, terms: e.target.checked }))}
-                      className="w-5 h-5 text-emerald-600 bg-[var(--color-gsp-surface-muted)] border-[var(--color-gsp-border-default)] rounded focus:ring-emerald-500"
+                      className="w-5 h-5 text-emerald-600 bg-(--color-gsp-surface-muted) border-(--color-gsp-border-default) rounded focus:ring-emerald-500"
                     />
                   </div>
-                  <label htmlFor="terms_acceptance" className="ms-3 text-sm font-medium text-[var(--color-gsp-text-primary)] leading-relaxed">
+                  <label htmlFor="terms_acceptance" className="ms-3 text-sm font-medium text-(--color-gsp-text-primary) leading-relaxed">
                     I accept the Terms and Conditions of the platform.
                   </label>
                 </div>
@@ -670,12 +670,12 @@ export default function ScholarUploadPage() {
             </div>
 
             {/* Form Controls */}
-            <div className="pt-6 mt-6 border-t border-[var(--color-gsp-border-muted)] flex flex-col-reverse sm:flex-row items-center justify-between gap-4">
+            <div className="pt-6 mt-6 border-t border-(--color-gsp-border-muted) flex flex-col-reverse sm:flex-row items-center justify-between gap-4">
               <button
                 type="button"
                 onClick={prevStep}
                 disabled={loading}
-                className={`w-full sm:w-auto py-2 px-6 rounded-md font-medium text-[var(--color-gsp-text-primary)] bg-[var(--color-gsp-surface-muted)] border border-[var(--color-gsp-border-default)] hover:bg-[var(--color-gsp-surface-raised)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-colors ${currentStep === 1 ? 'opacity-0 pointer-events-none hidden sm:block' : ''} disabled:opacity-50`}
+                className={`w-full sm:w-auto py-2 px-6 rounded-md font-medium text-(--color-gsp-text-primary) bg-(--color-gsp-surface-muted) border border-(--color-gsp-border-default) hover:bg-(--color-gsp-surface-raised) focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-colors ${currentStep === 1 ? 'opacity-0 pointer-events-none hidden sm:block' : ''} disabled:opacity-50`}
               >
                 Back
               </button>
@@ -685,7 +685,7 @@ export default function ScholarUploadPage() {
                   type="button"
                   onClick={nextStep}
                   disabled={loading}
-                  className="w-full sm:w-auto py-2 px-8 rounded-md font-medium text-white bg-[#2F115D] hover:bg-[#3d167a] shadow-[var(--shadow-1)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2F115D] transition-colors disabled:opacity-50"
+                  className="w-full sm:w-auto py-2 px-8 rounded-md font-medium text-white bg-violet hover:bg-[#3d167a] shadow-(--shadow-1) focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet transition-colors disabled:opacity-50"
                 >
                   Continue
                 </button>
@@ -697,7 +697,7 @@ export default function ScholarUploadPage() {
                     value="draft"
                     formNoValidate
                     disabled={loading}
-                    className="w-full sm:w-auto py-2 px-6 rounded-md font-medium text-[var(--color-gsp-text-primary)] bg-[var(--color-gsp-surface-muted)] hover:bg-[var(--color-gsp-surface-raised)] border border-[var(--color-gsp-border-default)] shadow-[var(--shadow-1)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors disabled:opacity-50"
+                    className="w-full sm:w-auto py-2 px-6 rounded-md font-medium text-(--color-gsp-text-primary) bg-(--color-gsp-surface-muted) hover:bg-(--color-gsp-surface-raised) border border-(--color-gsp-border-default) shadow-(--shadow-1) focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors disabled:opacity-50"
                   >
                     Save as Draft
                   </button>
@@ -706,7 +706,7 @@ export default function ScholarUploadPage() {
                     name="status"
                     value="submitted"
                     disabled={loading}
-                    className="w-full sm:w-auto py-2 px-8 rounded-md font-medium text-white bg-emerald-600 hover:bg-emerald-700 shadow-[var(--shadow-1)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-colors disabled:opacity-50 flex items-center justify-center sm:min-w-[200px]"
+                    className="w-full sm:w-auto py-2 px-8 rounded-md font-medium text-white bg-emerald-600 hover:bg-emerald-700 shadow-(--shadow-1) focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-colors disabled:opacity-50 flex items-center justify-center sm:min-w-50"
                   >
                     {loading ? (
                       <span className="flex flex-col items-center gap-1">
@@ -729,7 +729,7 @@ export default function ScholarUploadPage() {
           
           {/* Upload Progress Overlay */}
           {loading && (
-            <div className="absolute inset-0 z-50 bg-white/80 backdrop-blur-sm flex flex-col items-center justify-center p-6 rounded-[var(--radius-xl)]">
+            <div className="absolute inset-0 z-50 bg-white/80 backdrop-blur-sm flex flex-col items-center justify-center p-6 rounded-(--radius-xl)">
               <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-2xl border border-gray-100 text-center">
                 <h3 className="text-xl font-bold text-gray-800 mb-2">Uploading Files...</h3>
                 <p className="text-sm text-gray-500 mb-6">Please keep this window open until the upload completes.</p>

@@ -69,7 +69,7 @@ export default function ImageUpload({ value, onChange, label = 'Image URL' }: Im
           type="text" 
           value={value || ''} 
           onChange={(e) => onChange(e.target.value)} 
-          className="flex-1 min-w-[200px] border border-gray-300 rounded-lg p-2 text-sm"
+          className="flex-1 min-w-50 border border-gray-300 rounded-lg p-2 text-sm"
           placeholder="https://example.com/image.jpg"
         />
         <span className="text-sm text-gray-500 font-medium">OR</span>

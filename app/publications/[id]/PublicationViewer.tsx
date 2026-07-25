@@ -123,11 +123,7 @@ export default function PublicationViewer({ publication, isVideo }: PublicationV
     
     if (activeTab === 'book') {
       if (page + 1 < totalPages) {
-         if (bookRef.current?.pageFlip()) {
-           bookRef.current.pageFlip().flipNext();
-         } else {
-           handlePageNav(2);
-         }
+         handlePageNav(2);
       } else {
          toggleReading(); // End of book
       }
@@ -186,6 +182,7 @@ export default function PublicationViewer({ publication, isVideo }: PublicationV
     if (isReadingRef.current) {
       startReadingCurrentPage();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, activeTab]);
 
   // State declarations moved to top
@@ -413,10 +410,10 @@ export default function PublicationViewer({ publication, isVideo }: PublicationV
                 ) : (
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
                 )}
-                <span className="text-[10px] uppercase tracking-wider">{isReading ? 'Turn Off' : 'Turn On'}</span>
+                <span className="text-2.5 uppercase tracking-wider">{isReading ? 'Turn Off' : 'Turn On'}</span>
               </button>
               <select 
-                className="text-[10px] bg-transparent border-none outline-none text-zinc-500 font-medium max-w-[80px] truncate cursor-pointer hidden sm:block"
+                className="text-2.5 bg-transparent border-none outline-none text-zinc-500 font-medium max-w-20 truncate cursor-pointer hidden sm:block"
                 value={selectedVoice}
                 onChange={(e) => setSelectedVoice(e.target.value)}
                 title="Select Voice"
@@ -428,7 +425,7 @@ export default function PublicationViewer({ publication, isVideo }: PublicationV
             </div>
           </div>
           <div className="eb-vp">
-            <p className="text-[9.5px] font-bold tracking-[0.18em] uppercase text-[#2F115D] mb-[9px]">
+            <p className="text-2.375 font-bold tracking-[0.18em] uppercase text-violet mb-2.25">
               Publication Text
             </p>
             {page === 1 && <h2 className="eb-ct">{publication.title}</h2>}
@@ -463,10 +460,10 @@ export default function PublicationViewer({ publication, isVideo }: PublicationV
                 ) : (
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
                 )}
-                <span className="text-[10px] uppercase tracking-wider">{isReading ? 'Turn Off' : 'Turn On'}</span>
+                <span className="text-2.5 uppercase tracking-wider">{isReading ? 'Turn Off' : 'Turn On'}</span>
               </button>
               <select 
-                className="text-[10px] bg-transparent border-none outline-none text-zinc-500 font-medium max-w-[80px] truncate cursor-pointer hidden sm:block"
+                className="text-2.5 bg-transparent border-none outline-none text-zinc-500 font-medium max-w-20 truncate cursor-pointer hidden sm:block"
                 value={selectedVoice}
                 onChange={(e) => setSelectedVoice(e.target.value)}
                 title="Select Voice"
@@ -483,10 +480,10 @@ export default function PublicationViewer({ publication, isVideo }: PublicationV
                  <div className="w-8 h-8 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
                </div>
              ) : bookPages.length > 0 ? (
-               <div className="book-container relative mx-auto my-auto flex w-full max-w-[900px] h-full max-h-[600px] perspective-[2000px] shadow-2xl rounded-sm">
+               <div className="book-container relative mx-auto my-auto flex w-full max-w-225 h-full max-h-150 perspective-500 shadow-2xl rounded-sm">
                  {/* Left Page (Previous Page) - Hidden on mobile */}
                  <div className="hidden md:flex w-1/2 h-full bg-[#fdfcfaf0] border border-gray-200 border-r-0 shadow-[inset_-20px_0_20px_-20px_rgba(0,0,0,0.15)] flex-col p-6 md:p-12 overflow-hidden relative rounded-l-sm" style={{ transformOrigin: "right center" }}>
-                    <div className="text-[10px] font-bold text-zinc-400 mb-6">{page}</div>
+                    <div className="text-2.5 font-bold text-zinc-400 mb-6">{page}</div>
                     <div className="eb-body text-sm md:text-base flex-1 overflow-auto">
                        <div dangerouslySetInnerHTML={{ __html: bookPages[page - 1] || "" }} />
                     </div>
@@ -494,7 +491,7 @@ export default function PublicationViewer({ publication, isVideo }: PublicationV
 
                  {/* Right Page (Current/Next Page) - Full width on mobile */}
                  <div className="w-full md:w-1/2 h-full bg-[#fdfcfaf0] border border-gray-200 md:border-l-0 shadow-[inset_20px_0_20px_-20px_rgba(0,0,0,0.15)] flex flex-col p-6 md:p-12 overflow-hidden relative rounded-r-sm" style={{ transformOrigin: "left center" }}>
-                    <div className="text-[10px] font-bold text-zinc-400 mb-6 text-right md:text-left">{page + 1}</div>
+                    <div className="text-2.5 font-bold text-zinc-400 mb-6 text-right md:text-left">{page + 1}</div>
                     <div className="eb-body text-sm md:text-base flex-1 overflow-auto">
                        <div dangerouslySetInnerHTML={{ __html: bookPages[page] || "" }} />
                     </div>
@@ -510,7 +507,7 @@ export default function PublicationViewer({ publication, isVideo }: PublicationV
                        animation: flipDirection === 1 ? 'flipNext 0.5s forwards' : 'flipPrev 0.5s forwards'
                      }}
                    >
-                     <div className={`text-[10px] font-bold text-zinc-400 mb-6 ${flipDirection === 1 ? 'text-left' : 'text-right'}`}>
+                     <div className={`text-2.5 font-bold text-zinc-400 mb-6 ${flipDirection === 1 ? 'text-left' : 'text-right'}`}>
                        {flipDirection === 1 ? page + 1 : page}
                      </div>
                      <div className="eb-body text-sm md:text-base flex-1 overflow-hidden">
@@ -520,7 +517,7 @@ export default function PublicationViewer({ publication, isVideo }: PublicationV
                  )}
                  
                  {/* Spine shadow - Only visible on desktop */}
-                 <div className="hidden md:block absolute top-0 bottom-0 left-1/2 w-[40px] -ml-[20px] bg-gradient-to-r from-transparent via-black/10 to-transparent pointer-events-none z-20"></div>
+                 <div className="hidden md:block absolute top-0 bottom-0 left-1/2 w-10 -ml-5 bg-linear-to-r from-transparent via-black/10 to-transparent pointer-events-none z-20"></div>
                </div>
               ) : null}
           </div>

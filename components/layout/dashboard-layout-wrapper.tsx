@@ -34,14 +34,14 @@ export function DashboardLayoutWrapper({ children }: { children: React.ReactNode
   }, []);
   
   return (
-    <div className="flex min-h-screen bg-[var(--color-gsp-surface-muted)] overflow-x-hidden max-w-[100vw] font-sans">
+    <div className="flex min-h-screen bg-(--color-gsp-surface-muted) overflow-x-hidden max-w-[100vw] font-sans">
       <DashboardSidebar />
       <div className={`flex-1 min-w-0 transition-all duration-300 ease-in-out ${isPinned ? 'md:ml-64' : 'md:ml-20'} ml-0 flex flex-col min-h-screen`}>
         {/* Top Header Placeholder */}
-        <header className="h-16 bg-[var(--color-gsp-surface-muted)] border-b border-[var(--color-gsp-border-muted)] flex items-center px-4 md:px-8 shadow-sm shrink-0 justify-between">
+        <header className="h-16 bg-(--color-gsp-surface-muted) border-b border-(--color-gsp-border-muted) flex items-center px-4 md:px-8 shadow-sm shrink-0 justify-between">
           <div className="flex items-center gap-4">
               <button 
-                className="md:hidden p-2 -ml-2 text-[var(--color-gsp-text-primary)] hover:bg-[var(--color-gsp-border-muted)] rounded-[var(--radius-sm)] transition-colors"
+                className="md:hidden p-2 -ml-2 text-(--color-gsp-text-primary) hover:bg-(--color-gsp-border-muted) rounded-(--radius-sm) transition-colors"
                 onClick={() => setIsMobileMenuOpen(true)}
               >
                 <MdMenu className="w-6 h-6" />
@@ -56,13 +56,13 @@ export function DashboardLayoutWrapper({ children }: { children: React.ReactNode
           <div className="flex items-center space-x-3 md:space-x-5">
             {role === 'user' && (
               <BecomeScholarModal>
-                <button className="flex items-center px-3 py-1.5 md:px-5 md:py-2 bg-[var(--color-gsp-text-inverse)] text-white text-[var(--font-size-md)] font-semibold rounded-[var(--radius-sm)] hover:bg-[#4A1F8C] hover:shadow-[var(--shadow-1)] transition-all">
+                <button className="flex items-center px-3 py-1.5 md:px-5 md:py-2 bg-(--color-gsp-text-inverse) text-white text-(--font-size-md) font-semibold rounded-(--radius-sm) hover:bg-[#4A1F8C] hover:shadow-(--shadow-1) transition-all">
                   Become a Scholar
                 </button>
               </BecomeScholarModal>
             )}
             <NotificationsDropdown />
-            <div className="w-8 h-8 bg-[#F4F1FA] text-[var(--color-gsp-text-inverse)] rounded-full flex items-center justify-center font-bold shadow-sm overflow-hidden">
+            <div className="w-8 h-8 bg-violet-soft text-(--color-gsp-text-inverse) rounded-full flex items-center justify-center font-bold shadow-sm overflow-hidden">
               {localAvatar ? (
                 <img 
                   key={localAvatar}
@@ -86,7 +86,7 @@ export function DashboardLayoutWrapper({ children }: { children: React.ReactNode
             </div>
             <button 
               onClick={() => signOut({ callbackUrl: '/' })}
-              className="p-2 text-[var(--color-gsp-text-primary)] hover:text-red-600 transition-colors rounded-full hover:bg-red-50 hidden sm:flex"
+              className="p-2 text-(--color-gsp-text-primary) hover:text-red-600 transition-colors rounded-full hover:bg-red-50 hidden sm:flex"
               title="Log out"
             >
               <MdLogout className="w-5 h-5" />
@@ -95,7 +95,7 @@ export function DashboardLayoutWrapper({ children }: { children: React.ReactNode
         </header>
         
         {/* Main Content Area */}
-        <main className="flex-1 min-w-0 p-4 md:p-[var(--spacing-8)] pb-20 md:pb-[var(--spacing-8)] overflow-y-auto bg-[var(--color-gsp-surface-muted)] text-[var(--color-gsp-text-primary)]">
+        <main className="flex-1 min-w-0 p-4 md:p-(--spacing-8) pb-20 md:pb-(--spacing-8) overflow-y-auto bg-(--color-gsp-surface-muted) text-(--color-gsp-text-primary)">
           {children}
         </main>
         

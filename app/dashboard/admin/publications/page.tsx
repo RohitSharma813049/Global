@@ -50,7 +50,7 @@ export default async function AdminPublications() {
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold">Publication Review Pipeline</h1>
-          <p className="text-[var(--color-gsp-text-secondary)] text-sm mt-1">Review scholar submissions, assign DOIs, and publish content.</p>
+          <p className="text-(--color-gsp-text-secondary) text-sm mt-1">Review scholar submissions, assign DOIs, and publish content.</p>
         </div>
       </div>
 

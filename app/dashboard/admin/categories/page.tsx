@@ -128,31 +128,31 @@ export default function CategoriesAdminPage() {
     <div className="p-6 max-w-7xl mx-auto space-y-8">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold mb-2 text-[var(--color-gsp-text-primary)]">Manage Categories</h1>
-          <p className="text-[var(--color-gsp-text-secondary)]">Create, edit, and organize domains and sub-domains.</p>
+          <h1 className="text-3xl font-bold mb-2 text-(--color-gsp-text-primary)">Manage Categories</h1>
+          <p className="text-(--color-gsp-text-secondary)">Create, edit, and organize domains and sub-domains.</p>
         </div>
         
         <div className="flex items-center gap-4">
           <div className="relative">
-            <MdSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--color-gsp-text-secondary)]" size={20} />
+            <MdSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-(--color-gsp-text-secondary)" size={20} />
             <input aria-label="Input field" 
               type="text" 
               placeholder="Search categories..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-[var(--color-gsp-border-default)] rounded-[var(--radius-lg)] focus:ring-2 focus:ring-indigo-500 outline-none w-full md:w-64"
+              className="pl-10 pr-4 py-2 border border-(--color-gsp-border-default) rounded-(--radius-lg) focus:ring-2 focus:ring-indigo-500 outline-none w-full md:w-64"
             />
           </div>
-          <div className="flex bg-gray-100 p-1 rounded-[var(--radius-lg)] border border-[var(--color-gsp-border-muted)]">
+          <div className="flex bg-gray-100 p-1 rounded-(--radius-lg) border border-(--color-gsp-border-muted)">
             <button 
               onClick={() => setViewMode('list')}
-              className={`p-1.5 rounded ${viewMode === 'list' ? 'bg-[var(--color-gsp-surface-muted)] shadow text-[var(--color-gsp-text-inverse)]' : 'text-[var(--color-gsp-text-secondary)] hover:text-[var(--color-gsp-text-primary)]'}`}
+              className={`p-1.5 rounded ${viewMode === 'list' ? 'bg-(--color-gsp-surface-muted) shadow text-(--color-gsp-text-inverse)' : 'text-(--color-gsp-text-secondary) hover:text-(--color-gsp-text-primary)'}`}
             >
               <MdViewList size={20} />
             </button>
             <button 
               onClick={() => setViewMode('grid')}
-              className={`p-1.5 rounded ${viewMode === 'grid' ? 'bg-[var(--color-gsp-surface-muted)] shadow text-[var(--color-gsp-text-inverse)]' : 'text-[var(--color-gsp-text-secondary)] hover:text-[var(--color-gsp-text-primary)]'}`}
+              className={`p-1.5 rounded ${viewMode === 'grid' ? 'bg-(--color-gsp-surface-muted) shadow text-(--color-gsp-text-inverse)' : 'text-(--color-gsp-text-secondary) hover:text-(--color-gsp-text-primary)'}`}
             >
               <MdGridView size={20} />
             </button>
@@ -162,19 +162,19 @@ export default function CategoriesAdminPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Form */}
-        <div className="lg:col-span-1 bg-[var(--color-gsp-surface-muted)] p-6 rounded-[var(--radius-xl)] shadow border border-[var(--color-gsp-border-muted)] h-fit">
+        <div className="lg:col-span-1 bg-(--color-gsp-surface-muted) p-6 rounded-(--radius-xl) shadow border border-(--color-gsp-border-muted) h-fit">
           <h2 className="text-xl font-bold mb-4">{isEditing ? 'Edit Category' : 'Create Category'}</h2>
           
-          <div className="flex bg-gray-100 p-1 rounded-[var(--radius-lg)] mb-6">
+          <div className="flex bg-gray-100 p-1 rounded-(--radius-lg) mb-6">
             <button 
               onClick={() => setCategoryType('parent')}
-              className={`flex-1 py-1.5 text-sm font-medium rounded-md transition-colors ${categoryType === 'parent' ? 'bg-[var(--color-gsp-surface-muted)] shadow text-[var(--color-gsp-text-primary)]' : 'text-[var(--color-gsp-text-secondary)] hover:text-[var(--color-gsp-text-primary)]'}`}
+              className={`flex-1 py-1.5 text-sm font-medium rounded-md transition-colors ${categoryType === 'parent' ? 'bg-(--color-gsp-surface-muted) shadow text-(--color-gsp-text-primary)' : 'text-(--color-gsp-text-secondary) hover:text-(--color-gsp-text-primary)'}`}
             >
               Parent Category
             </button>
             <button 
               onClick={() => setCategoryType('sub')}
-              className={`flex-1 py-1.5 text-sm font-medium rounded-md transition-colors ${categoryType === 'sub' ? 'bg-[var(--color-gsp-surface-muted)] shadow text-[var(--color-gsp-text-primary)]' : 'text-[var(--color-gsp-text-secondary)] hover:text-[var(--color-gsp-text-primary)]'}`}
+              className={`flex-1 py-1.5 text-sm font-medium rounded-md transition-colors ${categoryType === 'sub' ? 'bg-(--color-gsp-surface-muted) shadow text-(--color-gsp-text-primary)' : 'text-(--color-gsp-text-secondary) hover:text-(--color-gsp-text-primary)'}`}
             >
               Sub Category
             </button>
@@ -182,22 +182,22 @@ export default function CategoriesAdminPage() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-[var(--color-gsp-text-primary)] mb-1">Name</label>
+              <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Name</label>
               <input aria-label="Input field" 
                 type="text" 
                 value={formData.name} 
                 onChange={handleNameChange}
                 required 
-                className="w-full p-2 border border-[var(--color-gsp-border-default)] rounded focus:ring-2 focus:ring-indigo-500 outline-none"
+                className="w-full p-2 border border-(--color-gsp-border-default) rounded focus:ring-2 focus:ring-indigo-500 outline-none"
               />
             </div>
             <div>
               <div className="flex justify-between items-center mb-1">
-                <label className="block text-sm font-medium text-[var(--color-gsp-text-primary)]">Slug</label>
+                <label className="block text-sm font-medium text-(--color-gsp-text-primary)">Slug</label>
                 <button 
                   type="button" 
                   onClick={() => setIsCustomSlug(!isCustomSlug)}
-                  className={`text-xs px-2 py-1 rounded transition-colors ${isCustomSlug ? 'bg-indigo-100 text-indigo-700' : 'bg-gray-100 text-[var(--color-gsp-text-secondary)] hover:bg-gray-200'}`}
+                  className={`text-xs px-2 py-1 rounded transition-colors ${isCustomSlug ? 'bg-indigo-100 text-indigo-700' : 'bg-gray-100 text-(--color-gsp-text-secondary) hover:bg-gray-200'}`}
                 >
                   {isCustomSlug ? 'Custom' : 'Auto'}
                 </button>
@@ -208,17 +208,17 @@ export default function CategoriesAdminPage() {
                 onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
                 readOnly={!isCustomSlug}
                 required 
-                className={`w-full p-2 border border-[var(--color-gsp-border-default)] rounded focus:ring-2 focus:ring-indigo-500 outline-none ${!isCustomSlug ? 'bg-[var(--color-gsp-surface-raised)] text-[var(--color-gsp-text-secondary)]' : ''}`}
+                className={`w-full p-2 border border-(--color-gsp-border-default) rounded focus:ring-2 focus:ring-indigo-500 outline-none ${!isCustomSlug ? 'bg-(--color-gsp-surface-raised) text-(--color-gsp-text-secondary)' : ''}`}
               />
             </div>
             
             {categoryType === 'sub' && (
               <div>
-                <label className="block text-sm font-medium text-[var(--color-gsp-text-primary)] mb-1">Parent Category</label>
+                <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Parent Category</label>
                 <select aria-label="Select field" 
                   value={formData.parent_id} 
                   onChange={(e) => setFormData({ ...formData, parent_id: e.target.value })}
-                  className="w-full p-2 border border-[var(--color-gsp-border-default)] rounded focus:ring-2 focus:ring-indigo-500 outline-none bg-[var(--color-gsp-surface-muted)]"
+                  className="w-full p-2 border border-(--color-gsp-border-default) rounded focus:ring-2 focus:ring-indigo-500 outline-none bg-(--color-gsp-surface-muted)"
                   required
                 >
                   <option value="" disabled>Select a Parent Category</option>
@@ -230,7 +230,7 @@ export default function CategoriesAdminPage() {
             )}
             
             <div>
-              <label className="block text-sm font-medium text-[var(--color-gsp-text-primary)] mb-1">Allowed Content Types (Optional)</label>
+              <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Allowed Content Types (Optional)</label>
               <select aria-label="Select field" 
                 multiple
                 value={formData.content_types} 
@@ -238,13 +238,13 @@ export default function CategoriesAdminPage() {
                   const options = Array.from(e.target.selectedOptions, option => option.value);
                   setFormData({ ...formData, content_types: options });
                 }}
-                className="w-full p-2 border border-[var(--color-gsp-border-default)] rounded focus:ring-2 focus:ring-indigo-500 outline-none h-32"
+                className="w-full p-2 border border-(--color-gsp-border-default) rounded focus:ring-2 focus:ring-indigo-500 outline-none h-32"
               >
                 {contentTypes.map(ct => (
                   <option key={ct.id} value={ct.slug}>{ct.name}</option>
                 ))}
               </select>
-              <p className="text-xs text-[var(--color-gsp-text-secondary)] mt-1">Hold Ctrl/Cmd to select multiple. These types will be available when scholars upload to this category.</p>
+              <p className="text-xs text-(--color-gsp-text-secondary) mt-1">Hold Ctrl/Cmd to select multiple. These types will be available when scholars upload to this category.</p>
             </div>
             
             <div className="mt-2">
@@ -256,11 +256,11 @@ export default function CategoriesAdminPage() {
             </div>
             
             <div className="flex gap-2 pt-2">
-              <button type="submit" className="flex-1 bg-[var(--color-gsp-text-inverse)] text-white py-2 rounded font-medium hover:bg-indigo-700 transition-colors">
+              <button type="submit" className="flex-1 bg-(--color-gsp-text-inverse) text-white py-2 rounded font-medium hover:bg-indigo-700 transition-colors">
                 {isEditing ? 'Save Changes' : (categoryType === 'parent' ? 'Create Parent Category' : 'Create Sub Category')}
               </button>
               {isEditing && (
-                <button type="button" onClick={() => { setIsEditing(null); setFormData({ name: '', slug: '', parent_id: '', content_types: [], image_url: '' }); setIsCustomSlug(false); }} className="flex-1 bg-gray-200 text-[var(--color-gsp-text-primary)] py-2 rounded font-medium hover:bg-gray-300 transition-colors">
+                <button type="button" onClick={() => { setIsEditing(null); setFormData({ name: '', slug: '', parent_id: '', content_types: [], image_url: '' }); setIsCustomSlug(false); }} className="flex-1 bg-gray-200 text-(--color-gsp-text-primary) py-2 rounded font-medium hover:bg-gray-300 transition-colors">
                   Cancel
                 </button>
               )}
@@ -271,39 +271,39 @@ export default function CategoriesAdminPage() {
         {/* List/Grid View */}
         <div className="lg:col-span-2">
           {loading ? (
-            <div className="bg-[var(--color-gsp-surface-muted)] rounded-[var(--radius-xl)] shadow border border-[var(--color-gsp-border-muted)] p-8 text-center text-[var(--color-gsp-text-secondary)]">Loading categories...</div>
+            <div className="bg-(--color-gsp-surface-muted) rounded-(--radius-xl) shadow border border-(--color-gsp-border-muted) p-8 text-center text-(--color-gsp-text-secondary)">Loading categories...</div>
           ) : filteredCategories.length === 0 ? (
-            <div className="bg-[var(--color-gsp-surface-muted)] rounded-[var(--radius-xl)] shadow border border-[var(--color-gsp-border-muted)] p-8 text-center text-[var(--color-gsp-text-secondary)]">
+            <div className="bg-(--color-gsp-surface-muted) rounded-(--radius-xl) shadow border border-(--color-gsp-border-muted) p-8 text-center text-(--color-gsp-text-secondary)">
               {searchQuery ? 'No categories found matching your search.' : 'No categories found. Create one to get started!'}
             </div>
           ) : viewMode === 'list' ? (
             // LIST VIEW
-            <div className="bg-[var(--color-gsp-surface-muted)] rounded-[var(--radius-xl)] shadow border border-[var(--color-gsp-border-muted)] overflow-hidden divide-y divide-gray-100">
+            <div className="bg-(--color-gsp-surface-muted) rounded-(--radius-xl) shadow border border-(--color-gsp-border-muted) overflow-hidden divide-y divide-gray-100">
               {filteredCategories.map(cat => (
-                <div key={cat.id} className="p-4 flex items-center justify-between hover:bg-[var(--color-gsp-surface-raised)] transition-colors">
+                <div key={cat.id} className="p-4 flex items-center justify-between hover:bg-(--color-gsp-surface-raised) transition-colors">
                   <div>
-                    <div className="font-semibold text-[var(--color-gsp-text-primary)] text-lg flex items-center gap-2">
+                    <div className="font-semibold text-(--color-gsp-text-primary) text-lg flex items-center gap-2">
                       {cat.name}
                       {!cat.parent_id ? (
-                        <span className="text-[10px] uppercase tracking-wider font-bold bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full">Parent</span>
+                        <span className="text-2.5 uppercase tracking-wider font-bold bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full">Parent</span>
                       ) : (
-                        <span className="text-[10px] uppercase tracking-wider font-bold bg-gray-100 text-[var(--color-gsp-text-secondary)] px-2 py-0.5 rounded-full">Sub-category</span>
+                        <span className="text-2.5 uppercase tracking-wider font-bold bg-gray-100 text-(--color-gsp-text-secondary) px-2 py-0.5 rounded-full">Sub-category</span>
                       )}
                     </div>
                     
                     {cat.parent_id && (
-                      <div className="text-sm text-[var(--color-gsp-text-inverse)] font-medium mt-1">
+                      <div className="text-sm text-(--color-gsp-text-inverse) font-medium mt-1">
                         ↳ Inside: {categories.find(c => c.id === cat.parent_id)?.name || 'Unknown'}
                       </div>
                     )}
 
-                    <div className="text-sm text-[var(--color-gsp-text-secondary)] mt-2 flex flex-wrap items-center gap-2">
-                      <span className="bg-gray-100 px-2 py-0.5 rounded text-[var(--color-gsp-text-secondary)] font-mono text-xs">/{cat.slug}</span>
+                    <div className="text-sm text-(--color-gsp-text-secondary) mt-2 flex flex-wrap items-center gap-2">
+                      <span className="bg-gray-100 px-2 py-0.5 rounded text-(--color-gsp-text-secondary) font-mono text-xs">/{cat.slug}</span>
                       {cat.content_types && cat.content_types.length > 0 && (
-                        <span className="text-[var(--color-gsp-text-secondary)]">|</span>
+                        <span className="text-(--color-gsp-text-secondary)">|</span>
                       )}
                       {cat.content_types?.map(ct => (
-                        <span key={ct} className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[#F4F1FA] text-blue-700 border border-blue-100">
+                        <span key={ct} className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-violet-soft text-blue-700 border border-blue-100">
                           {contentTypes.find(t => t.slug === ct)?.name || ct}
                         </span>
                       ))}
@@ -327,7 +327,7 @@ export default function CategoriesAdminPage() {
                       >
                         <button
                           onClick={() => { setOpenMenuId(null); handleEdit(cat); }}
-                          className="w-full text-left px-4 py-2 text-sm text-[var(--color-gsp-text-secondary)] hover:text-[var(--color-gsp-text-inverse)] hover:bg-[#F4F1FA] flex items-center gap-2"
+                          className="w-full text-left px-4 py-2 text-sm text-(--color-gsp-text-secondary) hover:text-(--color-gsp-text-inverse) hover:bg-violet-soft flex items-center gap-2"
                         >
                           <MdEdit size={16} /> Edit
                         </button>
@@ -347,14 +347,14 @@ export default function CategoriesAdminPage() {
             // GRID VIEW
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {filteredCategories.map(cat => (
-                <div key={cat.id} className="bg-[var(--color-gsp-surface-muted)] p-5 rounded-[var(--radius-xl)] shadow-[var(--shadow-1)] border border-[var(--color-gsp-border-muted)] hover:border-indigo-300 hover:shadow-[var(--shadow-2)] transition-all group relative">
+                <div key={cat.id} className="bg-(--color-gsp-surface-muted) p-5 rounded-(--radius-xl) shadow-(--shadow-1) border border-(--color-gsp-border-muted) hover:border-indigo-300 hover:shadow-(--shadow-2) transition-all group relative">
                   <div className="absolute top-4 right-4 relative inline-block text-left">
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         setOpenMenuId(openMenuId === cat.id ? null : cat.id);
                       }}
-                      className={`p-1.5 rounded transition-colors ${openMenuId === cat.id ? 'opacity-100 bg-gray-100 text-gray-700' : 'opacity-0 group-hover:opacity-100 text-[var(--color-gsp-text-secondary)] hover:bg-gray-100'}`}
+                      className={`p-1.5 rounded transition-colors ${openMenuId === cat.id ? 'opacity-100 bg-gray-100 text-gray-700' : 'opacity-0 group-hover:opacity-100 text-(--color-gsp-text-secondary) hover:bg-gray-100'}`}
                     >
                       <MoreVertical className="w-5 h-5" />
                     </button>
@@ -366,7 +366,7 @@ export default function CategoriesAdminPage() {
                       >
                         <button
                           onClick={() => { setOpenMenuId(null); handleEdit(cat); }}
-                          className="w-full text-left px-4 py-2 text-sm text-[var(--color-gsp-text-secondary)] hover:text-[var(--color-gsp-text-inverse)] hover:bg-[#F4F1FA] flex items-center gap-2"
+                          className="w-full text-left px-4 py-2 text-sm text-(--color-gsp-text-secondary) hover:text-(--color-gsp-text-inverse) hover:bg-violet-soft flex items-center gap-2"
                         >
                           <MdEdit size={16} /> Edit
                         </button>
@@ -381,29 +381,29 @@ export default function CategoriesAdminPage() {
                   </div>
 
                   {!cat.parent_id ? (
-                    <span className="text-[10px] uppercase tracking-wider font-bold bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full inline-block mb-2">Parent Category</span>
+                    <span className="text-2.5 uppercase tracking-wider font-bold bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full inline-block mb-2">Parent Category</span>
                   ) : (
-                    <span className="text-[10px] uppercase tracking-wider font-bold bg-gray-100 text-[var(--color-gsp-text-secondary)] px-2 py-0.5 rounded-full inline-block mb-2">Sub Category</span>
+                    <span className="text-2.5 uppercase tracking-wider font-bold bg-gray-100 text-(--color-gsp-text-secondary) px-2 py-0.5 rounded-full inline-block mb-2">Sub Category</span>
                   )}
                   
-                  <h3 className="text-xl font-bold text-[var(--color-gsp-text-primary)] mb-1 pr-12 truncate">{cat.name}</h3>
-                  <div className="text-xs text-[var(--color-gsp-text-secondary)] font-mono bg-[var(--color-gsp-surface-raised)] px-2 py-1 rounded inline-block mb-3 truncate max-w-full">
+                  <h3 className="text-xl font-bold text-(--color-gsp-text-primary) mb-1 pr-12 truncate">{cat.name}</h3>
+                  <div className="text-xs text-(--color-gsp-text-secondary) font-mono bg-(--color-gsp-surface-raised) px-2 py-1 rounded inline-block mb-3 truncate max-w-full">
                     /{cat.slug}
                   </div>
 
                   {cat.parent_id && (
-                    <div className="text-sm text-[var(--color-gsp-text-inverse)] font-medium mb-3 flex items-center gap-1">
+                    <div className="text-sm text-(--color-gsp-text-inverse) font-medium mb-3 flex items-center gap-1">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>
                       {categories.find(c => c.id === cat.parent_id)?.name || 'Unknown'}
                     </div>
                   )}
 
                   {cat.content_types && cat.content_types.length > 0 && (
-                    <div className="mt-4 pt-4 border-t border-[var(--color-gsp-border-muted)]">
-                      <p className="text-xs font-semibold text-[var(--color-gsp-text-secondary)] mb-2 uppercase">Allowed Types</p>
+                    <div className="mt-4 pt-4 border-t border-(--color-gsp-border-muted)">
+                      <p className="text-xs font-semibold text-(--color-gsp-text-secondary) mb-2 uppercase">Allowed Types</p>
                       <div className="flex flex-wrap gap-1.5">
                         {cat.content_types.map(ct => (
-                          <span key={ct} className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[#F4F1FA] text-blue-700 border border-blue-100">
+                          <span key={ct} className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-violet-soft text-blue-700 border border-blue-100">
                             {contentTypes.find(t => t.slug === ct)?.name || ct}
                           </span>
                         ))}

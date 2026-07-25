@@ -144,6 +144,7 @@ export default function GSPFeaturedScholars({ title, subtitle, scholars = [], au
     if (index > newMaxIndex) {
       setIndex(newMaxIndex);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [index]);
 
   useEffect(() => {

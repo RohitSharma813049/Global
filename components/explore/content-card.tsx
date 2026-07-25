@@ -80,7 +80,7 @@ export default function ContentCard({
              <div className="w-full h-full transition-transform duration-700 group-hover:scale-105" style={{ background: placeholderGradient }} />
            )}
            <div className="absolute top-4 left-4">
-             <span className="bg-black text-white text-[10px] font-extrabold tracking-widest uppercase px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-md">
+             <span className="bg-black text-white text-2.5 font-extrabold tracking-widest uppercase px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-md">
                <Star className="w-3 h-3 fill-white" /> {typeInfo.label}
              </span>
            </div>
@@ -127,7 +127,7 @@ export default function ContentCard({
         
         {/* Featured Pill */}
         <div className="absolute top-4 left-4">
-          <span className="bg-black text-white text-[10px] font-extrabold tracking-widest uppercase px-3.5 py-1.5 rounded-full flex items-center gap-1.5 shadow-md">
+          <span className="bg-black text-white text-2.5 font-extrabold tracking-widest uppercase px-3.5 py-1.5 rounded-full flex items-center gap-1.5 shadow-md">
             <Star className="w-3 h-3 fill-white" /> {typeInfo.label}
           </span>
         </div>
@@ -151,7 +151,7 @@ export default function ContentCard({
         <h3 className="font-black text-indigo-600 text-2xl leading-tight mb-3 line-clamp-2 tracking-tight group-hover:text-indigo-800 transition-colors">
           {item.title}
         </h3>
-        <p className="text-[15px] font-semibold text-slate-500 leading-relaxed line-clamp-2 text-justify">
+        <p className="text-3.75 font-semibold text-slate-500 leading-relaxed line-clamp-2 text-justify">
           {item.author} — {stripHtml(item.description)}
         </p>
         

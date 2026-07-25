@@ -104,7 +104,7 @@ export default function ApplicationActionButtons({ applicationId, currentStatus 
                 id="reason"
                 value={rejectReason}
                 onChange={(e) => setRejectReason(e.target.value)}
-                className="w-full p-3 border rounded-md min-h-[100px] text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+                className="w-full p-3 border rounded-md min-h-25 text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
                 placeholder="Please explain why this application is being rejected..."
                 required
               />

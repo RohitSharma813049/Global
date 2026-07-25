@@ -121,7 +121,7 @@ export async function uploadPublication(formData: FormData) {
     }
 
     let fileUrl = file_url_input || ''
-    let localFilePath: string | null = null;
+    const localFilePath: string | null = null;
     if (!file_url_input && file && file.size > 0) {
       const buffer = Buffer.from(await file.arrayBuffer())
       try {

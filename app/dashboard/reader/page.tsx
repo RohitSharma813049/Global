@@ -12,7 +12,7 @@ export default async function ReaderDashboard() {
   return (
     <div>
       <h1 className="text-3xl font-bold mb-4">Reader Dashboard</h1>
-      <p className="text-[var(--color-gsp-text-secondary)]">Welcome to your dashboard. Here you can view your saved papers, reading history, and bookmarks.</p>
+      <p className="text-(--color-gsp-text-secondary)">Welcome to your dashboard. Here you can view your saved papers, reading history, and bookmarks.</p>
     </div>
   );
 }

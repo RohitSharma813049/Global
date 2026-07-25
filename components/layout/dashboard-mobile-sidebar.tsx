@@ -62,7 +62,7 @@ export default function DashboardMobileSidebar() {
         <div className="flex items-center justify-between p-5 border-b border-gray-100">
           <div className="whitespace-nowrap flex flex-col justify-center w-full px-1">
             <img src="/logo1.png" alt="Global Scholar" className="h-10 w-auto object-contain object-left mb-1" />
-            <span className="text-[10px] font-bold text-purple-600 uppercase tracking-wider ml-1">{role.replace('_', ' ')} Dashboard</span>
+            <span className="text-2.5 font-bold text-purple-600 uppercase tracking-wider ml-1">{role.replace('_', ' ')} Dashboard</span>
           </div>
         </div>
 

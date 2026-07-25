@@ -69,7 +69,7 @@ export default function DashboardBottomNav() {
               <div className={`p-1 rounded-full ${isActive ? "bg-indigo-100/50" : ""}`}>
                 <Icon className={`text-2xl ${isActive ? "scale-110" : ""}`} />
               </div>
-              <span className={`text-[10px] mt-0.5 font-medium truncate w-full text-center ${isActive ? "text-indigo-700" : ""}`}>
+              <span className={`text-2.5 mt-0.5 font-medium truncate w-full text-center ${isActive ? "text-indigo-700" : ""}`}>
                 {link.name}
               </span>
             </Link>

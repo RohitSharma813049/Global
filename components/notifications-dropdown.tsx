@@ -49,7 +49,7 @@ export function NotificationsDropdown() {
             <MdNotificationsNone className="w-6 h-6" />
           )}
           {unreadCount > 0 && (
-            <span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white border-2 border-white">
+            <span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-2.5 font-bold text-white border-2 border-white">
               {unreadCount}
             </span>
           )}
@@ -91,7 +91,7 @@ export function NotificationsDropdown() {
                       <p className="text-xs text-gray-500 mt-1 line-clamp-2">
                         {notification.message}
                       </p>
-                      <p className="text-[10px] text-gray-400 mt-2 font-medium">
+                      <p className="text-2.5 text-gray-400 mt-2 font-medium">
                         {new Date(notification.created_at).toLocaleDateString()}
                       </p>
                     </div>

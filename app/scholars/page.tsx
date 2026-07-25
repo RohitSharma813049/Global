@@ -61,7 +61,7 @@ export default async function ScholarsListingPage({
                 name="q"
                 defaultValue={query}
                 placeholder="Search by username or name..." 
-                className="w-full pl-12 pr-4 py-3 rounded-full border border-[#ECEAF4] shadow-sm focus:outline-none focus:ring-2 focus:ring-[#2F115D]"
+                className="w-full pl-12 pr-4 py-3 rounded-full border border-[#ECEAF4] shadow-sm focus:outline-none focus:ring-2 focus:ring-violet"
               />
               <svg className="absolute left-4 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
             </form>
@@ -80,7 +80,7 @@ export default async function ScholarsListingPage({
                 const initials = name.substring(0, 2).toUpperCase()
 
                 return (
-                  <Link href={`/scholars/${scholar.username || scholar.id}`} key={scholar.id} className="bg-white rounded-2xl p-6 border border-[#ECEAF4] shadow-sm hover:shadow-md hover:border-[#2F115D] transition-all group">
+                  <Link href={`/scholars/${scholar.username || scholar.id}`} key={scholar.id} className="bg-white rounded-2xl p-6 border border-[#ECEAF4] shadow-sm hover:shadow-md hover:border-violet transition-all group">
                     <div className="flex items-center gap-4 mb-4">
                       <div className="w-16 h-16 rounded-full overflow-hidden bg-primary/10 flex items-center justify-center text-primary font-bold text-xl relative">
                         {avatar ? (
@@ -95,11 +95,11 @@ export default async function ScholarsListingPage({
                         ) : initials}
                       </div>
                       <div>
-                        <h3 className="font-['Cormorant_Garamond'] text-xl font-bold group-hover:text-[#2F115D] transition-colors">
+                        <h3 className="font-['Cormorant_Garamond'] text-xl font-bold group-hover:text-violet transition-colors">
                           {name}
                         </h3>
                         {scholar.username && (
-                          <p className="text-sm font-semibold text-[#2F115D]">@{scholar.username}</p>
+                          <p className="text-sm font-semibold text-violet">@{scholar.username}</p>
                         )}
                       </div>
                     </div>

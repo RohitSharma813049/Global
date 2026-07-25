@@ -77,7 +77,7 @@ export default function CategoryClient({ initialData }: { initialData: any[] }) 
 
       <div className="flex gap-6 lg:gap-8">
         {/* Sidebar Filters - Fixed on left */}
-        <aside className="hidden sm:block sm:w-64 lg:w-72 sticky top-[73px] h-[calc(100vh-73px)] overflow-y-auto">
+        <aside className="hidden sm:block sm:w-64 lg:w-72 sticky top-18.25 h-[calc(100vh-73px)] overflow-y-auto">
           <FilterSidebar
             filters={filters}
             setFilters={setFilters}

@@ -102,34 +102,34 @@ function PublicationsClientInner({ initialPublications }: { initialPublications:
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-x-auto">
-        <table className="w-full text-left border-collapse min-w-[800px]">
+        <table className="w-full text-left border-collapse min-w-200">
           <thead>
-            <tr className="bg-[var(--color-gsp-surface-muted)] border-b border-[var(--color-gsp-border-muted)]">
-              <th className="px-6 py-4 font-semibold text-sm text-[var(--color-gsp-text-secondary)]">Title</th>
-              <th className="px-6 py-4 font-semibold text-sm text-[var(--color-gsp-text-secondary)]">Type</th>
-              <th className="px-6 py-4 font-semibold text-sm text-[var(--color-gsp-text-secondary)]">Status</th>
-              <th className="px-6 py-4 font-semibold text-sm text-[var(--color-gsp-text-secondary)]">Views</th>
-              <th className="px-6 py-4 font-semibold text-sm text-[var(--color-gsp-text-secondary)]">Downloads</th>
-              <th className="px-6 py-4 font-semibold text-sm text-[var(--color-gsp-text-secondary)]">Date</th>
-              <th className="px-6 py-4 font-semibold text-sm text-[var(--color-gsp-text-secondary)] text-right">Actions</th>
+            <tr className="bg-(--color-gsp-surface-muted) border-b border-(--color-gsp-border-muted)">
+              <th className="px-6 py-4 font-semibold text-sm text-(--color-gsp-text-secondary)">Title</th>
+              <th className="px-6 py-4 font-semibold text-sm text-(--color-gsp-text-secondary)">Type</th>
+              <th className="px-6 py-4 font-semibold text-sm text-(--color-gsp-text-secondary)">Status</th>
+              <th className="px-6 py-4 font-semibold text-sm text-(--color-gsp-text-secondary)">Views</th>
+              <th className="px-6 py-4 font-semibold text-sm text-(--color-gsp-text-secondary)">Downloads</th>
+              <th className="px-6 py-4 font-semibold text-sm text-(--color-gsp-text-secondary)">Date</th>
+              <th className="px-6 py-4 font-semibold text-sm text-(--color-gsp-text-secondary) text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[var(--color-gsp-border-subtle)]">
+          <tbody className="divide-y divide-(--color-gsp-border-subtle)">
             {paginatedPublications.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-6 py-8 text-center text-[var(--color-gsp-text-muted)]">
+                <td colSpan={7} className="px-6 py-8 text-center text-(--color-gsp-text-muted)">
                   {publications.length === 0 ? "You have not uploaded any publications yet." : "No publications match your filters."}
                 </td>
               </tr>
             ) : (
               paginatedPublications.map(pub => (
-                <tr key={pub.id} className="hover:bg-[var(--color-gsp-surface-muted)] transition-colors">
+                <tr key={pub.id} className="hover:bg-(--color-gsp-surface-muted) transition-colors">
                   <td className="px-6 py-4">
-                    <Link href={`/publications/${pub.id}`} className="font-medium text-[var(--color-gsp-text-primary)] hover:text-[#2F115D] truncate max-w-[250px] block hover:underline">
+                    <Link href={`/publications/${pub.id}`} className="font-medium text-(--color-gsp-text-primary) hover:text-violet truncate max-w-62.5 block hover:underline">
                       {pub.title}
                     </Link>
                   </td>
-                  <td className="px-6 py-4 text-sm text-[var(--color-gsp-text-secondary)] capitalize">{pub.content_type}</td>
+                  <td className="px-6 py-4 text-sm text-(--color-gsp-text-secondary) capitalize">{pub.content_type}</td>
                   <td className="px-6 py-4 text-sm">
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                       pub.status === 'published' ? 'bg-green-100 text-green-700' :
@@ -139,9 +139,9 @@ function PublicationsClientInner({ initialPublications }: { initialPublications:
                       {pub.status || 'draft'}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-sm text-[var(--color-gsp-text-secondary)]">{pub.views || 0}</td>
-                  <td className="px-6 py-4 text-sm text-[var(--color-gsp-text-secondary)]">{pub.downloads || 0}</td>
-                  <td className="px-6 py-4 text-sm text-[var(--color-gsp-text-secondary)]">
+                  <td className="px-6 py-4 text-sm text-(--color-gsp-text-secondary)">{pub.views || 0}</td>
+                  <td className="px-6 py-4 text-sm text-(--color-gsp-text-secondary)">{pub.downloads || 0}</td>
+                  <td className="px-6 py-4 text-sm text-(--color-gsp-text-secondary)">
                     {pub.created_at ? format(new Date(pub.created_at), 'MMM d, yyyy') : '-'}
                   </td>
                   <td className="px-6 py-4 text-sm text-right">
@@ -183,9 +183,9 @@ function PublicationsClientInner({ initialPublications }: { initialPublications:
         
         {/* Pagination Controls */}
         {filteredPublications.length > 0 && (
-          <div className="px-6 py-4 border-t border-[var(--color-gsp-border-muted)] bg-[var(--color-gsp-surface-raised)] flex items-center justify-between">
-            <span className="text-sm text-[var(--color-gsp-text-secondary)]">
-              Showing <span className="font-medium text-[var(--color-gsp-text-primary)]">{(currentPage - 1) * itemsPerPage + 1}</span> to <span className="font-medium text-[var(--color-gsp-text-primary)]">{Math.min(currentPage * itemsPerPage, filteredPublications.length)}</span> of <span className="font-medium text-[var(--color-gsp-text-primary)]">{filteredPublications.length}</span> results
+          <div className="px-6 py-4 border-t border-(--color-gsp-border-muted) bg-(--color-gsp-surface-raised) flex items-center justify-between">
+            <span className="text-sm text-(--color-gsp-text-secondary)">
+              Showing <span className="font-medium text-(--color-gsp-text-primary)">{(currentPage - 1) * itemsPerPage + 1}</span> to <span className="font-medium text-(--color-gsp-text-primary)">{Math.min(currentPage * itemsPerPage, filteredPublications.length)}</span> of <span className="font-medium text-(--color-gsp-text-primary)">{filteredPublications.length}</span> results
             </span>
             <div className="flex gap-2">
               <button
@@ -246,14 +246,14 @@ function PublicationsClientInner({ initialPublications }: { initialPublications:
                 <div>
                   <h3 className="text-sm font-semibold uppercase text-gray-500 tracking-wide mb-3">Abstract</h3>
                   <div 
-                    className="text-gray-700 bg-gray-50 p-5 rounded-lg border leading-relaxed text-sm max-h-[250px] overflow-y-auto"
+                    className="text-gray-700 bg-gray-50 p-5 rounded-lg border leading-relaxed text-sm max-h-62.5 overflow-y-auto"
                     dangerouslySetInnerHTML={{ __html: selectedPub.abstract }}
                   />
                 </div>
                 
                 <div>
                   <h3 className="text-sm font-semibold uppercase text-gray-500 tracking-wide mb-3">Performance</h3>
-                  <div className="bg-white border rounded-lg p-4 h-[250px]">
+                  <div className="bg-white border rounded-lg p-4 h-62.5">
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={[
                         { name: 'Views', count: selectedPub.views || 0, fill: '#2F115D' },
@@ -286,7 +286,7 @@ function PublicationsClientInner({ initialPublications }: { initialPublications:
                   href={selectedPub.file_url} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="px-5 py-2.5 bg-[#2F115D] text-white rounded-md font-medium hover:bg-[#3d167a] shadow-sm transition-colors"
+                  className="px-5 py-2.5 bg-violet text-white rounded-md font-medium hover:bg-[#3d167a] shadow-sm transition-colors"
                 >
                   View Document
                 </a>

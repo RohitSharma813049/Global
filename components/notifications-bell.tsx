@@ -65,7 +65,7 @@ export default function NotificationsBell() {
       <DropdownMenuTrigger className="relative p-2 rounded-full hover:bg-gray-100 transition-colors focus:outline-none">
         <Bell className="h-5 w-5 text-gray-600" />
         {unreadCount > 0 && (
-          <span className="absolute top-1 right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white ring-2 ring-white">
+          <span className="absolute top-1 right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-2.5 font-bold text-white ring-2 ring-white">
             {unreadCount > 9 ? '9+' : unreadCount}
           </span>
         )}
@@ -84,7 +84,7 @@ export default function NotificationsBell() {
           )}
         </div>
         
-        <div className="max-h-[400px] overflow-y-auto">
+        <div className="max-h-100 overflow-y-auto">
           {notifications.length === 0 ? (
             <div className="p-8 text-center text-gray-500 flex flex-col items-center">
               <Bell className="h-8 w-8 mb-2 text-gray-300" />
@@ -109,7 +109,7 @@ export default function NotificationsBell() {
                   <p className="text-xs text-gray-600 line-clamp-2 leading-relaxed">
                     {notification.message}
                   </p>
-                  <p className="text-[10px] text-gray-400 mt-2">
+                  <p className="text-2.5 text-gray-400 mt-2">
                     {new Date(notification.created_at).toLocaleDateString()}
                   </p>
                 </div>

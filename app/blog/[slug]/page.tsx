@@ -25,7 +25,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
             <ArrowLeft className="w-4 h-4 mr-2 transition-transform group-hover:-translate-x-1" />
             Back to Updates
           </Link>
-          <div className="flex items-center gap-3 text-[11px] text-gray-500 mb-6 font-bold uppercase tracking-[0.15em]">
+          <div className="flex items-center gap-3 text-2.75 text-gray-500 mb-6 font-bold uppercase tracking-[0.15em]">
             <span className="bg-white text-violet px-3.5 py-1.5 rounded-full border border-[#E2DFF0] shadow-sm">Blog</span>
             <span className="flex items-center">
               <Calendar className="w-4 h-4 mr-2 opacity-70" />
@@ -41,7 +41,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
       <div className="max-w-6xl mx-auto px-6 mt-8 flex flex-col lg:flex-row gap-10">
         <main className="flex-1 min-w-0">
           {blog.cover_image && (
-          <div className="relative w-full h-[400px] sm:h-[500px] rounded-2xl overflow-hidden shadow-lg mb-10">
+          <div className="relative w-full h-100 sm:h-125 rounded-2xl overflow-hidden shadow-lg mb-10">
             <Image 
               src={blog.cover_image} 
               alt={blog.title} 
@@ -58,7 +58,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
         </main>
         
         {/* Sidebar */}
-        <aside className="w-full lg:w-[340px] shrink-0">
+        <aside className="w-full lg:w-85 shrink-0">
           <SidebarSlider />
         </aside>
       </div>

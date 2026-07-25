@@ -73,56 +73,56 @@ export default function ContentTypesAdminPage() {
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-8">
       <div>
-        <h1 className="text-3xl font-bold mb-2 text-[var(--color-gsp-text-primary)]">Manage Content Types</h1>
-        <p className="text-[var(--color-gsp-text-secondary)]">Create and edit the types of content available in the system.</p>
+        <h1 className="text-3xl font-bold mb-2 text-(--color-gsp-text-primary)">Manage Content Types</h1>
+        <p className="text-(--color-gsp-text-secondary)">Create and edit the types of content available in the system.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Form */}
-        <div className="md:col-span-1 bg-[var(--color-gsp-surface-muted)] p-6 rounded-[var(--radius-xl)] shadow border border-[var(--color-gsp-border-muted)] h-fit">
+        <div className="md:col-span-1 bg-(--color-gsp-surface-muted) p-6 rounded-(--radius-xl) shadow border border-(--color-gsp-border-muted) h-fit">
           <h2 className="text-xl font-bold mb-4">{isEditing ? 'Edit Content Type' : 'Add Content Type'}</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-[var(--color-gsp-text-primary)] mb-1">Name</label>
+              <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Name</label>
               <input aria-label="Input field" 
                 type="text" 
                 value={formData.name} 
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 required 
                 placeholder="e.g. Journal Article"
-                className="w-full p-2 border border-[var(--color-gsp-border-default)] rounded focus:ring-2 focus:ring-indigo-500 outline-none"
+                className="w-full p-2 border border-(--color-gsp-border-default) rounded focus:ring-2 focus:ring-indigo-500 outline-none"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-[var(--color-gsp-text-primary)] mb-1">Slug</label>
+              <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Slug</label>
               <input aria-label="Input field" 
                 type="text" 
                 value={formData.slug} 
                 onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
                 required 
                 placeholder="e.g. journal-article"
-                className="w-full p-2 border border-[var(--color-gsp-border-default)] rounded focus:ring-2 focus:ring-indigo-500 outline-none"
+                className="w-full p-2 border border-(--color-gsp-border-default) rounded focus:ring-2 focus:ring-indigo-500 outline-none"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-[var(--color-gsp-text-primary)] mb-1">Icon Name (Lucide React)</label>
+              <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Icon Name (Lucide React)</label>
               <input aria-label="Input field" 
                 type="text" 
                 value={formData.icon_name} 
                 onChange={(e) => setFormData({ ...formData, icon_name: e.target.value })}
                 required 
                 placeholder="e.g. FileText, BookOpen"
-                className="w-full p-2 border border-[var(--color-gsp-border-default)] rounded focus:ring-2 focus:ring-indigo-500 outline-none"
+                className="w-full p-2 border border-(--color-gsp-border-default) rounded focus:ring-2 focus:ring-indigo-500 outline-none"
               />
-              <p className="text-xs text-[var(--color-gsp-text-secondary)] mt-1">Check lucide.dev/icons for names.</p>
+              <p className="text-xs text-(--color-gsp-text-secondary) mt-1">Check lucide.dev/icons for names.</p>
             </div>
             
             <div className="flex gap-2 pt-2">
-              <button type="submit" className="flex-1 bg-[var(--color-gsp-text-inverse)] text-white py-2 rounded font-medium hover:bg-indigo-700">
+              <button type="submit" className="flex-1 bg-(--color-gsp-text-inverse) text-white py-2 rounded font-medium hover:bg-indigo-700">
                 {isEditing ? 'Save Changes' : 'Add Type'}
               </button>
               {isEditing && (
-                <button type="button" onClick={() => { setIsEditing(null); setFormData({ name: '', slug: '', icon_name: 'FileText' }) }} className="flex-1 bg-gray-200 text-[var(--color-gsp-text-primary)] py-2 rounded font-medium hover:bg-gray-300">
+                <button type="button" onClick={() => { setIsEditing(null); setFormData({ name: '', slug: '', icon_name: 'FileText' }) }} className="flex-1 bg-gray-200 text-(--color-gsp-text-primary) py-2 rounded font-medium hover:bg-gray-300">
                   Cancel
                 </button>
               )}
@@ -131,29 +131,29 @@ export default function ContentTypesAdminPage() {
         </div>
 
         {/* List */}
-        <div className="md:col-span-2 bg-[var(--color-gsp-surface-muted)] rounded-[var(--radius-xl)] shadow border border-[var(--color-gsp-border-muted)] overflow-hidden">
+        <div className="md:col-span-2 bg-(--color-gsp-surface-muted) rounded-(--radius-xl) shadow border border-(--color-gsp-border-muted) overflow-hidden">
           {loading ? (
-            <div className="p-8 text-center text-[var(--color-gsp-text-secondary)]">Loading content types...</div>
+            <div className="p-8 text-center text-(--color-gsp-text-secondary)">Loading content types...</div>
           ) : (
             <div className="divide-y divide-gray-100">
               {contentTypes.length === 0 ? (
-                <div className="p-8 text-center text-[var(--color-gsp-text-secondary)]">No content types found.</div>
+                <div className="p-8 text-center text-(--color-gsp-text-secondary)">No content types found.</div>
               ) : (
                 contentTypes.map(ct => {
                   const Icon = (LucideIcons as any)[ct.icon_name] || LucideIcons.FileQuestion
                   return (
-                    <div key={ct.id} className="p-4 flex items-center justify-between hover:bg-[var(--color-gsp-surface-raised)]">
+                    <div key={ct.id} className="p-4 flex items-center justify-between hover:bg-(--color-gsp-surface-raised)">
                       <div className="flex items-center gap-4">
-                        <div className="h-10 w-10 bg-[#F4F1FA] text-[var(--color-gsp-text-inverse)] rounded-[var(--radius-lg)] flex items-center justify-center">
+                        <div className="h-10 w-10 bg-violet-soft text-(--color-gsp-text-inverse) rounded-(--radius-lg) flex items-center justify-center">
                           <Icon size={20} />
                         </div>
                         <div>
-                          <div className="font-medium text-[var(--color-gsp-text-primary)]">{ct.name}</div>
-                          <div className="text-sm text-[var(--color-gsp-text-secondary)]">slug: {ct.slug} | icon: {ct.icon_name}</div>
+                          <div className="font-medium text-(--color-gsp-text-primary)">{ct.name}</div>
+                          <div className="text-sm text-(--color-gsp-text-secondary)">slug: {ct.slug} | icon: {ct.icon_name}</div>
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <button onClick={() => handleEdit(ct)} className="p-2 text-[var(--color-gsp-text-inverse)] hover:bg-[#F4F1FA] rounded">
+                        <button onClick={() => handleEdit(ct)} className="p-2 text-(--color-gsp-text-inverse) hover:bg-violet-soft rounded">
                           <MdEdit />
                         </button>
                         <button onClick={() => handleDelete(ct.id)} className="p-2 text-red-600 hover:bg-red-50 rounded">

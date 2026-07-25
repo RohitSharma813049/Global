@@ -72,6 +72,7 @@ export default function AuthUI({ initialScreen }: AuthUIProps) {
       else if (num.startsWith("+33")) setFormData(prev => ({ ...prev, country: "France" }));
       else if (num.startsWith("+971")) setFormData(prev => ({ ...prev, country: "United Arab Emirates" }));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formData.mobileNumber]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -358,7 +359,7 @@ export default function AuthUI({ initialScreen }: AuthUIProps) {
                     <div className="field">
                       <label className="field-label">
                         Password
-                        <button type="button" onClick={() => setActiveScreen("forgot")} className="text-violet hover:opacity-75 bg-transparent border-none p-0 cursor-pointer text-[11.5px]">Forgot password?</button>
+                        <button type="button" onClick={() => setActiveScreen("forgot")} className="text-violet hover:opacity-75 bg-transparent border-none p-0 cursor-pointer text-2.875">Forgot password?</button>
                       </label>
                       <div className="input-wrap">
                         <span className="input-icon">

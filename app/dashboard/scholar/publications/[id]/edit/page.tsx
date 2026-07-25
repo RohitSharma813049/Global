@@ -72,17 +72,17 @@ export default function ScholarEditPublicationPage({ params }: { params: Promise
   }
 
   if (fetching) {
-    return <div className="p-6 text-center text-[var(--color-gsp-text-secondary)]">Loading publication data...</div>
+    return <div className="p-6 text-center text-(--color-gsp-text-secondary)">Loading publication data...</div>
   }
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--color-gsp-text-primary)]">Edit Publication</h1>
-        <p className="text-[var(--color-gsp-text-secondary)] mt-2">Update your publication details. Note: Editing a published document will revert it to draft status for re-approval.</p>
+        <h1 className="text-3xl font-bold text-(--color-gsp-text-primary)">Edit Publication</h1>
+        <p className="text-(--color-gsp-text-secondary) mt-2">Update your publication details. Note: Editing a published document will revert it to draft status for re-approval.</p>
       </div>
 
-      <div className="bg-[var(--color-gsp-surface-muted)] rounded-[var(--radius-xl)] shadow-[var(--shadow-1)] border border-[var(--color-gsp-border-muted)] overflow-hidden">
+      <div className="bg-(--color-gsp-surface-muted) rounded-(--radius-xl) shadow-(--shadow-1) border border-(--color-gsp-border-muted) overflow-hidden">
         <div className="p-6">
           {error && (
             <div className="mb-6 bg-red-50 text-red-600 p-4 rounded-md text-sm border border-red-100">
@@ -92,7 +92,7 @@ export default function ScholarEditPublicationPage({ params }: { params: Promise
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="title" className="block text-sm font-medium text-[var(--color-gsp-text-primary)]">Publication Title</label>
+              <label htmlFor="title" className="block text-sm font-medium text-(--color-gsp-text-primary)">Publication Title</label>
               <input 
                 type="text" 
                 name="title" 
@@ -100,19 +100,19 @@ export default function ScholarEditPublicationPage({ params }: { params: Promise
                 required 
                 value={title}
                 onChange={e => setTitle(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-[var(--color-gsp-border-default)] rounded-md shadow-[var(--shadow-1)] focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm" 
+                className="mt-1 block w-full px-3 py-2 border border-(--color-gsp-border-default) rounded-md shadow-(--shadow-1) focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm" 
               />
             </div>
 
             <div>
-              <label htmlFor="content_type" className="block text-sm font-medium text-[var(--color-gsp-text-primary)]">Content Type</label>
+              <label htmlFor="content_type" className="block text-sm font-medium text-(--color-gsp-text-primary)">Content Type</label>
               <select 
                 name="content_type" 
                 id="content_type" 
                 required
                 value={contentType}
                 onChange={e => setContentType(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-[var(--color-gsp-border-default)] bg-[var(--color-gsp-surface-muted)] rounded-md shadow-[var(--shadow-1)] focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+                className="mt-1 block w-full px-3 py-2 border border-(--color-gsp-border-default) bg-(--color-gsp-surface-muted) rounded-md shadow-(--shadow-1) focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
               >
                 <option value="thesis">Thesis</option>
                 <option value="article">Research Article</option>
@@ -122,14 +122,14 @@ export default function ScholarEditPublicationPage({ params }: { params: Promise
             </div>
 
             <div>
-              <label htmlFor="category_id" className="block text-sm font-medium text-[var(--color-gsp-text-primary)]">Category</label>
+              <label htmlFor="category_id" className="block text-sm font-medium text-(--color-gsp-text-primary)">Category</label>
               <select 
                 name="category_id" 
                 id="category_id" 
                 required
                 value={categoryId}
                 onChange={e => setCategoryId(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-[var(--color-gsp-border-default)] bg-[var(--color-gsp-surface-muted)] rounded-md shadow-[var(--shadow-1)] focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+                className="mt-1 block w-full px-3 py-2 border border-(--color-gsp-border-default) bg-(--color-gsp-surface-muted) rounded-md shadow-(--shadow-1) focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
               >
                 <option value="">Select a category</option>
                 {categories.map(c => (
@@ -139,27 +139,27 @@ export default function ScholarEditPublicationPage({ params }: { params: Promise
             </div>
 
             <div>
-              <label htmlFor="abstract" className="block text-sm font-medium text-[var(--color-gsp-text-primary)] mb-1">Abstract / Summary</label>
+              <label htmlFor="abstract" className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Abstract / Summary</label>
               <ReactQuill 
                 theme="snow" 
                 value={abstract} 
                 onChange={setAbstract} 
-                className="bg-[var(--color-gsp-surface-muted)] rounded-md mb-2 h-48 pb-12"
+                className="bg-(--color-gsp-surface-muted) rounded-md mb-2 h-48 pb-12"
               />
             </div>
 
-            <div className="pt-4 border-t border-[var(--color-gsp-border-muted)] flex justify-end gap-3">
+            <div className="pt-4 border-t border-(--color-gsp-border-muted) flex justify-end gap-3">
               <button
                 type="button"
                 onClick={() => router.back()}
-                className="inline-flex justify-center py-2 px-6 border border-[var(--color-gsp-border-default)] shadow-[var(--shadow-1)] text-sm font-medium rounded-md text-[var(--color-gsp-text-primary)] bg-[var(--color-gsp-surface-muted)] hover:bg-[var(--color-gsp-surface-raised)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+                className="inline-flex justify-center py-2 px-6 border border-(--color-gsp-border-default) shadow-(--shadow-1) text-sm font-medium rounded-md text-(--color-gsp-text-primary) bg-(--color-gsp-surface-muted) hover:bg-(--color-gsp-surface-raised) focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="inline-flex justify-center py-2 px-6 border border-transparent shadow-[var(--shadow-1)] text-sm font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:opacity-50"
+                className="inline-flex justify-center py-2 px-6 border border-transparent shadow-(--shadow-1) text-sm font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:opacity-50"
               >
                 {loading ? 'Saving...' : 'Save Changes'}
               </button>

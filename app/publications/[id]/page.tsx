@@ -252,11 +252,11 @@ export default async function PublicationDetailPage({ params }: Props) {
               <div className="sb-head">About the Author</div>
               <div className="sb-body">
                 <div className="au-hero">
-                  <div className="au-av overflow-hidden flex items-center justify-center bg-[#F8F7FC] border-[2px] border-white shadow-sm">
+                  <div className="au-av overflow-hidden flex items-center justify-center bg-[#F8F7FC] border-0.5 border-white shadow-sm">
                     {authorImg && authorImg !== "/placeholder-user.jpg" ? (
                       <img src={authorImg} alt={authorName} className="object-cover w-full h-full" />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-xl font-bold text-[#2F115D]">{authorInitials}</div>
+                      <div className="w-full h-full flex items-center justify-center text-xl font-bold text-violet">{authorInitials}</div>
                     )}
                   </div>
                   <div>
@@ -270,7 +270,7 @@ export default async function PublicationDetailPage({ params }: Props) {
                     )}
                   </div>
                 </div>
-                <Link href={publication.scholar_id ? `/scholars/${publication.scholar_id}` : "#"} className="flex items-center justify-center gap-2 w-full h-[34px] rounded-[7px] border-[1.5px] border-[#2F115D] text-[#2F115D] text-xs font-medium hover:bg-[#2F115D] hover:text-white transition-colors">
+                <Link href={publication.scholar_id ? `/scholars/${publication.scholar_id}` : "#"} className="flex items-center justify-center gap-2 w-full h-8.5 rounded-1.75 border-0.375 border-violet text-violet text-xs font-medium hover:bg-violet hover:text-white transition-colors">
                   View Profile
                 </Link>
               </div>
