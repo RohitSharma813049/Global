@@ -3,6 +3,7 @@ import NextAuth, { DefaultSession, NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { supabase } from "@/lib/superbaseconfig";
+import { generateDisplayId } from "@/lib/generate-id";
 
 declare module "next-auth" {
   interface Session {
@@ -61,6 +62,7 @@ export const authOptions: NextAuthOptions = {
                 data: {
                   id: supabaseUser.id,
                   role: "reader",
+                  display_id: generateDisplayId("reader")
                 }
               });
             }

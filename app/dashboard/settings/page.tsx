@@ -280,17 +280,19 @@ export default function SettingsPage() {
                           }
                         }}
                       />
-                      <div className="flex flex-wrap gap-2 mb-2">
-                        <Button variant="outline" size="sm" className="w-full sm:w-auto" onClick={() => document.getElementById("avatar-upload")?.click()}>Upload Photo</Button>
-                        <Button variant="outline" size="sm" className="w-full sm:w-auto flex items-center gap-1" onClick={startCamera}>
-                          <MdCameraAlt /> Take Photo
-                        </Button>
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 mb-1">
+                        <div className="flex items-center gap-2">
+                          <Button variant="outline" size="sm" className="w-auto h-9 bg-white" onClick={() => document.getElementById("avatar-upload")?.click()}>Upload Photo</Button>
+                          <Button variant="outline" size="sm" className="w-auto h-9 bg-white flex items-center gap-1.5" onClick={startCamera}>
+                            <MdCameraAlt className="text-lg" /> Take Photo
+                          </Button>
+                        </div>
                         {avatarUrl && (
-                          <Button variant="ghost" size="sm" className="w-full sm:w-auto text-red-600 hover:text-red-700 hover:bg-red-50" onClick={() => {
+                          <button className="text-sm font-medium text-red-600 hover:text-red-700 transition-colors" onClick={() => {
                             setAvatarUrl("");
                             updateSession({ image: "" });
                             window.dispatchEvent(new CustomEvent('avatarUpdated', { detail: "" }));
-                          }}>Remove Avatar</Button>
+                          }}>Remove Avatar</button>
                         )}
                       </div>
                       <p className="text-xs text-(--color-gsp-text-secondary)">JPG, GIF or PNG. 1MB max.</p>
@@ -756,7 +758,7 @@ export default function SettingsPage() {
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
           <div className="bg-(--color-gsp-surface-muted) rounded-2xl p-6 w-full max-w-md shadow-2xl border border-(--color-gsp-border-muted)">
             <h3 className="text-xl font-bold mb-4 text-(--color-gsp-text-primary)">Take a Photo</h3>
-            <div className="relative bg-black rounded-xl overflow-hidden aspect-square mb-4 shadow-inner">
+            <div className="relative bg-black rounded-xl overflow-hidden aspect-video mb-4 shadow-inner w-full">
               <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover scale-x-[-1]" />
             </div>
             <div className="flex gap-3 justify-end mt-6">

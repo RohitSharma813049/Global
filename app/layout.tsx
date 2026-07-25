@@ -5,6 +5,7 @@ import { Providers } from './providers'
 import '../styles/globals.css'
 import Header from "@/components/layout/header"
 import { Toaster } from 'react-hot-toast'
+import { CopyProtection } from '@/components/copy-protection'
 
 const cormorantGaramond = Cormorant_Garamond({ 
   subsets: ["latin"],
@@ -38,6 +39,7 @@ export default function RootLayout({
     <html lang="en" className="bg-background">
       <body suppressHydrationWarning className={`${spaceGrotesk.variable} ${cormorantGaramond.variable} font-sans antialiased text-foreground overflow-x-hidden min-h-screen`}>
         <Providers>
+          <CopyProtection />
           <Header/>
           <main className="pb-16 md:pb-0 flex-1 flex flex-col">
             {children}

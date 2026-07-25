@@ -305,7 +305,6 @@ export default function GSPFeaturedScholars({ title, subtitle, scholars = [], au
               <div className="sc-photo-wrap">
                 <Image src={scholar.image} alt={scholar.name} width={480} height={560} className="object-cover w-full h-full" />
                 <div className="sc-photo-gradient"></div>
-                <span className="sc-country-pill"><span className="sc-flag">{scholar.countryFlag}</span> {scholar.country}</span>
                 <div className="sc-pub-badge"><span className="sc-pub-n">{scholar.publications}</span><span className="sc-pub-l">Papers</span></div>
                 <div className="sc-photo-info">
                   <p className="sc-name-onphoto">{scholar.name}</p>

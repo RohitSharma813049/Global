@@ -3,12 +3,20 @@ import React from "react";
 import DashboardSidebar from "@/components/layout/dashboard-sidebar";
 import DashboardBottomNav from "@/components/layout/dashboard-bottom-nav";
 import { useSidebar } from "@/components/sidebar-context";
-import { MdLogout, MdMenu } from "react-icons/md";
+import { MdLogout, MdMenu, MdSettings, MdSwapHoriz } from "react-icons/md";
 import { signOut, useSession } from "next-auth/react";
 import { NotificationsDropdown } from "@/components/notifications-dropdown";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { BecomeScholarModal } from "@/components/become-scholar-modal";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export function DashboardLayoutWrapper({ children }: { children: React.ReactNode }) {
   const { isPinned, setIsMobileMenuOpen } = useSidebar();
@@ -62,35 +70,54 @@ export function DashboardLayoutWrapper({ children }: { children: React.ReactNode
               </BecomeScholarModal>
             )}
             <NotificationsDropdown />
-            <div className="w-8 h-8 bg-violet-soft text-(--color-gsp-text-inverse) rounded-full flex items-center justify-center font-bold shadow-sm overflow-hidden">
-              {localAvatar ? (
-                <img 
-                  key={localAvatar}
-                  src={localAvatar} 
-                  alt="User Avatar" 
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none';
-                    if (e.currentTarget.nextElementSibling) {
-                      (e.currentTarget.nextElementSibling as HTMLElement).style.display = 'flex';
-                    }
-                  }} 
-                />
-              ) : null}
-              <div 
-                className="w-full h-full flex items-center justify-center" 
-                style={{ display: localAvatar ? 'none' : 'flex' }}
-              >
-                {session?.user?.name ? session.user.name.charAt(0).toUpperCase() : session?.user?.email ? session.user.email.charAt(0).toUpperCase() : "U"}
-              </div>
-            </div>
-            <button 
-              onClick={() => signOut({ callbackUrl: '/' })}
-              className="p-2 text-(--color-gsp-text-primary) hover:text-red-600 transition-colors rounded-full hover:bg-red-50 hidden sm:flex"
-              title="Log out"
-            >
-              <MdLogout className="w-5 h-5" />
-            </button>
+            <DropdownMenu>
+              <DropdownMenuTrigger className="w-8 h-8 bg-violet-soft text-(--color-gsp-text-inverse) rounded-full flex items-center justify-center font-bold shadow-sm overflow-hidden outline-none hover:ring-2 hover:ring-purple-300 transition-all cursor-pointer">
+                {localAvatar ? (
+                  <img 
+                    key={localAvatar}
+                    src={localAvatar} 
+                    alt="User Avatar" 
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      if (e.currentTarget.nextElementSibling) {
+                        (e.currentTarget.nextElementSibling as HTMLElement).style.display = 'flex';
+                      }
+                    }} 
+                  />
+                ) : null}
+                <div 
+                  className="w-full h-full flex items-center justify-center" 
+                  style={{ display: localAvatar ? 'none' : 'flex' }}
+                >
+                  {session?.user?.name ? session.user.name.charAt(0).toUpperCase() : session?.user?.email ? session.user.email.charAt(0).toUpperCase() : "U"}
+                </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56 bg-white border border-gray-100 shadow-lg rounded-xl">
+                <DropdownMenuLabel className="font-normal">
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium leading-none">{session?.user?.name || "User"}</p>
+                    <p className="text-xs leading-none text-gray-500">{session?.user?.email}</p>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/dashboard/settings" className="cursor-pointer flex items-center py-2 px-3 text-sm rounded-md hover:bg-gray-50 outline-none">
+                    <MdSettings className="mr-3 h-4 w-4 text-gray-500" />
+                    <span>Settings</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer flex items-center py-2 px-3 text-sm rounded-md hover:bg-gray-50 outline-none" onClick={() => { signOut({ callbackUrl: '/' }) }}>
+                  <MdSwapHoriz className="mr-3 h-4 w-4 text-gray-500" />
+                  <span>Switch Account</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem className="cursor-pointer flex items-center py-2 px-3 text-sm rounded-md text-red-600 focus:text-red-700 hover:bg-red-50 focus:bg-red-50 outline-none" onClick={() => signOut({ callbackUrl: '/' })}>
+                  <MdLogout className="mr-3 h-4 w-4 text-red-600" />
+                  <span>Log out</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </header>
         

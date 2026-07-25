@@ -8,7 +8,7 @@ import { BecomeScholarModal } from "@/components/become-scholar-modal";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer } from 'recharts';
 
 import { getReadingHistory } from "@/app/actions/history";
-import { getAdminStats, getScholarStats } from "@/app/actions/dashboard";
+import { getAdminStats, getScholarStats, getRecommendations } from "@/app/actions/dashboard";
 import { getSuperAdminStats, getPlatformSettings } from "@/app/actions/super-admin";
 import { getScholarProfile } from "@/app/actions/settings";
 import MaintenanceToggle from "./super-admin/MaintenanceToggle";
@@ -24,6 +24,7 @@ export default function Dashboard() {
   const [platformConfig, setPlatformConfig] = useState<any>(null);
   const [scholarStats, setScholarStats] = useState<any>(null);
   const [userProfile, setUserProfile] = useState<any>(null);
+  const [recommendations, setRecommendations] = useState<any[]>([]);
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -48,6 +49,11 @@ export default function Dashboard() {
           const profileData = await getScholarProfile();
           if (profileData) {
             setUserProfile((prev: any) => JSON.stringify(prev) !== JSON.stringify(profileData) ? profileData : prev);
+          }
+
+          const recsData = await getRecommendations();
+          if (recsData) {
+            setRecommendations((prev) => JSON.stringify(prev) !== JSON.stringify(recsData) ? recsData : prev);
           }
 
           const role = session?.user?.role;
@@ -164,23 +170,27 @@ export default function Dashboard() {
             </h2>
             <button className="text-sm text-(--color-gsp-text-inverse) font-semibold hover:underline">View All</button>
           </div>
-          {history.length > 0 ? history.map((item, index) => {
-            const pub = item.publications;
-            if (!pub) return null;
-            return (
-              <Link href={`/explore`} key={index}>
-                <div className="p-4 mb-4 border rounded-(--radius-xl) hover:shadow-(--shadow-2) transition-shadow cursor-pointer bg-(--color-gsp-surface-raised) hover:bg-(--color-gsp-surface-muted)">
-                  <h3 className="font-semibold text-(--color-gsp-text-primary)">{pub.title}</h3>
-                  <p className="text-sm text-(--color-gsp-text-secondary) mt-1">
-                    {pub.scholars?.users?.raw_user_meta_data?.full_name || "Unknown Author"} • {pub.categories?.name || "General"}
-                  </p>
-                  <p className="text-2.5 text-(--color-gsp-text-secondary) mt-1">
-                    Viewed on {new Date(item.last_read_at).toLocaleDateString()}
-                  </p>
-                </div>
-              </Link>
-            )
-          }) : (
+          {history.length > 0 ? (
+            <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2">
+              {history.map((item, index) => {
+                const pub = item.publications;
+                if (!pub) return null;
+                return (
+                  <Link href={`/publications/${pub.id}`} key={index} className="block">
+                    <div className="p-4 border rounded-(--radius-xl) hover:shadow-(--shadow-2) transition-shadow cursor-pointer bg-(--color-gsp-surface-raised) hover:bg-(--color-gsp-surface-muted)">
+                      <h3 className="font-semibold text-(--color-gsp-text-primary)">{pub.title}</h3>
+                      <p className="text-sm text-(--color-gsp-text-secondary) mt-1">
+                        {pub.scholars?.users?.raw_user_meta_data?.full_name || "Unknown Author"} • {pub.categories?.name || "General"}
+                      </p>
+                      <p className="text-xs text-(--color-gsp-text-secondary) mt-1">
+                        Viewed on {new Date(item.last_read_at).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </Link>
+                )
+              })}
+            </div>
+          ) : (
             <div className="p-4 text-center text-(--color-gsp-text-secondary)">
               You haven't viewed any publications yet.
             </div>
@@ -188,17 +198,40 @@ export default function Dashboard() {
         </div>
 
         <div className="bg-(--color-gsp-surface-muted) rounded-(--radius-2xl) p-6 shadow-(--shadow-1) border border-(--color-gsp-border-muted)">
-          <h2 className="text-xl font-bold text-(--color-gsp-text-primary) flex items-center mb-6">
-            <MdLibraryBooks className="text-(--color-gsp-text-inverse) mr-2" /> Recommended for You
-          </h2>
-          <div className="p-8 text-center bg-(--color-gsp-surface-raised) rounded-(--radius-xl) border border-dashed border-(--color-gsp-border-default)">
-            <p className="text-(--color-gsp-text-secondary)">Read more papers to get personalized recommendations!</p>
-            <Link href="/explore">
-              <button className="mt-4 px-6 py-2 bg-violet-soft text-indigo-700 font-semibold rounded-full hover:bg-indigo-100 transition-colors">
-                Explore Categories
-              </button>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-bold text-(--color-gsp-text-primary) flex items-center">
+              <MdLibraryBooks className="text-(--color-gsp-text-inverse) mr-2" /> Recommended for You
+            </h2>
+            <Link href="/explore" className="text-sm text-(--color-gsp-text-inverse) font-semibold hover:underline">
+              Explore All
             </Link>
           </div>
+          {recommendations.length > 0 ? (
+            <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2">
+              {recommendations.map((item, index) => (
+                <Link href={`/publications/${item.id}`} key={index} className="block">
+                  <div className="p-4 border rounded-(--radius-xl) hover:shadow-(--shadow-2) transition-shadow cursor-pointer bg-(--color-gsp-surface-raised) hover:bg-(--color-gsp-surface-muted)">
+                    <h3 className="font-semibold text-(--color-gsp-text-primary)">{item.title}</h3>
+                    <p className="text-sm text-(--color-gsp-text-secondary) mt-1">
+                      {item.scholars?.users?.raw_user_meta_data?.full_name || item.author_name || "Unknown Author"} • {item.categories?.name || "General"}
+                    </p>
+                    <p className="text-xs text-(--color-gsp-text-secondary) mt-2 flex items-center gap-2">
+                      <span className="font-semibold">{item.views}</span> Views
+                    </p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <div className="p-8 text-center bg-(--color-gsp-surface-raised) rounded-(--radius-xl) border border-dashed border-(--color-gsp-border-default)">
+              <p className="text-(--color-gsp-text-secondary)">Read more papers to get personalized recommendations!</p>
+              <Link href="/explore">
+                <button className="mt-4 px-6 py-2 bg-violet-soft text-indigo-700 font-semibold rounded-full hover:bg-indigo-100 transition-colors">
+                  Explore Categories
+                </button>
+              </Link>
+            </div>
+          )}
         </div>
       </div>
 

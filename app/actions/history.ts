@@ -74,29 +74,48 @@ export async function getReadingHistory() {
   const session = await getServerSession(authOptions)
   if (!session?.user?.id) return []
 
-  const { data, error } = await supabaseAdmin
-    .from('reading_history')
-    .select(`
-      last_read_at,
-      publications (
-        id,
-        title,
-        abstract,
-        content_type,
-        scholars ( id, users ( raw_user_meta_data ) ),
-        categories ( name )
-      )
-    `)
-    .eq('user_id', session.user.id)
-    .order('last_read_at', { ascending: false })
-    .limit(10)
+  try {
+    const data = await prisma.$queryRaw`
+      SELECT 
+        rh.last_read_at,
+        p.id as pub_id, p.title, p.abstract, p.content_type, p.author_name,
+        c.name as category_name,
+        s.id as scholar_id, s.user_id as scholar_user_id,
+        u.raw_user_meta_data
+      FROM public.reading_history rh
+      JOIN public.publications p ON rh.publication_id = p.id
+      LEFT JOIN public.categories c ON p.category_id = c.id
+      LEFT JOIN public.scholars s ON p.scholar_id = s.id
+      LEFT JOIN auth.users u ON s.user_id = u.id
+      WHERE rh.user_id = ${session.user.id}
+      ORDER BY rh.last_read_at DESC
+      LIMIT 10
+    `;
 
-  if (error) {
+    const formattedData = (data as any[]).map(row => ({
+      last_read_at: row.last_read_at,
+      publications: {
+        id: row.pub_id,
+        title: row.title,
+        abstract: row.abstract,
+        content_type: row.content_type,
+        categories: row.category_name ? { name: row.category_name } : null,
+        scholars: row.scholar_id ? {
+          id: row.scholar_id,
+          users: {
+            raw_user_meta_data: row.raw_user_meta_data || {
+              full_name: row.author_name || "Unknown Author"
+            }
+          }
+        } : null
+      }
+    }));
+
+    return formattedData;
+  } catch (error) {
     console.error('Failed to fetch reading history:', error)
     return []
   }
-
-  return data
 }
 
 export async function trackPublicationDownload(publicationId: string) {

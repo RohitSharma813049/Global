@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { redis } from "@/lib/redis";
 import { createClient } from "@supabase/supabase-js";
 import { authRateLimit } from "@/lib/rate-limit";
+import { generateDisplayId } from "@/lib/generate-id";
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL || "",
@@ -65,6 +66,22 @@ export async function POST(req: Request) {
                 { message: error.message },
                 { status: 400 }
             );
+        }
+        
+        // Create a profile record with the display_id
+        if (data.user) {
+            try {
+                const { prisma } = await import("@/lib/db");
+                await prisma.profiles.create({
+                    data: {
+                        id: data.user.id,
+                        role: finalRole,
+                        display_id: generateDisplayId(finalRole)
+                    }
+                });
+            } catch (err) {
+                console.error("Failed to create profile:", err);
+            }
         }
 
         return NextResponse.json(

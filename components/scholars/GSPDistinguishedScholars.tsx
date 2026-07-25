@@ -3,6 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import GSPFeaturedScholars from "./gsp-featured-scholars";
 
 export interface Scholar {
   id: string;
@@ -363,105 +364,11 @@ export default function GSPDistinguishedScholars({ scholar, videos = [], publica
 
         {/* DISTINGUISHED SCHOLARS - RECOMMENDED ROW */}
         <div className="mb-24">
-          <div className="text-2.75 uppercase tracking-wider text-gray-500 mb-6">DISTINGUISHED SCHOLARS FROM AROUND THE WORLD</div>
-          <h2 className="text-5.5 font-serif mb-2 text-black">Distinguished Scholars — 100 Leaders, 30+ Countries</h2>
-          <p className="text-3.25 text-gray-800 mb-8">
-            Honorary doctorate holders recognised for professional excellence across business, law, medicine, engineering, and public service worldwide.
-          </p>
-
-          <div className="flex flex-wrap gap-x-8 gap-y-4 text-2.75 font-medium mb-10 text-black">
-            <span><span className="text-gray-400 text-2.25 mr-1">AE</span> UAE 14</span>
-            <span><span className="text-gray-400 text-2.25 mr-1">US</span> USA 12</span>
-            <span><span className="text-gray-400 text-2.25 mr-1">GB</span> UK 9</span>
-            <span><span className="text-gray-400 text-2.25 mr-1">SA</span> KSA 8</span>
-            <span><span className="text-gray-400 text-2.25 mr-1">IN</span> India 11</span>
-            <span><span className="text-gray-400 text-2.25 mr-1">QA</span> Qatar 6</span>
-            <span><span className="text-gray-400 text-2.25 mr-1">DE</span> Germany 5</span>
-            <span><span className="text-gray-400 text-2.25 mr-1">SG</span> Singapore 4</span>
-            <span><span className="text-gray-400 text-2.25 mr-1">AU</span> Australia 4</span>
-            <span className="flex items-center gap-1"><span className="text-3.5">🌍</span> +21 more</span>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8 text-center">
-            {allScholars && allScholars.length > 0 ? allScholars.slice(0, 4).map((s, i) => {
-              const colors = [
-                { bg: 'bg-[#F0F7FF]', border: 'border-[#CCE0FF]', text: 'text-[#0055FF]' },
-                { bg: 'bg-[#E8F5E9]', border: 'border-[#C8E6C9]', text: 'text-[#2E7D32]' },
-                { bg: 'bg-[#F3E5F5]', border: 'border-[#E1BEE7]', text: 'text-[#6A1B9A]' },
-                { bg: 'bg-[#FFF3E0]', border: 'border-[#FFE0B2]', text: 'text-[#E65100]' }
-              ];
-              const c = colors[i % colors.length];
-              return (
-                <div key={s.id} className="flex flex-col items-center">
-                  <Link href={`/scholars/${s.id}`} prefetch={false} className="flex flex-col items-center group">
-                    <div className={`w-18 h-18 rounded-full ${c.bg} border ${c.border} ${c.text} flex items-center justify-center text-xl font-serif mb-4 relative transition-transform group-hover:scale-105`}>
-                      {s.avatar_url ? (
-                        <Image src={s.avatar_url} alt={s.name} fill className="rounded-full object-cover p-1" />
-                      ) : s.initials}
-                    </div>
-                    <h4 className="text-3.25 text-black font-medium group-hover:text-blue-600 transition-colors">{s.name}</h4>
-                  </Link>
-                  <p className="text-2.75 text-gray-600 mb-2 truncate max-w-45" title={s.professional_role}>{s.professional_role}</p>
-                  {s.country_code && (
-                    <span className="px-2 py-0.5 bg-blue-50 text-blue-700 rounded text-2.25 font-bold border border-blue-100 mb-2">
-                      {s.country_code} {s.country.substring(0, 8)}
-                    </span>
-                  )}
-                  {s.is_featured ? (
-                    <p className="text-2.5 text-[#512DA8] flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-[#512DA8]"></span> Video available</p>
-                  ) : (
-                    <p className="text-2.5 text-gray-500 italic">No video yet</p>
-                  )}
-                </div>
-              );
-            }) : (
-              <>
-                <div className="flex flex-col items-center">
-                  <div className="w-18 h-18 rounded-full bg-[#F0F7FF] border border-[#CCE0FF] text-[#0055FF] flex items-center justify-center text-xl font-serif mb-4 relative">
-                    AR
-                  </div>
-                  <h4 className="text-3.25 text-black font-medium">Dr. Amira Al-Rashidi</h4>
-                  <p className="text-2.75 text-gray-600 mb-2">MD, Al-Rashidi Capital</p>
-                  <span className="px-2 py-0.5 bg-blue-50 text-blue-700 rounded text-2.25 font-bold border border-blue-100 mb-2">AE UAE</span>
-                  <p className="text-2.5 text-[#512DA8] flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-[#512DA8]"></span> Video available</p>
-                </div>
-                <div className="flex flex-col items-center">
-                  <div className="w-18 h-18 rounded-full bg-[#E8F5E9] border border-[#C8E6C9] text-[#2E7D32] flex items-center justify-center text-xl font-serif mb-4 relative">
-                    JM
-                  </div>
-                  <h4 className="text-3.25 text-black font-medium">Dr. James Mitchell</h4>
-                  <p className="text-2.75 text-gray-600 mb-2">CEO, Mitchell Ventures</p>
-                  <span className="px-2 py-0.5 bg-blue-50 text-blue-700 rounded text-2.25 font-bold border border-blue-100 mb-2">US USA</span>
-                  <p className="text-2.5 text-[#512DA8] flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-[#512DA8]"></span> Video available</p>
-                </div>
-                <div className="flex flex-col items-center">
-                  <div className="w-18 h-18 rounded-full bg-[#F3E5F5] border border-[#E1BEE7] text-[#6A1B9A] flex items-center justify-center text-xl font-serif mb-4 relative">
-                    SK
-                  </div>
-                  <h4 className="text-3.25 text-black font-medium">Prof. Sarah Klein</h4>
-                  <p className="text-2.75 text-gray-600 mb-2">Founder, Klein Institute</p>
-                  <span className="px-2 py-0.5 bg-blue-50 text-blue-700 rounded text-2.25 font-bold border border-blue-100 mb-2">DE Germany</span>
-                  <p className="text-2.5 text-gray-500 italic">No video yet</p>
-                </div>
-                <div className="flex flex-col items-center">
-                  <div className="w-18 h-18 rounded-full bg-[#FFF3E0] border border-[#FFE0B2] text-[#E65100] flex items-center justify-center text-xl font-serif mb-4 relative">
-                    FQ
-                  </div>
-                  <h4 className="text-3.25 text-black font-medium">Dr. Fahad Al-Qahtani</h4>
-                  <p className="text-2.75 text-gray-600 mb-2">Director, QNB Group</p>
-                  <span className="px-2 py-0.5 bg-blue-50 text-blue-700 rounded text-2.25 font-bold border border-blue-100 mb-2">QA Qatar</span>
-                  <p className="text-2.5 text-[#512DA8] flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-[#512DA8]"></span> Video available</p>
-                </div>
-              </>
-            )}
-          </div>
-          
-          <div className="flex justify-between items-center border-t border-[#F0F0F0] pt-6">
-            <span className="text-3.25 text-gray-600">Showing {allScholars && allScholars.length > 0 ? Math.min(4, allScholars.length) : 4} of {allScholars && allScholars.length > 0 ? allScholars.length + 96 : 100} distinguished scholars across 30+ countries</span>
-            <button className="px-5 py-2 bg-[#1E3A8A] text-white text-3.25 font-medium rounded hover:bg-[#152C69] transition-colors">
-              View all {allScholars && allScholars.length > 0 ? allScholars.length + 96 : 100} scholars →
-            </button>
-          </div>
+          <GSPFeaturedScholars 
+            title="Distinguished Scholars — 100 Leaders" 
+            subtitle="DISTINGUISHED SCHOLARS FROM AROUND THE WORLD" 
+            scholars={allScholars} 
+          />
         </div>
 
         {/* HOW SCHOLARS SUBMIT THEIR EXPERIENCE VIDEO */}
