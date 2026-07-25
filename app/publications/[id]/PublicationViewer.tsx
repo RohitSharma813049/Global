@@ -1,9 +1,6 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
-import dynamic from 'next/dynamic';
-
-const HTMLFlipBook = dynamic(() => import('react-pageflip'), { ssr: false }) as any;
 
 interface PublicationViewerProps {
   publication: any;
@@ -21,6 +18,12 @@ export default function PublicationViewer({ publication, isVideo }: PublicationV
   const [isReading, setIsReading] = useState(false);
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [selectedVoice, setSelectedVoice] = useState<string>('');
+
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [bookPages, setBookPages] = useState<string[]>([]);
+  const [isFlipping, setIsFlipping] = useState(false);
+  const [flipDirection, setFlipDirection] = useState<1 | -1>(1);
 
   useEffect(() => {
     const updateVoices = () => {
@@ -97,18 +100,63 @@ export default function PublicationViewer({ publication, isVideo }: PublicationV
     fetchAndParse();
   }, [publication?.file_url]);
 
-  const handleReadAloud = (textHTML: string) => {
+  const isReadingRef = useRef(false);
+
+  const toggleReading = () => {
     if (typeof window === 'undefined' || !window.speechSynthesis) return;
+
+    if (isReading) {
+      // Turn off reading
+      window.speechSynthesis.cancel();
+      setIsReading(false);
+      isReadingRef.current = false;
+    } else {
+      // Turn on reading
+      setIsReading(true);
+      isReadingRef.current = true;
+      startReadingCurrentPage();
+    }
+  };
+
+  const handleAutoNext = () => {
+    if (!isReadingRef.current) return;
     
+    if (activeTab === 'book') {
+      if (page + 1 < totalPages) {
+         if (bookRef.current?.pageFlip()) {
+           bookRef.current.pageFlip().flipNext();
+         } else {
+           handlePageNav(2);
+         }
+      } else {
+         toggleReading(); // End of book
+      }
+    } else {
+      if (page < totalPages) {
+         handlePageNav(1);
+      } else {
+         toggleReading(); // End of book
+      }
+    }
+  };
+
+  const startReadingCurrentPage = () => {
+    if (typeof window === 'undefined' || !window.speechSynthesis) return;
     window.speechSynthesis.cancel();
     
-    if (isReading) {
-      setIsReading(false);
-      return;
+    let textHTML = "";
+    if (activeTab === 'book') {
+      textHTML = (bookPages[page - 1] || "") + " " + (bookPages[page] || "");
+    } else {
+      textHTML = getSimulatedContent(page);
     }
-
+    
     const cleanText = textHTML.replace(/<[^>]+>/g, ' ').trim();
-    if (!cleanText) return;
+    if (!cleanText) {
+       // If page is empty, just skip to next
+       handleAutoNext();
+       return;
+    }
     
     const utterance = new SpeechSynthesisUtterance(cleanText);
     const voice = voices.find(v => v.voiceURI === selectedVoice);
@@ -116,34 +164,38 @@ export default function PublicationViewer({ publication, isVideo }: PublicationV
     
     utterance.onboundary = (event) => {
       if (event.name !== 'word') return;
-      // Scroll proportionally based on how much text has been read
       const percent = event.charIndex / cleanText.length;
       const containers = document.querySelectorAll('.eb-body, .bk-content');
       containers.forEach(container => {
         const targetScroll = (container.scrollHeight - container.clientHeight) * percent;
-        // Add a small offset so the spoken word is closer to the middle of the screen
         container.scrollTo({ top: targetScroll + 100, behavior: 'smooth' });
       });
     };
 
-    utterance.onend = () => setIsReading(false);
+    utterance.onend = () => {
+      if (isReadingRef.current) {
+        handleAutoNext();
+      }
+    };
     
-    setIsReading(true);
     window.speechSynthesis.speak(utterance);
   };
 
-  // Simple Page Navigation State
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [bookPages, setBookPages] = useState<string[]>([]);
-  const bookRef = useRef<any>(null);
+  // Automatically start reading the new page if we flipped while reading
+  useEffect(() => {
+    if (isReadingRef.current) {
+      startReadingCurrentPage();
+    }
+  }, [page, activeTab]);
+
+  // State declarations moved to top
 
   // Split DOCX HTML into pages for the book view
   useEffect(() => {
     if (!docxContent) return;
     
     // Fallback simple character chunking for HTML
-    const chunkHtml = (html: string, maxChars = 1200) => {
+    const chunkHtml = (html: string, maxChars = 800) => {
       const chunks = [];
       let currentChunk = "";
       
@@ -223,11 +275,18 @@ export default function PublicationViewer({ publication, isVideo }: PublicationV
   };
 
   const handlePageNav = (dir: number) => {
-    if (activeTab === 'book' && bookRef.current?.pageFlip()) {
-      if (dir > 0) {
-        bookRef.current.pageFlip().flipNext();
-      } else {
-        bookRef.current.pageFlip().flipPrev();
+    if (activeTab === 'book') {
+      if (isFlipping) return;
+      
+      const newPage = Math.max(1, Math.min(totalPages, page + dir));
+      if (newPage !== page) {
+        playPageTurnSound();
+        setFlipDirection(dir > 0 ? 1 : -1);
+        setIsFlipping(true);
+        setTimeout(() => {
+          setPage(newPage);
+          setIsFlipping(false);
+        }, 500); // Wait for CSS animation to finish
       }
     } else {
       setPage(prev => Math.max(1, Math.min(totalPages, prev + dir)));
@@ -346,7 +405,7 @@ export default function PublicationViewer({ publication, isVideo }: PublicationV
             <div className="ml-auto flex items-center space-x-2 border-l border-zinc-200 pl-3">
               <button 
                 className={`ptbtn px-3 py-1 flex items-center space-x-1.5 rounded-full font-bold transition-colors ${isReading ? 'bg-red-100 text-red-600 hover:bg-red-200' : 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100'}`}
-                onClick={() => handleReadAloud(getSimulatedContent(page))}
+                onClick={toggleReading}
                 title={isReading ? "Stop Audio" : "Read Aloud"}
               >
                 {isReading ? (
@@ -396,7 +455,7 @@ export default function PublicationViewer({ publication, isVideo }: PublicationV
              <div className="ml-auto flex items-center space-x-2">
               <button 
                 className={`ptbtn px-3 py-1 flex items-center space-x-1.5 rounded-full font-bold transition-colors ${isReading ? 'bg-red-100 text-red-600 hover:bg-red-200' : 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100'}`}
-                onClick={() => handleReadAloud(bookPages[page - 1] + " " + (bookPages[page] || ""))}
+                onClick={toggleReading}
                 title={isReading ? "Stop Audio" : "Read Aloud"}
               >
                 {isReading ? (
@@ -423,38 +482,47 @@ export default function PublicationViewer({ publication, isVideo }: PublicationV
                <div className="flex justify-center items-center py-20 w-full h-full">
                  <div className="w-8 h-8 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
                </div>
-             ) : (
-               <div className="book-container flex items-center justify-center">
-                 <HTMLFlipBook 
-                   width={400} 
-                   height={540} 
-                   size="stretch"
-                   minWidth={315}
-                   maxWidth={1000}
-                   minHeight={400}
-                   maxHeight={1533}
-                   maxShadowOpacity={0.5}
-                   showCover={true}
-                   mobileScrollSupport={true}
-                   ref={bookRef}
-                   onFlip={(e: any) => {
-                     setPage(e.data + 1);
-                     playPageTurnSound();
-                   }}
-                 >
-                   {bookPages.map((pageHtml, index) => (
-                     <div className="book-page" key={index}>
-                       <div className={`text-[10px] font-bold text-zinc-400 mb-4 ${index % 2 !== 0 ? 'text-right' : ''}`}>
-                         {index + 1}
-                       </div>
-                       <div className="eb-body text-sm flex-1 overflow-auto pointer-events-none">
-                         <div dangerouslySetInnerHTML={{ __html: pageHtml }} />
-                       </div>
+             ) : bookPages.length > 0 ? (
+               <div className="book-container relative mx-auto my-auto flex w-full max-w-[900px] h-full max-h-[600px] perspective-[2000px] shadow-2xl rounded-sm">
+                 {/* Left Page (Previous Page) - Hidden on mobile */}
+                 <div className="hidden md:flex w-1/2 h-full bg-[#fdfcfaf0] border border-gray-200 border-r-0 shadow-[inset_-20px_0_20px_-20px_rgba(0,0,0,0.15)] flex-col p-6 md:p-12 overflow-hidden relative rounded-l-sm" style={{ transformOrigin: "right center" }}>
+                    <div className="text-[10px] font-bold text-zinc-400 mb-6">{page}</div>
+                    <div className="eb-body text-sm md:text-base flex-1 overflow-auto">
+                       <div dangerouslySetInnerHTML={{ __html: bookPages[page - 1] || "" }} />
+                    </div>
+                 </div>
+
+                 {/* Right Page (Current/Next Page) - Full width on mobile */}
+                 <div className="w-full md:w-1/2 h-full bg-[#fdfcfaf0] border border-gray-200 md:border-l-0 shadow-[inset_20px_0_20px_-20px_rgba(0,0,0,0.15)] flex flex-col p-6 md:p-12 overflow-hidden relative rounded-r-sm" style={{ transformOrigin: "left center" }}>
+                    <div className="text-[10px] font-bold text-zinc-400 mb-6 text-right md:text-left">{page + 1}</div>
+                    <div className="eb-body text-sm md:text-base flex-1 overflow-auto">
+                       <div dangerouslySetInnerHTML={{ __html: bookPages[page] || "" }} />
+                    </div>
+                 </div>
+                 
+                 {/* Animated Flipping Page Overlay - Only visible on desktop/md+ since mobile doesn't need 3D flip for single page */}
+                 {isFlipping && (
+                   <div 
+                     className="hidden md:flex absolute top-0 h-full w-1/2 bg-[#fcfcfc] border border-gray-300 shadow-2xl flex-col p-6 md:p-12 overflow-hidden transition-transform duration-500 ease-in-out z-10"
+                     style={{
+                       left: flipDirection === 1 ? '50%' : '0',
+                       transformOrigin: flipDirection === 1 ? 'left center' : 'right center',
+                       animation: flipDirection === 1 ? 'flipNext 0.5s forwards' : 'flipPrev 0.5s forwards'
+                     }}
+                   >
+                     <div className={`text-[10px] font-bold text-zinc-400 mb-6 ${flipDirection === 1 ? 'text-left' : 'text-right'}`}>
+                       {flipDirection === 1 ? page + 1 : page}
                      </div>
-                   ))}
-                 </HTMLFlipBook>
+                     <div className="eb-body text-sm md:text-base flex-1 overflow-hidden">
+                        <div dangerouslySetInnerHTML={{ __html: flipDirection === 1 ? (bookPages[page] || "") : (bookPages[page - 1] || "") }} />
+                     </div>
+                   </div>
+                 )}
+                 
+                 {/* Spine shadow - Only visible on desktop */}
+                 <div className="hidden md:block absolute top-0 bottom-0 left-1/2 w-[40px] -ml-[20px] bg-gradient-to-r from-transparent via-black/10 to-transparent pointer-events-none z-20"></div>
                </div>
-             )}
+              ) : null}
           </div>
         </div>
 
