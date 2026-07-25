@@ -33,16 +33,40 @@ export const authOptions: NextAuthOptions = {
         let supabaseUser = users.find(u => u.email === profile.email);
 
         if (!supabaseUser) {
+          // Generate a complex random password that the user doesn't know, so they can use "Forgot Password" later if needed
+          const randomPassword = Math.random().toString(36).slice(-10) + Math.random().toString(36).slice(-10).toUpperCase() + "1!Aa";
+          const username = (profile.email?.split('@')[0] || "user") + Math.floor(Math.random() * 10000);
+
           const { data } = await supabaseAdmin.auth.admin.createUser({
             email: profile.email,
+            password: randomPassword,
             email_confirm: true,
             user_metadata: {
               name: profile.name,
-              role: "user",
+              first_name: profile.given_name || profile.name?.split(' ')[0] || '',
+              last_name: profile.family_name || profile.name?.split(' ').slice(1).join(' ') || '',
+              username: username,
+              role: "reader",
               avatar_url: profile.picture,
             }
           });
           if (data.user) supabaseUser = data.user;
+          
+          // Also ensure a profile record exists in our public schema
+          try {
+            const { prisma } = await import("@/lib/db");
+            const existingProfile = await prisma.profiles.findUnique({ where: { id: supabaseUser?.id } });
+            if (!existingProfile && supabaseUser?.id) {
+              await prisma.profiles.create({
+                data: {
+                  id: supabaseUser.id,
+                  role: "reader",
+                }
+              });
+            }
+          } catch (err) {
+            console.error("Error creating profile record for Google user:", err);
+          }
         } else if (profile.picture && !supabaseUser.user_metadata?.avatar_url && !supabaseUser.user_metadata?.picture) {
           // If the user exists but doesn't have an avatar in metadata, update it
           const { data } = await supabaseAdmin.auth.admin.updateUserById(supabaseUser.id, {
@@ -56,7 +80,7 @@ export const authOptions: NextAuthOptions = {
           name: profile.name,
           email: profile.email,
           image: profile.picture,
-          role: supabaseUser?.user_metadata?.role || "user"
+          role: supabaseUser?.user_metadata?.role || "reader"
         };
       }
     }),

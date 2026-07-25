@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { useSession, signOut } from "next-auth/react";
-import { MdSettings, MdPerson, MdNotifications, MdSecurity, MdColorLens, MdLogout } from "react-icons/md";
+import { MdSettings, MdPerson, MdNotifications, MdSecurity, MdColorLens, MdLogout, MdCameraAlt } from "react-icons/md";
 import { BackButton } from "@/components/back-button";
 import { Button } from "@/components/ui/button";
 import { useSidebar } from "@/components/sidebar-context";
@@ -14,10 +14,12 @@ export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState("profile");
   
   // Form State
-  const [name, setName] = useState(session?.user?.name || "");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [username, setUsername] = useState("");
+  const [designation, setDesignation] = useState("");
   const [email, setEmail] = useState(session?.user?.email || "");
   const [bio, setBio] = useState("");
-  const [country, setCountry] = useState("");
   const [qualification, setQualification] = useState("");
   const [institution, setInstitution] = useState("");
   const [specialization, setSpecialization] = useState("");
@@ -32,14 +34,79 @@ export default function SettingsPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Camera States
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const videoRef = React.useRef<HTMLVideoElement>(null);
+  const canvasRef = React.useRef<HTMLCanvasElement>(null);
+  const [cameraStream, setCameraStream] = useState<MediaStream | null>(null);
+
+  const startCamera = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      setCameraStream(stream);
+      setIsCameraOpen(true);
+      // We need a small timeout to ensure videoRef is mounted
+      setTimeout(() => {
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+      }, 100);
+    } catch (err) {
+      toast.error("Camera access denied or not available");
+    }
+  };
+
+  const stopCamera = () => {
+    if (cameraStream) {
+      cameraStream.getTracks().forEach(track => track.stop());
+      setCameraStream(null);
+    }
+    setIsCameraOpen(false);
+  };
+
+  const capturePhoto = () => {
+    if (videoRef.current && canvasRef.current) {
+      const context = canvasRef.current.getContext('2d');
+      canvasRef.current.width = videoRef.current.videoWidth;
+      canvasRef.current.height = videoRef.current.videoHeight;
+      context?.drawImage(videoRef.current, 0, 0);
+      
+      canvasRef.current.toBlob(async (blob) => {
+        if (blob) {
+          const file = new File([blob], "camera-photo.jpg", { type: "image/jpeg" });
+          stopCamera();
+          
+          const toastId = toast.loading("Uploading photo...");
+          try {
+            const formData = new FormData();
+            formData.append("image", file);
+            const res = await uploadImageFile(formData);
+            if (res.error) {
+              toast.error(res.error, { id: toastId });
+            } else if (res.url) {
+              setAvatarUrl(res.url);
+              updateSession({ image: res.url });
+              window.dispatchEvent(new CustomEvent('avatarUpdated', { detail: res.url }));
+              toast.success("Photo uploaded! Don't forget to save changes.", { id: toastId });
+            }
+          } catch (err: any) {
+            toast.error(err.message || "Upload failed", { id: toastId });
+          }
+        }
+      }, 'image/jpeg');
+    }
+  };
+
   React.useEffect(() => {
     const fetchProfile = async () => {
       const data = await getScholarProfile();
       if (data) {
-        setName(data.name || "");
+        setFirstName(data.first_name || "");
+        setLastName(data.last_name || "");
+        setUsername(data.username || "");
+        setDesignation(data.designation || "");
         setEmail(data.email || "");
         setBio(data.bio || "");
-        setCountry(data.country || "");
         setQualification(data.qualification || "");
         setInstitution(data.institution || "");
         setSpecialization(data.specialization || "");
@@ -55,7 +122,7 @@ export default function SettingsPage() {
 
   const handleSaveProfile = async () => {
     setIsSaving(true);
-    const res = await updateProfile(name, bio, country, avatarUrl, { institution, qualification, specialization, video_url: videoUrl, gallery_images: galleryImages, gallery_videos: galleryVideos });
+    const res = await updateProfile(firstName, lastName, designation, bio, avatarUrl, { institution, qualification, specialization, video_url: videoUrl, gallery_images: galleryImages, gallery_videos: galleryVideos });
     if (res.error) {
       toast.error(res.error);
     } else {
@@ -99,9 +166,10 @@ export default function SettingsPage() {
   ];
 
   return (
-    <div className="flex-1 overflow-y-auto p-4 sm:p-6 animate-fade-in-up">
-      <div className="max-w-4xl mx-auto">
-        <div className="-ml-2 sm:-ml-6 mt-[-10px]">
+    <>
+      <div className="flex-1 overflow-y-auto p-4 sm:p-6 animate-fade-in-up">
+        <div className="max-w-4xl mx-auto">
+          <div className="-ml-2 sm:-ml-6 mt-[-10px]">
           <BackButton />
         </div>
         
@@ -177,7 +245,7 @@ export default function SettingsPage() {
                         className="w-full h-full flex items-center justify-center" 
                         style={{ display: avatarUrl ? 'none' : 'flex' }}
                       >
-                        {name ? name.charAt(0).toUpperCase() : "U"}
+                        {firstName ? firstName.charAt(0).toUpperCase() : "U"}
                       </div>
                     </div>
                     <div>
@@ -213,7 +281,10 @@ export default function SettingsPage() {
                         }}
                       />
                       <div className="flex flex-wrap gap-2 mb-2">
-                        <Button variant="outline" size="sm" className="w-full sm:w-auto" onClick={() => document.getElementById("avatar-upload")?.click()}>Change Avatar</Button>
+                        <Button variant="outline" size="sm" className="w-full sm:w-auto" onClick={() => document.getElementById("avatar-upload")?.click()}>Upload Photo</Button>
+                        <Button variant="outline" size="sm" className="w-full sm:w-auto flex items-center gap-1" onClick={startCamera}>
+                          <MdCameraAlt /> Take Photo
+                        </Button>
                         {avatarUrl && (
                           <Button variant="ghost" size="sm" className="w-full sm:w-auto text-red-600 hover:text-red-700 hover:bg-red-50" onClick={() => {
                             setAvatarUrl("");
@@ -228,13 +299,35 @@ export default function SettingsPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                     <div className="space-y-2">
-                      <label className="block text-xs sm:text-sm font-medium text-(--color-gsp-text-primary)">Full Name</label>
+                      <label className="block text-xs sm:text-sm font-medium text-(--color-gsp-text-primary)">First Name</label>
                       <input aria-label="Input field" 
                         type="text" 
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
                         className="w-full px-3 py-2 sm:px-4 text-sm sm:text-base border border-(--color-gsp-border-muted) rounded-(--radius-lg) focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all outline-none"
                       />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="block text-xs sm:text-sm font-medium text-(--color-gsp-text-primary)">Last Name</label>
+                      <input aria-label="Input field" 
+                        type="text" 
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                        className="w-full px-3 py-2 sm:px-4 text-sm sm:text-base border border-(--color-gsp-border-muted) rounded-(--radius-lg) focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                    <div className="space-y-2">
+                      <label className="block text-xs sm:text-sm font-medium text-(--color-gsp-text-primary)">Username</label>
+                      <input aria-label="Input field" 
+                        type="text" 
+                        value={username}
+                        disabled
+                        className="w-full px-3 py-2 sm:px-4 text-sm sm:text-base border border-(--color-gsp-border-muted) rounded-(--radius-lg) focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all outline-none bg-(--color-gsp-surface-raised) text-(--color-gsp-text-secondary) cursor-not-allowed"
+                      />
+                      <p className="text-xs text-(--color-gsp-text-secondary)">Username cannot be changed.</p>
                     </div>
                     <div className="space-y-2">
                       <label className="block text-xs sm:text-sm font-medium text-(--color-gsp-text-primary)">Email Address</label>
@@ -261,12 +354,12 @@ export default function SettingsPage() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mt-4">
                       <div className="space-y-2">
-                        <label className="block text-xs sm:text-sm font-medium text-(--color-gsp-text-primary)">Country</label>
+                        <label className="block text-xs sm:text-sm font-medium text-(--color-gsp-text-primary)">Designation</label>
                         <input aria-label="Input field" 
                           type="text" 
-                          value={country}
-                          onChange={(e) => setCountry(e.target.value)}
-                          placeholder="e.g. United Kingdom"
+                          value={designation}
+                          onChange={(e) => setDesignation(e.target.value)}
+                          placeholder="e.g. Ph.D. AI Ethics"
                           className="w-full px-3 py-2 sm:px-4 text-sm sm:text-base border border-(--color-gsp-border-muted) rounded-(--radius-lg) focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all outline-none"
                         />
                       </div>
@@ -653,9 +746,30 @@ export default function SettingsPage() {
               </div>
             )}
 
-          </div>
         </div>
       </div>
     </div>
+    </div>
+
+      {/* Camera Modal */}
+      {isCameraOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+          <div className="bg-(--color-gsp-surface-muted) rounded-2xl p-6 w-full max-w-md shadow-2xl border border-(--color-gsp-border-muted)">
+            <h3 className="text-xl font-bold mb-4 text-(--color-gsp-text-primary)">Take a Photo</h3>
+            <div className="relative bg-black rounded-xl overflow-hidden aspect-square mb-4 shadow-inner">
+              <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover scale-x-[-1]" />
+            </div>
+            <div className="flex gap-3 justify-end mt-6">
+              <Button variant="outline" onClick={stopCamera}>Cancel</Button>
+              <Button onClick={capturePhoto} className="bg-purple-600 hover:bg-purple-700 text-white flex items-center gap-2">
+                <MdCameraAlt /> Capture
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+      <canvas ref={canvasRef} className="hidden" />
+    </>
+    
   );
 }

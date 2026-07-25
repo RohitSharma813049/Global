@@ -29,8 +29,11 @@ export async function getScholarProfile() {
     
     return {
       name: userMeta.name || session.user.name || "",
+      first_name: userMeta.first_name || (userMeta.name || session.user.name || "").split(" ")[0] || "",
+      last_name: userMeta.last_name || (userMeta.name || session.user.name || "").split(" ").slice(1).join(" ") || "",
+      username: scholar?.username || userMeta.username || "user_" + session.user.id.substring(0, 8),
+      designation: userMeta.designation || "",
       email: session.user.email || "",
-      country: userMeta.country || "",
       bio: scholar?.bio || userMeta.bio || "",
       institution: scholar?.institution || "",
       qualification: scholar?.qualification || "",
@@ -47,9 +50,10 @@ export async function getScholarProfile() {
 }
 
 export async function updateProfile(
-  name: string, 
+  firstName: string,
+  lastName: string,
+  designation: string,
   bio: string, 
-  country?: string,
   avatar_url?: string,
   scholarData?: { 
     institution: string, 
@@ -69,11 +73,12 @@ export async function updateProfile(
     // Get current metadata
     const { data: userData } = await supabaseAdmin.auth.admin.getUserById(session.user.id)
     const existingMeta = userData.user?.user_metadata || {}
+    const name = `${firstName} ${lastName}`.trim();
 
     // Update user metadata in Supabase
     const { error } = await supabaseAdmin.auth.admin.updateUserById(
       session.user.id,
-      { user_metadata: { ...existingMeta, name, bio, country: country || existingMeta.country, avatar_url: avatar_url || existingMeta.avatar_url, video_url: scholarData?.video_url || existingMeta.video_url } }
+      { user_metadata: { ...existingMeta, name, first_name: firstName, last_name: lastName, designation, bio, avatar_url: avatar_url || existingMeta.avatar_url, video_url: scholarData?.video_url || existingMeta.video_url } }
     )
 
     if (error) throw error
