@@ -16,6 +16,16 @@ export async function trackPublicationView(publicationId: string) {
 
   const userId = session.user.id
 
+  // Check if it's the first time this user is viewing it
+  const { data: existingRecord } = await supabaseAdmin
+    .from('reading_history')
+    .select('id')
+    .eq('user_id', userId)
+    .eq('publication_id', publicationId)
+    .single()
+
+  const isNewView = !existingRecord;
+
   // Upsert history record
   const { error } = await supabaseAdmin
     .from('reading_history')
@@ -33,16 +43,17 @@ export async function trackPublicationView(publicationId: string) {
     return { error: error.message }
   }
 
-  // Also actually increment the views counter for real data tracking!
-  try {
-    await prisma.publications.update({
-      where: { id: publicationId },
-      data: { views: { increment: 1 } }
-    });
+  // Only actually increment the views counter for real data tracking if it's a new view
+  if (isNewView) {
+    try {
+      await prisma.publications.update({
+        where: { id: publicationId },
+        data: { views: { increment: 1 } }
+      });
 
-    const pub = await prisma.publications.findUnique({
-      where: { id: publicationId },
-      select: { scholar_id: true }
+      const pub = await prisma.publications.findUnique({
+        where: { id: publicationId },
+        select: { scholar_id: true }
     });
 
     if (pub?.scholar_id) {

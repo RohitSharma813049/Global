@@ -20,6 +20,7 @@ export default function ScholarUploadPage() {
   const [error, setError] = useState('')
   const [categories, setCategories] = useState<{id: string, name: string}[]>([])
   const [hasPublishedArticle, setHasPublishedArticle] = useState(false)
+  const [selectedContentType, setSelectedContentType] = useState('thesis')
   const [abstract, setAbstract] = useState('')
   const [coverName, setCoverName] = useState('')
   const [bannerName, setBannerName] = useState('')
@@ -271,6 +272,8 @@ export default function ScholarUploadPage() {
                     name="content_type" 
                     id="content_type" 
                     required={currentStep === 1}
+                    value={selectedContentType}
+                    onChange={(e) => setSelectedContentType(e.target.value)}
                     className="mt-1 block w-full px-4 py-3 border border-[var(--color-gsp-border-default)] bg-[var(--color-gsp-surface-muted)] rounded-md shadow-[var(--shadow-1)] focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
                   >
                     <option value="thesis">Thesis</option>
@@ -296,12 +299,15 @@ export default function ScholarUploadPage() {
                   </select>
                 </div>
                 <div>
-                  <label htmlFor="doi" className="block text-sm font-medium text-[var(--color-gsp-text-primary)]">DOI (Optional)</label>
+                  <label htmlFor="doi" className="block text-sm font-medium text-[var(--color-gsp-text-primary)]">
+                    {selectedContentType === 'thesis' ? 'DOI (Required)' : 'DOI (Optional)'}
+                  </label>
                   <input aria-label="Input field" 
                     type="text" 
                     name="doi" 
                     id="doi" 
-                    placeholder="Enter DOI if you already have one (e.g. 10.1234/abc)"
+                    required={selectedContentType === 'thesis'}
+                    placeholder={selectedContentType === 'thesis' ? "Enter your DOI" : "Enter DOI if you already have one (e.g. 10.1234/abc)"}
                     className="mt-1 block w-full px-4 py-3 border border-[var(--color-gsp-border-default)] rounded-md shadow-[var(--shadow-1)] focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm" 
                   />
                 </div>

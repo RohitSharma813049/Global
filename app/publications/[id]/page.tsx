@@ -11,6 +11,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import SaveButton from "@/components/save-button"
 import PublicationViewer from "./PublicationViewer"
 import DownloadButton from "./DownloadButton"
+import ShareButton from "./ShareButton"
 import { User } from "lucide-react"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 
@@ -162,12 +163,11 @@ export default async function PublicationDetailPage({ params }: Props) {
               </button>
             )}
 
-            <div className="share-wrap">
-              <button className="abtn">
-                <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="11" cy="3" r="1.5" stroke="currentColor" strokeWidth="1.3"/><circle cx="11" cy="11" r="1.5" stroke="currentColor" strokeWidth="1.3"/><circle cx="3" cy="7" r="1.5" stroke="currentColor" strokeWidth="1.3"/><path d="M9.5 3.8L4.5 6.2M9.5 10.2L4.5 7.8" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/></svg>
-                <span>Share</span>
-              </button>
-            </div>
+            <ShareButton 
+              title={publication.title} 
+              text={publication.abstract?.replace(/<[^>]+>/g, '').substring(0, 150) || "Read this publication on Global Scholar Publications"}
+              publicationId={publication.id}
+            />
           </div>
         </div>
 
@@ -185,7 +185,7 @@ export default async function PublicationDetailPage({ params }: Props) {
                       <iframe 
                         src={publication.video_url} 
                         className="w-full h-full border-0" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                         allowFullScreen
                       />
                    </div>

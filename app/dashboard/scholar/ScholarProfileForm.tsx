@@ -250,6 +250,7 @@ export default function ScholarProfileForm({ scholar }: { scholar: any }) {
               name="profile_photo" 
               id="profile_photo" 
               accept="image/png,image/jpeg,image/webp"
+              capture="user"
               className="block w-full border border-gray-200 rounded-md bg-white text-gray-500 text-sm focus:outline-none focus:ring-1 focus:ring-purple-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#F3E8FF] file:text-[#6B21A8] hover:file:bg-[#E9D5FF] cursor-pointer" 
             />
             {scholar.profile_photo_url && !deletedMedia.includes(scholar.profile_photo_url) && (
@@ -298,6 +299,7 @@ export default function ScholarProfileForm({ scholar }: { scholar: any }) {
                       name="gallery_images" 
                       type="file" 
                       accept="image/*" 
+                      capture="environment"
                       multiple 
                       className="sr-only" 
                       onChange={(e) => {
