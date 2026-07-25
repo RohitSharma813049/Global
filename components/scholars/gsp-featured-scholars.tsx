@@ -20,7 +20,7 @@ interface ScholarCardData {
 const defaultScholars: ScholarCardData[] = [
   {
     name: "Dr. Priya Nair-Kapoor",
-    image: "/placeholder-user.jpg",
+    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=480&h=560",
     country: "India",
     countryFlag: "🇮🇳",
     publications: 42,
@@ -30,7 +30,7 @@ const defaultScholars: ScholarCardData[] = [
   },
   {
     name: "Dr. Ngozi Adeyemi",
-    image: "/placeholder-user.jpg",
+    image: "https://images.unsplash.com/photo-1531123897727-8f129e1bf98c?auto=format&fit=crop&q=80&w=480&h=560",
     country: "Nigeria",
     countryFlag: "🇳🇬",
     publications: 37,
@@ -40,7 +40,7 @@ const defaultScholars: ScholarCardData[] = [
   },
   {
     name: "Dr. Amira Al-Rashidi",
-    image: "/placeholder-user.jpg",
+    image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=480&h=560",
     country: "UAE",
     countryFlag: "🇦🇪",
     publications: 29,
@@ -50,7 +50,7 @@ const defaultScholars: ScholarCardData[] = [
   },
   {
     name: "Prof. Khalid Al-Mansouri",
-    image: "/placeholder-user.jpg",
+    image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=480&h=560",
     country: "Saudi Arabia",
     countryFlag: "🇸🇦",
     publications: 51,
@@ -60,7 +60,7 @@ const defaultScholars: ScholarCardData[] = [
   },
   {
     name: "Prof. Li Wei",
-    image: "/placeholder-user.jpg",
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=480&h=560",
     country: "China",
     countryFlag: "🇨🇳",
     publications: 33,
@@ -70,7 +70,7 @@ const defaultScholars: ScholarCardData[] = [
   },
   {
     name: "Dr. Carlos Mendieta",
-    image: "/placeholder-user.jpg",
+    image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=480&h=560",
     country: "Mexico",
     countryFlag: "🇲🇽",
     publications: 26,
@@ -80,7 +80,7 @@ const defaultScholars: ScholarCardData[] = [
   },
   {
     name: "Dr. Hana Kobayashi",
-    image: "/placeholder-user.jpg",
+    image: "https://images.unsplash.com/photo-1598550874175-4d0ef436c909?auto=format&fit=crop&q=80&w=480&h=560",
     country: "Japan",
     countryFlag: "🇯🇵",
     publications: 39,
@@ -90,7 +90,7 @@ const defaultScholars: ScholarCardData[] = [
   },
   {
     name: "Prof. Elena Marchetti",
-    image: "/placeholder-user.jpg",
+    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=480&h=560",
     country: "Italy",
     countryFlag: "🇮🇹",
     publications: 44,
