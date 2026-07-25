@@ -214,6 +214,9 @@ export default function PublicationViewer({ publication, isVideo }: PublicationV
         </button>
       </div>
 
+
+      
+
       <div className="viewer-shell">
 
         {/* ── PDF viewer ── */}
