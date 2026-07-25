@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { getAllUsers, blockUser, updateUserRole, createAdminUser, deleteUser } from '@/app/actions/users'
 import toast from 'react-hot-toast'
 import { useSession } from 'next-auth/react'
+import { MoreVertical, Ban, Unlock, Trash2 } from 'lucide-react'
 
 export default function AdminUsersPage() {
   const { data: session } = useSession()
@@ -12,6 +13,15 @@ export default function AdminUsersPage() {
   const [showAddAdmin, setShowAddAdmin] = useState(false)
   const [newAdmin, setNewAdmin] = useState({ name: '', email: '', password: '' })
   const [addingAdmin, setAddingAdmin] = useState(false)
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null)
+
+  useEffect(() => {
+    function handleClickOutside() {
+      setOpenMenuId(null)
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])
 
   const fetchUsers = async () => {
     try {
@@ -233,20 +243,41 @@ export default function AdminUsersPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       {session?.user?.id !== user.id && (
-                        <div className="flex justify-end gap-2">
+                        <div className="relative inline-block text-left">
                           <button
-                            onClick={() => handleToggleBlock(user.id, user.is_blocked)}
-                            className={`px-3 py-1 rounded text-white ${user.is_blocked ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'}`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setOpenMenuId(openMenuId === user.id ? null : user.id);
+                            }}
+                            className="p-1 rounded-md hover:bg-gray-100 transition-colors"
                           >
-                            {user.is_blocked ? 'Unblock' : 'Block'}
+                            <MoreVertical className="w-5 h-5 text-gray-500" />
                           </button>
-                          {((isSuperAdmin) || (isAdmin && user.role !== 'admin' && user.role !== 'super_admin')) && (
-                            <button
-                              onClick={() => handleDeleteUser(user.id, user.role)}
-                              className="px-3 py-1 rounded text-white bg-gray-600 hover:bg-gray-700"
+
+                          {openMenuId === user.id && (
+                            <div 
+                              className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-md shadow-lg z-50 py-1"
+                              onMouseDown={(e) => e.stopPropagation()}
                             >
-                              Delete
-                            </button>
+                              <button
+                                onClick={() => { setOpenMenuId(null); handleToggleBlock(user.id, user.is_blocked); }}
+                                className={`w-full text-left px-4 py-2 text-sm flex items-center gap-2 ${user.is_blocked ? 'text-green-700 hover:bg-green-50' : 'text-amber-700 hover:bg-amber-50'}`}
+                              >
+                                {user.is_blocked ? <><Unlock className="w-4 h-4" /> Unblock</> : <><Ban className="w-4 h-4" /> Block</>}
+                              </button>
+                              
+                              {((isSuperAdmin) || (isAdmin && user.role !== 'admin' && user.role !== 'super_admin')) && (
+                                <>
+                                  <div className="border-t border-gray-100 my-1"></div>
+                                  <button
+                                    onClick={() => { setOpenMenuId(null); handleDeleteUser(user.id, user.role); }}
+                                    className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+                                  >
+                                    <Trash2 className="w-4 h-4" /> Delete
+                                  </button>
+                                </>
+                              )}
+                            </div>
                           )}
                         </div>
                       )}

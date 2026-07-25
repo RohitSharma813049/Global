@@ -97,9 +97,7 @@ export default function ScholarApplicationsTable({ initialApplications }: { init
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  {app.status === 'pending' && (
-                    <ApplicationActionButtons applicationId={app.id} />
-                  )}
+                  <ApplicationActionButtons applicationId={app.id} currentStatus={app.status} />
                 </td>
               </tr>
             ))}

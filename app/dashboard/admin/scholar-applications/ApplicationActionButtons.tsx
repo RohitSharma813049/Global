@@ -9,8 +9,12 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
+import { MoreVertical, CheckCircle, XCircle, Undo2 } from 'lucide-react'
+import { useEffect, useRef } from 'react'
 
-export default function ApplicationActionButtons({ applicationId }: { applicationId: string }) {
+export default function ApplicationActionButtons({ applicationId, currentStatus }: { applicationId: string, currentStatus?: string }) {
+  const [showMenu, setShowMenu] = useState(false)
+  const menuRef = useRef<HTMLDivElement>(null)
   const [loading, setLoading] = useState(false)
   const [isRejectOpen, setIsRejectOpen] = useState(false)
   const [rejectReason, setRejectReason] = useState('')
@@ -30,22 +34,61 @@ export default function ApplicationActionButtons({ applicationId }: { applicatio
     setRejectReason('')
   }
 
+  const handleUnapprove = async () => {
+    setLoading(true)
+    await updateApplicationStatus(applicationId, 'pending')
+    setLoading(false)
+    setShowMenu(false)
+  }
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setShowMenu(false)
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])
+
   return (
-    <div className="flex space-x-2">
+    <div className="relative" ref={menuRef}>
       <button
-        onClick={handleApprove}
+        onClick={() => setShowMenu(!showMenu)}
+        className="p-1 rounded-md hover:bg-gray-100 transition-colors"
         disabled={loading}
-        className="px-3 py-1 bg-emerald-100 text-emerald-700 hover:bg-emerald-200 rounded-md text-sm font-medium transition-colors disabled:opacity-50"
       >
-        Approve
+        <MoreVertical className="w-5 h-5 text-gray-500" />
       </button>
-      <button
-        onClick={() => setIsRejectOpen(true)}
-        disabled={loading}
-        className="px-3 py-1 bg-red-100 text-red-700 hover:bg-red-200 rounded-md text-sm font-medium transition-colors disabled:opacity-50"
-      >
-        Reject
-      </button>
+
+      {showMenu && (
+        <div className="absolute right-0 mt-1 w-40 bg-white border border-gray-200 rounded-md shadow-lg z-50 py-1">
+          {currentStatus === 'pending' && (
+            <>
+              <button
+                onClick={() => { setShowMenu(false); handleApprove(); }}
+                className="w-full text-left px-4 py-2 text-sm text-emerald-700 hover:bg-emerald-50 flex items-center gap-2"
+              >
+                <CheckCircle className="w-4 h-4" /> Approve
+              </button>
+              <button
+                onClick={() => { setShowMenu(false); setIsRejectOpen(true); }}
+                className="w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-red-50 flex items-center gap-2"
+              >
+                <XCircle className="w-4 h-4" /> Reject
+              </button>
+            </>
+          )}
+          {(currentStatus === 'approved' || currentStatus === 'rejected') && (
+            <button
+              onClick={handleUnapprove}
+              className="w-full text-left px-4 py-2 text-sm text-amber-600 hover:bg-amber-50 flex items-center gap-2"
+            >
+              <Undo2 className="w-4 h-4" /> Move to Pending
+            </button>
+          )}
+        </div>
+      )}
 
       <Dialog open={isRejectOpen} onOpenChange={setIsRejectOpen}>
         <DialogContent className="sm:max-w-md">

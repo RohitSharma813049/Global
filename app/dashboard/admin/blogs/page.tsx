@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { getBlogs, createBlog, deleteBlog } from '@/app/actions/cms'
 import toast from 'react-hot-toast'
 import ImageUpload from '@/components/image-upload'
+import { MoreVertical, Trash2 } from 'lucide-react'
 
 export default function BlogsManager() {
   const [blogs, setBlogs] = useState<any[]>([])
@@ -11,6 +12,15 @@ export default function BlogsManager() {
   const [showModal, setShowModal] = useState(false)
   const [newBlog, setNewBlog] = useState({ title: '', slug: '', content: '', cover_image: '' })
   const [saving, setSaving] = useState(false)
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null)
+
+  useEffect(() => {
+    function handleClickOutside() {
+      setOpenMenuId(null)
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])
 
   const loadBlogs = async () => {
     try {
@@ -91,7 +101,31 @@ export default function BlogsManager() {
                     {new Date(blog.created_at).toLocaleDateString()}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <button onClick={() => handleDelete(blog.id)} className="text-red-600 hover:text-red-900">Delete</button>
+                    <div className="relative inline-block text-left">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setOpenMenuId(openMenuId === blog.id ? null : blog.id);
+                        }}
+                        className="p-1 rounded-md hover:bg-gray-100 transition-colors"
+                      >
+                        <MoreVertical className="w-5 h-5 text-gray-500" />
+                      </button>
+
+                      {openMenuId === blog.id && (
+                        <div 
+                          className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded-md shadow-lg z-50 py-1"
+                          onMouseDown={(e) => e.stopPropagation()}
+                        >
+                          <button
+                            onClick={() => { setOpenMenuId(null); handleDelete(blog.id); }}
+                            className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+                          >
+                            <Trash2 className="w-4 h-4" /> Delete
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}

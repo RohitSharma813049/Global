@@ -568,6 +568,10 @@ model publications {
   categories              categories?       @relation(fields: [category_id], references: [id], onDelete: SetNull, onUpdate: NoAction)
   reading_history         reading_history[]
 
+  @@index([scholar_id])
+  @@index([category_id])
+  @@index([status])
+  @@index([created_at(sort: Desc)])
   @@schema("public")
 }
 
@@ -585,28 +589,34 @@ model scholar_applications {
   created_at     DateTime? @default(now()) @db.Timestamptz(6)
   users          users?    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
+  @@index([status])
+  @@index([user_id])
   @@schema("public")
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model scholars {
-  id              String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  user_id         String?        @unique @db.Uuid
-  username        String?        @unique
-  bio             String?
-  institution     String?
-  qualification   String?
-  specialization  String?
-  verified        Boolean?       @default(false)
-  is_featured     Boolean?       @default(false)
-  total_views     Int?           @default(0)
-  total_downloads Int?           @default(0)
-  video_url       String?
-  gallery_images  String[]       @default([])
-  gallery_videos  String[]       @default([])
-  deleted_at      DateTime?      @db.Timestamptz(6)
-  publications    publications[]
-  users           users?         @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id                String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id           String?        @unique @db.Uuid
+  username          String?        @unique
+  bio               String?
+  institution       String?
+  qualification     String?
+  specialization    String?
+  verified          Boolean?       @default(false)
+  is_featured       Boolean?       @default(false)
+  total_views       Int?           @default(0)
+  total_downloads   Int?           @default(0)
+  video_url         String?
+  gallery_images    String[]       @default([])
+  gallery_videos    String[]       @default([])
+  linkedin_url      String?
+  twitter_url       String?
+  website_url       String?
+  profile_photo_url String?
+  deleted_at        DateTime?      @db.Timestamptz(6)
+  publications      publications[]
+  users             users?         @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@schema("public")
 }
@@ -732,6 +742,8 @@ model blogs {
   deleted_at  DateTime? @db.Timestamptz(6)
   users       users?    @relation(fields: [author_id], references: [id], onDelete: SetNull, onUpdate: NoAction)
 
+  @@index([status])
+  @@index([created_at(sort: Desc)])
   @@schema("public")
 }
 
@@ -747,6 +759,8 @@ model news {
   updated_at   DateTime? @default(now()) @db.Timestamptz(6)
   deleted_at   DateTime? @db.Timestamptz(6)
 
+  @@index([status])
+  @@index([published_at(sort: Desc)])
   @@schema("public")
 }
 

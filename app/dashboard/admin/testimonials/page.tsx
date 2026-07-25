@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { getTestimonials, createTestimonial, deleteTestimonial, updateTestimonial } from '@/app/actions/cms'
 import toast from 'react-hot-toast'
 import ImageUpload from '@/components/image-upload'
+import { MoreVertical, Edit2, Trash2 } from 'lucide-react'
 
 export default function TestimonialsManager() {
   const [items, setItems] = useState<any[]>([])
@@ -12,6 +13,15 @@ export default function TestimonialsManager() {
   const [newItem, setNewItem] = useState({ id: '', quote: '', author: '', role: '', rating: 5, image: '' })
   const [isEditing, setIsEditing] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null)
+
+  useEffect(() => {
+    function handleClickOutside() {
+      setOpenMenuId(null)
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])
 
   const loadItems = async () => {
     try {
@@ -110,8 +120,37 @@ export default function TestimonialsManager() {
                   <td className="px-6 py-4 text-sm text-[var(--color-gsp-text-secondary)] truncate max-w-xs">{item.quote}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--color-gsp-text-secondary)]">{item.rating}/5</td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <button onClick={() => { setNewItem(item); setIsEditing(true); setShowModal(true); }} className="text-[var(--color-gsp-text-inverse)] hover:text-indigo-900 mr-4">Edit</button>
-                    <button onClick={() => handleDelete(item.id)} className="text-red-600 hover:text-red-900">Delete</button>
+                    <div className="relative inline-block text-left">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setOpenMenuId(openMenuId === item.id ? null : item.id);
+                        }}
+                        className="p-1 rounded-md hover:bg-gray-100 transition-colors"
+                      >
+                        <MoreVertical className="w-5 h-5 text-gray-500" />
+                      </button>
+
+                      {openMenuId === item.id && (
+                        <div 
+                          className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded-md shadow-lg z-50 py-1"
+                          onMouseDown={(e) => e.stopPropagation()}
+                        >
+                          <button
+                            onClick={() => { setOpenMenuId(null); setNewItem(item); setIsEditing(true); setShowModal(true); }}
+                            className="w-full text-left px-4 py-2 text-sm text-[var(--color-gsp-text-secondary)] hover:text-[var(--color-gsp-text-inverse)] hover:bg-[#F4F1FA] flex items-center gap-2"
+                          >
+                            <Edit2 className="w-4 h-4" /> Edit
+                          </button>
+                          <button
+                            onClick={() => { setOpenMenuId(null); handleDelete(item.id); }}
+                            className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+                          >
+                            <Trash2 className="w-4 h-4" /> Delete
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}

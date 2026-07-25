@@ -47,7 +47,8 @@ export default async function ScholarProfilePage({ params }: Props) {
     prisma.scholars.findMany({
       where: { id: { not: scholar.id } },
       take: 4,
-      orderBy: { total_views: 'desc' }
+      orderBy: { total_views: 'desc' },
+      include: { users: true }
     })
   ]);
 
@@ -103,7 +104,10 @@ export default async function ScholarProfilePage({ params }: Props) {
     is_featured: scholar.is_featured ?? false,
     total_views: scholar.total_views ?? 0,
     total_downloads: scholar.total_downloads ?? 0,
-    avatar_url: rawMetaData.avatar_url || rawMetaData.picture || rawMetaData.image || '',
+    avatar_url: scholar.profile_photo_url || rawMetaData.avatar_url || rawMetaData.picture || rawMetaData.image || '',
+    linkedin_url: scholar.linkedin_url,
+    twitter_url: scholar.twitter_url,
+    website_url: scholar.website_url,
   }
 
   const videoUrl = scholar.video_url || rawMetaData.video_url;
@@ -131,24 +135,33 @@ export default async function ScholarProfilePage({ params }: Props) {
     }
   ];
 
-  const formattedOtherScholars = rawOtherScholars.map(s => {
-    const sMeta = typeof s.metadata === 'string' ? JSON.parse(s.metadata) : (s.metadata || {});
+  const formattedOtherScholars = rawOtherScholars.map((s: any) => {
+    const rawMetaData = s.users?.raw_user_meta_data as any || {};
+    const name = rawMetaData.name || s.users?.email?.split('@')[0] || 'Unknown';
+    const initials = (() => {
+      const nameParts = name.split(' ');
+      if (nameParts.length >= 2) {
+        return (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase();
+      }
+      return nameParts[0].substring(0, 2).toUpperCase();
+    })();
+
     return {
       id: s.id,
-      name: `${s.first_name} ${s.last_name}`,
-      initials: `${s.first_name?.[0] || ''}${s.last_name?.[0] || ''}`.toUpperCase(),
-      professional_role: sMeta.professional_role || 'Scholar',
-      country: sMeta.country || '',
-      country_code: sMeta.country_code || '',
-      flag_emoji: sMeta.flag_emoji || '🌐',
-      domain: sMeta.domain || '',
+      name: name,
+      initials: initials,
+      professional_role: s.qualification || s.institution || 'Scholar',
+      country: rawMetaData.country || 'Global',
+      country_code: 'UN',
+      flag_emoji: '🌐',
+      domain: s.specialization || 'General Research',
       description: s.bio || '',
-      is_honorary: s.is_featured ?? false,
-      is_verified: s.is_featured ?? false,
+      is_honorary: false,
+      is_verified: s.verified ?? false,
       is_featured: s.is_featured ?? false,
       total_views: s.total_views ?? 0,
       total_downloads: s.total_downloads ?? 0,
-      avatar_url: sMeta.avatar_url || sMeta.picture || sMeta.image || '',
+      avatar_url: rawMetaData.avatar_url || rawMetaData.picture || rawMetaData.image || ''
     };
   });
 

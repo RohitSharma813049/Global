@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { getCategories, createCategory, updateCategory, deleteCategory, getContentTypes } from '@/app/actions/taxonomy'
 import { MdEdit, MdDelete, MdGridView, MdViewList, MdSearch } from 'react-icons/md'
+import { MoreVertical } from 'lucide-react'
 import toast from 'react-hot-toast'
 import ImageUpload from '@/components/image-upload'
 
@@ -27,6 +28,7 @@ export default function CategoriesAdminPage() {
   const [loading, setLoading] = useState(true)
 
   const [isEditing, setIsEditing] = useState<string | null>(null)
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null)
   
   // New States
   const [categoryType, setCategoryType] = useState<'parent' | 'sub'>('parent')
@@ -61,6 +63,12 @@ export default function CategoriesAdminPage() {
 
   useEffect(() => {
     fetchCategories()
+
+    function handleClickOutside() {
+      setOpenMenuId(null)
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -301,13 +309,36 @@ export default function CategoriesAdminPage() {
                       ))}
                     </div>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <button onClick={() => handleEdit(cat)} className="p-2 text-[var(--color-gsp-text-secondary)] hover:text-[var(--color-gsp-text-inverse)] hover:bg-[#F4F1FA] rounded transition-colors" title="Edit Category">
-                      <MdEdit size={20} />
+                  <div className="relative inline-block text-left">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setOpenMenuId(openMenuId === cat.id ? null : cat.id);
+                      }}
+                      className="p-1 rounded-md hover:bg-gray-100 transition-colors"
+                    >
+                      <MoreVertical className="w-5 h-5 text-gray-500" />
                     </button>
-                    <button onClick={() => handleDelete(cat.id)} className="p-2 text-[var(--color-gsp-text-secondary)] hover:text-red-600 hover:bg-red-50 rounded transition-colors" title="Delete Category">
-                      <MdDelete size={20} />
-                    </button>
+
+                    {openMenuId === cat.id && (
+                      <div 
+                        className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded-md shadow-lg z-50 py-1"
+                        onMouseDown={(e) => e.stopPropagation()}
+                      >
+                        <button
+                          onClick={() => { setOpenMenuId(null); handleEdit(cat); }}
+                          className="w-full text-left px-4 py-2 text-sm text-[var(--color-gsp-text-secondary)] hover:text-[var(--color-gsp-text-inverse)] hover:bg-[#F4F1FA] flex items-center gap-2"
+                        >
+                          <MdEdit size={16} /> Edit
+                        </button>
+                        <button
+                          onClick={() => { setOpenMenuId(null); handleDelete(cat.id); }}
+                          className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+                        >
+                          <MdDelete size={16} /> Delete
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
@@ -317,13 +348,36 @@ export default function CategoriesAdminPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {filteredCategories.map(cat => (
                 <div key={cat.id} className="bg-[var(--color-gsp-surface-muted)] p-5 rounded-[var(--radius-xl)] shadow-[var(--shadow-1)] border border-[var(--color-gsp-border-muted)] hover:border-indigo-300 hover:shadow-[var(--shadow-2)] transition-all group relative">
-                  <div className="absolute top-4 right-4 flex opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button onClick={() => handleEdit(cat)} className="p-1.5 text-[var(--color-gsp-text-secondary)] hover:text-[var(--color-gsp-text-inverse)] hover:bg-[#F4F1FA] rounded transition-colors">
-                      <MdEdit size={18} />
+                  <div className="absolute top-4 right-4 relative inline-block text-left">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setOpenMenuId(openMenuId === cat.id ? null : cat.id);
+                      }}
+                      className={`p-1.5 rounded transition-colors ${openMenuId === cat.id ? 'opacity-100 bg-gray-100 text-gray-700' : 'opacity-0 group-hover:opacity-100 text-[var(--color-gsp-text-secondary)] hover:bg-gray-100'}`}
+                    >
+                      <MoreVertical className="w-5 h-5" />
                     </button>
-                    <button onClick={() => handleDelete(cat.id)} className="p-1.5 text-[var(--color-gsp-text-secondary)] hover:text-red-600 hover:bg-red-50 rounded transition-colors">
-                      <MdDelete size={18} />
-                    </button>
+
+                    {openMenuId === cat.id && (
+                      <div 
+                        className="absolute right-0 mt-1 w-32 bg-white border border-gray-200 rounded-md shadow-lg z-50 py-1"
+                        onMouseDown={(e) => e.stopPropagation()}
+                      >
+                        <button
+                          onClick={() => { setOpenMenuId(null); handleEdit(cat); }}
+                          className="w-full text-left px-4 py-2 text-sm text-[var(--color-gsp-text-secondary)] hover:text-[var(--color-gsp-text-inverse)] hover:bg-[#F4F1FA] flex items-center gap-2"
+                        >
+                          <MdEdit size={16} /> Edit
+                        </button>
+                        <button
+                          onClick={() => { setOpenMenuId(null); handleDelete(cat.id); }}
+                          className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+                        >
+                          <MdDelete size={16} /> Delete
+                        </button>
+                      </div>
+                    )}
                   </div>
 
                   {!cat.parent_id ? (

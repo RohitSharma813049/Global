@@ -3,11 +3,20 @@
 import React, { useState, useEffect } from 'react'
 import { getAllScholarsForAdmin, toggleScholarFeaturedStatus } from '@/app/actions/cms'
 import toast from 'react-hot-toast'
+import { MoreVertical, Star, StarOff } from 'lucide-react'
 
 export default function FeaturedScholarsManager() {
-   
   const [scholars, setScholars] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null)
+
+  useEffect(() => {
+    function handleClickOutside() {
+      setOpenMenuId(null)
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])
 
   const loadScholars = async () => {
     try {
@@ -72,15 +81,36 @@ export default function FeaturedScholarsManager() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--color-gsp-text-secondary)]">{scholar.specialization || 'N/A'}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--color-gsp-text-secondary)]">{scholar._count?.publications || 0}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right">
-                      <button 
-                        onClick={() => handleToggle(scholar.id, !!scholar.is_featured)}
-                        title={scholar.is_featured ? "Un-feature scholar" : "Feature scholar"}
-                        aria-label={scholar.is_featured ? "Un-feature scholar" : "Feature scholar"}
-                        className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${scholar.is_featured ? 'bg-[var(--color-gsp-text-inverse)]' : 'bg-gray-200'}`}
-                      >
-                        <span className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-[var(--color-gsp-surface-muted)] shadow ring-0 transition duration-200 ease-in-out ${scholar.is_featured ? 'translate-x-5' : 'translate-x-0'}`} />
-                      </button>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <div className="relative inline-block text-left">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setOpenMenuId(openMenuId === scholar.id ? null : scholar.id);
+                          }}
+                          className="p-1 rounded-md hover:bg-gray-100 transition-colors"
+                        >
+                          <MoreVertical className="w-5 h-5 text-gray-500" />
+                        </button>
+
+                        {openMenuId === scholar.id && (
+                          <div 
+                            className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50 py-1"
+                            onMouseDown={(e) => e.stopPropagation()}
+                          >
+                            <button
+                              onClick={() => { setOpenMenuId(null); handleToggle(scholar.id, !!scholar.is_featured); }}
+                              className="w-full text-left px-4 py-2 text-sm text-[var(--color-gsp-text-secondary)] hover:text-[var(--color-gsp-text-primary)] hover:bg-[#F4F1FA] flex items-center gap-2"
+                            >
+                              {scholar.is_featured ? (
+                                <><StarOff className="w-4 h-4 text-amber-500" /> Un-feature Scholar</>
+                              ) : (
+                                <><Star className="w-4 h-4 text-amber-500" /> Feature Scholar</>
+                              )}
+                            </button>
+                          </div>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 )

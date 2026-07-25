@@ -25,6 +25,23 @@ export async function updateScholarProfile(formData: FormData) {
     const institution = formData.get('institution') as string
     const qualification = formData.get('qualification') as string
     const specialization = formData.get('specialization') as string
+    const linkedin_url = formData.get('linkedin_url') as string
+    const twitter_url = formData.get('twitter_url') as string
+    const website_url = formData.get('website_url') as string
+
+    // Handle Profile Photo Upload
+    const profilePhotoFile = formData.get('profile_photo') as File | null
+    let profilePhotoUrl = undefined;
+    if (profilePhotoFile && profilePhotoFile.size > 0) {
+      const buffer = Buffer.from(await profilePhotoFile.arrayBuffer())
+      try {
+        const { uploadFileToR2 } = await import('@/lib/r2');
+        profilePhotoUrl = await uploadFileToR2(buffer, profilePhotoFile.name, `scholars/${session.user.id}/images`, profilePhotoFile.type);
+      } catch (err: any) {
+        console.error("R2 Upload failed:", err);
+        throw new Error("Cloud storage upload failed: " + (err.message || "Unknown error"));
+      }
+    }
 
     // Handle Main Video Upload
     const videoFile = formData.get('video_file') as File | null
@@ -81,7 +98,7 @@ export async function updateScholarProfile(formData: FormData) {
     // Fetch existing scholar profile to append images instead of replacing
     const { data: existingScholar } = await supabaseAdmin
       .from('scholars')
-      .select('video_url, gallery_images, gallery_videos')
+      .select('video_url, gallery_images, gallery_videos, profile_photo_url')
       .eq('user_id', session.user.id)
       .single()
 
@@ -95,7 +112,16 @@ export async function updateScholarProfile(formData: FormData) {
       bio,
       institution,
       qualification,
-      specialization
+      specialization,
+      linkedin_url,
+      twitter_url,
+      website_url
+    }
+
+    if (profilePhotoUrl) {
+      updateData.profile_photo_url = profilePhotoUrl
+    } else if (existingScholar?.profile_photo_url && deletedMediaUrls.includes(existingScholar.profile_photo_url)) {
+      updateData.profile_photo_url = null
     }
 
     // Process video deletions and additions
