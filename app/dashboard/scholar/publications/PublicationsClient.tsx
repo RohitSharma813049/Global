@@ -217,23 +217,17 @@ export default function PublicationsClient({ initialPublications }: { initialPub
             </div>
 
             <div className="p-6 border-t bg-gray-50 flex justify-end gap-3 mt-auto">
-              {selectedPub.file_url && selectedPub.file_url.trim() !== '' && (
+              {selectedPub.file_url && selectedPub.file_url.trim() !== '' && selectedPub.file_url !== '#' && (
                 <a 
                   href={selectedPub.file_url} 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="px-5 py-2.5 bg-[#2F115D] text-white rounded-md font-medium hover:bg-[#3d167a] shadow-sm transition-colors"
-                  onClick={(e) => {
-                    if (selectedPub.file_url === '#') {
-                      e.preventDefault();
-                      alert('Document URL is not available.');
-                    }
-                  }}
                 >
                   View Document
                 </a>
               )}
-              {selectedPub.video_url && selectedPub.video_url.trim() !== '' && (
+              {selectedPub.video_url && selectedPub.video_url.trim() !== '' && selectedPub.video_url !== '#' && (
                 <a 
                   href={selectedPub.video_url} 
                   target="_blank" 
