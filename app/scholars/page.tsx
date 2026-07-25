@@ -7,9 +7,10 @@ import Image from "next/image"
 export default async function ScholarsListingPage({
   searchParams,
 }: {
-  searchParams: { q?: string }
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
-  const query = searchParams.q || ''
+  const params = await searchParams
+  const query = (typeof params.q === 'string' ? params.q : '') || ''
 
   // Fetch scholars
   const scholars = await prisma.scholars.findMany({

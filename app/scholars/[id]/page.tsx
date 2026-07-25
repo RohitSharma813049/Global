@@ -37,13 +37,18 @@ export default async function ScholarProfilePage({ params }: Props) {
     return notFound()
   }
 
-  const [rawPublications, rawBlogs] = await Promise.all([
+  const [rawPublications, rawBlogs, rawOtherScholars] = await Promise.all([
     prisma.publications.findMany({
       where: { scholar_id: scholar.id, status: 'published', deleted_at: null }
     }),
     scholar.user_id ? prisma.blogs.findMany({
       where: { author_id: scholar.user_id, status: 'published' }
-    }) : []
+    }) : Promise.resolve([]),
+    prisma.scholars.findMany({
+      where: { id: { not: scholar.id } },
+      take: 4,
+      orderBy: { total_views: 'desc' }
+    })
   ]);
 
   const publications = rawPublications.map((p: any) => ({
@@ -80,7 +85,13 @@ export default async function ScholarProfilePage({ params }: Props) {
     ...scholar,
     id: scholar.id,
     name: rawMetaData.name || scholar.users?.email?.split('@')[0] || 'Unknown',
-    initials: (rawMetaData.name || scholar.users?.email?.split('@')[0] || 'U').substring(0, 2).toUpperCase(),
+    initials: (() => {
+      const nameParts = (rawMetaData.name || scholar.users?.email?.split('@')[0] || 'U').split(' ');
+      if (nameParts.length >= 2) {
+        return (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase();
+      }
+      return nameParts[0].substring(0, 2).toUpperCase();
+    })(),
     professional_role: scholar.qualification || scholar.institution || 'Scholar',
     country: rawMetaData.country || 'Global',
     country_code: 'UN',
@@ -105,13 +116,51 @@ export default async function ScholarProfilePage({ params }: Props) {
     is_main_video: true 
   }] : [];
 
+  const mockReviews = [
+    {
+      id: 'mock-1',
+      reviewer_name: 'Dr. Alistair Vance',
+      reviewer_role: 'Stanford University',
+      content: 'An exceptional contributor to the field of macroeconomics. The frameworks presented in recent publications are highly rigorous and practically applicable.'
+    },
+    {
+      id: 'mock-2',
+      reviewer_name: 'Prof. Evelyn Reyes',
+      reviewer_role: 'Oxford Research Inst.',
+      content: 'The depth of knowledge and interdisciplinary approach is truly commendable. Always a pleasure collaborating on public policy papers.'
+    }
+  ];
+
+  const formattedOtherScholars = rawOtherScholars.map(s => {
+    const sMeta = typeof s.metadata === 'string' ? JSON.parse(s.metadata) : (s.metadata || {});
+    return {
+      id: s.id,
+      name: `${s.first_name} ${s.last_name}`,
+      initials: `${s.first_name?.[0] || ''}${s.last_name?.[0] || ''}`.toUpperCase(),
+      professional_role: sMeta.professional_role || 'Scholar',
+      country: sMeta.country || '',
+      country_code: sMeta.country_code || '',
+      flag_emoji: sMeta.flag_emoji || '🌐',
+      domain: sMeta.domain || '',
+      description: s.bio || '',
+      is_honorary: s.is_featured ?? false,
+      is_verified: s.is_featured ?? false,
+      is_featured: s.is_featured ?? false,
+      total_views: s.total_views ?? 0,
+      total_downloads: s.total_downloads ?? 0,
+      avatar_url: sMeta.avatar_url || sMeta.picture || sMeta.image || '',
+    };
+  });
+
   return (
     <>
-      <main className="min-h-screen bg-gray-50 pt-24">
+      <main className="min-h-screen bg-white">
         <GSPDistinguishedScholars 
           scholar={formattedScholar}
           videos={videos}
           publications={allWorks}
+          reviews={mockReviews}
+          allScholars={formattedOtherScholars}
           isOwner={isOwner}
         />
       </main>

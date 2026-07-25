@@ -14,11 +14,23 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'avatars.githubusercontent.com',
+      },
+      {
+        protocol: 'https',
         hostname: '467da7a00f58c2ce68bb83496d869825.r2.cloudflarestorage.com',
       },
       {
         protocol: 'https',
         hostname: 'pub-*.r2.dev', // Add generic public R2 URL pattern just in case
+      },
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
       }
     ],
   },
