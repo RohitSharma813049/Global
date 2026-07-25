@@ -61,7 +61,7 @@ export default function ScholarProfileForm({ scholar }: { scholar: any }) {
 
   if (!isEditing) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-4 md:space-y-6">
         {message && (
           <div className={`p-3 rounded-md text-sm ${message.startsWith('Error') ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'}`}>
             {message}
@@ -73,7 +73,7 @@ export default function ScholarProfileForm({ scholar }: { scholar: any }) {
           <p className="mt-2 text-[var(--color-gsp-text-primary)] whitespace-pre-wrap">{scholar.bio || 'No biography provided.'}</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           <div>
             <h3 className="text-sm font-medium text-[var(--color-gsp-text-secondary)] uppercase tracking-wide">Institution</h3>
             <p className="mt-1 text-[var(--color-gsp-text-primary)]">{scholar.institution || 'Not specified'}</p>

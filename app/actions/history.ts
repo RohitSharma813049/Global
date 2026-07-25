@@ -4,6 +4,7 @@ import { createClient } from "@supabase/supabase-js"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { revalidatePath } from "next/cache"
+import { prisma } from "@/lib/db"
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
@@ -30,6 +31,28 @@ export async function trackPublicationView(publicationId: string) {
   if (error) {
     console.error('Failed to track view history:', error)
     return { error: error.message }
+  }
+
+  // Also actually increment the views counter for real data tracking!
+  try {
+    await prisma.publications.update({
+      where: { id: publicationId },
+      data: { views: { increment: 1 } }
+    });
+
+    const pub = await prisma.publications.findUnique({
+      where: { id: publicationId },
+      select: { scholar_id: true }
+    });
+
+    if (pub?.scholar_id) {
+      await prisma.scholars.update({
+        where: { id: pub.scholar_id },
+        data: { total_views: { increment: 1 } }
+      });
+    }
+  } catch (incError) {
+    console.error('Failed to increment views:', incError);
   }
 
   return { success: true }
@@ -63,3 +86,27 @@ export async function getReadingHistory() {
 
   return data
 }
+
+export async function trackPublicationDownload(publicationId: string) {
+  try {
+    await prisma.publications.update({
+      where: { id: publicationId },
+      data: { downloads: { increment: 1 } }
+    });
+
+    const pub = await prisma.publications.findUnique({
+      where: { id: publicationId },
+      select: { scholar_id: true }
+    });
+
+    if (pub?.scholar_id) {
+      await prisma.scholars.update({
+        where: { id: pub.scholar_id },
+        data: { total_downloads: { increment: 1 } }
+      });
+    }
+  } catch (err) {
+    console.error('Failed to increment downloads:', err);
+  }
+}
+

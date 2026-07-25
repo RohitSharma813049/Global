@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 export interface Scholar {
   id: string;
@@ -62,50 +63,70 @@ export default function GSPDistinguishedScholars({ scholar, videos = [], publica
   return (
     <div className="font-['Space_Grotesk'] text-[#0A0A0A] bg-[#F8F7FC] min-h-screen pb-24">
       {/* Hero Header */}
-      <div className="bg-white border-b border-[#ECEAF4] pt-16 pb-12 px-6 md:px-12 text-center relative overflow-hidden">
+      <div className="relative border-b border-[#ECEAF4] pt-28 pb-16 px-6 md:px-12 text-center overflow-hidden">
+        {/* Dynamic Background */}
+        <div className="absolute inset-0 z-0">
+          {scholar.banner_url ? (
+            <>
+              <Image src={scholar.banner_url} alt="Banner" fill className="object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-white via-white/80 to-transparent"></div>
+            </>
+          ) : (
+            <div className="absolute inset-0 bg-[linear-gradient(120deg,#F8F7FC_0%,#f1f0f9_50%,#e8e7f5_100%)]">
+              <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_0%_0%,rgba(47,17,93,0.05)_0%,transparent_50%)]"></div>
+              <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_100%_100%,rgba(47,17,93,0.08)_0%,transparent_50%)]"></div>
+            </div>
+          )}
+          <div className="absolute inset-0 bg-white/40 backdrop-blur-[2px]"></div>
+        </div>
+
         <div className="max-w-4xl mx-auto relative z-10 flex flex-col items-center">
           
-          <div className="w-28 h-28 md:w-32 md:h-32 rounded-full overflow-hidden border-[3px] border-white shadow-lg mb-6 relative bg-[#F8F7FC]">
-            {scholar.avatar_url ? (
-               <Image src={scholar.avatar_url} alt={scholar.name} fill className="object-cover" />
-            ) : (
-               <div className="w-full h-full flex items-center justify-center text-3xl font-bold text-[#2F115D]">{scholar.initials}</div>
-            )}
-            <div className="absolute bottom-1 right-1 w-8 h-8 rounded-full bg-white border-2 border-[#ECEAF4] flex items-center justify-center text-sm shadow-sm">
+          <div className="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-[4px] border-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] mb-8 relative bg-white transition-transform hover:scale-105 duration-300">
+            <div className="absolute inset-0 bg-gradient-to-tr from-[#2F115D]/20 to-transparent z-10 pointer-events-none rounded-full"></div>
+            <Avatar className="w-full h-full relative z-0">
+              <AvatarImage src={scholar.avatar_url || ''} alt={scholar.name} className="object-cover" />
+              <AvatarFallback className="text-4xl md:text-5xl font-bold bg-gradient-to-br from-[#2F115D] to-[#51239c] text-white">
+                {scholar.initials}
+              </AvatarFallback>
+            </Avatar>
+            <div className="absolute bottom-2 right-2 w-10 h-10 rounded-full bg-white border-2 border-white flex items-center justify-center text-lg shadow-md z-20">
               {scholar.flag_emoji}
             </div>
           </div>
 
-          <h1 className="font-['Cormorant_Garamond'] text-4xl md:text-5xl font-bold tracking-tight mb-2 text-[#0A0A0A]">
+          <h1 className="font-['Cormorant_Garamond'] text-5xl md:text-6xl font-bold tracking-tight mb-3 text-[#0A0A0A] drop-shadow-sm">
             {scholar.name}
           </h1>
-          <p className="text-lg text-[#2F115D] font-medium mb-6">
+          <p className="text-xl md:text-2xl text-[#2F115D] font-medium mb-8 bg-white/60 px-6 py-2 rounded-full shadow-sm backdrop-blur-md border border-white/40 inline-block">
             {scholar.professional_role}
           </p>
 
-          <div className="flex flex-wrap justify-center gap-2 mb-8">
+          <div className="flex flex-wrap justify-center gap-3 mb-10">
             {scholar.is_verified && (
-              <span className="px-3 py-1 bg-green-50 text-green-700 border border-green-200 rounded-full text-[10px] font-bold uppercase tracking-widest flex items-center gap-1">
-                <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M10 3L4.5 8.5 2 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              <span className="px-4 py-2 bg-gradient-to-r from-green-50 to-emerald-50 text-emerald-800 border border-emerald-200/60 rounded-full text-[11px] font-bold uppercase tracking-widest flex items-center gap-1.5 shadow-sm hover:shadow-md transition-shadow">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M10 3L4.5 8.5 2 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
                 Verified Scholar
               </span>
             )}
             {scholar.is_honorary && (
-              <span className="px-3 py-1 bg-[#2F115D] text-white rounded-full text-[10px] font-bold uppercase tracking-widest">
+              <span className="px-4 py-2 bg-gradient-to-r from-[#2F115D] to-[#451a8b] text-white rounded-full text-[11px] font-bold uppercase tracking-widest shadow-sm hover:shadow-md transition-shadow">
                 Honorary
               </span>
             )}
-            <span className="px-3 py-1 bg-white border border-[#ECEAF4] text-gray-600 rounded-full text-[10px] font-bold uppercase tracking-widest">
+            <span className="px-4 py-2 bg-white/80 backdrop-blur-sm border border-[#ECEAF4] text-gray-700 rounded-full text-[11px] font-bold uppercase tracking-widest shadow-sm hover:shadow-md transition-shadow">
               {scholar.domain}
             </span>
           </div>
 
           <div className="flex gap-4">
-            <button className="h-10 px-6 bg-[#2F115D] text-white rounded-lg text-xs font-bold tracking-widest uppercase hover:bg-[#1f0b3d] hover:shadow-[0_4px_14px_rgba(47,17,93,0.3)] transition-all">
-              Connect
-            </button>
+            {!isOwner && (
+              <button className="h-12 px-8 bg-gradient-to-r from-[#2F115D] to-[#451a8b] text-white rounded-full text-xs font-bold tracking-widest uppercase hover:shadow-[0_8px_20px_rgba(47,17,93,0.3)] hover:-translate-y-0.5 transition-all duration-300">
+                Connect
+              </button>
+            )}
             {isOwner && (
-              <Link href="/dashboard/settings" className="h-10 px-6 bg-white border border-[#ECEAF4] text-[#0A0A0A] rounded-lg text-xs font-bold tracking-widest uppercase hover:border-[#2F115D] hover:text-[#2F115D] transition-all flex items-center justify-center">
+              <Link href="/dashboard/settings" className="h-12 px-8 bg-white/90 backdrop-blur-md border border-[#ECEAF4] text-[#0A0A0A] rounded-full text-xs font-bold tracking-widest uppercase hover:border-[#2F115D] hover:text-[#2F115D] hover:shadow-[0_8px_20px_rgba(0,0,0,0.05)] hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center">
                 Edit Profile
               </Link>
             )}
@@ -210,7 +231,7 @@ export default function GSPDistinguishedScholars({ scholar, videos = [], publica
             </div>
             <div className="flex flex-col gap-6">
               {filteredPublications.map((pub, i) => (
-                <Link key={i} href={pub.url || `/publications/${pub.id}`} className="group flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 bg-[#F8F7FC] rounded-xl border border-[#ECEAF4] hover:border-[#2F115D] transition-colors">
+                <Link key={i} href={`/publications/${pub.id}`} className="group flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 bg-[#F8F7FC] rounded-xl border border-[#ECEAF4] hover:border-[#2F115D] transition-colors">
                   <div className="flex-1">
                     <h3 className="font-['Cormorant_Garamond'] text-xl font-bold text-[#0A0A0A] mb-2 group-hover:text-[#2F115D] transition-colors leading-tight">
                       {pub.title}

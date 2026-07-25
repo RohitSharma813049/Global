@@ -9,10 +9,28 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
-  Tooltip,
+  Tooltip as RechartsTooltip,
   Legend,
   ResponsiveContainer
 } from 'recharts'
+
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-4">
+        <p className="font-bold text-sm text-gray-800 mb-2">{label}</p>
+        {payload.map((entry: any, index: number) => (
+          <div key={index} className="flex items-center gap-2 text-sm">
+            <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: entry.color }} />
+            <span className="text-gray-600 font-medium">{entry.name}:</span>
+            <span className="text-gray-900 font-bold">{entry.value.toLocaleString()}</span>
+          </div>
+        ))}
+      </div>
+    );
+  }
+  return null;
+};
 
 export default function AnalyticsClient({ publications: initialPublications }: { publications: any[] }) {
   const [publications, setPublications] = useState(initialPublications)
@@ -80,29 +98,29 @@ export default function AnalyticsClient({ publications: initialPublications }: {
       {chartData.length > 0 ? (
         <div className="bg-[var(--color-gsp-surface-main)] p-6 rounded-[var(--radius-xl)] shadow-[var(--shadow-1)] border border-[var(--color-gsp-border-subtle)]">
           <h3 className="text-lg font-bold text-[var(--color-gsp-text-primary)] mb-6">Top Performing Publications</h3>
-          <div className="h-[400px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={chartData}
-                margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
-                <XAxis 
-                  dataKey="name" 
-                  angle={-45} 
-                  textAnchor="end" 
-                  height={80} 
-                  tick={{ fill: '#6B7280', fontSize: 12 }} 
-                />
-                <YAxis tick={{ fill: '#6B7280', fontSize: 12 }} />
-                <Tooltip 
-                  contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                />
-                <Legend verticalAlign="top" height={36} />
-                <Bar dataKey="views" name="Views" fill="#2F115D" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="downloads" name="Downloads" fill="#10B981" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
+          <div className="h-[400px] w-full overflow-x-auto">
+            <div style={{ minWidth: chartData.length > 5 ? '600px' : '100%', height: '100%' }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                  data={chartData}
+                  margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
+                  <XAxis 
+                    dataKey="name" 
+                    angle={-45} 
+                    textAnchor="end" 
+                    height={80} 
+                    tick={{ fill: '#6B7280', fontSize: 12 }} 
+                  />
+                  <YAxis tick={{ fill: '#6B7280', fontSize: 12 }} />
+                  <RechartsTooltip content={<CustomTooltip />} />
+                  <Legend verticalAlign="top" height={36} />
+                  <Bar dataKey="views" name="Views" fill="#2F115D" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="downloads" name="Downloads" fill="#10B981" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           </div>
         </div>
       ) : (

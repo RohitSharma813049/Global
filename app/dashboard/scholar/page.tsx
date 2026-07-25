@@ -101,25 +101,25 @@ export default async function ScholarDashboard() {
   }
 
   return (
-    <div className="p-6 max-w-4xl mx-auto space-y-8 animate-fade-in-up">
+    <div className="p-3 md:p-6 max-w-4xl mx-auto space-y-6 md:space-y-8 animate-fade-in-up">
       <div>
         <h1 className="text-3xl font-bold mb-2">Scholar Profile</h1>
         <p className="text-[var(--color-gsp-text-secondary)]">Manage your public profile information, qualifications, and biography.</p>
       </div>
 
       {/* Metrics Row */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-[var(--color-gsp-surface-muted)] p-6 rounded-[var(--radius-xl)] shadow-[var(--shadow-1)] border border-[var(--color-gsp-border-muted)] flex flex-col items-center justify-center">
-          <span className="text-sm font-medium text-[var(--color-gsp-text-secondary)] uppercase">Total Views</span>
-          <span className="text-4xl font-bold text-[#2F115D] mt-2">{scholar.total_views}</span>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
+        <div className="bg-[var(--color-gsp-surface-muted)] p-4 md:p-6 rounded-[var(--radius-xl)] shadow-[var(--shadow-1)] border border-[var(--color-gsp-border-muted)] flex flex-col items-center justify-center">
+          <span className="text-xs md:text-sm font-medium text-[var(--color-gsp-text-secondary)] uppercase">Total Views</span>
+          <span className="text-3xl md:text-4xl font-bold text-[#2F115D] mt-2">{scholar.total_views}</span>
         </div>
-        <div className="bg-[var(--color-gsp-surface-muted)] p-6 rounded-[var(--radius-xl)] shadow-[var(--shadow-1)] border border-[var(--color-gsp-border-muted)] flex flex-col items-center justify-center">
-          <span className="text-sm font-medium text-[var(--color-gsp-text-secondary)] uppercase">Total Downloads</span>
-          <span className="text-4xl font-bold text-[var(--color-gsp-text-inverse)] mt-2">{scholar.total_downloads}</span>
+        <div className="bg-[var(--color-gsp-surface-muted)] p-4 md:p-6 rounded-[var(--radius-xl)] shadow-[var(--shadow-1)] border border-[var(--color-gsp-border-muted)] flex flex-col items-center justify-center">
+          <span className="text-xs md:text-sm font-medium text-[var(--color-gsp-text-secondary)] uppercase">Total Downloads</span>
+          <span className="text-3xl md:text-4xl font-bold text-[var(--color-gsp-text-inverse)] mt-2">{scholar.total_downloads}</span>
         </div>
-        <div className="bg-[var(--color-gsp-surface-muted)] p-6 rounded-[var(--radius-xl)] shadow-[var(--shadow-1)] border border-[var(--color-gsp-border-muted)] flex flex-col items-center justify-center">
-          <span className="text-sm font-medium text-[var(--color-gsp-text-secondary)] uppercase">Status</span>
-          <span className={`text-xl font-bold mt-2 ${scholar.verified ? 'text-green-600' : 'text-yellow-600'}`}>
+        <div className="bg-[var(--color-gsp-surface-muted)] p-4 md:p-6 rounded-[var(--radius-xl)] shadow-[var(--shadow-1)] border border-[var(--color-gsp-border-muted)] flex flex-col items-center justify-center">
+          <span className="text-xs md:text-sm font-medium text-[var(--color-gsp-text-secondary)] uppercase">Status</span>
+          <span className={`text-lg md:text-xl font-bold mt-2 ${scholar.verified ? 'text-green-600' : 'text-yellow-600'}`}>
             {scholar.verified ? 'Verified Scholar' : 'Pending Verification'}
           </span>
         </div>
@@ -127,11 +127,11 @@ export default async function ScholarDashboard() {
 
       {/* Profile Edit Form */}
       <div className="bg-[var(--color-gsp-surface-muted)] rounded-[var(--radius-xl)] shadow-[var(--shadow-1)] border border-[var(--color-gsp-border-muted)] overflow-hidden">
-        <div className="px-6 py-4 border-b border-[var(--color-gsp-border-muted)] bg-[var(--color-gsp-surface-raised)]">
-          <h2 className="text-lg font-semibold text-[var(--color-gsp-text-primary)]">Public Profile Information</h2>
-          <p className="text-sm text-[var(--color-gsp-text-secondary)]">This information will be visible on your public Wikipedia-style scholar page.</p>
+        <div className="px-4 py-4 md:px-6 md:py-4 border-b border-[var(--color-gsp-border-muted)] bg-[var(--color-gsp-surface-raised)]">
+          <h2 className="text-base md:text-lg font-semibold text-[var(--color-gsp-text-primary)]">Public Profile Information</h2>
+          <p className="text-xs md:text-sm text-[var(--color-gsp-text-secondary)]">This information will be visible on your public Wikipedia-style scholar page.</p>
         </div>
-        <div className="p-6">
+        <div className="p-4 md:p-6">
           <ScholarProfileForm scholar={scholar} />
         </div>
       </div>

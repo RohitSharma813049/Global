@@ -27,6 +27,30 @@ export async function getAllCategories() {
   return data
 }
 
+export async function uploadSingleFileToR2(formData: FormData) {
+  const session = await getServerSession(authOptions)
+  if (!session || session.user.role !== 'scholar') {
+    return { error: 'Unauthorized. Only scholars can upload files.' }
+  }
+
+  const file = formData.get('file') as File | null
+  const folder = formData.get('folder') as string || 'publications/misc'
+  
+  if (!file || file.size === 0) {
+    return { error: 'No file provided.' }
+  }
+
+  const buffer = Buffer.from(await file.arrayBuffer())
+  try {
+    const { uploadFileToR2 } = await import('@/lib/r2');
+    const fileUrl = await uploadFileToR2(buffer, file.name, folder, file.type);
+    return { success: true, url: fileUrl };
+  } catch (err: any) {
+    console.error("R2 Upload failed:", err);
+    return { error: "Cloud storage upload failed: " + (err.message || "Unknown error") };
+  }
+}
+
 export async function uploadPublication(formData: FormData) {
   const session = await getServerSession(authOptions)
   
@@ -80,19 +104,25 @@ export async function uploadPublication(formData: FormData) {
     }
 
     const file = formData.get('file') as File | null
+    const file_url_input = formData.get('file_url') as string | null
     const coverImage = formData.get('cover_image') as File | null
+    const cover_image_url_input = formData.get('cover_image_url') as string | null
     const bannerImage = formData.get('banner_image') as File | null
+    const banner_image_url_input = formData.get('banner_image_url') as string | null
     const galleryImages = formData.getAll('gallery_images') as File[]
+    const gallery_images_urls_input = formData.getAll('gallery_images_urls') as string[]
     const galleryVideos = formData.getAll('gallery_videos') as File[]
+    const gallery_videos_urls_input = formData.getAll('gallery_videos_urls') as string[]
     const videoFile = formData.get('video_file') as File | null
+    const video_file_url_input = formData.get('video_file_url') as string | null
     
-    if (status !== 'draft' && (!file || file.size === 0) && (!videoFile || videoFile.size === 0)) {
+    if (status !== 'draft' && (!file || file.size === 0) && !file_url_input && (!videoFile || videoFile.size === 0) && !video_file_url_input) {
       return { error: 'Please upload a valid document file or a main video file.' }
     }
 
-    let fileUrl = ''
+    let fileUrl = file_url_input || ''
     let localFilePath: string | null = null;
-    if (file && file.size > 0) {
+    if (!file_url_input && file && file.size > 0) {
       const buffer = Buffer.from(await file.arrayBuffer())
       try {
         const { uploadFileToR2 } = await import('@/lib/r2');
@@ -103,8 +133,8 @@ export async function uploadPublication(formData: FormData) {
       }
     }
 
-    let videoUrl = null;
-    if (videoFile && videoFile.size > 0) {
+    let videoUrl = video_file_url_input || null;
+    if (!video_file_url_input && videoFile && videoFile.size > 0) {
       const buffer = Buffer.from(await videoFile.arrayBuffer())
       try {
         const { uploadFileToR2 } = await import('@/lib/r2');
@@ -115,10 +145,11 @@ export async function uploadPublication(formData: FormData) {
         throw new Error("Cloud storage upload failed: " + (err.message || "Unknown error"));
       }
     }
+    if (videoUrl && !fileUrl) fileUrl = videoUrl;
 
     // Handle Cover Image
-    let coverImageUrl = null;
-    if (coverImage && coverImage.size > 0) {
+    let coverImageUrl = cover_image_url_input || null;
+    if (!cover_image_url_input && coverImage && coverImage.size > 0) {
       const buffer = Buffer.from(await coverImage.arrayBuffer())
       try {
         const { uploadFileToR2 } = await import('@/lib/r2');
@@ -130,8 +161,8 @@ export async function uploadPublication(formData: FormData) {
     }
 
     // Handle Banner Image
-    let bannerImageUrl = null;
-    if (bannerImage && bannerImage.size > 0) {
+    let bannerImageUrl = banner_image_url_input || null;
+    if (!banner_image_url_input && bannerImage && bannerImage.size > 0) {
       const buffer = Buffer.from(await bannerImage.arrayBuffer())
       try {
         const { uploadFileToR2 } = await import('@/lib/r2');
@@ -143,7 +174,7 @@ export async function uploadPublication(formData: FormData) {
     }
 
     // Handle Gallery Images
-    const galleryImageUrls: string[] = [];
+    const galleryImageUrls: string[] = [...gallery_images_urls_input];
     for (const gImg of galleryImages) {
       if (gImg && gImg.size > 0) {
         const buffer = Buffer.from(await gImg.arrayBuffer())
@@ -159,7 +190,7 @@ export async function uploadPublication(formData: FormData) {
     }
 
     // Handle Gallery Videos
-    const galleryVideoUrls: string[] = [];
+    const galleryVideoUrls: string[] = [...gallery_videos_urls_input];
     for (const gVid of galleryVideos) {
       if (gVid && gVid.size > 0) {
         const buffer = Buffer.from(await gVid.arrayBuffer())

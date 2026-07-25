@@ -39,7 +39,14 @@ export const authOptions: NextAuthOptions = {
             user_metadata: {
               name: profile.name,
               role: "user",
+              avatar_url: profile.picture,
             }
+          });
+          if (data.user) supabaseUser = data.user;
+        } else if (profile.picture && !supabaseUser.user_metadata?.avatar_url && !supabaseUser.user_metadata?.picture) {
+          // If the user exists but doesn't have an avatar in metadata, update it
+          const { data } = await supabaseAdmin.auth.admin.updateUserById(supabaseUser.id, {
+            user_metadata: { ...supabaseUser.user_metadata, avatar_url: profile.picture }
           });
           if (data.user) supabaseUser = data.user;
         }

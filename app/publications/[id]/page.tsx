@@ -10,6 +10,9 @@ import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import SaveButton from "@/components/save-button"
 import PublicationViewer from "./PublicationViewer"
+import DownloadButton from "./DownloadButton"
+import { User } from "lucide-react"
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 
 
 interface Props {
@@ -36,6 +39,13 @@ export default async function PublicationDetailPage({ params }: Props) {
     return notFound()
   }
 
+  // Ensure drafts/pending aren't visible to the public
+  if (publication.status !== 'published') {
+    if (!session || (session.user.role !== 'admin' && session.user.role !== 'super_admin' && session.user.id !== publication.scholars?.user_id)) {
+      return notFound();
+    }
+  }
+
   // Track the view for history
   await trackPublicationView(id)
 
@@ -55,8 +65,11 @@ export default async function PublicationDetailPage({ params }: Props) {
   });
 
   const isVideo = publication.content_type === 'video'
-  const authorName = (publication.scholars?.users?.raw_user_meta_data as any)?.name || (publication.scholars?.users?.raw_user_meta_data as any)?.full_name || publication.author_name || "Unknown Scholar";
-  const authorImg = (publication.scholars?.users?.raw_user_meta_data as any)?.avatar_url || "/placeholder-user.jpg";
+  const rawMetaData = (publication.scholars?.users?.raw_user_meta_data as any) || {};
+  const authorName = rawMetaData.name || rawMetaData.full_name || publication.author_name || "Unknown Scholar";
+  const authorImg = rawMetaData.avatar_url || rawMetaData.picture || rawMetaData.image || "/placeholder-user.jpg";
+  
+  const authorInitials = authorName.split(' ').map((n: string) => n[0]).join('').substring(0, 2).toUpperCase() || 'U';
   
   // Format dates securely
   const publishDate = publication.created_at ? new Date(publication.created_at).toLocaleDateString('en-US', {
@@ -102,7 +115,10 @@ export default async function PublicationDetailPage({ params }: Props) {
                 <p className="pub-mi-label">Author</p>
                 <Link href={publication.scholar_id ? `/scholars/${publication.scholar_id}` : "#"} className="pub-mi-link">
                   <span className="pub-mi-avatar">
-                    <img src={authorImg || "/placeholder-user.jpg"} alt={authorName} />
+                    <Avatar className="w-full h-full">
+                      <AvatarImage src={authorImg || "/placeholder-user.jpg"} alt={authorName} className="object-cover" />
+                      <AvatarFallback className="text-xs bg-indigo-100 text-indigo-700 font-bold">{authorInitials}</AvatarFallback>
+                    </Avatar>
                   </span>
                   {authorName}
                 </Link>
@@ -135,10 +151,11 @@ export default async function PublicationDetailPage({ params }: Props) {
             <p className="act-title">{publication.title}</p>
 
             {publication.file_url ? (
-              <a href={publication.file_url} target="_blank" download className="abtn abtn-primary text-white">
-                <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 1v8M4 7l3 3 3-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><path d="M1 11h12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
-                <span>Download {isVideo ? 'Video' : 'PDF'}</span>
-              </a>
+              <DownloadButton 
+                publicationId={publication.id} 
+                fileUrl={publication.file_url} 
+                isVideo={isVideo} 
+              />
             ) : (
               <button disabled className="abtn bg-gray-200 border-gray-300 text-gray-500">
                  <span>Not Available</span>
@@ -235,12 +252,22 @@ export default async function PublicationDetailPage({ params }: Props) {
               <div className="sb-head">About the Author</div>
               <div className="sb-body">
                 <div className="au-hero">
-                  <div className="au-av">
-                    <img src={authorImg || "/placeholder-user.jpg"} alt={authorName} />
+                  <div className="au-av overflow-hidden flex items-center justify-center bg-[#F8F7FC] border-[2px] border-white shadow-sm">
+                    {authorImg && authorImg !== "/placeholder-user.jpg" ? (
+                      <img src={authorImg} alt={authorName} className="object-cover w-full h-full" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-xl font-bold text-[#2F115D]">{authorInitials}</div>
+                    )}
                   </div>
                   <div>
                     <h3 className="au-name">{authorName}</h3>
-                    <p className="au-inst">{publication.institution || "Independent Researcher"}</p>
+                    <p className="au-inst">{publication.institution && publication.institution !== 'Not Specified' ? publication.institution : (publication.scholars?.institution || "Independent Researcher")}</p>
+                    {publication.scholars?.qualification && (
+                      <p className="text-xs text-gray-500 mt-1 line-clamp-1">{publication.scholars.qualification}</p>
+                    )}
+                    {publication.scholars?.specialization && (
+                      <p className="text-xs text-emerald-600 mt-0.5 line-clamp-1">{publication.scholars.specialization}</p>
+                    )}
                   </div>
                 </div>
                 <Link href={publication.scholar_id ? `/scholars/${publication.scholar_id}` : "#"} className="flex items-center justify-center gap-2 w-full h-[34px] rounded-[7px] border-[1.5px] border-[#2F115D] text-[#2F115D] text-xs font-medium hover:bg-[#2F115D] hover:text-white transition-colors">

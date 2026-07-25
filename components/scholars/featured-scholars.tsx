@@ -72,7 +72,7 @@ export default function FeaturedScholars({ title, subtitle, scholars = [], autop
               const name = scholar.users?.raw_user_meta_data?.name || scholar.users?.email || 'Unknown'
               const domain = scholar.specialization || 'Scholar'
               const publicationsCount = scholar._count?.publications || 0
-              const image = scholar.users?.raw_user_meta_data?.avatar_url || '/placeholder-user.jpg'
+              const image = scholar.users?.raw_user_meta_data?.avatar_url || scholar.users?.raw_user_meta_data?.picture || scholar.users?.raw_user_meta_data?.image || '/placeholder-user.jpg'
               
               return (
               <CarouselItem key={scholar.id} className="pl-4 sm:basis-1/2 lg:basis-1/4">

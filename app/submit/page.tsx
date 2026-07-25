@@ -7,6 +7,8 @@ import toast from "react-hot-toast";
 export default function SubmissionPage() {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [fileName, setFileName] = useState("");
   const [formData, setFormData] = useState({
     title: "",
     contentType: "Article",
@@ -44,6 +46,14 @@ export default function SubmissionPage() {
     setFormData({ ...formData, [name]: val });
   };
 
+  const clearFile = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const input = document.getElementById('main_document') as HTMLInputElement;
+    if (input) input.value = '';
+    setFileName("");
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.originalityDeclaration || !formData.copyrightDeclaration || !formData.termsAcceptance) {
@@ -51,13 +61,27 @@ export default function SubmissionPage() {
       return;
     }
     setLoading(true);
+    setUploadProgress(0);
+    
+    // Simulate upload progress
+    const progressInterval = setInterval(() => {
+      setUploadProgress(prev => {
+        const remaining = 95 - prev;
+        return prev + Math.max(1, remaining * 0.1);
+      });
+    }, 500);
     
     // Mocking API call to submit publication
     setTimeout(() => {
-      setLoading(false);
-      setSubmitted(true);
-      toast.success("Publication submitted successfully!");
-    }, 1500);
+      clearInterval(progressInterval);
+      setUploadProgress(100);
+      
+      setTimeout(() => {
+        setLoading(false);
+        setSubmitted(true);
+        toast.success("Publication submitted successfully!");
+      }, 500);
+    }, 2000);
   };
 
   return (
@@ -180,19 +204,59 @@ export default function SubmissionPage() {
                 {/* File Upload */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Main Document (PDF / DOCX / ePub)</label>
-                  <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:bg-gray-50 transition-colors cursor-pointer group relative">
-                    <input type="file" required accept=".pdf,.doc,.docx,.epub" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
-                    <MdUploadFile className="text-4xl text-gray-400 mx-auto mb-2 group-hover:text-indigo-500 transition-colors" />
-                    <p className="text-sm text-gray-600 font-medium">Click to upload or drag and drop</p>
-                    <p className="text-xs text-gray-400 mt-1">Maximum file size: 50MB</p>
-                  </div>
+                  <label htmlFor="main_document" className="block border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:bg-gray-50 transition-colors cursor-pointer group relative">
+                    <input 
+                      id="main_document"
+                      type="file" 
+                      required 
+                      accept=".pdf,application/pdf,.docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document,.epub,application/epub+zip" 
+                      className="sr-only" 
+                      onChange={(e) => setFileName(e.target.files?.[0]?.name || '')}
+                    />
+                    
+                    {fileName ? (
+                      <div className="flex flex-col items-center">
+                        <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-3">
+                          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+                        </div>
+                        <span className="text-emerald-600 font-medium flex items-center gap-2">
+                          {fileName}
+                          <button type="button" onClick={clearFile} className="text-gray-400 hover:text-red-500 p-1" title="Remove file">✕</button>
+                        </span>
+                      </div>
+                    ) : (
+                      <>
+                        <MdUploadFile className="text-4xl text-gray-400 mx-auto mb-2 group-hover:text-indigo-500 transition-colors" />
+                        <p className="text-sm text-gray-600 font-medium">Click to upload or drag and drop</p>
+                        <p className="text-xs text-gray-400 mt-1">Maximum file size: 50MB</p>
+                      </>
+                    )}
+                  </label>
                 </div>
 
                 {/* Declarations */}
                 <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 space-y-4">
                   <h4 className="font-semibold text-gray-800 mb-2">Declarations & Agreements</h4>
                   
-                  <label className="flex items-start gap-3 cursor-pointer">
+                  <label className="flex items-start gap-3 cursor-pointer pb-3 border-b border-gray-200">
+                    <input 
+                      type="checkbox" 
+                      checked={formData.originalityDeclaration && formData.copyrightDeclaration && formData.termsAcceptance} 
+                      onChange={(e) => {
+                        const checked = e.target.checked;
+                        setFormData({ 
+                          ...formData, 
+                          originalityDeclaration: checked, 
+                          copyrightDeclaration: checked, 
+                          termsAcceptance: checked 
+                        });
+                      }} 
+                      className="mt-1 w-4 h-4 text-indigo-800 rounded border-gray-300 focus:ring-indigo-800" 
+                    />
+                    <span className="text-sm font-bold text-gray-900">Agree to all terms & conditions</span>
+                  </label>
+
+                  <label className="flex items-start gap-3 cursor-pointer pt-1">
                     <input type="checkbox" name="originalityDeclaration" checked={formData.originalityDeclaration} onChange={handleChange} required className="mt-1 w-4 h-4 text-indigo-600 rounded border-gray-300" />
                     <span className="text-sm text-gray-700"><strong>Originality Declaration:</strong> I confirm that this submission is my own original work and does not infringe upon any existing copyright.</span>
                   </label>
@@ -211,12 +275,41 @@ export default function SubmissionPage() {
                 <div className="pt-4">
                   <button 
                     type="submit" disabled={loading}
-                    className="w-full bg-indigo-600 text-white font-bold py-4 rounded-xl hover:bg-indigo-700 transition-all shadow-lg hover:shadow-xl disabled:opacity-70 disabled:cursor-not-allowed text-lg"
+                    className="w-full bg-indigo-600 text-white font-bold py-4 rounded-xl hover:bg-indigo-700 transition-all shadow-lg hover:shadow-xl disabled:opacity-70 disabled:cursor-not-allowed text-lg flex items-center justify-center gap-2"
                   >
-                    {loading ? "Submitting..." : "Submit Publication"}
+                    {loading ? (
+                      <>
+                        <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Submitting...
+                      </>
+                    ) : "Submit Publication"}
                   </button>
                 </div>
               </form>
+            )}
+            
+            {/* Upload Progress Overlay */}
+            {loading && (
+              <div className="absolute inset-0 z-50 bg-white/80 backdrop-blur-sm flex flex-col items-center justify-center p-6 rounded-2xl">
+                <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-2xl border border-gray-100 text-center">
+                  <h3 className="text-xl font-bold text-gray-800 mb-2">Uploading Files...</h3>
+                  <p className="text-sm text-gray-500 mb-6">Please keep this window open until the upload completes.</p>
+                  
+                  <div className="w-full bg-gray-200 rounded-full h-2.5 mb-2 overflow-hidden">
+                    <div 
+                      className="bg-indigo-600 h-2.5 rounded-full transition-all duration-300 ease-out"
+                      style={{ width: `${Math.min(uploadProgress, 100)}%` }}
+                    ></div>
+                  </div>
+                  <div className="flex justify-between text-xs font-medium text-gray-500 mb-4">
+                    <span>{uploadProgress < 100 ? 'Processing...' : 'Finalizing...'}</span>
+                    <span>{Math.round(Math.min(uploadProgress, 100))}%</span>
+                  </div>
+                </div>
+              </div>
             )}
           </div>
         </div>

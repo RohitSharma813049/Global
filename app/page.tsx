@@ -51,7 +51,7 @@ export default async function Page() {
     subject: pub.categories?.name || 'Uncategorized',
     title: pub.title,
     author: pub.author_name || pub.scholars?.users?.raw_user_meta_data?.full_name || 'Anonymous',
-    authorImg: pub.scholars?.users?.raw_user_meta_data?.avatar_url || '/placeholder-user.jpg',
+    authorImg: pub.scholars?.users?.raw_user_meta_data?.avatar_url || pub.scholars?.users?.raw_user_meta_data?.picture || pub.scholars?.users?.raw_user_meta_data?.image || '/placeholder-user.jpg',
     desc: pub.abstract,
     description: pub.abstract,
     img: pub.cover_image || '/placeholder.svg',

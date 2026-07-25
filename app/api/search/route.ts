@@ -13,6 +13,8 @@ export async function GET(request: Request) {
     const [publications, blogs, news, categories, scholars] = await Promise.all([
       prisma.publications.findMany({
         where: {
+          status: 'published',
+          deleted_at: null,
           OR: [
             { title: { contains: q, mode: 'insensitive' } },
             { abstract: { contains: q, mode: 'insensitive' } },
@@ -22,12 +24,12 @@ export async function GET(request: Request) {
         take: 4,
       }),
       prisma.blogs.findMany({
-        where: { title: { contains: q, mode: 'insensitive' } },
+        where: { status: 'published', title: { contains: q, mode: 'insensitive' } },
         select: { id: true, title: true, slug: true },
         take: 3,
       }),
       prisma.news.findMany({
-        where: { title: { contains: q, mode: 'insensitive' } },
+        where: { status: 'published', title: { contains: q, mode: 'insensitive' } },
         select: { id: true, title: true, slug: true },
         take: 3,
       }),

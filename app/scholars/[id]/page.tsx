@@ -39,7 +39,7 @@ export default async function ScholarProfilePage({ params }: Props) {
 
   const [rawPublications, rawBlogs] = await Promise.all([
     prisma.publications.findMany({
-      where: { scholar_id: scholar.id }
+      where: { scholar_id: scholar.id, status: 'published', deleted_at: null }
     }),
     scholar.user_id ? prisma.blogs.findMany({
       where: { author_id: scholar.user_id, status: 'published' }
@@ -51,7 +51,7 @@ export default async function ScholarProfilePage({ params }: Props) {
     scholar_id: p.scholar_id,
     title: p.title,
     metadata: p.abstract || '',
-    tag: p.content_type || 'Article',
+    tag: p.content_type ? (p.content_type.charAt(0).toUpperCase() + p.content_type.slice(1).toLowerCase()) : 'Article',
     url: p.file_url || `/publications/${p.id}`,
     date: p.created_at
   }));
@@ -92,7 +92,7 @@ export default async function ScholarProfilePage({ params }: Props) {
     is_featured: scholar.is_featured ?? false,
     total_views: scholar.total_views ?? 0,
     total_downloads: scholar.total_downloads ?? 0,
-    avatar_url: rawMetaData.avatar_url || '',
+    avatar_url: rawMetaData.avatar_url || rawMetaData.picture || rawMetaData.image || '',
   }
 
   const videoUrl = scholar.video_url || rawMetaData.video_url;
@@ -107,7 +107,6 @@ export default async function ScholarProfilePage({ params }: Props) {
 
   return (
     <>
-      <Header />
       <main className="min-h-screen bg-gray-50 pt-24">
         <GSPDistinguishedScholars 
           scholar={formattedScholar}

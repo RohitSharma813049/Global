@@ -2,9 +2,20 @@
 
 import React, { useState } from 'react'
 import { format } from 'date-fns'
+import Link from 'next/link'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts'
+import { updatePublicationContent } from '@/app/actions/publications'
 
 export default function PublicationsClient({ initialPublications }: { initialPublications: any[] }) {
+  return (
+    <TooltipProvider delayDuration={200}>
+      <PublicationsClientInner initialPublications={initialPublications} />
+    </TooltipProvider>
+  )
+}
+
+function PublicationsClientInner({ initialPublications }: { initialPublications: any[] }) {
   const [publications, setPublications] = useState(initialPublications)
   const [selectedPub, setSelectedPub] = useState<any | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
@@ -12,6 +23,24 @@ export default function PublicationsClient({ initialPublications }: { initialPub
   const [statusFilter, setStatusFilter] = useState('ALL')
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 5
+  const [isPublishing, setIsPublishing] = useState(false)
+
+  const handlePublish = async (id: string) => {
+    setIsPublishing(true)
+    try {
+      const res = await updatePublicationContent(id, { status: 'pending' })
+      if (res?.error) {
+        alert(res.error)
+      } else {
+        alert('Publication submitted for review!')
+        setPublications(pubs => pubs.map(p => p.id === id ? { ...p, status: 'pending' } : p))
+        setSelectedPub(null)
+      }
+    } catch (err: any) {
+      alert(err.message)
+    }
+    setIsPublishing(false)
+  }
 
   const filteredPublications = publications.filter(pub => {
     const matchesSearch = (pub.title || '').toLowerCase().includes(searchQuery.toLowerCase())
@@ -71,8 +100,8 @@ export default function PublicationsClient({ initialPublications }: { initialPub
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <table className="w-full text-left border-collapse">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-x-auto">
+        <table className="w-full text-left border-collapse min-w-[800px]">
           <thead>
             <tr className="bg-[var(--color-gsp-surface-muted)] border-b border-[var(--color-gsp-border-muted)]">
               <th className="px-6 py-4 font-semibold text-sm text-[var(--color-gsp-text-secondary)]">Title</th>
@@ -95,7 +124,9 @@ export default function PublicationsClient({ initialPublications }: { initialPub
               paginatedPublications.map(pub => (
                 <tr key={pub.id} className="hover:bg-[var(--color-gsp-surface-muted)] transition-colors">
                   <td className="px-6 py-4">
-                    <div className="font-medium text-[var(--color-gsp-text-primary)] truncate max-w-[250px]">{pub.title}</div>
+                    <Link href={`/publications/${pub.id}`} className="font-medium text-[var(--color-gsp-text-primary)] hover:text-[#2F115D] truncate max-w-[250px] block hover:underline">
+                      {pub.title}
+                    </Link>
                   </td>
                   <td className="px-6 py-4 text-sm text-[var(--color-gsp-text-secondary)] capitalize">{pub.content_type}</td>
                   <td className="px-6 py-4 text-sm">
@@ -113,12 +144,35 @@ export default function PublicationsClient({ initialPublications }: { initialPub
                     {pub.created_at ? format(new Date(pub.created_at), 'MMM d, yyyy') : '-'}
                   </td>
                   <td className="px-6 py-4 text-sm text-right">
-                    <button
-                      onClick={() => setSelectedPub(pub)}
-                      className="text-purple-600 hover:text-purple-800 font-medium"
-                    >
-                      Quick View
-                    </button>
+                    <div className="flex items-center justify-end gap-3">
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Link
+                            href={`/publications/${pub.id}`}
+                            className="text-emerald-600 hover:text-emerald-800 font-medium"
+                          >
+                            Full View
+                          </Link>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Open the full publication page</p>
+                        </TooltipContent>
+                      </Tooltip>
+
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button
+                            onClick={() => setSelectedPub(pub)}
+                            className="text-purple-600 hover:text-purple-800 font-medium"
+                          >
+                            Quick View
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>View publication details and actions</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
                   </td>
                 </tr>
               ))
@@ -217,6 +271,15 @@ export default function PublicationsClient({ initialPublications }: { initialPub
             </div>
 
             <div className="p-6 border-t bg-gray-50 flex justify-end gap-3 mt-auto">
+              {selectedPub.status === 'draft' && (
+                <button
+                  onClick={() => handlePublish(selectedPub.id)}
+                  disabled={isPublishing}
+                  className="px-5 py-2.5 bg-emerald-600 text-white rounded-md font-medium hover:bg-emerald-700 transition-colors shadow-sm disabled:opacity-50"
+                >
+                  {isPublishing ? 'Submitting...' : 'Submit for Review'}
+                </button>
+              )}
               {selectedPub.file_url && selectedPub.file_url.trim() !== '' && selectedPub.file_url !== '#' && (
                 <a 
                   href={selectedPub.file_url} 
