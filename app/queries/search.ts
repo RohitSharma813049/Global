@@ -40,19 +40,23 @@ export async function getAdvancedSearchData(params: SearchParams) {
     }
 
     if (params.authors && params.authors.length > 0) {
+      const lowerAuthors = params.authors.map(a => a.toLowerCase());
       const allScholarsForFilter = await prisma.scholars.findMany({
         where: { deleted_at: null },
         select: { id: true, users: { select: { raw_user_meta_data: true } } }
       });
       const validScholarIds = allScholarsForFilter.filter(s => {
         const name = (s.users?.raw_user_meta_data as any)?.full_name || (s.users?.raw_user_meta_data as any)?.name;
-        return params.authors!.includes(name);
+        return name && lowerAuthors.includes(name.toLowerCase());
       }).map(s => s.id);
 
       whereClause.AND = whereClause.AND || [];
+      
+      const authorOrs = params.authors.map(a => ({ author_name: { equals: a, mode: 'insensitive' } }));
+      
       whereClause.AND.push({
         OR: [
-          { author_name: { in: params.authors } },
+          ...authorOrs,
           { scholar_id: { in: validScholarIds.length > 0 ? validScholarIds : ['00000000-0000-0000-0000-000000000000'] } }
         ]
       });
@@ -136,7 +140,8 @@ export async function getAdvancedSearchData(params: SearchParams) {
     ])).filter(Boolean).sort() as string[];
 
     const formattedTypeCounts = typeCounts.reduce((acc, curr) => {
-      acc[curr.content_type] = curr._count.id;
+      const typeKey = (curr.content_type || '').toLowerCase();
+      acc[typeKey] = (acc[typeKey] || 0) + curr._count.id;
       return acc;
     }, {} as Record<string, number>);
 

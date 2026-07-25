@@ -165,7 +165,7 @@ export default function ExploreClient({
   
   const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
-  const getCountForType = (type: string) => typeCounts[type] || 0;
+  const getCountForType = (type: string) => typeCounts[(type || '').toLowerCase()] || 0;
 
   return (
     <>
@@ -187,19 +187,19 @@ export default function ExploreClient({
 
               <div className="ph-stats" aria-label="Repository statistics">
                 <div className="ph-stat">
-                  <div className="ph-stat-n">{getCountForType('Article') || getCountForType('ARTICLE')}</div>
+                  <div className="ph-stat-n">{getCountForType('article')}</div>
                   <div className="ph-stat-l">ARTICLES</div>
                 </div>
                 <div className="ph-stat">
-                  <div className="ph-stat-n">{getCountForType('Thesis') || getCountForType('THESIS')}</div>
+                  <div className="ph-stat-n">{getCountForType('thesis')}</div>
                   <div className="ph-stat-l">THESES</div>
                 </div>
                 <div className="ph-stat">
-                  <div className="ph-stat-n">{getCountForType('Ebook') || getCountForType('EBOOK')}</div>
+                  <div className="ph-stat-n">{getCountForType('ebook')}</div>
                   <div className="ph-stat-l">EBOOKS</div>
                 </div>
                 <div className="ph-stat">
-                  <div className="ph-stat-n">{getCountForType('Magazine') || getCountForType('MAGAZINE')}</div>
+                  <div className="ph-stat-n">{getCountForType('magazine')}</div>
                   <div className="ph-stat-l">MAGAZINES</div>
                 </div>
               </div>

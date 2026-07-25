@@ -29,6 +29,7 @@ export default function AdminPublicationsClient({ publications }: { publications
         <table className="min-w-full divide-y divide-gray-200 relative">
           <thead className="bg-(--color-gsp-surface-raised)">
             <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-(--color-gsp-text-secondary) uppercase tracking-wider bg-(--color-gsp-surface-raised)">#</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-(--color-gsp-text-secondary) uppercase tracking-wider bg-(--color-gsp-surface-raised)">Publication</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-(--color-gsp-text-secondary) uppercase tracking-wider bg-(--color-gsp-surface-raised)">Type</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-(--color-gsp-text-secondary) uppercase tracking-wider bg-(--color-gsp-surface-raised)">Category</th>
@@ -39,8 +40,11 @@ export default function AdminPublicationsClient({ publications }: { publications
             </tr>
           </thead>
           <tbody className="bg-(--color-gsp-surface-muted) divide-y divide-gray-200">
-            {paginatedPublications.map((pub: any) => (
+            {paginatedPublications.map((pub: any, idx: number) => (
               <tr key={pub.id} className="hover:bg-(--color-gsp-surface-raised) transition-colors">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-(--color-gsp-text-secondary)">
+                  {(currentPage - 1) * itemsPerPage + idx + 1}
+                </td>
                 <td className="px-6 py-4 whitespace-normal">
                   <div className="text-sm font-medium text-(--color-gsp-text-primary)">{pub.title}</div>
                   <div className="text-sm text-(--color-gsp-text-secondary) truncate max-w-xs">{pub.abstract}</div>
@@ -54,7 +58,7 @@ export default function AdminPublicationsClient({ publications }: { publications
                   {pub.categories?.name || 'None'}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-(--color-gsp-text-secondary)">
-                  ID: {pub.scholar_id.substring(0,8)}...
+                  {pub.author_name || pub.scholars?.institution || 'Unknown'}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${

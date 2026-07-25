@@ -180,6 +180,7 @@ export default function AdminUsersPage() {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-(--color-gsp-surface-raised)">
                 <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-(--color-gsp-text-secondary) uppercase tracking-wider">#</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-(--color-gsp-text-secondary) uppercase tracking-wider">User</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-(--color-gsp-text-secondary) uppercase tracking-wider">Email</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-(--color-gsp-text-secondary) uppercase tracking-wider">Role</th>
@@ -188,11 +189,13 @@ export default function AdminUsersPage() {
                 </tr>
               </thead>
               <tbody className="bg-(--color-gsp-surface-muted) divide-y divide-gray-200">
-                {users.map((user) => (
+                {users.map((user, idx) => (
                   <tr key={user.id}>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-(--color-gsp-text-secondary)">
+                      {idx + 1}
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-(--color-gsp-text-primary)">{user.name}</div>
-                      <div className="text-xs text-(--color-gsp-text-secondary)">ID: {user.id.substring(0, 8)}...</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-(--color-gsp-text-primary)">{user.email}</div>
