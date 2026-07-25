@@ -37,17 +37,6 @@ export default function AdminUsersPage() {
 
   useEffect(() => {
     fetchUsers()
-    
-    const intervalId = setInterval(() => {
-      if (document.visibilityState === 'visible') {
-        // Fetch quietly without showing loading state
-        getAllUsers().then(data => {
-          setUsers(prev => JSON.stringify(prev) !== JSON.stringify(data) ? data : prev);
-        }).catch(e => console.error("Live update error:", e));
-      }
-    }, 10000);
-
-    return () => clearInterval(intervalId);
   }, [])
 
   const handleToggleBlock = async (userId: string, currentlyBlocked: boolean) => {

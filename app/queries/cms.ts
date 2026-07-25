@@ -161,7 +161,8 @@ export const getHomepageSettings = unstable_cache(
 export const getBlogs = unstable_cache(
   async () => {
     return await prisma.blogs.findMany({
-      orderBy: { created_at: 'desc' }
+      orderBy: { created_at: 'desc' },
+      take: 500
     })
   },
   ['cms-blogs'],
@@ -171,7 +172,8 @@ export const getBlogs = unstable_cache(
 export const getNews = unstable_cache(
   async () => {
     return await prisma.news.findMany({
-      orderBy: { created_at: 'desc' }
+      orderBy: { created_at: 'desc' },
+      take: 500
     })
   },
   ['cms-news'],
@@ -181,7 +183,8 @@ export const getNews = unstable_cache(
 export const getTestimonials = unstable_cache(
   async () => {
     return await prisma.testimonials.findMany({
-      orderBy: { created_at: 'desc' }
+      orderBy: { created_at: 'desc' },
+      take: 500
     })
   },
   ['cms-testimonials'],

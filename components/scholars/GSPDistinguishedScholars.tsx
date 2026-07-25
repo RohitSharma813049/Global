@@ -401,7 +401,7 @@ export default function GSPDistinguishedScholars({ scholar, videos = [], publica
               const c = colors[i % colors.length];
               return (
                 <div key={s.id} className="flex flex-col items-center">
-                  <Link href={`/scholars/${s.id}`} className="flex flex-col items-center group">
+                  <Link href={`/scholars/${s.id}`} prefetch={false} className="flex flex-col items-center group">
                     <div className={`w-[72px] h-[72px] rounded-full ${c.bg} border ${c.border} ${c.text} flex items-center justify-center text-xl font-serif mb-4 relative transition-transform group-hover:scale-105`}>
                       {s.avatar_url ? (
                         <Image src={s.avatar_url} alt={s.name} fill className="rounded-full object-cover p-1" />

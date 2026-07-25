@@ -292,7 +292,7 @@ export default function GSPSubjectCategories({ title, subtitle, categories, auto
         <div className="sub-carousel-track" id="subjects-track" ref={trackRef}>
           {displayCategories.map((cat, i) => {
               return (
-              <Link href={`/publications?category=${cat.slug || cat.id}`} key={cat.id} className="subject-card">
+              <Link href={`/publications?category=${cat.slug || cat.id}`} key={cat.id} prefetch={false} className="subject-card">
               <div className="sub-photo-wrap">
                 <Image src={cat.image} alt="Category" width={400} height={400} className="w-full h-full object-cover" />
                 <div className="sub-photo-gradient"></div>

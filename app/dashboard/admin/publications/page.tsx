@@ -35,6 +35,7 @@ export default async function AdminPublications() {
     `)
     .in('status', ['submitted', 'under_review', 'changes_requested'])
     .order('created_at', { ascending: false })
+    .limit(500)
 
   if (error) {
     console.error("Error fetching publications:", error)
@@ -101,7 +102,7 @@ export default async function AdminPublications() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <div className="flex items-center justify-end gap-2">
-                      <Link href={`/dashboard/admin/publications/${pub.id}/edit`} className="text-[var(--color-gsp-text-inverse)] hover:text-indigo-900 bg-[#F4F1FA] px-3 py-1 rounded">
+                      <Link href={`/dashboard/admin/publications/${pub.id}/edit`} prefetch={false} className="text-[var(--color-gsp-text-inverse)] hover:text-indigo-900 bg-[#F4F1FA] px-3 py-1 rounded">
                         Edit
                       </Link>
                       <PublicationActionButtons publicationId={pub.id} currentStatus={pub.status} />

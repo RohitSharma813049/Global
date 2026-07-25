@@ -135,7 +135,7 @@ export default function GspFeaturedContent({ title, subtitle, autoplay = true, p
 
         <div className="gsp-pub-grid" ref={gridRef} onScroll={handleScroll}>
           {filteredPublications.map((pub, idx) => (
-            <Link href={pub.link} className="gsp-pub-card" key={idx} style={{transitionDelay: `${idx * 100}ms`}}>
+            <Link href={pub.link} prefetch={false} className="gsp-pub-card" key={idx} style={{transitionDelay: `${idx * 100}ms`}}>
               <div className="gsp-pub-card-media">
                 <span className="gsp-pub-card-type">{pub.type}</span>
                 { }

@@ -21,6 +21,7 @@ export default async function ScholarApplicationsPage() {
     .from('scholar_applications')
     .select('*')
     .order('created_at', { ascending: false })
+    .limit(500)
 
   if (error) {
     console.error("Error fetching applications:", error)

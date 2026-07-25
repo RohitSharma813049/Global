@@ -172,7 +172,8 @@ export async function updateHomepageSettings(newSettings: any) {
 
 export async function getBlogs() {
   return await prisma.blogs.findMany({
-    orderBy: { created_at: 'desc' }
+    orderBy: { created_at: 'desc' },
+    take: 500
   })
 }
 
@@ -205,7 +206,8 @@ export async function deleteBlog(id: string) {
 
 export async function getNews() {
   return await prisma.news.findMany({
-    orderBy: { created_at: 'desc' }
+    orderBy: { created_at: 'desc' },
+    take: 500
   })
 }
 
@@ -238,7 +240,8 @@ export async function deleteNews(id: string) {
 
 export async function getTestimonials() {
   return await prisma.testimonials.findMany({
-    orderBy: { created_at: 'desc' }
+    orderBy: { created_at: 'desc' },
+    take: 500
   })
 }
 
@@ -282,7 +285,8 @@ export async function getAllScholarsForAdmin() {
       users: { select: { email: true, raw_user_meta_data: true } },
       _count: { select: { publications: true } }
     },
-    orderBy: { total_views: 'desc' }
+    orderBy: { total_views: 'desc' },
+    take: 500
   })
 }
 
