@@ -150,7 +150,7 @@ export default function ScholarApplicationsTable({ initialApplications }: { init
         </div>
       )}
 
-      <div className="max-h-150 overflow-x-auto overflow-y-auto w-full">
+      <div className="overflow-x-auto w-full">
         <table className="min-w-full divide-y divide-gray-200 relative">
           <thead className="bg-(--color-gsp-surface-raised) sticky top-0 z-10 shadow-(--shadow-1)">
             <tr>

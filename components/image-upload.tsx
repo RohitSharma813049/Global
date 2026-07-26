@@ -76,7 +76,7 @@ export default function ImageUpload({ value, onChange, label = 'Image', linksOnl
             placeholder="https://example.com/image.jpg"
           />
         )}
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <div className="relative">
             <input aria-label="Input field" 
               type="file" 

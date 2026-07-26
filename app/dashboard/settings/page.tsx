@@ -301,8 +301,8 @@ export default function SettingsPage() {
                           }
                         }}
                       />
-                      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 mb-1">
-                        <div className="flex items-center gap-2">
+                      <div className="flex flex-col xl:flex-row items-start xl:items-center gap-3 mb-1">
+                        <div className="flex flex-wrap items-center gap-2">
                           <Button variant="outline" size="sm" className="w-auto h-9 bg-white" onClick={() => document.getElementById("avatar-upload")?.click()}>Upload Photo</Button>
                           <Button variant="outline" size="sm" className="w-auto h-9 bg-white flex items-center gap-1.5" onClick={startCamera}>
                             <MdCameraAlt className="text-lg" /> Take Photo
