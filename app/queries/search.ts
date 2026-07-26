@@ -102,7 +102,15 @@ export async function getAdvancedSearchData(params: SearchParams) {
       prisma.categories.findMany({ orderBy: { name: 'asc' }, select: { id: true, name: true } }),
       prisma.content_types.findMany({ orderBy: { name: 'asc' } }),
       prisma.scholars.findMany({
-        where: { deleted_at: null },
+        where: { 
+          deleted_at: null,
+          publications: {
+            some: {
+              status: 'published',
+              deleted_at: null
+            }
+          }
+        },
         select: { id: true, users: { select: { raw_user_meta_data: true } } }
       }),
       prisma.publications.findMany({

@@ -1,10 +1,11 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { getAllUsers, blockUser, updateUserRole, createAdminUser, deleteUser } from '@/app/actions/users'
+import { getAllUsers, blockUser, updateUserRole, createAdminUser, deleteUser, updateUserDetails } from '@/app/actions/users'
 import toast from 'react-hot-toast'
 import { useSession } from 'next-auth/react'
-import { MoreVertical, Ban, Unlock, Trash2 } from 'lucide-react'
+import { MoreVertical, Ban, Unlock, Trash2, Edit, Search } from 'lucide-react'
+import Pagination from '@/components/shared/pagination'
 
 export default function AdminUsersPage() {
   const { data: session } = useSession()
@@ -14,6 +15,24 @@ export default function AdminUsersPage() {
   const [newAdmin, setNewAdmin] = useState({ name: '', email: '', password: '' })
   const [addingAdmin, setAddingAdmin] = useState(false)
   const [openMenuId, setOpenMenuId] = useState<string | null>(null)
+  
+  // Edit User State
+  const [showEditUser, setShowEditUser] = useState(false)
+  const [editingUser, setEditingUser] = useState<{ id: string, name: string, email: string } | null>(null)
+  const [savingUser, setSavingUser] = useState(false)
+
+  // Search State
+  const [searchQuery, setSearchQuery] = useState('')
+
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 10
+  const filteredUsers = users.filter(user => 
+    user.name?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    user.email?.toLowerCase().includes(searchQuery.toLowerCase())
+  )
+  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage)
+  const paginatedUsers = filteredUsers.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
 
   useEffect(() => {
     function handleClickOutside() {
@@ -95,6 +114,23 @@ export default function AdminUsersPage() {
     }
   }
 
+  const handleEditUserSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!editingUser) return
+    setSavingUser(true)
+    try {
+      await updateUserDetails(editingUser.id, editingUser.name, editingUser.email)
+      toast.success('User updated successfully')
+      setShowEditUser(false)
+      setEditingUser(null)
+      fetchUsers()
+    } catch (e: any) {
+      toast.error(e.message)
+    } finally {
+      setSavingUser(false)
+    }
+  }
+
   return (
     <div className="p-4 md:p-6 w-full max-w-full overflow-hidden">
       <div className="flex justify-between items-center mb-6">
@@ -110,6 +146,24 @@ export default function AdminUsersPage() {
             + Add Admin
           </button>
         )}
+      </div>
+
+      <div className="mb-6 flex flex-col sm:flex-row gap-4 justify-between items-center bg-(--color-gsp-surface-raised) p-4 rounded-(--radius-lg) border border-(--color-gsp-border-muted)">
+        <div className="relative w-full max-w-md">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <Search className="h-5 w-5 text-(--color-gsp-text-secondary)" />
+          </div>
+          <input
+            type="text"
+            className="block w-full pl-10 pr-3 py-2 border border-(--color-gsp-border-default) rounded-md leading-5 bg-(--color-gsp-surface-muted) placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            placeholder="Search users by name or email..."
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value)
+              setCurrentPage(1)
+            }}
+          />
+        </div>
       </div>
 
       {showAddAdmin && (
@@ -172,10 +226,58 @@ export default function AdminUsersPage() {
         </div>
       )}
 
+      {showEditUser && editingUser && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-(--color-gsp-surface-muted) rounded-(--radius-xl) shadow-xl max-w-md w-full p-6">
+            <h2 className="text-xl font-bold mb-4">Edit User</h2>
+            <form onSubmit={handleEditUserSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Name</label>
+                <input aria-label="Input field" 
+                  type="text" 
+                  value={editingUser.name} 
+                  onChange={(e) => setEditingUser({ ...editingUser, name: e.target.value })}
+                  className="w-full border border-(--color-gsp-border-default) rounded-(--radius-lg) p-2"
+                  placeholder="User Name"
+                  required 
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Email</label>
+                <input aria-label="Input field" 
+                  type="email" 
+                  value={editingUser.email} 
+                  onChange={(e) => setEditingUser({ ...editingUser, email: e.target.value })}
+                  className="w-full border border-(--color-gsp-border-default) rounded-(--radius-lg) p-2"
+                  placeholder="user@example.com"
+                  required 
+                />
+              </div>
+              <div className="flex justify-end gap-3 pt-4">
+                <button 
+                  type="button" 
+                  onClick={() => setShowEditUser(false)}
+                  className="px-4 py-2 text-(--color-gsp-text-secondary) hover:text-(--color-gsp-text-primary)"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit"
+                  disabled={savingUser}
+                  className="bg-(--color-gsp-text-inverse) text-white px-4 py-2 rounded-(--radius-lg) hover:bg-indigo-700 disabled:opacity-50"
+                >
+                  {savingUser ? 'Saving...' : 'Save Changes'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       <div className="bg-(--color-gsp-surface-muted) rounded-(--radius-lg) shadow border border-(--color-gsp-border-muted) overflow-hidden">
         {loading ? (
           <div className="p-8 text-center text-(--color-gsp-text-secondary)">Loading users...</div>
-        ) : users.length > 0 ? (
+        ) : filteredUsers.length > 0 ? (
           <div className="w-full overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-(--color-gsp-surface-raised)">
@@ -189,10 +291,10 @@ export default function AdminUsersPage() {
                 </tr>
               </thead>
               <tbody className="bg-(--color-gsp-surface-muted) divide-y divide-gray-200">
-                {users.map((user, idx) => (
+                {paginatedUsers.map((user, idx) => (
                   <tr key={user.id}>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-(--color-gsp-text-secondary)">
-                      {idx + 1}
+                      {(currentPage - 1) * itemsPerPage + idx + 1}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-(--color-gsp-text-primary)">{user.name}</div>
@@ -258,6 +360,13 @@ export default function AdminUsersPage() {
                                 {user.is_blocked ? <><Unlock className="w-4 h-4" /> Unblock</> : <><Ban className="w-4 h-4" /> Block</>}
                               </button>
                               
+                              <button
+                                onClick={() => { setOpenMenuId(null); setEditingUser({ id: user.id, name: user.name, email: user.email }); setShowEditUser(true); }}
+                                className="w-full text-left px-4 py-2 text-sm text-indigo-600 hover:bg-indigo-50 flex items-center gap-2"
+                              >
+                                <Edit className="w-4 h-4" /> Edit
+                              </button>
+                              
                               {((isSuperAdmin) || (isAdmin && user.role !== 'admin' && user.role !== 'super_admin')) && (
                                 <>
                                   <div className="border-t border-gray-100 my-1"></div>
@@ -280,7 +389,17 @@ export default function AdminUsersPage() {
             </table>
           </div>
         ) : (
-          <div className="p-8 text-center text-(--color-gsp-text-secondary)">No users found.</div>
+          <div className="p-8 text-center text-(--color-gsp-text-secondary)">No users found matching your criteria.</div>
+        )}
+        
+        {filteredUsers.length > 0 && (
+          <Pagination 
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalItems={filteredUsers.length}
+            itemsPerPage={itemsPerPage}
+            onPageChange={setCurrentPage}
+          />
         )}
       </div>
     </div>

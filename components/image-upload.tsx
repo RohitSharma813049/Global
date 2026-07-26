@@ -93,6 +93,13 @@ export default function ImageUpload({ value, onChange, label = 'Image', linksOnl
               {isUploading ? 'Uploading...' : 'Upload Image'}
             </button>
           </div>
+          <button 
+            type="button" 
+            onClick={openGallery}
+            className="px-4 py-2 bg-purple-50 text-purple-700 rounded-lg text-sm font-semibold hover:bg-purple-100 transition-colors"
+          >
+            Choose from Library
+          </button>
         </div>
       </div>
       {error && <p className="text-red-500 text-xs">{error}</p>}

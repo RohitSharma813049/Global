@@ -5,6 +5,7 @@ import { getAllScholarsForAdmin, toggleScholarFeaturedStatus } from '@/app/actio
 import toast from 'react-hot-toast'
 import { MoreVertical, Star, StarOff, Edit } from 'lucide-react'
 import Link from 'next/link'
+import Pagination from '@/components/shared/pagination'
 
 export default function FeaturedScholarsManager() {
   const [scholars, setScholars] = useState<any[]>([])
@@ -103,9 +104,6 @@ export default function FeaturedScholarsManager() {
                             <><Star className="w-4 h-4 text-amber-500" /> Feature</>
                           )}
                         </button>
-                        <Link href={`/scholars/${scholar.username || scholar.id}`} className="ml-2 px-3 py-1.5 rounded-md text-sm font-medium flex items-center gap-2 transition-colors text-indigo-600 hover:bg-indigo-50 hover:text-indigo-700">
-                          <Edit className="w-4 h-4" /> Edit Profile
-                        </Link>
                       </div>
                     </td>
                   </tr>
@@ -118,29 +116,14 @@ export default function FeaturedScholarsManager() {
           <div className="p-8 text-center text-(--color-gsp-text-secondary)">No scholars found.</div>
         )}
         
-        {/* Pagination UI */}
-        {totalPages > 1 && !loading && scholars.length > 0 && (
-          <div className="px-6 py-4 flex items-center justify-between border-t border-(--color-gsp-border-muted) bg-(--color-gsp-surface-raised)">
-            <div className="text-sm text-(--color-gsp-text-secondary)">
-              Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, scholars.length)} of {scholars.length} entries
-            </div>
-            <div className="flex gap-2">
-              <button 
-                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                disabled={currentPage === 1}
-                className="px-3 py-1 rounded-md border border-(--color-gsp-border-default) disabled:opacity-50 text-sm font-medium hover:bg-(--color-gsp-surface-muted)"
-              >
-                Previous
-              </button>
-              <button 
-                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                disabled={currentPage === totalPages}
-                className="px-3 py-1 rounded-md border border-(--color-gsp-border-default) disabled:opacity-50 text-sm font-medium hover:bg-(--color-gsp-surface-muted)"
-              >
-                Next
-              </button>
-            </div>
-          </div>
+        {scholars.length > 0 && !loading && (
+          <Pagination 
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalItems={scholars.length}
+            itemsPerPage={itemsPerPage}
+            onPageChange={setCurrentPage}
+          />
         )}
       </div>
     </div>

@@ -481,7 +481,7 @@ export async function updatePublicationContent(id: string, updates: { title?: st
 export async function deletePublication(id: string) {
   try {
     const session = await getServerSession(authOptions)
-    if (!session || (session.user.role !== 'admin' && session.user.role !== 'scholar')) {
+    if (!session || !['admin', 'super_admin', 'scholar'].includes(session.user.role)) {
       return { error: 'Unauthorized' }
     }
 
@@ -543,3 +543,43 @@ export async function getScholarPublications() {
   return { data };
 }
 
+export async function togglePublicationFeaturedStatus(id: string, is_featured: boolean) {
+  const session = await getServerSession(authOptions)
+  if (!session || (session.user.role !== 'admin' && session.user.role !== 'super_admin')) {
+    throw new Error('Unauthorized')
+  }
+  
+  const { error } = await supabaseAdmin
+    .from('publications')
+    .update({ is_featured })
+    .eq('id', id)
+
+  if (error) {
+    console.error('Error toggling publication feature status:', error)
+    throw new Error(error.message || 'Failed to update feature status')
+  }
+
+  revalidatePath('/dashboard/admin/publications')
+  revalidatePath('/')
+  revalidatePath('/explore')
+}
+
+export async function togglePublicationHeroStatus(id: string, is_hero: boolean) {
+  const session = await getServerSession(authOptions)
+  if (!session || (session.user.role !== 'admin' && session.user.role !== 'super_admin')) {
+    throw new Error('Unauthorized')
+  }
+  
+  const { error } = await supabaseAdmin
+    .from('publications')
+    .update({ is_hero })
+    .eq('id', id)
+
+  if (error) {
+    console.error('Error toggling publication hero status:', error)
+    throw new Error(error.message || 'Failed to update hero status')
+  }
+
+  revalidatePath('/dashboard/admin/publications')
+  revalidatePath('/')
+}

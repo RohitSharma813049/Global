@@ -6,6 +6,7 @@ import { MdEdit, MdDelete, MdGridView, MdViewList, MdSearch } from 'react-icons/
 import { MoreVertical } from 'lucide-react'
 import toast from 'react-hot-toast'
 import ImageUpload from '@/components/image-upload'
+import Pagination from '@/components/shared/pagination'
 
 interface Category {
   id: string
@@ -34,6 +35,10 @@ export default function CategoriesAdminPage() {
   const [categoryType, setCategoryType] = useState<'parent' | 'sub'>('parent')
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list')
   const [searchQuery, setSearchQuery] = useState('')
+
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 10
 
   const [formData, setFormData] = useState({ name: '', slug: '', parent_id: '', content_types: [] as string[], image_url: '' })
   const [isCustomSlug, setIsCustomSlug] = useState(false)
@@ -122,6 +127,9 @@ export default function CategoriesAdminPage() {
     c.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
     c.slug.toLowerCase().includes(searchQuery.toLowerCase())
   )
+
+  const totalPages = Math.ceil(filteredCategories.length / itemsPerPage)
+  const paginatedCategories = filteredCategories.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
 
   const parentCategories = categories.filter(c => !c.parent_id)
 
@@ -280,7 +288,7 @@ export default function CategoriesAdminPage() {
           ) : viewMode === 'list' ? (
             // LIST VIEW
             <div className="bg-(--color-gsp-surface-muted) rounded-(--radius-xl) shadow border border-(--color-gsp-border-muted) overflow-hidden divide-y divide-gray-100">
-              {filteredCategories.map(cat => (
+              {paginatedCategories.map(cat => (
                 <div key={cat.id} className="p-4 flex items-center justify-between hover:bg-(--color-gsp-surface-raised) transition-colors">
                   <div>
                     <div className="font-semibold text-(--color-gsp-text-primary) text-lg flex items-center gap-2">
@@ -346,8 +354,8 @@ export default function CategoriesAdminPage() {
             </div>
           ) : (
             // GRID VIEW
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {filteredCategories.map(cat => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {paginatedCategories.map(cat => (
                 <div key={cat.id} className="bg-(--color-gsp-surface-muted) p-5 rounded-(--radius-xl) shadow-(--shadow-1) border border-(--color-gsp-border-muted) hover:border-indigo-300 hover:shadow-(--shadow-2) transition-all group relative">
                   <div className="absolute top-4 right-4 relative inline-block text-left">
                     <button
@@ -413,6 +421,18 @@ export default function CategoriesAdminPage() {
                   )}
                 </div>
               ))}
+            </div>
+          )}
+
+          {filteredCategories.length > 0 && (
+            <div className="mt-6 bg-(--color-gsp-surface-muted) rounded-(--radius-xl) shadow-(--shadow-1) border border-(--color-gsp-border-muted) overflow-hidden">
+              <Pagination 
+                currentPage={currentPage}
+                totalPages={totalPages}
+                totalItems={filteredCategories.length}
+                itemsPerPage={itemsPerPage}
+                onPageChange={setCurrentPage}
+              />
             </div>
           )}
         </div>

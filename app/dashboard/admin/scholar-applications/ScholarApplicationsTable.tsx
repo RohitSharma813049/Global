@@ -2,7 +2,10 @@
 
 import React, { useState } from 'react'
 import ApplicationActionButtons from "./ApplicationActionButtons"
-import { Search, Filter } from 'lucide-react'
+import { Search, Filter, Edit } from 'lucide-react'
+import Pagination from '@/components/shared/pagination'
+import { updateScholarApplication } from '@/app/actions/scholar-applications'
+import toast from 'react-hot-toast'
 
 export default function ScholarApplicationsTable({ initialApplications }: { initialApplications: any[] }) {
   const [searchQuery, setSearchQuery] = useState('')
@@ -18,6 +21,38 @@ export default function ScholarApplicationsTable({ initialApplications }: { init
 
     return matchesSearch && matchesStatus
   })
+
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 10
+  const totalPages = Math.ceil((filteredApplications?.length || 0) / itemsPerPage)
+  const paginatedApplications = filteredApplications?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+
+  // Edit State
+  const [showEdit, setShowEdit] = useState(false)
+  const [editingApp, setEditingApp] = useState<any>(null)
+  const [savingApp, setSavingApp] = useState(false)
+
+  const handleEditSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!editingApp) return
+    setSavingApp(true)
+    try {
+      await updateScholarApplication(editingApp.id, {
+        full_name: editingApp.full_name,
+        qualification: editingApp.qualification,
+        institution: editingApp.institution,
+        specialization: editingApp.specialization
+      })
+      toast.success('Application updated successfully. Please refresh to see changes.')
+      setShowEdit(false)
+      setEditingApp(null)
+    } catch (e: any) {
+      toast.error(e.message)
+    } finally {
+      setSavingApp(false)
+    }
+  }
 
   return (
     <div className="bg-(--color-gsp-surface-muted) rounded-(--radius-lg) shadow overflow-hidden w-full flex flex-col">
@@ -51,6 +86,70 @@ export default function ScholarApplicationsTable({ initialApplications }: { init
         </div>
       </div>
 
+      {showEdit && editingApp && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-(--color-gsp-surface-muted) rounded-(--radius-xl) shadow-xl max-w-md w-full p-6">
+            <h2 className="text-xl font-bold mb-4">Edit Application</h2>
+            <form onSubmit={handleEditSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Full Name</label>
+                <input aria-label="Input field" 
+                  type="text" 
+                  value={editingApp.full_name || ''} 
+                  onChange={(e) => setEditingApp({ ...editingApp, full_name: e.target.value })}
+                  className="w-full border border-(--color-gsp-border-default) rounded-(--radius-lg) p-2"
+                  required 
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Qualification</label>
+                <input aria-label="Input field" 
+                  type="text" 
+                  value={editingApp.qualification || ''} 
+                  onChange={(e) => setEditingApp({ ...editingApp, qualification: e.target.value })}
+                  className="w-full border border-(--color-gsp-border-default) rounded-(--radius-lg) p-2"
+                  required 
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Institution</label>
+                <input aria-label="Input field" 
+                  type="text" 
+                  value={editingApp.institution || ''} 
+                  onChange={(e) => setEditingApp({ ...editingApp, institution: e.target.value })}
+                  className="w-full border border-(--color-gsp-border-default) rounded-(--radius-lg) p-2"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Specialization</label>
+                <input aria-label="Input field" 
+                  type="text" 
+                  value={editingApp.specialization || ''} 
+                  onChange={(e) => setEditingApp({ ...editingApp, specialization: e.target.value })}
+                  className="w-full border border-(--color-gsp-border-default) rounded-(--radius-lg) p-2"
+                />
+              </div>
+              <div className="flex justify-end gap-3 pt-4">
+                <button 
+                  type="button" 
+                  onClick={() => setShowEdit(false)}
+                  className="px-4 py-2 text-(--color-gsp-text-secondary) hover:text-(--color-gsp-text-primary)"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit"
+                  disabled={savingApp}
+                  className="bg-(--color-gsp-text-inverse) text-white px-4 py-2 rounded-(--radius-lg) hover:bg-indigo-700 disabled:opacity-50"
+                >
+                  {savingApp ? 'Saving...' : 'Save Changes'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       <div className="max-h-150 overflow-x-auto overflow-y-auto w-full">
         <table className="min-w-full divide-y divide-gray-200 relative">
           <thead className="bg-(--color-gsp-surface-raised) sticky top-0 z-10 shadow-(--shadow-1)">
@@ -64,7 +163,7 @@ export default function ScholarApplicationsTable({ initialApplications }: { init
             </tr>
           </thead>
           <tbody className="bg-(--color-gsp-surface-muted) divide-y divide-gray-200">
-            {filteredApplications?.map((app) => (
+            {paginatedApplications?.map((app) => (
               <tr key={app.id}>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm font-medium text-(--color-gsp-text-primary)">{app.full_name}</div>
@@ -97,7 +196,16 @@ export default function ScholarApplicationsTable({ initialApplications }: { init
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <ApplicationActionButtons applicationId={app.id} currentStatus={app.status} />
+                  <div className="flex items-center justify-end gap-2">
+                    <button
+                      onClick={() => { setEditingApp(app); setShowEdit(true); }}
+                      className="p-1.5 rounded-md hover:bg-indigo-50 text-indigo-600 transition-colors"
+                      title="Edit Application"
+                    >
+                      <Edit className="w-5 h-5" />
+                    </button>
+                    <ApplicationActionButtons applicationId={app.id} currentStatus={app.status} />
+                  </div>
                 </td>
               </tr>
             ))}
@@ -111,6 +219,16 @@ export default function ScholarApplicationsTable({ initialApplications }: { init
           </tbody>
         </table>
       </div>
+
+      {filteredApplications && filteredApplications.length > 0 && (
+        <Pagination 
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={filteredApplications.length}
+          itemsPerPage={itemsPerPage}
+          onPageChange={setCurrentPage}
+        />
+      )}
     </div>
   )
 }

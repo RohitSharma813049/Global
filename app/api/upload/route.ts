@@ -3,6 +3,8 @@ import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { writeFile } from 'fs/promises';
 import { join } from 'path';
 import { existsSync, mkdirSync } from 'fs';
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 // Initialize S3 Client for Cloudflare R2 if variables are present
 const s3Client = process.env.R2_ENDPOINT && process.env.R2_ACCESS_KEY_ID
@@ -18,6 +20,12 @@ const s3Client = process.env.R2_ENDPOINT && process.env.R2_ACCESS_KEY_ID
 
 export async function POST(req: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user?.id) {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const userId = session.user.id;
     const data = await req.formData();
     const file: File | null = data.get('file') as unknown as File;
 
@@ -27,7 +35,9 @@ export async function POST(req: NextRequest) {
 
     const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
     const originalName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, ''); // sanitize
-    const filename = `${uniqueSuffix}-${originalName}`;
+    const baseFilename = `${uniqueSuffix}-${originalName}`;
+    const filename = `user_${userId}/${baseFilename}`;
+    const localFilename = `user_${userId}_${baseFilename}`;
     const buffer = Buffer.from(await file.arrayBuffer());
 
     let fileUrl = '';

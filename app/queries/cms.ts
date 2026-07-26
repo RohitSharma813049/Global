@@ -201,14 +201,28 @@ export const getTestimonials = unstable_cache(
 
 export const getFeaturedScholars = unstable_cache(
   async () => {
-    // Fetch only featured scholars, as selected in the admin panel
     const scholars = await prisma.scholars.findMany({
       where: { 
-        is_featured: true 
+        is_featured: true,
+        publications: {
+          some: {
+            status: 'published',
+            deleted_at: null
+          }
+        }
       },
       include: {
         users: { select: { email: true, raw_user_meta_data: true } },
-        _count: { select: { publications: true } }
+        _count: { 
+          select: { 
+            publications: {
+              where: {
+                status: 'published',
+                deleted_at: null
+              }
+            } 
+          } 
+        }
       },
       take: 20
     });

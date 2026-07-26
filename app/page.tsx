@@ -20,7 +20,7 @@ import { getPlatformStats } from '@/app/actions/stats'
 
 import ScrollAnimation from "@/components/shared/scroll-animation"
 import { getAllCategories } from '@/app/queries/categories'
-import { getRecentPublishedPublications } from '@/app/queries/publications'
+import { getRecentPublishedPublications, getFeaturedPublications, getHeroPublications } from '@/app/queries/publications'
 
 export const revalidate = 60 // Enable ISR caching (60 seconds)
 
@@ -33,7 +33,9 @@ export default async function Page() {
     testimonialsData,
     scholarsData,
     dbCategories,
-    dbPublications
+    dbPublications,
+    dbFeaturedPublications,
+    dbHeroPublications
   ] = await Promise.all([
     getHomepageSettings(),
     getBlogs(),
@@ -42,10 +44,12 @@ export default async function Page() {
     getTestimonials(),
     getFeaturedScholars(),
     getAllCategories(),
-    getRecentPublishedPublications(8)
+    getRecentPublishedPublications(8),
+    getFeaturedPublications(8),
+    getHeroPublications(5)
   ]);
 
-  const formattedPublications = dbPublications.map((pub: any) => ({
+  const mapPublication = (pub: any) => ({
     id: pub.id,
     type: pub.content_type,
     subject: pub.categories?.name || 'Uncategorized',
@@ -58,7 +62,10 @@ export default async function Page() {
     image: pub.cover_image || '/placeholder.svg',
     views: `${pub.views || 0} reads`,
     link: `/publications/${pub.id}`
-  }));
+  });
+
+  const formattedPublications = dbPublications.map(mapPublication);
+  const formattedFeaturedPublications = dbFeaturedPublications.map(mapPublication);
 
   const recentItems = [
     ...(blogsData || []).map((b: any) => ({ ...b, type: 'blog' as const })),
@@ -130,10 +137,7 @@ export default async function Page() {
     
     // Dynamic or Random
     const baseScholars = scholarsData || [];
-    if (settings.featured_scholars_mode === 'random') {
-      return [...baseScholars].sort(() => 0.5 - Math.random());
-    }
-    return baseScholars;
+    return [...baseScholars].sort(() => 0.5 - Math.random());
   };
   const scholarsToRender = finalScholars();
 
@@ -163,7 +167,7 @@ export default async function Page() {
 
   const finalHeroSlides = settings.hero_carousel_mode === 'manual' 
     ? settings.hero_slides 
-    : dbPublications.slice(0, 5).map((pub: any) => ({
+    : (dbHeroPublications.length > 0 ? dbHeroPublications : (dbFeaturedPublications.length > 0 ? dbFeaturedPublications : dbPublications)).slice(0, 5).map((pub: any) => ({
         label: `Latest ${pub.content_type || 'Publication'}`,
         title: pub.title,
         author: pub.author_name || pub.scholars?.users?.raw_user_meta_data?.full_name || 'Anonymous',
@@ -172,6 +176,17 @@ export default async function Page() {
         avatar: pub.scholars?.users?.raw_user_meta_data?.avatar_url || pub.scholars?.users?.raw_user_meta_data?.picture || pub.scholars?.users?.raw_user_meta_data?.image || '/placeholder-user.jpg',
         image: pub.cover_image || '/placeholder.svg'
       }));
+
+  const combinedPublications = [
+    ...formattedFeaturedPublications,
+    ...formattedPublications
+  ];
+  const uniqueCombined = Array.from(new Map(combinedPublications.map(item => [item.id, item])).values());
+  
+  const finalFeaturedPublications = [...(uniqueCombined.length > 0 
+    ? uniqueCombined.slice(0, 8) 
+    : settings.featured_publications || []
+  )].sort(() => 0.5 - Math.random());
 
   return (
     <main className="w-full">
@@ -219,7 +234,7 @@ export default async function Page() {
             title={settings.featured_title} 
             subtitle={settings.featured_subtitle} 
             autoplay={settings.enable_carousel_autoplay} 
-            publications={formattedPublications}
+            publications={finalFeaturedPublications}
           />
         </ScrollAnimation>
       )}
@@ -230,7 +245,7 @@ export default async function Page() {
             title={settings.featured_content_gsp_title}
             subtitle={settings.featured_content_gsp_subtitle}
             description={settings.featured_content_gsp_desc}
-            publications={formattedPublications.length > 0 ? formattedPublications : settings.featured_publications}
+            publications={finalFeaturedPublications}
             autoplay={settings.enable_carousel_autoplay}
           />
         </ScrollAnimation>

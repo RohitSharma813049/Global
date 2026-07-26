@@ -131,7 +131,8 @@ export default function HomepageSettings() {
         }
         setRecordOptions(options)
       } catch (e: any) {
-        toast.error('Failed to load settings')
+        console.error("Error loading settings:", e)
+        toast.error('Failed to load settings: ' + e.message)
       } finally {
         setLoading(false)
       }
@@ -666,8 +667,9 @@ export default function HomepageSettings() {
                   <textarea name="featured_content_gsp_desc" value={settings.featured_content_gsp_desc || ''} onChange={handleChange} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm" rows={2} />
                 </div>
               </div>
-              <div className="p-4 bg-violet-soft border border-indigo-100 rounded-(--radius-lg) text-sm text-indigo-700">
-                <p><strong>Auto Live Content is ON.</strong> The homepage will automatically pull the latest published Research Articles, eBooks, Magazines, and Theses directly from your database.</p>
+              <div className="p-4 bg-amber-50 border border-amber-200 rounded-(--radius-lg) text-sm text-amber-800">
+                <p><strong>How to Pin Publications:</strong> You can now pin specific publications to appear here by going to the <a href="/dashboard/admin/publications" className="font-bold underline">Publications</a> tab in your sidebar and clicking the Star (⭐) icon next to the publications you want to feature.</p>
+                <p className="mt-2 text-xs text-amber-700">If no publications are starred, the homepage will automatically fallback to showing the latest published content.</p>
               </div>
             </div>
           </details>

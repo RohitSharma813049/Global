@@ -23,47 +23,40 @@ interface Props {
   className?: string
 }
 
+import { toggleSavedPublication, isPublicationSaved } from '@/app/actions/library'
+
 export default function SaveButton({ publication, variant = 'full', className }: Props) {
   const [isSaved, setIsSaved] = useState(false)
+  const [loading, setLoading] = useState(true)
   const { data: session } = useSession()
-  const storageKey = session?.user?.id ? `saved_publications_${session.user.id}` : 'saved_publications'
 
   useEffect(() => {
-    const saved = localStorage.getItem(storageKey)
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved)
-        setIsSaved(parsed.some((p: any) => p.id === publication.id))
-      } catch (e) {
-        // ignore
-      }
+    if (session?.user) {
+      isPublicationSaved(publication.id).then(saved => {
+        setIsSaved(saved)
+        setLoading(false)
+      })
     } else {
-      setIsSaved(false)
+      setLoading(false)
     }
-  }, [publication.id, storageKey])
+  }, [publication.id, session?.user])
 
-  const toggleSave = (e: React.MouseEvent) => {
+  const toggleSave = async (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
     
-    const saved = localStorage.getItem(storageKey)
-    let parsed: SavedPublication[] = []
-    if (saved) {
-      try {
-        parsed = JSON.parse(saved)
-      } catch (e) {}
-    }
+    if (!session?.user) return // optionally show a toast to login
 
-    if (isSaved) {
-      parsed = parsed.filter(p => p.id !== publication.id)
-      setIsSaved(false)
-    } else {
-      parsed.push(publication)
-      setIsSaved(true)
-    }
+    const previousState = isSaved
+    setIsSaved(!isSaved) // optimistic update
 
-    localStorage.setItem(storageKey, JSON.stringify(parsed))
-    window.dispatchEvent(new Event('storage')) // Trigger re-render in other components if needed
+    const res = await toggleSavedPublication(publication.id)
+    if (res?.error) {
+      setIsSaved(previousState)
+    } else if (res) {
+      setIsSaved(!!res.saved)
+      window.dispatchEvent(new Event('libraryUpdated'))
+    }
   }
 
   if (variant === 'icon') {

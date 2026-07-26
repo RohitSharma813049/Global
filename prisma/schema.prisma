@@ -453,6 +453,7 @@ model users {
   scholars                    scholars?
   notifications               notifications[]
   reading_history             reading_history[]
+  saved_publications          saved_publications[]
   blogs                       blogs[]
   audit_logs                  audit_logs[]
   platform_settings           platform_settings[]
@@ -566,9 +567,12 @@ model publications {
   serial_number           String?           @unique
   created_at              DateTime?         @default(now()) @db.Timestamptz(6)
   deleted_at              DateTime?         @db.Timestamptz(6)
+  is_featured             Boolean?          @default(false)
+  is_hero                 Boolean?          @default(false)
   scholars                scholars?         @relation(fields: [scholar_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   categories              categories?       @relation(fields: [category_id], references: [id], onDelete: SetNull, onUpdate: NoAction)
   reading_history         reading_history[]
+  saved_publications      saved_publications[]
 
   @@index([scholar_id])
   @@index([category_id])
@@ -715,6 +719,20 @@ model reading_history {
   user_id        String    @db.Uuid
   publication_id String    @db.Uuid
   last_read_at   DateTime? @default(now()) @db.Timestamptz(6)
+
+  users        users        @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  publications publications @relation(fields: [publication_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([user_id, publication_id])
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model saved_publications {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id        String    @db.Uuid
+  publication_id String    @db.Uuid
+  created_at     DateTime? @default(now()) @db.Timestamptz(6)
 
   users        users        @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   publications publications @relation(fields: [publication_id], references: [id], onDelete: Cascade, onUpdate: NoAction)

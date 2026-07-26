@@ -146,3 +146,19 @@ export async function deleteUser(userId: string, targetRole: string) {
   revalidatePath('/dashboard/admin/users')
   return data
 }
+
+export async function updateUserDetails(userId: string, name: string, email: string) {
+  const session = await checkAdmin()
+  
+  const { data, error } = await supabaseAdmin.auth.admin.updateUserById(userId, {
+    email: email,
+    user_metadata: { name: name }
+  })
+  
+  if (error) {
+    throw new Error('Failed to update user: ' + error.message)
+  }
+  
+  revalidatePath('/dashboard/admin/users')
+  return data
+}

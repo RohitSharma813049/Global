@@ -22,7 +22,6 @@ import {
   MdStar,
   MdPerson
 } from "react-icons/md";
-import { BecomeScholarModal } from "@/components/become-scholar-modal";
 import { useSidebar } from "@/components/sidebar-context";
 
 export default function DashboardSidebar() {
@@ -33,12 +32,12 @@ export default function DashboardSidebar() {
 
   const readerLinks = [
     { name: "Explore", href: "/explore", icon: MdExplore },
-    { name: "My Library", href: "/library/saved", icon: MdLibraryBooks },
+    { name: "My Library", href: "/dashboard/user/library", icon: MdLibraryBooks },
   ];
 
   const scholarLinks = [
     { name: "Explore", href: "/explore", icon: MdExplore },
-    { name: "My Library", href: "/library/saved", icon: MdLibraryBooks },
+    { name: "My Library", href: "/dashboard/scholar/library", icon: MdLibraryBooks },
     { name: "Scholar Profile", href: "/dashboard/scholar", icon: MdDescription },
     { name: "My Publications", href: "/dashboard/scholar/publications", icon: MdLibraryBooks },
     { name: "Upload Publication", href: "/dashboard/scholar/upload", icon: MdBookmark },
@@ -58,7 +57,14 @@ export default function DashboardSidebar() {
 
   const superAdminLinks = [
     { name: "Audit Logs", href: "/dashboard/super-admin/audit-logs", icon: MdLibraryBooks },
-    ...adminLinks
+    { name: "User Management", href: "/dashboard/admin/users", icon: MdPeople },
+    { name: "Scholar Applications", href: "/dashboard/admin/scholar-applications", icon: MdPeople },
+    { name: "Review Publications", href: "/dashboard/admin/publications", icon: MdPendingActions },
+    { name: "Categories", href: "/dashboard/admin/categories", icon: MdBookmark },
+    { name: "Featured Scholars", href: "/dashboard/admin/featured-scholars", icon: MdPerson },
+    { name: "Testimonials", href: "/dashboard/admin/testimonials", icon: MdStar },
+    { name: "Blogs", href: "/dashboard/admin/blogs", icon: MdArticle },
+    { name: "News", href: "/dashboard/admin/news", icon: MdNewspaper },
   ];
 
   const links = role === "super_admin" 

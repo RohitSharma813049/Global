@@ -260,3 +260,23 @@ export async function updateApplicationStatus(id: string, status: string, admin_
     return { error: error.message || 'Failed to update status' }
   }
 }
+
+export async function updateScholarApplication(applicationId: string, data: any) {
+  const session = await getServerSession(authOptions)
+  if (!session || !['admin', 'super_admin'].includes(session.user?.role as string)) {
+    throw new Error('Unauthorized')
+  }
+
+  const { error } = await supabaseAdmin
+    .from('scholar_applications')
+    .update(data)
+    .eq('id', applicationId)
+
+  if (error) {
+    console.error('Error updating application:', error)
+    throw new Error(error.message)
+  }
+
+  revalidatePath('/dashboard/admin/scholar-applications')
+  return { success: true }
+}

@@ -171,7 +171,8 @@ export async function uploadVideoFile(formData: FormData) {
     
     try {
       const { uploadFileToR2 } = await import('@/lib/r2');
-      const url = await uploadFileToR2(buffer, file.name, 'videos', file.type);
+      const prefix = `user_${session.user.id}/videos`;
+      const url = await uploadFileToR2(buffer, file.name, prefix, file.type);
       return { success: true, url };
     } catch (err: any) {
       console.error("R2 Upload failed:", err);
@@ -198,7 +199,8 @@ export async function uploadImageFile(formData: FormData) {
     
     try {
       const { uploadFileToR2 } = await import('@/lib/r2');
-      const url = await uploadFileToR2(buffer, file.name, 'images', file.type);
+      const prefix = `user_${session.user.id}/images`;
+      const url = await uploadFileToR2(buffer, file.name, prefix, file.type);
       return { success: true, url };
     } catch (err: any) {
       console.error("R2 Upload failed:", err);

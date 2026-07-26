@@ -25,6 +25,8 @@ export default async function AdminPublications() {
     .from('publications')
     .select(`
       *,
+      is_featured,
+      is_hero,
       scholars (
         id,
         user_id,
