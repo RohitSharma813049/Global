@@ -136,7 +136,7 @@ export default function PublicationActionButtons({
             <Edit className="w-4 h-4" /> Edit Publication
           </Link>
 
-          {currentStatus === 'pending' && (
+          {(currentStatus === 'pending' || currentStatus === 'submitted') && (
             <button
               onClick={() => { setShowMenu(false); handleUpdate('under_review'); }}
               disabled={loading}
@@ -146,7 +146,7 @@ export default function PublicationActionButtons({
             </button>
           )}
 
-          {(currentStatus === 'pending' || currentStatus === 'under_review' || currentStatus === 'changes_requested') && (
+          {(currentStatus === 'pending' || currentStatus === 'submitted' || currentStatus === 'under_review' || currentStatus === 'changes_requested') && (
             <>
               <button
                 onClick={() => { setShowMenu(false); handleUpdate('changes_requested'); }}
