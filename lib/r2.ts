@@ -1,15 +1,26 @@
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 
-const s3Client = process.env.R2_ENDPOINT && process.env.R2_ACCESS_KEY_ID
-  ? new S3Client({
-      region: "auto",
-      endpoint: process.env.R2_ENDPOINT,
-      credentials: {
-        accessKeyId: process.env.R2_ACCESS_KEY_ID,
-        secretAccessKey: process.env.R2_SECRET_ACCESS_KEY || '',
-      },
-    })
-  : null;
+let s3Client: S3Client | null = null;
+
+function getS3Client() {
+  if (s3Client) return s3Client;
+  
+  if (!process.env.R2_ENDPOINT) throw new Error("R2 is not configured: Missing R2_ENDPOINT");
+  if (!process.env.R2_ACCESS_KEY_ID) throw new Error("R2 is not configured: Missing R2_ACCESS_KEY_ID");
+  if (!process.env.R2_SECRET_ACCESS_KEY) throw new Error("R2 is not configured: Missing R2_SECRET_ACCESS_KEY");
+  if (!process.env.R2_BUCKET) throw new Error("R2 is not configured: Missing R2_BUCKET");
+
+  s3Client = new S3Client({
+    region: "auto",
+    endpoint: process.env.R2_ENDPOINT,
+    credentials: {
+      accessKeyId: process.env.R2_ACCESS_KEY_ID,
+      secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
+    },
+  });
+
+  return s3Client;
+}
 
 /**
  * Uploads a file buffer to Cloudflare R2 and returns the public URL.
@@ -25,9 +36,8 @@ export async function uploadFileToR2(
   prefix: string,
   contentType: string
 ): Promise<string> {
-  if (!s3Client || !process.env.R2_BUCKET) {
-    throw new Error("R2 is not configured. Missing R2_ENDPOINT or R2_BUCKET in environment variables.");
-  }
+  const client = getS3Client();
+
 
   const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
   const sanitizedName = originalFilename.replace(/[^a-zA-Z0-9.\-_]/g, '');
@@ -42,7 +52,7 @@ export async function uploadFileToR2(
     ContentType: contentType,
   });
 
-  await s3Client.send(command);
+  await client.send(command);
 
   if (process.env.R2_PUBLIC_URL) {
     return `${process.env.R2_PUBLIC_URL.replace(/\/$/, '')}/${key}`;
