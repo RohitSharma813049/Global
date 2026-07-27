@@ -5,8 +5,9 @@ import { format } from 'date-fns'
 import Link from 'next/link'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts'
-import { updatePublicationContent } from '@/app/actions/publications'
+import { updatePublicationContent, deletePublication } from '@/app/actions/publications'
 import { toast } from 'react-hot-toast'
+import { Trash2 } from 'lucide-react'
 
 export default function PublicationsClient({ initialPublications }: { initialPublications: any[] }) {
   return (
@@ -41,6 +42,21 @@ function PublicationsClientInner({ initialPublications }: { initialPublications:
       toast.error(err.message)
     }
     setIsPublishing(false)
+  }
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this publication? This action cannot be undone.')) return;
+    try {
+      const res = await deletePublication(id);
+      if (res?.error) {
+        toast.error(res.error);
+      } else {
+        toast.success('Publication deleted successfully');
+        setPublications(pubs => pubs.filter(p => p.id !== id));
+      }
+    } catch (err: any) {
+      toast.error(err.message);
+    }
   }
 
   const filteredPublications = publications.filter(pub => {
@@ -171,6 +187,20 @@ function PublicationsClientInner({ initialPublications }: { initialPublications:
                         </TooltipTrigger>
                         <TooltipContent>
                           <p>View publication details and actions</p>
+                        </TooltipContent>
+                      </Tooltip>
+
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button
+                            onClick={() => handleDelete(pub.id)}
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Delete publication</p>
                         </TooltipContent>
                       </Tooltip>
                     </div>

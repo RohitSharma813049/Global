@@ -268,7 +268,8 @@ export async function updatePublicationStatus(id: string, status: string, doi?: 
         .single()
         
       if (!fetchError && pubToReject) {
-        // Delete physical files
+        // Delete physical files (Commented out to keep files for scholar access)
+        /*
         const filesToDelete = [
           pubToReject.file_url,
           pubToReject.cover_image,
@@ -285,6 +286,7 @@ export async function updatePublicationStatus(id: string, status: string, doi?: 
             console.error(`Failed to delete file ${file}:`, e)
           }
         }
+        */
 
         // Send notification
         const scholarData = pubToReject.scholars as any;
@@ -298,31 +300,68 @@ export async function updatePublicationStatus(id: string, status: string, doi?: 
           )
         }
 
-        // Soft delete from database
-        await supabaseAdmin.from('publications').update({ deleted_at: new Date().toISOString() }).eq('id', id)
+        // Update status to rejected instead of soft-deleting
+        await supabaseAdmin.from('publications').update({ status: 'rejected' }).eq('id', id)
       }
     } else {
       const updateData: any = { status }
+      if (status === 'published' && doi) {
+        updateData.doi = doi
+      }
 
       const { data: pubData, error } = await supabaseAdmin
         .from('publications')
         .update(updateData)
         .eq('id', id)
-        .select('title, scholars(user_id)')
+        .select('title, email_address, scholars(user_id)')
         .single()
 
       if (error) throw error
 
       // Create a notification for the scholar
       const scholarData = pubData?.scholars as any;
-      if (pubData && scholarData?.user_id && status === 'published') {
-        await createNotification(
-          scholarData.user_id,
-          'Publication Approved!',
-          `Your publication "${pubData.title}" has been approved and published.`,
-          'publication_approved',
-          '/dashboard/scholar/publications'
-        )
+      if (pubData && scholarData?.user_id) {
+        if (status === 'published') {
+          await createNotification(
+            scholarData.user_id,
+            'Publication Approved!',
+            `Your publication "${pubData.title}" has been approved and published.`,
+            'publication_approved',
+            '/dashboard/scholar/publications'
+          )
+        } else if (status === 'rejected') {
+          await createNotification(
+            scholarData.user_id,
+            'Publication Rejected',
+            `Your publication "${pubData.title}" was not approved by the admin. ${reason ? `Reason: ${reason}` : ''}`,
+            'publication_rejected',
+            '/dashboard/scholar/publications'
+          )
+          if (pubData.email_address) {
+            const { sendEmail } = await import('@/lib/email')
+            await sendEmail({
+              to: pubData.email_address,
+              subject: 'Update on Your Publication Submission - Rejected',
+              html: `<p>Dear Scholar,</p><p>Your publication titled "<b>${pubData.title}</b>" has been rejected.</p>${reason ? `<p><b>Reason:</b> ${reason}</p>` : ''}<p>You can view it in your dashboard.</p>`
+            }).catch(console.error)
+          }
+        } else if (status === 'changes_requested') {
+          await createNotification(
+            scholarData.user_id,
+            'Changes Requested',
+            `Changes are required for your publication "${pubData.title}". ${reason ? `Reason: ${reason}` : ''}`,
+            'publication_changes',
+            '/dashboard/scholar/publications'
+          )
+          if (pubData.email_address) {
+            const { sendEmail } = await import('@/lib/email')
+            await sendEmail({
+              to: pubData.email_address,
+              subject: 'Changes Requested for Your Publication',
+              html: `<p>Dear Scholar,</p><p>Changes have been requested for your publication titled "<b>${pubData.title}</b>".</p>${reason ? `<p><b>Admin comments:</b> ${reason}</p>` : ''}<p>Please log in to your dashboard to make the necessary updates.</p>`
+            }).catch(console.error)
+          }
+        }
       }
     }
 

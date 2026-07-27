@@ -6,6 +6,7 @@ import toast from 'react-hot-toast'
 import { MoreVertical, CheckCircle, FileEdit, XCircle, Trash2, Undo2, PlayCircle, Edit } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 import Link from 'next/link'
+import { createPortal } from 'react-dom'
 
 export default function PublicationActionButtons({ 
   publicationId, 
@@ -17,6 +18,8 @@ export default function PublicationActionButtons({
   const [loading, setLoading] = useState(false)
   const [showMenu, setShowMenu] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
+  const buttonRef = useRef<HTMLButtonElement>(null)
+  const [menuPos, setMenuPos] = useState({ top: 0, left: 0 })
   const [modalConfig, setModalConfig] = useState<{
     isOpen: boolean;
     type: 'prompt' | 'confirm';
@@ -29,13 +32,23 @@ export default function PublicationActionButtons({
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+      if (
+        menuRef.current && !menuRef.current.contains(event.target as Node) &&
+        buttonRef.current && !buttonRef.current.contains(event.target as Node)
+      ) {
         setShowMenu(false)
       }
     }
+    const handleScroll = () => {
+      if (showMenu) setShowMenu(false)
+    }
     document.addEventListener("mousedown", handleClickOutside)
-    return () => document.removeEventListener("mousedown", handleClickOutside)
-  }, [])
+    window.addEventListener("scroll", handleScroll, true)
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+      window.removeEventListener("scroll", handleScroll, true)
+    }
+  }, [showMenu])
   const handleUpdate = async (status: string) => {
     if (status === 'published') {
       setModalConfig({
@@ -118,17 +131,31 @@ export default function PublicationActionButtons({
   }
 
   return (
-    <div className="relative" ref={menuRef}>
+    <div className="relative">
       <button
-        onClick={() => setShowMenu(!showMenu)}
+        ref={buttonRef}
+        onClick={(e) => {
+          if (!showMenu && buttonRef.current) {
+            const rect = buttonRef.current.getBoundingClientRect()
+            setMenuPos({
+              top: rect.bottom,
+              left: rect.right - 192 // w-48 is 192px
+            })
+          }
+          setShowMenu(!showMenu)
+        }}
         className="p-1 rounded-md hover:bg-gray-100 transition-colors"
         disabled={loading}
       >
         <MoreVertical className="w-5 h-5 text-gray-500" />
       </button>
 
-      {showMenu && (
-        <div className="absolute right-0 mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50 py-1">
+      {showMenu && typeof document !== 'undefined' && createPortal(
+        <div 
+          ref={menuRef} 
+          style={{ top: menuPos.top, left: menuPos.left }}
+          className="fixed mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-[9999] py-1"
+        >
           <Link
             href={`/dashboard/admin/publications/${publicationId}/edit`}
             className="w-full text-left px-4 py-2 text-sm text-indigo-700 hover:bg-indigo-50 flex items-center gap-2"
@@ -194,7 +221,8 @@ export default function PublicationActionButtons({
           >
             <Trash2 className="w-4 h-4" /> Delete
           </button>
-        </div>
+        </div>,
+        document.body
       )}
 
       {modalConfig.isOpen && (
