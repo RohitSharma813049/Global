@@ -109,10 +109,10 @@ export const getHomepageSettings = unstable_cache(
       ],
 
       explore_categories: [
-        { title: 'Featured<br/>Agriculture', count: '1,240+ Papers', image: '/placeholder.svg', link: '/explore?category=agriculture' },
-        { title: 'Trending<br/>Computer Science', count: '3,860+ Papers', image: '/placeholder.svg', link: '/explore?category=computer-science-ai' },
-        { title: 'Latest<br/>Business', count: '980+ Papers', image: '/placeholder.svg', link: '/explore?category=business-management' },
-        { title: 'Latest<br/>Humanities', count: '410+ Papers', image: '/placeholder.svg', link: '/explore?category=humanities' }
+        { title: 'Featured<br/>Agriculture', count: '1,240+ Papers', image: '/placeholder-user.jpg', link: '/explore?category=agriculture' },
+        { title: 'Trending<br/>Computer Science', count: '3,860+ Papers', image: '/placeholder-user.jpg', link: '/explore?category=computer-science-ai' },
+        { title: 'Latest<br/>Business', count: '980+ Papers', image: '/placeholder-user.jpg', link: '/explore?category=business-management' },
+        { title: 'Latest<br/>Humanities', count: '410+ Papers', image: '/placeholder-user.jpg', link: '/explore?category=humanities' }
       ],
 
       subject_categories: [

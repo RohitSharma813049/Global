@@ -24,11 +24,11 @@ export async function getHomepageSettings() {
     hero_subtitle: 'Explore millions of peer-reviewed papers, thesis, articles, and eBooks.',
     hero_image_url: '/placeholder-user.jpg',
     hero_slides: [
-      { label: 'Featured Article', title: 'ESG Integration in GCC Markets: A Framework for Sustainable Finance', author: 'Dr. Priya Nair-Kapoor', cred: 'Hon. D.B.A.', badge: 'eBook', avatar: '/placeholder-user.jpg', image: '/placeholder.svg' },
-      { label: 'Research Paper', title: 'Decolonising Knowledge Systems: Toward an African Academic Paradigm', author: 'Dr. Ngozi Adeyemi', cred: 'Ph.D., FAAN', badge: 'Article', avatar: '/placeholder-user.jpg', image: '/placeholder.svg' },
-      { label: 'GSP Interview Series', title: 'Climate Policy in Transition Economies: Pathways to Net Zero by 2050', author: 'Dr. Amira Al-Rashidi', cred: 'Hon. D.Sc.', badge: 'Magazine', avatar: '/placeholder-user.jpg', image: '/placeholder.svg' },
-      { label: 'Featured eBook', title: 'GCC Economic Diversification: Vision 2030 and Beyond', author: 'Prof. Khalid Al-Mansouri', cred: 'Hon. D.B.A.', badge: 'eBook', avatar: '/placeholder-user.jpg', image: '/placeholder.svg' },
-      { label: 'Doctoral Thesis', title: 'Artificial Intelligence Ethics in Cross-Cultural Research Environments', author: 'Prof. Li Wei', cred: 'Ph.D.', badge: 'Thesis', avatar: '/placeholder-user.jpg', image: '/placeholder.svg' }
+      { label: 'Featured Article', title: 'ESG Integration in GCC Markets: A Framework for Sustainable Finance', author: 'Dr. Priya Nair-Kapoor', cred: 'Hon. D.B.A.', badge: 'eBook', avatar: '/placeholder-user.jpg', image: '/placeholder-user.jpg' },
+      { label: 'Research Paper', title: 'Decolonising Knowledge Systems: Toward an African Academic Paradigm', author: 'Dr. Ngozi Adeyemi', cred: 'Ph.D., FAAN', badge: 'Article', avatar: '/placeholder-user.jpg', image: '/placeholder-user.jpg' },
+      { label: 'GSP Interview Series', title: 'Climate Policy in Transition Economies: Pathways to Net Zero by 2050', author: 'Dr. Amira Al-Rashidi', cred: 'Hon. D.Sc.', badge: 'Magazine', avatar: '/placeholder-user.jpg', image: '/placeholder-user.jpg' },
+      { label: 'Featured eBook', title: 'GCC Economic Diversification: Vision 2030 and Beyond', author: 'Prof. Khalid Al-Mansouri', cred: 'Hon. D.B.A.', badge: 'eBook', avatar: '/placeholder-user.jpg', image: '/placeholder-user.jpg' },
+      { label: 'Doctoral Thesis', title: 'Artificial Intelligence Ethics in Cross-Cultural Research Environments', author: 'Prof. Li Wei', cred: 'Ph.D.', badge: 'Thesis', avatar: '/placeholder-user.jpg', image: '/placeholder-user.jpg' }
     ],
     hero_ticker_items: [
       { prefix: 'New', text: 'ESG & Sustainable Finance — Dr. Priya Nair-Kapoor' },
@@ -101,10 +101,10 @@ export async function getHomepageSettings() {
     ],
 
     explore_categories: [
-      { title: 'Featured<br/>Agriculture', count: '1,240+ Papers', image: '/placeholder.svg', link: '/explore?category=agriculture' },
-      { title: 'Trending<br/>Computer Science', count: '3,860+ Papers', image: '/placeholder.svg', link: '/explore?category=computer-science-ai' },
-      { title: 'Latest<br/>Business', count: '980+ Papers', image: '/placeholder.svg', link: '/explore?category=business-management' },
-      { title: 'Latest<br/>Humanities', count: '410+ Papers', image: '/placeholder.svg', link: '/explore?category=humanities' }
+      { title: 'Featured<br/>Agriculture', count: '1,240+ Papers', image: '/placeholder-user.jpg', link: '/explore?category=agriculture' },
+      { title: 'Trending<br/>Computer Science', count: '3,860+ Papers', image: '/placeholder-user.jpg', link: '/explore?category=computer-science-ai' },
+      { title: 'Latest<br/>Business', count: '980+ Papers', image: '/placeholder-user.jpg', link: '/explore?category=business-management' },
+      { title: 'Latest<br/>Humanities', count: '410+ Papers', image: '/placeholder-user.jpg', link: '/explore?category=humanities' }
     ],
 
     subject_categories: [

@@ -81,7 +81,7 @@ export const authOptions: NextAuthOptions = {
           id: supabaseUser?.id || profile.sub,
           name: profile.name,
           email: profile.email,
-          image: profile.picture,
+          image: supabaseUser?.user_metadata?.avatar_url || supabaseUser?.user_metadata?.picture || profile.picture,
           role: supabaseUser?.user_metadata?.role || "reader"
         };
       }

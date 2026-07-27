@@ -58,8 +58,8 @@ export default async function Page() {
     authorImg: pub.scholars?.users?.raw_user_meta_data?.avatar_url || pub.scholars?.users?.raw_user_meta_data?.picture || pub.scholars?.users?.raw_user_meta_data?.image || '/placeholder-user.jpg',
     desc: pub.abstract,
     description: pub.abstract,
-    img: pub.cover_image || '/placeholder.svg',
-    image: pub.cover_image || '/placeholder.svg',
+    img: pub.cover_image || '/placeholder-user.jpg',
+    image: pub.cover_image || '/placeholder-user.jpg',
     views: `${pub.views || 0} reads`,
     link: `/publications/${pub.id}`
   });
@@ -102,25 +102,25 @@ export default async function Page() {
     {
       title: 'Research Articles',
       count: `${statsData.articleCount}+ Papers`,
-      image: settings.explore_categories?.[0]?.image || '/placeholder.svg',
+      image: settings.explore_categories?.[0]?.image || '/placeholder-user.jpg',
       link: '/explore?type=article'
     },
     {
       title: 'eBooks',
       count: `${statsData.ebookCount}+ Books`,
-      image: settings.explore_categories?.[1]?.image || '/placeholder.svg',
+      image: settings.explore_categories?.[1]?.image || '/placeholder-user.jpg',
       link: '/explore?type=ebook'
     },
     {
       title: 'Magazines',
       count: `${statsData.magazineCount}+ Issues`,
-      image: settings.explore_categories?.[2]?.image || '/placeholder.svg',
+      image: settings.explore_categories?.[2]?.image || '/placeholder-user.jpg',
       link: '/explore?type=magazine'
     },
     {
       title: 'Theses',
       count: `${statsData.thesisCount}+ Papers`,
-      image: settings.explore_categories?.[3]?.image || '/placeholder.svg',
+      image: settings.explore_categories?.[3]?.image || '/placeholder-user.jpg',
       link: '/explore?type=thesis'
     }
   ];
@@ -174,7 +174,7 @@ export default async function Page() {
         cred: pub.scholars?.qualification || '',
         badge: pub.content_type || 'Article',
         avatar: pub.scholars?.users?.raw_user_meta_data?.avatar_url || pub.scholars?.users?.raw_user_meta_data?.picture || pub.scholars?.users?.raw_user_meta_data?.image || '/placeholder-user.jpg',
-        image: pub.cover_image || '/placeholder.svg'
+        image: pub.cover_image || '/placeholder-user.jpg'
       }));
 
   const combinedPublications = [

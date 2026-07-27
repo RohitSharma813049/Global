@@ -779,16 +779,23 @@ export default function SettingsPage() {
 
       {/* Camera Modal */}
       {isCameraOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-          <div className="bg-(--color-gsp-surface-muted) rounded-2xl p-6 w-full max-w-md shadow-2xl border border-(--color-gsp-border-muted)">
-            <h3 className="text-xl font-bold mb-4 text-(--color-gsp-text-primary)">Take a Photo</h3>
-            <div className="relative bg-black rounded-xl overflow-hidden aspect-video mb-4 shadow-inner w-full">
-              <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover scale-x-[-1]" />
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black">
+          <div className="relative w-full h-full flex flex-col">
+            <video ref={videoRef} autoPlay playsInline className="absolute inset-0 w-full h-full object-cover scale-x-[-1]" />
+            
+            <div className="absolute top-0 left-0 w-full p-6 bg-gradient-to-b from-black/60 to-transparent z-10 flex justify-between items-center">
+               <h3 className="text-xl font-bold text-white drop-shadow-md">Take a Photo</h3>
+               <button onClick={stopCamera} className="text-white hover:text-gray-300 transition">
+                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+               </button>
             </div>
-            <div className="flex gap-3 justify-end mt-6">
-              <Button variant="outline" onClick={stopCamera}>Cancel</Button>
-              <Button onClick={capturePhoto} className="bg-purple-600 hover:bg-purple-700 text-white flex items-center gap-2">
-                <MdCameraAlt /> Capture
+            
+            <div className="absolute bottom-0 left-0 w-full p-8 bg-gradient-to-t from-black/80 to-transparent z-10 flex justify-center items-center gap-6">
+              <Button variant="outline" onClick={stopCamera} className="bg-white/10 hover:bg-white/20 text-white border-white/30 backdrop-blur-md rounded-full px-8 h-14">
+                Cancel
+              </Button>
+              <Button onClick={capturePhoto} className="bg-purple-600 hover:bg-purple-500 text-white flex items-center gap-3 rounded-full px-10 h-16 shadow-xl shadow-purple-900/50 text-lg transition-transform hover:scale-105">
+                <MdCameraAlt className="text-3xl" /> Capture Photo
               </Button>
             </div>
           </div>

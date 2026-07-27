@@ -490,14 +490,14 @@ export default function ExploreClient({
                         type: pub.content_type,
                         author: (pub as any).author_name || (pub.scholars?.users?.raw_user_meta_data as any)?.name || (pub.scholars?.users?.raw_user_meta_data as any)?.full_name || 'Unknown Scholar',
                         url: `/publications/${pub.id}`,
-                        cover_image: pub.cover_image || "/placeholder.svg",
+                        cover_image: pub.cover_image || "/placeholder-user.jpg",
                         abstract: pub.abstract,
                         author_avatar: (pub.scholars?.users?.raw_user_meta_data as any)?.avatar_url || (pub.scholars?.users?.raw_user_meta_data as any)?.picture || (pub.scholars?.users?.raw_user_meta_data as any)?.image || "/placeholder-user.jpg",
                         subject: pub.categories?.name || 'GENERAL'
                       }} 
                     />
                     <img 
-                      src={pub.cover_image || "/placeholder.svg"} 
+                      src={pub.cover_image || "/placeholder-user.jpg"} 
                       alt={pub.title} 
                     />
                   </div>

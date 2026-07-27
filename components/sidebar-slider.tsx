@@ -18,21 +18,21 @@ const sliderItems = [
   {
     id: '1',
     title: 'GSP Academic Magazine - Spring 2026',
-    image: '/placeholder.svg',
+    image: '/placeholder-user.jpg',
     type: 'Magazine',
     link: '/publications?category=magazine'
   },
   {
     id: '2',
     title: 'Research Methodologies E-Book',
-    image: '/placeholder.svg',
+    image: '/placeholder-user.jpg',
     type: 'E-Book',
     link: '/publications?category=e-book'
   },
   {
     id: '3',
     title: 'Global Scholar Quarterly',
-    image: '/placeholder.svg',
+    image: '/placeholder-user.jpg',
     type: 'Magazine',
     link: '/publications?category=magazine'
   }
