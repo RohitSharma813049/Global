@@ -190,7 +190,7 @@ export default function SettingsPage() {
     <>
       <div className="flex-1 overflow-y-auto p-4 sm:p-6 animate-fade-in-up">
         <div className="max-w-4xl mx-auto">
-          <div className="-ml-2 sm:-ml-6 mt-[-10px]">
+          <div className="-ml-2 sm:-ml-6 -mt-2.5">
           <BackButton />
         </div>
         
@@ -207,7 +207,7 @@ export default function SettingsPage() {
         <div className="flex flex-col md:flex-row gap-6 sm:gap-8">
           {/* Tabs Sidebar */}
           <div className="w-full md:w-64 shrink-0">
-            <div className="bg-(--color-gsp-surface-muted) rounded-(--radius-2xl) shadow-(--shadow-1) border border-(--color-gsp-border-muted) p-2 space-y-1">
+            <div className="bg-(--color-gsp-surface-muted) rounded-2xl shadow-(--shadow-1) border border-(--color-gsp-border-muted) p-2 space-y-1">
               {tabs.map((tab) => {
                 const Icon = tab.icon;
                 const isActive = activeTab === tab.id;
@@ -240,7 +240,7 @@ export default function SettingsPage() {
           {/* Tab Content Area */}
           <div className="flex-1 min-w-0">
             {activeTab === "profile" && (
-              <div className="bg-(--color-gsp-surface-muted) rounded-(--radius-2xl) shadow-(--shadow-1) border border-(--color-gsp-border-muted) overflow-hidden">
+              <div className="bg-(--color-gsp-surface-muted) rounded-2xl shadow-(--shadow-1) border border-(--color-gsp-border-muted) overflow-hidden">
                 <div className="p-4 sm:p-6 border-b border-(--color-gsp-border-muted)">
                   <h2 className="text-lg sm:text-xl font-bold text-(--color-gsp-text-primary)">Profile Information</h2>
                   <p className="text-xs sm:text-sm text-(--color-gsp-text-secondary) mt-1">Update your personal details and public profile.</p>
@@ -630,7 +630,7 @@ export default function SettingsPage() {
                       </div>
                     ) : session?.user?.role === 'user' ? (
                       <div className="mt-8 pt-8 border-t border-(--color-gsp-border-muted)">
-                        <div className="bg-linear-to-br from-indigo-50 to-purple-50 rounded-(--radius-2xl) p-6 sm:p-8 border border-indigo-100/50 relative overflow-hidden">
+                        <div className="bg-linear-to-br from-indigo-50 to-purple-50 rounded-2xl p-6 sm:p-8 border border-indigo-100/50 relative overflow-hidden">
                           <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none">
                             <svg className="w-32 h-32 text-(--color-gsp-text-inverse)" fill="currentColor" viewBox="0 0 24 24"><path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72l5 2.73 5-2.73v3.72z"/></svg>
                           </div>
@@ -666,7 +666,7 @@ export default function SettingsPage() {
             )}
 
             {activeTab === "security" && (
-              <div className="bg-(--color-gsp-surface-muted) rounded-(--radius-2xl) shadow-(--shadow-1) border border-(--color-gsp-border-muted) overflow-hidden">
+              <div className="bg-(--color-gsp-surface-muted) rounded-2xl shadow-(--shadow-1) border border-(--color-gsp-border-muted) overflow-hidden">
                 <div className="p-4 sm:p-6 border-b border-(--color-gsp-border-muted)">
                   <h2 className="text-lg sm:text-xl font-bold text-(--color-gsp-text-primary)">Security Settings</h2>
                   <p className="text-xs sm:text-sm text-(--color-gsp-text-secondary) mt-1">Update your password and secure your account.</p>
@@ -713,7 +713,7 @@ export default function SettingsPage() {
             )}
 
             {activeTab === "notifications" && (
-              <div className="bg-(--color-gsp-surface-muted) rounded-(--radius-2xl) shadow-(--shadow-1) border border-(--color-gsp-border-muted) overflow-hidden">
+              <div className="bg-(--color-gsp-surface-muted) rounded-2xl shadow-(--shadow-1) border border-(--color-gsp-border-muted) overflow-hidden">
                 <div className="p-4 sm:p-6 border-b border-(--color-gsp-border-muted)">
                   <h2 className="text-lg sm:text-xl font-bold text-(--color-gsp-text-primary)">Notification Preferences</h2>
                   <p className="text-xs sm:text-sm text-(--color-gsp-text-secondary) mt-1">Choose how you want to be notified about updates.</p>
@@ -747,7 +747,7 @@ export default function SettingsPage() {
             )}
 
             {activeTab === "appearance" && (
-              <div className="bg-(--color-gsp-surface-muted) rounded-(--radius-2xl) shadow-(--shadow-1) border border-(--color-gsp-border-muted) overflow-hidden">
+              <div className="bg-(--color-gsp-surface-muted) rounded-2xl shadow-(--shadow-1) border border-(--color-gsp-border-muted) overflow-hidden">
                 <div className="p-4 sm:p-6 border-b border-(--color-gsp-border-muted)">
                   <h2 className="text-lg sm:text-xl font-bold text-(--color-gsp-text-primary)">Appearance & Layout</h2>
                   <p className="text-xs sm:text-sm text-(--color-gsp-text-secondary) mt-1">Customize the look and feel of your dashboard.</p>
@@ -779,18 +779,18 @@ export default function SettingsPage() {
 
       {/* Camera Modal */}
       {isCameraOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black">
+        <div className="fixed inset-0 z-100 flex items-center justify-center bg-black">
           <div className="relative w-full h-full flex flex-col">
             <video ref={videoRef} autoPlay playsInline className="absolute inset-0 w-full h-full object-cover scale-x-[-1]" />
             
-            <div className="absolute top-0 left-0 w-full p-6 bg-gradient-to-b from-black/60 to-transparent z-10 flex justify-between items-center">
+            <div className="absolute top-0 left-0 w-full p-6 bg-linear-to-b from-black/60 to-transparent z-10 flex justify-between items-center">
                <h3 className="text-xl font-bold text-white drop-shadow-md">Take a Photo</h3>
                <button onClick={stopCamera} className="text-white hover:text-gray-300 transition">
                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
                </button>
             </div>
             
-            <div className="absolute bottom-0 left-0 w-full p-8 bg-gradient-to-t from-black/80 to-transparent z-10 flex justify-center items-center gap-6">
+            <div className="absolute bottom-0 left-0 w-full p-8 bg-linear-to-t from-black/80 to-transparent z-10 flex justify-center items-center gap-6">
               <Button variant="outline" onClick={stopCamera} className="bg-white/10 hover:bg-white/20 text-white border-white/30 backdrop-blur-md rounded-full px-8 h-14">
                 Cancel
               </Button>
@@ -804,7 +804,7 @@ export default function SettingsPage() {
       
       {/* Media Gallery Modal */}
       {showGallery && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+        <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
           <div className="bg-white rounded-xl shadow-xl w-full max-w-3xl max-h-[80vh] flex flex-col">
             <div className="flex items-center justify-between p-4 border-b">
               <h3 className="font-semibold text-lg text-gray-900">Media Library</h3>
