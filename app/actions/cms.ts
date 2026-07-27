@@ -22,13 +22,13 @@ export async function getHomepageSettings() {
   const defaultSettings = {
     hero_title: 'Empowering Global Research & Knowledge Sharing',
     hero_subtitle: 'Explore millions of peer-reviewed papers, thesis, articles, and eBooks.',
-    hero_image_url: '/placeholder-user.jpg',
+    hero_image_url: '/placeholder-user.png',
     hero_slides: [
-      { label: 'Featured Article', title: 'ESG Integration in GCC Markets: A Framework for Sustainable Finance', author: 'Dr. Priya Nair-Kapoor', cred: 'Hon. D.B.A.', badge: 'eBook', avatar: '/placeholder-user.jpg', image: '/placeholder-user.jpg' },
-      { label: 'Research Paper', title: 'Decolonising Knowledge Systems: Toward an African Academic Paradigm', author: 'Dr. Ngozi Adeyemi', cred: 'Ph.D., FAAN', badge: 'Article', avatar: '/placeholder-user.jpg', image: '/placeholder-user.jpg' },
-      { label: 'GSP Interview Series', title: 'Climate Policy in Transition Economies: Pathways to Net Zero by 2050', author: 'Dr. Amira Al-Rashidi', cred: 'Hon. D.Sc.', badge: 'Magazine', avatar: '/placeholder-user.jpg', image: '/placeholder-user.jpg' },
-      { label: 'Featured eBook', title: 'GCC Economic Diversification: Vision 2030 and Beyond', author: 'Prof. Khalid Al-Mansouri', cred: 'Hon. D.B.A.', badge: 'eBook', avatar: '/placeholder-user.jpg', image: '/placeholder-user.jpg' },
-      { label: 'Doctoral Thesis', title: 'Artificial Intelligence Ethics in Cross-Cultural Research Environments', author: 'Prof. Li Wei', cred: 'Ph.D.', badge: 'Thesis', avatar: '/placeholder-user.jpg', image: '/placeholder-user.jpg' }
+      { label: 'Featured Article', title: 'ESG Integration in GCC Markets: A Framework for Sustainable Finance', author: 'Dr. Priya Nair-Kapoor', cred: 'Hon. D.B.A.', badge: 'eBook', avatar: '/placeholder-user.png', image: '/placeholder-user.png' },
+      { label: 'Research Paper', title: 'Decolonising Knowledge Systems: Toward an African Academic Paradigm', author: 'Dr. Ngozi Adeyemi', cred: 'Ph.D., FAAN', badge: 'Article', avatar: '/placeholder-user.png', image: '/placeholder-user.png' },
+      { label: 'GSP Interview Series', title: 'Climate Policy in Transition Economies: Pathways to Net Zero by 2050', author: 'Dr. Amira Al-Rashidi', cred: 'Hon. D.Sc.', badge: 'Magazine', avatar: '/placeholder-user.png', image: '/placeholder-user.png' },
+      { label: 'Featured eBook', title: 'GCC Economic Diversification: Vision 2030 and Beyond', author: 'Prof. Khalid Al-Mansouri', cred: 'Hon. D.B.A.', badge: 'eBook', avatar: '/placeholder-user.png', image: '/placeholder-user.png' },
+      { label: 'Doctoral Thesis', title: 'Artificial Intelligence Ethics in Cross-Cultural Research Environments', author: 'Prof. Li Wei', cred: 'Ph.D.', badge: 'Thesis', avatar: '/placeholder-user.png', image: '/placeholder-user.png' }
     ],
     hero_ticker_items: [
       { prefix: 'New', text: 'ESG & Sustainable Finance — Dr. Priya Nair-Kapoor' },
@@ -42,10 +42,10 @@ export async function getHomepageSettings() {
     hero_cta_secondary_text: 'Meet Our Scholars',
     hero_trust_text: '<strong>25,000+ researchers</strong> published<br />across 80 countries this year',
     hero_trust_avatars: [
-      '/placeholder-user.jpg',
-      '/placeholder-user.jpg',
-      '/placeholder-user.jpg',
-      '/placeholder-user.jpg'
+      '/placeholder-user.png',
+      '/placeholder-user.png',
+      '/placeholder-user.png',
+      '/placeholder-user.png'
     ],
     hero_stats: [
       { number: '12K+', label: 'Publications' },
@@ -101,10 +101,10 @@ export async function getHomepageSettings() {
     ],
 
     explore_categories: [
-      { title: 'Featured<br/>Agriculture', count: '1,240+ Papers', image: '/placeholder-user.jpg', link: '/explore?category=agriculture' },
-      { title: 'Trending<br/>Computer Science', count: '3,860+ Papers', image: '/placeholder-user.jpg', link: '/explore?category=computer-science-ai' },
-      { title: 'Latest<br/>Business', count: '980+ Papers', image: '/placeholder-user.jpg', link: '/explore?category=business-management' },
-      { title: 'Latest<br/>Humanities', count: '410+ Papers', image: '/placeholder-user.jpg', link: '/explore?category=humanities' }
+      { title: 'Featured<br/>Agriculture', count: '1,240+ Papers', image: '/placeholder-user.png', link: '/explore?category=agriculture' },
+      { title: 'Trending<br/>Computer Science', count: '3,860+ Papers', image: '/placeholder-user.png', link: '/explore?category=computer-science-ai' },
+      { title: 'Latest<br/>Business', count: '980+ Papers', image: '/placeholder-user.png', link: '/explore?category=business-management' },
+      { title: 'Latest<br/>Humanities', count: '410+ Papers', image: '/placeholder-user.png', link: '/explore?category=humanities' }
     ],
 
     subject_categories: [

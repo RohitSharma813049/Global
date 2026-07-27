@@ -187,7 +187,7 @@ export default function ScholarReviewsCarousel() {
           {/* Review 1 */}
           <div className="review-card">
             <div className="rv-photo-wrap">
-              <img src="/placeholder-user.jpg" alt="Dr. Priya Nair-Kapoor" loading="lazy"/>
+              <img src="/placeholder-user.png" alt="Dr. Priya Nair-Kapoor" loading="lazy"/>
               <div className="rv-photo-gradient"></div>
               <span className="rv-stars">
                 <svg width="13" height="13" viewBox="0 0 16 16" fill="#B8924A"><path d="M8 1.2l1.9 4.2 4.5.5-3.4 3.1.9 4.5L8 11.3l-4 2.2.9-4.5-3.4-3.1 4.5-.5L8 1.2z"/></svg>
@@ -213,7 +213,7 @@ export default function ScholarReviewsCarousel() {
           {/* Review 2 */}
           <div className="review-card">
             <div className="rv-photo-wrap">
-              <img src="/placeholder-user.jpg" alt="Dr. Ngozi Adeyemi" loading="lazy"/>
+              <img src="/placeholder-user.png" alt="Dr. Ngozi Adeyemi" loading="lazy"/>
               <div className="rv-photo-gradient"></div>
               <span className="rv-stars">
                 <svg width="13" height="13" viewBox="0 0 16 16" fill="#B8924A"><path d="M8 1.2l1.9 4.2 4.5.5-3.4 3.1.9 4.5L8 11.3l-4 2.2.9-4.5-3.4-3.1 4.5-.5L8 1.2z"/></svg>
@@ -239,7 +239,7 @@ export default function ScholarReviewsCarousel() {
           {/* Review 3 */}
           <div className="review-card">
             <div className="rv-photo-wrap">
-              <img src="/placeholder-user.jpg" alt="Dr. Amira Al-Rashidi" loading="lazy"/>
+              <img src="/placeholder-user.png" alt="Dr. Amira Al-Rashidi" loading="lazy"/>
               <div className="rv-photo-gradient"></div>
               <span className="rv-stars">
                 <svg width="13" height="13" viewBox="0 0 16 16" fill="#B8924A"><path d="M8 1.2l1.9 4.2 4.5.5-3.4 3.1.9 4.5L8 11.3l-4 2.2.9-4.5-3.4-3.1 4.5-.5L8 1.2z"/></svg>
@@ -265,7 +265,7 @@ export default function ScholarReviewsCarousel() {
           {/* Review 4 */}
           <div className="review-card">
             <div className="rv-photo-wrap">
-              <img src="/placeholder-user.jpg" alt="Prof. Khalid Al-Mansouri" loading="lazy"/>
+              <img src="/placeholder-user.png" alt="Prof. Khalid Al-Mansouri" loading="lazy"/>
               <div className="rv-photo-gradient"></div>
               <span className="rv-stars">
                 <svg width="13" height="13" viewBox="0 0 16 16" fill="#B8924A"><path d="M8 1.2l1.9 4.2 4.5.5-3.4 3.1.9 4.5L8 11.3l-4 2.2.9-4.5-3.4-3.1 4.5-.5L8 1.2z"/></svg>
@@ -291,7 +291,7 @@ export default function ScholarReviewsCarousel() {
           {/* Review 5 */}
           <div className="review-card">
             <div className="rv-photo-wrap">
-              <img src="/placeholder-user.jpg" alt="Prof. Li Wei" loading="lazy"/>
+              <img src="/placeholder-user.png" alt="Prof. Li Wei" loading="lazy"/>
               <div className="rv-photo-gradient"></div>
               <span className="rv-stars">
                 <svg width="13" height="13" viewBox="0 0 16 16" fill="#B8924A"><path d="M8 1.2l1.9 4.2 4.5.5-3.4 3.1.9 4.5L8 11.3l-4 2.2.9-4.5-3.4-3.1 4.5-.5L8 1.2z"/></svg>
@@ -317,7 +317,7 @@ export default function ScholarReviewsCarousel() {
           {/* Review 6 */}
           <div className="review-card">
             <div className="rv-photo-wrap">
-              <img src="/placeholder-user.jpg" alt="Prof. Elena Marchetti" loading="lazy"/>
+              <img src="/placeholder-user.png" alt="Prof. Elena Marchetti" loading="lazy"/>
               <div className="rv-photo-gradient"></div>
               <span className="rv-stars">
                 <svg width="13" height="13" viewBox="0 0 16 16" fill="#B8924A"><path d="M8 1.2l1.9 4.2 4.5.5-3.4 3.1.9 4.5L8 11.3l-4 2.2.9-4.5-3.4-3.1 4.5-.5L8 1.2z"/></svg>

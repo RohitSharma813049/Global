@@ -55,11 +55,11 @@ export default async function Page() {
     subject: pub.categories?.name || 'Uncategorized',
     title: pub.title,
     author: pub.author_name || pub.scholars?.users?.raw_user_meta_data?.full_name || 'Anonymous',
-    authorImg: pub.scholars?.users?.raw_user_meta_data?.avatar_url || pub.scholars?.users?.raw_user_meta_data?.picture || pub.scholars?.users?.raw_user_meta_data?.image || '/placeholder-user.jpg',
+    authorImg: pub.scholars?.users?.raw_user_meta_data?.avatar_url || pub.scholars?.users?.raw_user_meta_data?.picture || pub.scholars?.users?.raw_user_meta_data?.image || '/placeholder-user.png',
     desc: pub.abstract,
     description: pub.abstract,
-    img: pub.cover_image || '/placeholder-user.jpg',
-    image: pub.cover_image || '/placeholder-user.jpg',
+    img: pub.cover_image || '/placeholder-user.png',
+    image: pub.cover_image || '/placeholder-user.png',
     views: `${pub.views || 0} reads`,
     link: `/publications/${pub.id}`
   });
@@ -95,32 +95,32 @@ export default async function Page() {
     id: cat.id,
     name: cat.name,
     slug: cat.slug,
-    image: cat.image_url || "/placeholder-user.jpg"
+    image: cat.image_url || "/placeholder-user.png"
   }));
 
   const dynamicExploreCategories = [
     {
       title: 'Research Articles',
       count: `${statsData.articleCount}+ Papers`,
-      image: settings.explore_categories?.[0]?.image || '/placeholder-user.jpg',
+      image: settings.explore_categories?.[0]?.image || '/placeholder-user.png',
       link: '/explore?type=article'
     },
     {
       title: 'eBooks',
       count: `${statsData.ebookCount}+ Books`,
-      image: settings.explore_categories?.[1]?.image || '/placeholder-user.jpg',
+      image: settings.explore_categories?.[1]?.image || '/placeholder-user.png',
       link: '/explore?type=ebook'
     },
     {
       title: 'Magazines',
       count: `${statsData.magazineCount}+ Issues`,
-      image: settings.explore_categories?.[2]?.image || '/placeholder-user.jpg',
+      image: settings.explore_categories?.[2]?.image || '/placeholder-user.png',
       link: '/explore?type=magazine'
     },
     {
       title: 'Theses',
       count: `${statsData.thesisCount}+ Papers`,
-      image: settings.explore_categories?.[3]?.image || '/placeholder-user.jpg',
+      image: settings.explore_categories?.[3]?.image || '/placeholder-user.png',
       link: '/explore?type=thesis'
     }
   ];
@@ -173,8 +173,8 @@ export default async function Page() {
         author: pub.author_name || pub.scholars?.users?.raw_user_meta_data?.full_name || 'Anonymous',
         cred: pub.scholars?.qualification || '',
         badge: pub.content_type || 'Article',
-        avatar: pub.scholars?.users?.raw_user_meta_data?.avatar_url || pub.scholars?.users?.raw_user_meta_data?.picture || pub.scholars?.users?.raw_user_meta_data?.image || '/placeholder-user.jpg',
-        image: pub.cover_image || '/placeholder-user.jpg'
+        avatar: pub.scholars?.users?.raw_user_meta_data?.avatar_url || pub.scholars?.users?.raw_user_meta_data?.picture || pub.scholars?.users?.raw_user_meta_data?.image || '/placeholder-user.png',
+        image: pub.cover_image || '/placeholder-user.png'
       }));
 
   const combinedPublications = [

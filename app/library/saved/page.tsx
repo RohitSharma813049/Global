@@ -130,7 +130,7 @@ export default function SavedPapersPage() {
                       <span className="pc-type-badge pbadge-type">{paper.type || 'PUBLICATION'}</span>
                       <SaveButton publication={paper} variant="card" />
                       <img 
-                        src={paper.cover_image || "/placeholder-user.jpg"} 
+                        src={paper.cover_image || "/placeholder-user.png"} 
                         alt={paper.title} 
                       />
                     </div>
@@ -142,7 +142,7 @@ export default function SavedPapersPage() {
                       <div className="pc-author">
                         <div className="pc-avatar">
                           <img 
-                            src={paper.author_avatar || "/placeholder-user.jpg"} 
+                            src={paper.author_avatar || "/placeholder-user.png"} 
                             alt={paper.author || "Author"} 
                           />
                         </div>

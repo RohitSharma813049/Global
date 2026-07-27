@@ -47,8 +47,8 @@ export default function HomeHero({
       author: 'Dr. Priya Nair-Kapoor',
       cred: 'Hon. D.B.A.',
       badge: 'eBook',
-      avatar: '/placeholder-user.jpg',
-      image: '/placeholder-user.jpg'
+      avatar: '/placeholder-user.png',
+      image: '/placeholder-user.png'
     },
     {
       label: 'Research Paper',
@@ -56,8 +56,8 @@ export default function HomeHero({
       author: 'Dr. Ngozi Adeyemi',
       cred: 'Ph.D., FAAN',
       badge: 'Article',
-      avatar: '/placeholder-user.jpg',
-      image: '/placeholder-user.jpg'
+      avatar: '/placeholder-user.png',
+      image: '/placeholder-user.png'
     },
     {
       label: 'GSP Interview Series',
@@ -65,8 +65,8 @@ export default function HomeHero({
       author: 'Dr. Amira Al-Rashidi',
       cred: 'Hon. D.Sc.',
       badge: 'Magazine',
-      avatar: '/placeholder-user.jpg',
-      image: '/placeholder-user.jpg'
+      avatar: '/placeholder-user.png',
+      image: '/placeholder-user.png'
     },
     {
       label: 'Featured eBook',
@@ -74,8 +74,8 @@ export default function HomeHero({
       author: 'Prof. Khalid Al-Mansouri',
       cred: 'Hon. D.B.A.',
       badge: 'eBook',
-      avatar: '/placeholder-user.jpg',
-      image: '/placeholder-user.jpg'
+      avatar: '/placeholder-user.png',
+      image: '/placeholder-user.png'
     },
     {
       label: 'Doctoral Thesis',
@@ -83,8 +83,8 @@ export default function HomeHero({
       author: 'Prof. Li Wei',
       cred: 'Ph.D.',
       badge: 'Thesis',
-      avatar: '/placeholder-user.jpg',
-      image: '/placeholder-user.jpg'
+      avatar: '/placeholder-user.png',
+      image: '/placeholder-user.png'
     },
   ]
 
@@ -184,10 +184,10 @@ export default function HomeHero({
           <div className="trust-row">
             <div className="trust-avatars">
               {(trustAvatars && trustAvatars.length > 0 ? trustAvatars : [
-                "/placeholder-user.jpg",
-                "/placeholder-user.jpg",
-                "/placeholder-user.jpg",
-                "/placeholder-user.jpg"
+                "/placeholder-user.png",
+                "/placeholder-user.png",
+                "/placeholder-user.png",
+                "/placeholder-user.png"
               ]).map((avatar, index) => (
                 <div className="trust-avatar" key={index} style={{ position: 'relative', width: '32px', height: '32px', overflow: 'hidden', borderRadius: '50%' }}>
                   <Image src={avatar} alt="Scholar" fill sizes="32px" className="object-cover" priority />

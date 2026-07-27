@@ -68,7 +68,7 @@ export default async function PublicationDetailPage({ params }: Props) {
   const isVideo = publication.content_type === 'video'
   const rawMetaData = (publication.scholars?.users?.raw_user_meta_data as any) || {};
   const authorName = rawMetaData.name || rawMetaData.full_name || publication.author_name || "Unknown Scholar";
-  const authorImg = rawMetaData.avatar_url || rawMetaData.picture || rawMetaData.image || "/placeholder-user.jpg";
+  const authorImg = rawMetaData.avatar_url || rawMetaData.picture || rawMetaData.image || "/placeholder-user.png";
   
   const authorInitials = authorName.split(' ').map((n: string) => n[0]).join('').substring(0, 2).toUpperCase() || 'U';
   
@@ -117,7 +117,7 @@ export default async function PublicationDetailPage({ params }: Props) {
                 <Link href={publication.scholar_id ? `/scholars/${publication.scholar_id}` : "#"} className="pub-mi-link">
                   <span className="pub-mi-avatar">
                     <Avatar className="w-full h-full">
-                      <AvatarImage src={authorImg || "/placeholder-user.jpg"} alt={authorName} className="object-cover" />
+                      <AvatarImage src={authorImg || "/placeholder-user.png"} alt={authorName} className="object-cover" />
                       <AvatarFallback className="text-xs bg-indigo-100 text-indigo-700 font-bold">{authorInitials}</AvatarFallback>
                     </Avatar>
                   </span>
@@ -253,7 +253,7 @@ export default async function PublicationDetailPage({ params }: Props) {
               <div className="sb-body">
                 <div className="au-hero">
                   <div className="au-av overflow-hidden flex items-center justify-center bg-[#F8F7FC] border-0.5 border-white shadow-sm">
-                    {authorImg && authorImg !== "/placeholder-user.jpg" ? (
+                    {authorImg && authorImg !== "/placeholder-user.png" ? (
                       <img src={authorImg} alt={authorName} className="object-cover w-full h-full" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-xl font-bold text-violet">{authorInitials}</div>
