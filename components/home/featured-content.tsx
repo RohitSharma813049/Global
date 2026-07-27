@@ -133,7 +133,7 @@ export default function FeaturedContent({ title, subtitle, autoplay = true, publ
           {/* Image Container */}
           <div className="group relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gray-100 shadow-xl transition-all duration-700 cursor-pointer">
             <Image
-              src={current.image}
+              src={current.image || '/placeholder-user.png'}
               alt={current.title}
               width={600}
               height={500}

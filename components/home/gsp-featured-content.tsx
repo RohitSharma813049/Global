@@ -137,8 +137,7 @@ export default function GspFeaturedContent({ title, subtitle, description, autop
             <Link href={pub.link} prefetch={false} className="gsp-pub-card" key={idx} style={{transitionDelay: `${idx * 100}ms`}}>
               <div className="gsp-pub-card-media">
                 <span className="gsp-pub-card-type">{pub.type}</span>
-                { }
-                <img src={pub.img} alt={pub.title} loading="lazy"/>
+                <img src={pub.img || '/placeholder-user.png'} alt={pub.title} loading="lazy"/>
               </div>
               <div className="gsp-pub-card-body">
                 <p className="gsp-pub-card-subject">{pub.subject}</p>
