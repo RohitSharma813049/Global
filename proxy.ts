@@ -91,7 +91,7 @@ export default withAuth(
       authorized: ({ token, req }) => {
         const { pathname } = req.nextUrl;
         // Require auth for these specific routes
-        if (pathname.startsWith("/dashboard") || pathname.startsWith("/admin")) {
+        if (pathname.startsWith("/dashboard") || pathname.startsWith("/admin") || pathname.startsWith("/crm")) {
           return !!token;
         }
         // Allow public pages through so the proxy function can redirect them if they are logged in
