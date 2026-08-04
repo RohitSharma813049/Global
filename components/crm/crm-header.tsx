@@ -1,11 +1,30 @@
 'use client'
 
 import React from 'react'
-import { Search, Bell } from 'lucide-react'
+import { Search, Bell, Menu } from 'lucide-react'
+import { useSidebar } from './sidebar-context'
+import { useSession } from 'next-auth/react'
 
 export function CrmHeader() {
+  const { isOpen, setIsOpen } = useSidebar()
+  const { data: session } = useSession()
+
+  const userName = session?.user?.name || 'Admin User'
+  const userRole = (session?.user as any)?.role || 'Admin'
+  const userInitial = userName.charAt(0).toUpperCase()
+
   return (
-    <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
+    <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 sm:px-6 sticky top-0 z-10">
+      {/* Left side actions (Mobile Menu) */}
+      <div className="flex items-center gap-3 lg:hidden mr-3">
+        <button 
+          onClick={() => setIsOpen(!isOpen)}
+          className="p-2 -ml-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+        >
+          <Menu className="h-6 w-6" />
+        </button>
+      </div>
+
       {/* Search Bar */}
       <div className="flex-1 max-w-xl">
         <div className="relative">
@@ -30,12 +49,16 @@ export function CrmHeader() {
 
         {/* User Profile */}
         <div className="flex items-center gap-3 cursor-pointer hover:bg-slate-50 p-1.5 rounded-lg transition-colors">
-          <div className="w-9 h-9 bg-blue-600 rounded-full flex items-center justify-center text-white font-medium text-sm">
-            D
-          </div>
+          {session?.user?.image ? (
+            <img src={session.user.image} alt={userName} className="w-9 h-9 rounded-full object-cover" />
+          ) : (
+            <div className="w-9 h-9 bg-blue-600 rounded-full flex items-center justify-center text-white font-medium text-sm">
+              {userInitial}
+            </div>
+          )}
           <div className="hidden md:flex flex-col">
-            <span className="text-sm font-semibold text-slate-900 leading-tight">Darpann Investment</span>
-            <span className="text-xs text-slate-500">Admin</span>
+            <span className="text-sm font-semibold text-slate-900 leading-tight truncate max-w-[120px]">{userName}</span>
+            <span className="text-xs text-slate-500 capitalize">{userRole}</span>
           </div>
         </div>
       </div>

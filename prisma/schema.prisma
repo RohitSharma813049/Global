@@ -757,6 +757,7 @@ model blogs {
   content     String
   author_id   String?   @db.Uuid
   cover_image String?
+  is_featured Boolean?  @default(false)
   status      String?   @default("draft")
   created_at  DateTime? @default(now()) @db.Timestamptz(6)
   updated_at  DateTime? @default(now()) @db.Timestamptz(6)
@@ -774,6 +775,7 @@ model news {
   slug         String    @unique
   content      String
   cover_image  String?
+  is_featured  Boolean?  @default(false)
   status       String?   @default("draft")
   published_at DateTime? @db.Timestamptz(6)
   created_at   DateTime? @default(now()) @db.Timestamptz(6)
@@ -825,3 +827,72 @@ model platform_settings {
 
   @@schema("public")
 }
+
+model crm_leads {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name       String
+  email      String?
+  phone      String?
+  status     String    @default("open")
+  source     String?
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at DateTime? @default(now()) @db.Timestamptz(6)
+
+  activities crm_activities[]
+  bookings   crm_bookings[]
+
+  @@schema("public")
+}
+
+model crm_properties {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title      String
+  type       String?
+  location   String?
+  price      Float?
+  status     String    @default("active")
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+
+  bookings   crm_bookings[]
+
+  @@schema("public")
+}
+
+model crm_projects {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name       String
+  location   String?
+  status     String    @default("active")
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+
+  @@schema("public")
+}
+
+model crm_activities {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  lead_id    String    @db.Uuid
+  type       String
+  status     String    @default("pending")
+  date       DateTime  @db.Timestamptz(6)
+  comment    String?
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+
+  lead       crm_leads @relation(fields: [lead_id], references: [id], onDelete: Cascade)
+
+  @@schema("public")
+}
+
+model crm_bookings {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  lead_id     String    @db.Uuid
+  property_id String    @db.Uuid
+  amount      Float
+  status      String    @default("pending")
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
+
+  lead        crm_leads      @relation(fields: [lead_id], references: [id], onDelete: Cascade)
+  property    crm_properties @relation(fields: [property_id], references: [id], onDelete: Cascade)
+
+  @@schema("public")
+}
+

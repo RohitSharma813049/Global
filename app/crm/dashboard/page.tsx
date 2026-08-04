@@ -2,137 +2,144 @@ import React from 'react'
 import { SummaryCard } from '@/components/crm/summary-card'
 import { ActivityList, ActivityItemProps } from '@/components/crm/activity-list'
 import { Users, Building, Calendar, Phone, MapPin, CheckCircle } from 'lucide-react'
+import { prisma } from '@/lib/db'
 
-// Mock Data from Screenshots
-const summaryData = [
-  {
-    title: 'Open Leads',
-    value: '3329',
-    icon: Users,
-    iconBgColor: 'bg-blue-600',
-    badges: [
-      { label: 'Open', value: '3329', color: 'blue' as const },
-      { label: 'Closed', value: '1026', color: 'green' as const },
-    ]
-  },
-  {
-    title: 'Active Users',
-    value: '15',
-    icon: Users,
-    iconBgColor: 'bg-green-500',
-    subtitle: 'Team members'
-  },
-  {
-    title: 'Total Properties',
-    value: '2',
-    icon: Building,
-    iconBgColor: 'bg-purple-500',
-    subtitle: 'Listed properties'
-  },
-  {
-    title: 'Meetings',
-    value: '22',
-    icon: Calendar,
-    iconBgColor: 'bg-teal-500',
-    badges: [
-      { label: 'Pending', value: '7', color: 'yellow' as const },
-      { label: 'Done', value: '15', color: 'green' as const },
-    ]
-  },
-  {
-    title: 'Follow-ups',
-    value: '4499',
-    icon: Phone,
-    iconBgColor: 'bg-amber-500',
-    badges: [
-      { label: 'Pending', value: '490', color: 'yellow' as const },
-      { label: 'Done', value: '4009', color: 'green' as const },
-    ]
-  },
-  {
-    title: 'Site Visits',
-    value: '49',
-    icon: MapPin,
-    iconBgColor: 'bg-cyan-500',
-    badges: [
-      { label: 'Pending', value: '34', color: 'yellow' as const },
-      { label: 'Done', value: '15', color: 'green' as const },
-    ]
-  },
-  {
-    title: 'Bookings',
-    value: '1',
-    icon: CheckCircle,
-    iconBgColor: 'bg-pink-500',
-    badges: [
-      { label: 'Confirmed', value: '1', color: 'green' as const },
-      { label: 'Pending', value: '0', color: 'yellow' as const },
-    ]
-  }
-]
+export const dynamic = 'force-dynamic'
 
-const completedMeetings: ActivityItemProps[] = [
-  {
-    id: '1',
-    name: 'G.S Rajput',
-    comment: 'Next week site visit plan',
-    date: '10 Mar',
-    time: '11:20 am',
-    status: 'done'
-  },
-  {
-    id: '2',
-    name: 'Ajay Arora',
-    comment: 'Positive will plan next meeting in 2-3 days',
-    date: '14 Feb',
-    time: '10:18 am',
-    status: 'done'
-  }
-]
+export default async function DashboardPage() {
+  // Fetch real data from the database
+  const [
+    totalOpenLeads,
+    totalClosedLeads,
+    totalActiveUsers,
+    totalProperties,
+    totalMeetings,
+    totalPendingMeetings,
+    totalFollowUps,
+    totalPendingFollowUps,
+    totalSiteVisits,
+    totalPendingSiteVisits,
+    totalBookings,
+    totalConfirmedBookings,
+    completedMeetingsRaw,
+    completedSiteVisitsRaw,
+    pendingFollowUpsRaw
+  ] = await Promise.all([
+    prisma.crm_leads.count({ where: { status: 'open' } }),
+    prisma.crm_leads.count({ where: { status: 'closed' } }),
+    // Assuming users are from existing auth table but for now dummy count if not linked
+    Promise.resolve(15), 
+    prisma.crm_properties.count(),
+    prisma.crm_activities.count({ where: { type: 'meeting' } }),
+    prisma.crm_activities.count({ where: { type: 'meeting', status: 'pending' } }),
+    prisma.crm_activities.count({ where: { type: 'follow_up' } }),
+    prisma.crm_activities.count({ where: { type: 'follow_up', status: 'pending' } }),
+    prisma.crm_activities.count({ where: { type: 'site_visit' } }),
+    prisma.crm_activities.count({ where: { type: 'site_visit', status: 'pending' } }),
+    prisma.crm_bookings.count(),
+    prisma.crm_bookings.count({ where: { status: 'confirmed' } }),
+    
+    // Recent activities
+    prisma.crm_activities.findMany({
+      where: { type: 'meeting', status: 'done' },
+      include: { lead: true },
+      orderBy: { date: 'desc' },
+      take: 5
+    }),
+    prisma.crm_activities.findMany({
+      where: { type: 'site_visit', status: 'done' },
+      include: { lead: true },
+      orderBy: { date: 'desc' },
+      take: 5
+    }),
+    prisma.crm_activities.findMany({
+      where: { type: 'follow_up', status: 'pending' },
+      include: { lead: true },
+      orderBy: { date: 'asc' },
+      take: 5
+    })
+  ])
 
-const completedSiteVisits: ActivityItemProps[] = [
-  {
-    id: '1',
-    name: 'Anil Kumar',
-    comment: 'Iski property sale hone k bad final krega Khud call krke',
-    date: '27 Feb',
-    time: '02:35 pm',
-    status: 'done',
-    imagesCount: 1,
-    images: ['https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80']
-  },
-  {
-    id: '2',
-    name: 'Shivani Sethi',
-    comment: 'Today site visit done by Prince , shakti 2 se 3 din me delhi meeting plan final krne k liye pankaj sir ko bhejna h RASA pasand aya h 1500 sqyd plot',
-    date: '23 Feb',
-    time: '05:42 pm',
-    status: 'done',
-    imagesCount: 1,
-    images: ['https://images.unsplash.com/photo-1560520653-9e0e4c89eb11?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80']
-  }
-]
+  const summaryData = [
+    {
+      title: 'Open Leads',
+      value: (totalOpenLeads + totalClosedLeads).toString(),
+      icon: Users,
+      iconBgColor: 'bg-blue-600',
+      badges: [
+        { label: 'Open', value: totalOpenLeads.toString(), color: 'blue' as const },
+        { label: 'Closed', value: totalClosedLeads.toString(), color: 'green' as const },
+      ]
+    },
+    {
+      title: 'Active Users',
+      value: totalActiveUsers.toString(),
+      icon: Users,
+      iconBgColor: 'bg-green-500',
+      subtitle: 'Team members'
+    },
+    {
+      title: 'Total Properties',
+      value: totalProperties.toString(),
+      icon: Building,
+      iconBgColor: 'bg-purple-500',
+      subtitle: 'Listed properties'
+    },
+    {
+      title: 'Meetings',
+      value: totalMeetings.toString(),
+      icon: Calendar,
+      iconBgColor: 'bg-teal-500',
+      badges: [
+        { label: 'Pending', value: totalPendingMeetings.toString(), color: 'yellow' as const },
+        { label: 'Done', value: (totalMeetings - totalPendingMeetings).toString(), color: 'green' as const },
+      ]
+    },
+    {
+      title: 'Follow-ups',
+      value: totalFollowUps.toString(),
+      icon: Phone,
+      iconBgColor: 'bg-amber-500',
+      badges: [
+        { label: 'Pending', value: totalPendingFollowUps.toString(), color: 'yellow' as const },
+        { label: 'Done', value: (totalFollowUps - totalPendingFollowUps).toString(), color: 'green' as const },
+      ]
+    },
+    {
+      title: 'Site Visits',
+      value: totalSiteVisits.toString(),
+      icon: MapPin,
+      iconBgColor: 'bg-cyan-500',
+      badges: [
+        { label: 'Pending', value: totalPendingSiteVisits.toString(), color: 'yellow' as const },
+        { label: 'Done', value: (totalSiteVisits - totalPendingSiteVisits).toString(), color: 'green' as const },
+      ]
+    },
+    {
+      title: 'Bookings',
+      value: totalBookings.toString(),
+      icon: CheckCircle,
+      iconBgColor: 'bg-pink-500',
+      badges: [
+        { label: 'Confirmed', value: totalConfirmedBookings.toString(), color: 'green' as const },
+        { label: 'Pending', value: (totalBookings - totalConfirmedBookings).toString(), color: 'yellow' as const },
+      ]
+    }
+  ]
 
-const pendingFollowUps: ActivityItemProps[] = [
-  {
-    id: '1',
-    name: 'Puneet Mehra',
-    comment: 'Done in Gurgaon cb after 6 months',
-    date: '20 Jun',
-    time: '01:29 pm',
-    status: 'overdue'
-  },
-  {
-    id: '2',
-    name: 'Atul Sharma',
-    comment: '',
-    date: '18 Jun',
-    time: '12:00 pm',
-    status: 'overdue'
-  }
-]
+  const formatActivity = (act: any): ActivityItemProps => ({
+    id: act.id,
+    name: act.lead?.name || 'Unknown',
+    comment: act.comment || '',
+    date: act.date.toLocaleDateString('en-US', { day: 'numeric', month: 'short' }),
+    time: act.date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+    status: act.status === 'done' ? 'done' : 'overdue'
+  })
 
-export default function DashboardPage() {
+  const completedMeetings = completedMeetingsRaw.map(formatActivity)
+  const completedSiteVisits = completedSiteVisitsRaw.map(formatActivity)
+  const pendingFollowUps = pendingFollowUpsRaw.map(formatActivity)
+
   return (
     <div className="max-w-7xl mx-auto space-y-6">
       {/* Page Title */}
@@ -151,7 +158,7 @@ export default function DashboardPage() {
         ))}
       </div>
 
-      {/* Upcoming Activities (Empty states shown in screenshot) */}
+      {/* Upcoming Activities */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <ActivityList 
           title="Meetings (Next 7 Days)" 
@@ -171,18 +178,18 @@ export default function DashboardPage() {
       <div className="space-y-4">
         <ActivityList 
           title="Completed Meetings" 
-          count={15} 
+          count={completedMeetings.length} 
           items={completedMeetings} 
         />
         <ActivityList 
           title="Completed Site Visits" 
-          count={15} 
+          count={completedSiteVisits.length} 
           items={completedSiteVisits} 
         />
         <ActivityList 
           title="Pending Follow-ups (Overdue)" 
-          count={100}
-          totalCount={477}
+          count={pendingFollowUps.length}
+          totalCount={totalPendingFollowUps}
           items={pendingFollowUps} 
         />
       </div>

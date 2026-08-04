@@ -29,8 +29,11 @@ import {
   Mic,
   Filter,
   GitBranch,
-  Tag
+  Tag,
+  X
 } from 'lucide-react'
+import { useSidebar } from './sidebar-context'
+import { signOut, useSession } from 'next-auth/react'
 
 const navItems = [
   { name: 'Fb Leads', href: '/crm/fb-leads', icon: Grid2X2 },
@@ -52,25 +55,58 @@ const navItems = [
 
 export function CrmSidebar() {
   const pathname = usePathname()
+  const { isOpen, setIsOpen } = useSidebar()
+  const { data: session } = useSession()
   const [isAiFeaturesOpen, setIsAiFeaturesOpen] = useState(true)
   const [isLmOpen, setIsLmOpen] = useState(true)
 
-  return (
-    <aside className="w-64 h-screen bg-white border-r border-slate-200 flex flex-col fixed left-0 top-0 overflow-hidden z-20">
-      {/* Logo Area */}
-      <div className="h-16 flex items-center px-6 border-b border-slate-100 shrink-0">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-lg">
-            AI
-          </div>
-          <div>
-            <h1 className="font-bold text-slate-900 leading-tight">AI CRM</h1>
-            <p className="text-xs text-slate-500">Real Estate</p>
-          </div>
-        </div>
-      </div>
+  const userName = session?.user?.name || 'Admin User'
+  const userRole = (session?.user as any)?.role || 'Admin'
+  const userInitial = userName.charAt(0).toUpperCase()
 
-      {/* Navigation */}
+  // Close sidebar on mobile when a link is clicked
+  const handleLinkClick = () => {
+    if (window.innerWidth < 1024) {
+      setIsOpen(false)
+    }
+  }
+
+  return (
+    <>
+      {/* Mobile Overlay */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-30 lg:hidden"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+
+      {/* Sidebar Content */}
+      <aside className={`
+        w-64 h-screen bg-white border-r border-slate-200 flex flex-col fixed left-0 top-0 overflow-hidden z-40
+        transition-transform duration-300 ease-in-out
+        ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+      `}>
+        {/* Logo Area */}
+        <div className="h-16 flex items-center justify-between px-6 border-b border-slate-100 shrink-0">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-lg">
+              AI
+            </div>
+            <div>
+              <h1 className="font-bold text-slate-900 leading-tight">AI CRM</h1>
+              <p className="text-xs text-slate-500">Real Estate</p>
+            </div>
+          </div>
+          <button 
+            className="lg:hidden p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+            onClick={() => setIsOpen(false)}
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Navigation */}
       <div className="flex-1 overflow-y-auto py-4 px-3 custom-scrollbar">
         
         {/* Top Sections */}
@@ -96,6 +132,7 @@ export function CrmSidebar() {
               <div className="pl-11 pr-3 space-y-1 py-1">
                 <Link 
                   href="/crm/ai-agents" 
+                  onClick={handleLinkClick}
                   className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-sm ${pathname === '/crm/ai-agents' ? 'bg-fuchsia-50 text-fuchsia-700 font-medium' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'}`}
                 >
                   <Bot className="w-4 h-4" />
@@ -103,6 +140,7 @@ export function CrmSidebar() {
                 </Link>
                 <Link 
                   href="/crm/sound-effect" 
+                  onClick={handleLinkClick}
                   className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-sm ${pathname === '/crm/sound-effect' ? 'bg-fuchsia-50 text-fuchsia-700 font-medium' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'}`}
                 >
                   <AudioLines className="w-4 h-4" />
@@ -110,6 +148,7 @@ export function CrmSidebar() {
                 </Link>
                 <Link 
                   href="/crm/voices" 
+                  onClick={handleLinkClick}
                   className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-sm ${pathname === '/crm/voices' ? 'bg-fuchsia-50 text-fuchsia-700 font-medium' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'}`}
                 >
                   <Mic className="w-4 h-4" />
@@ -140,6 +179,7 @@ export function CrmSidebar() {
               <div className="pl-11 pr-3 space-y-1 py-1">
                 <Link 
                   href="/crm/lead-sources" 
+                  onClick={handleLinkClick}
                   className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-sm ${pathname === '/crm/lead-sources' ? 'bg-blue-50 text-blue-700 font-medium' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'}`}
                 >
                   <Filter className="w-4 h-4" />
@@ -147,6 +187,7 @@ export function CrmSidebar() {
                 </Link>
                 <Link 
                   href="/crm/lead-stages" 
+                  onClick={handleLinkClick}
                   className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-sm ${pathname === '/crm/lead-stages' ? 'bg-blue-50 text-blue-700 font-medium' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'}`}
                 >
                   <GitBranch className="w-4 h-4" />
@@ -154,6 +195,7 @@ export function CrmSidebar() {
                 </Link>
                 <Link 
                   href="/crm/lead-status" 
+                  onClick={handleLinkClick}
                   className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-sm ${pathname === '/crm/lead-status' ? 'bg-blue-50 text-blue-700 font-medium' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'}`}
                 >
                   <Tag className="w-4 h-4" />
@@ -172,6 +214,7 @@ export function CrmSidebar() {
               <Link 
                 key={item.name} 
                 href={item.href}
+                onClick={handleLinkClick}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
                   isActive 
                     ? 'bg-blue-50 text-blue-600 font-medium' 
@@ -189,25 +232,34 @@ export function CrmSidebar() {
       {/* User Profile Footer */}
       <div className="p-4 border-t border-slate-100 shrink-0 bg-slate-50/50">
         <div className="flex items-center justify-between bg-white border border-slate-100 p-2 rounded-xl shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-blue-600 rounded-full flex items-center justify-center text-white font-medium text-sm">
-              D
-            </div>
-            <div className="flex flex-col">
-              <span className="text-sm font-semibold text-slate-900 leading-tight">Darp...</span>
-              <span className="text-xs text-slate-500">Admin</span>
+          <div className="flex items-center gap-3 overflow-hidden">
+            {session?.user?.image ? (
+              <img src={session.user.image} alt={userName} className="w-9 h-9 rounded-full object-cover shrink-0" />
+            ) : (
+              <div className="w-9 h-9 bg-blue-600 rounded-full flex items-center justify-center text-white font-medium text-sm shrink-0">
+                {userInitial}
+              </div>
+            )}
+            <div className="flex flex-col truncate">
+              <span className="text-sm font-semibold text-slate-900 leading-tight truncate">{userName}</span>
+              <span className="text-xs text-slate-500 capitalize">{userRole}</span>
             </div>
           </div>
-          <div className="flex items-center gap-1 text-slate-400">
+          <div className="flex items-center gap-1 text-slate-400 shrink-0">
             <button className="p-1.5 hover:bg-slate-100 rounded-md transition-colors text-slate-500">
               <UserIcon className="w-4 h-4" />
             </button>
-            <button className="p-1.5 hover:bg-red-50 rounded-md transition-colors text-red-500">
+            <button 
+              onClick={() => signOut({ callbackUrl: '/signin' })}
+              className="p-1.5 hover:bg-red-50 hover:text-red-600 rounded-md transition-colors text-slate-500"
+              title="Logout"
+            >
               <LogOut className="w-4 h-4" />
             </button>
           </div>
         </div>
       </div>
-    </aside>
+      </aside>
+    </>
   )
 }
