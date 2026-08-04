@@ -401,7 +401,7 @@ export default function PublicationViewer({ publication, isVideo }: PublicationV
             
             <div className="ml-auto flex items-center space-x-2 border-l border-zinc-200 pl-3">
               <button 
-                className={`ptbtn px-3 py-1 flex items-center space-x-1.5 rounded-full font-bold transition-colors ${isReading ? 'bg-red-100 text-red-600 hover:bg-red-200' : 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100'}`}
+                className={`ptbtn shrink-0 px-3 py-1 flex items-center space-x-1.5 rounded-full font-bold transition-colors ${isReading ? 'bg-red-100 text-red-600 hover:bg-red-200' : 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100'}`}
                 onClick={toggleReading}
                 title={isReading ? "Stop Audio" : "Read Aloud"}
               >
@@ -410,7 +410,7 @@ export default function PublicationViewer({ publication, isVideo }: PublicationV
                 ) : (
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
                 )}
-                <span className="text-2.5 uppercase tracking-wider">{isReading ? 'Turn Off' : 'Turn On'}</span>
+                <span className="text-2.5 uppercase tracking-wider whitespace-nowrap">{isReading ? 'Turn Off' : 'Turn On'}</span>
               </button>
               <select 
                 className="text-2.5 bg-transparent border-none outline-none text-zinc-500 font-medium max-w-20 truncate cursor-pointer hidden sm:block"
