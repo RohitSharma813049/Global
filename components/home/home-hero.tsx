@@ -210,7 +210,7 @@ export default function HomeHero({
                 className={`photo-slide ${i === cur ? 'active' : ''}`} 
                 style={{ position: 'absolute', inset: 0, opacity: i === cur ? 1 : 0, transition: 'opacity 0.8s ease' }}
               >
-                <Image src={s.image} alt={s.title} fill className="object-cover" priority={i === 0} sizes="(max-width: 768px) 100vw, 50vw" />
+                <Image src={s.image} alt={s.title || "Hero slide image"} fill className="object-cover" priority={i === 0} sizes="(max-width: 768px) 100vw, 50vw" />
               </div>
             ))}
           </div>

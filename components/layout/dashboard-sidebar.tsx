@@ -150,7 +150,7 @@ export default function DashboardSidebar() {
         })}
       </nav>
 
-      <div className={`p-4 pb-24 border-t border-(--color-gsp-border-muted) ${(!isExpanded && !isMobileMenuOpen) ? 'flex flex-col items-center' : ''}`}>
+      <div className={`p-4 pb-4 border-t border-(--color-gsp-border-muted) ${(!isExpanded && !isMobileMenuOpen) ? 'flex flex-col items-center' : ''}`}>
         <Link 
           href={role === 'admin' || role === 'super_admin' ? '/dashboard/admin/settings' : '/dashboard/settings'}
           onClick={() => setIsMobileMenuOpen(false)}
