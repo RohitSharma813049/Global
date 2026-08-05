@@ -31,8 +31,8 @@ export default async function UpdatesPage() {
     return timeB - timeA;
   });
 
-  const featured = allItems.length > 0 ? allItems[0] : null;
-  const restItems = allItems.length > 1 ? allItems.slice(1) : [];
+  const featuredItems = allItems.filter(item => item.is_featured);
+  const restItems = allItems.filter(item => !item.is_featured);
 
   return (
     <>
@@ -60,54 +60,59 @@ export default async function UpdatesPage() {
           ) : (
             <div className="flex flex-col gap-12">
               {/* Featured Section */}
-              {featured && (
+              {featuredItems.length > 0 && (
                 <section>
-                  <h2 className="text-2xl font-serif font-bold text-ink mb-6">Featured Story</h2>
-                  <Link 
-                    href={`/${featured.type === 'blog' ? 'blog' : 'news'}/${featured.slug}`}
-                    className="group grid grid-cols-1 md:grid-cols-2 bg-white rounded-2xl shadow-[0_12px_36px_rgba(0,0,0,0.08)] hover:shadow-[0_20px_48px_rgba(47,17,93,0.16)] border border-rule hover:border-violet/20 overflow-hidden transition-all duration-300"
-                  >
-                    <div className="relative h-64 md:h-full w-full bg-gray-100 overflow-hidden">
-                      {featured.cover_image ? (
-                        <Image 
-                          src={featured.cover_image} 
-                          alt={featured.title} 
-                          fill 
-                          className="object-cover transition-transform duration-700 group-hover:scale-105"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-indigo-50 flex items-center justify-center">
-                          <span className="text-indigo-300 font-bold text-6xl">{featured.title.charAt(0)}</span>
+                  <h2 className="text-2xl font-serif font-bold text-ink mb-6">Featured Stories</h2>
+                  <div className={`grid gap-8 ${featuredItems.length === 1 ? 'grid-cols-1' : 'md:grid-cols-2 lg:grid-cols-2'}`}>
+                    {featuredItems.map((featured) => (
+                      <Link 
+                        key={`${featured.type}-${featured.id}`}
+                        href={`/${featured.type === 'blog' ? 'blog' : 'news'}/${featured.slug}`}
+                        className={`group ${featuredItems.length === 1 ? 'grid grid-cols-1 md:grid-cols-2' : 'flex flex-col'} bg-white rounded-2xl shadow-[0_12px_36px_rgba(0,0,0,0.08)] hover:shadow-[0_20px_48px_rgba(47,17,93,0.16)] border border-rule hover:border-violet/20 overflow-hidden transition-all duration-300 hover:-translate-y-1`}
+                      >
+                        <div className={`relative w-full bg-gray-100 overflow-hidden shrink-0 ${featuredItems.length === 1 ? 'h-64 md:h-full' : 'h-56'}`}>
+                          {featured.cover_image ? (
+                            <Image 
+                              src={featured.cover_image} 
+                              alt={featured.title} 
+                              fill 
+                              className="object-cover transition-transform duration-700 group-hover:scale-105"
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-indigo-50 flex items-center justify-center">
+                              <span className="text-indigo-300 font-bold text-6xl">{featured.title.charAt(0)}</span>
+                            </div>
+                          )}
+                          <div className="absolute top-4 left-4 z-10">
+                            <span className={`px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-md shadow-sm ${featured.type === 'blog' ? 'bg-violet text-white' : 'bg-gold text-white'}`}>
+                              {featured.type === 'blog' ? 'Featured Blog' : 'Featured News'}
+                            </span>
+                          </div>
                         </div>
-                      )}
-                      <div className="absolute top-6 left-6 z-10">
-                        <span className={`px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-md shadow-sm ${featured.type === 'blog' ? 'bg-violet text-white' : 'bg-gold text-white'}`}>
-                          {featured.type === 'blog' ? 'Featured Blog' : 'Top News'}
-                        </span>
-                      </div>
-                    </div>
-                    
-                    <div className="p-8 md:p-12 flex flex-col justify-center">
-                      <div className="flex items-center text-xs font-semibold text-violet mb-4 tracking-wider uppercase">
-                        <time dateTime={featured.dateToSort ? new Date(featured.dateToSort).toISOString() : ''}>
-                          {featured.dateToSort ? formatDistanceToNow(new Date(featured.dateToSort), { addSuffix: true }) : 'Recently'}
-                        </time>
-                      </div>
-                      <h3 className="text-3xl font-serif font-bold text-ink mb-4 group-hover:text-violet transition-colors leading-tight">
-                        {featured.title}
-                      </h3>
-                      <div 
-                        className="text-black/60 text-[14.5px] font-light leading-relaxed mb-8 line-clamp-4"
-                        dangerouslySetInnerHTML={{ __html: featured.content.substring(0, 300) + '...' }}
-                      />
-                      <div className="mt-auto inline-flex items-center gap-2 text-[13px] font-medium text-violet border-b-[1.5px] border-transparent hover:border-violet pb-1 w-max transition-all group-hover:gap-3">
-                        Read Full Story
-                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                          <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                      </div>
-                    </div>
-                  </Link>
+                        
+                        <div className={`p-8 ${featuredItems.length === 1 ? 'md:p-12 justify-center' : 'grow'} flex flex-col`}>
+                          <div className="flex items-center text-xs font-semibold text-violet mb-4 tracking-wider uppercase">
+                            <time dateTime={featured.dateToSort ? new Date(featured.dateToSort).toISOString() : ''}>
+                              {featured.dateToSort ? formatDistanceToNow(new Date(featured.dateToSort), { addSuffix: true }) : 'Recently'}
+                            </time>
+                          </div>
+                          <h3 className={`${featuredItems.length === 1 ? 'text-3xl' : 'text-2xl'} font-serif font-bold text-ink mb-4 group-hover:text-violet transition-colors leading-tight`}>
+                            {featured.title}
+                          </h3>
+                          <div 
+                            className="text-black/60 text-[14.5px] font-light leading-relaxed mb-8 line-clamp-4"
+                            dangerouslySetInnerHTML={{ __html: featured.content.substring(0, 300) + '...' }}
+                          />
+                          <div className="mt-auto inline-flex items-center gap-2 text-[13px] font-medium text-violet border-b-[1.5px] border-transparent hover:border-violet pb-1 w-max transition-all group-hover:gap-3">
+                            Read Full Story
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                              <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
                 </section>
               )}
 

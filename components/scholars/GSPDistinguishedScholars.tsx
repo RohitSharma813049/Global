@@ -186,12 +186,12 @@ export default function GSPDistinguishedScholars({ scholar, videos = [], publica
         )}
 
         {/* Stats */}
-        <div className="grid grid-cols-4 gap-4 text-center border-b border-t border-[#F0F0F0] py-8 mb-12">
-          <div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 text-center border-b border-t border-[#F0F0F0] py-8 mb-12">
+          <div className="mb-4 md:mb-0">
             <div className="text-6.5 font-serif mb-1 text-black">{(scholar.total_views || 6240).toLocaleString()}</div>
             <div className="text-2.75 text-black">Profile views</div>
           </div>
-          <div>
+          <div className="mb-4 md:mb-0">
             <div className="text-6.5 font-serif mb-1 text-black">{publications.length || 3}</div>
             <div className="text-2.75 text-black">Publications</div>
           </div>
