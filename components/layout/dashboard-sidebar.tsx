@@ -54,6 +54,7 @@ export default function DashboardSidebar() {
     { name: "Testimonials", href: "/dashboard/admin/testimonials", icon: MdStar },
     { name: "Blogs", href: "/dashboard/admin/blogs", icon: MdArticle },
     { name: "News", href: "/dashboard/admin/news", icon: MdNewspaper },
+    { name: "Magazines", href: "/dashboard/admin/magazines", icon: MdLibraryBooks },
   ];
 
   const superAdminLinks = [
@@ -67,6 +68,8 @@ export default function DashboardSidebar() {
     { name: "Testimonials", href: "/dashboard/admin/testimonials", icon: MdStar },
     { name: "Blogs", href: "/dashboard/admin/blogs", icon: MdArticle },
     { name: "News", href: "/dashboard/admin/news", icon: MdNewspaper },
+    { name: "Magazines", href: "/dashboard/admin/magazines", icon: MdLibraryBooks },
+    { name: "Help Messages", href: "/dashboard/super-admin/help-messages", icon: MdArticle },
   ];
 
   const links = role === "super_admin" 

@@ -1,194 +1,105 @@
-"use client";
+'use client'
 
-import React, { useEffect, useState } from "react";
-import Footer from "@/components/layout/footer";
+import { useState } from 'react'
+import { submitHelpRequest } from '@/app/actions/help'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import Header from '@/components/layout/header'
+import Footer from '@/components/layout/footer'
 
-export default function Contact() {
-  const [buttonState, setButtonState] = useState<'idle' | 'sending' | 'sent'>('idle');
+export default function ContactPage() {
+  const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' })
+  const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState(false)
+  const [error, setError] = useState('')
 
-  useEffect(() => {
-    const io = new IntersectionObserver((entries, observer) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('fade-up');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.12 });
-
-    document.querySelectorAll('.info-card, .form-col, .map-wrap').forEach(el => io.observe(el));
-
-    return () => io.disconnect();
-  }, []);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setButtonState('sending');
-    setTimeout(() => {
-      setButtonState('sent');
-      setTimeout(() => {
-        setButtonState('idle');
-        (e.target as HTMLFormElement).reset();
-      }, 2200);
-    }, 1000);
-  };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+    try {
+      await submitHelpRequest(formData)
+      setSuccess(true)
+      setFormData({ name: '', email: '', subject: '', message: '' })
+    } catch (err: any) {
+      setError(err.message || 'An error occurred')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <>
-      <main className="min-h-screen bg-white">
-        {/* ════════════════════════════════
-            HERO HEADER
-        ════════════════════════════════ */}
-        <section className="contact-hero">
-          <p className="eyebrow fade-up"><span className="eyebrow-line"></span>We'd Love To Hear From You</p>
-          <h1 className="contact-h1 fade-up">Get In <em>Touch</em></h1>
-          <p className="contact-hero-sub fade-up">
-            Questions about publishing, partnerships, or your scholar profile?
-            Our team typically responds within one business day.
-          </p>
-        </section>
+      <Header />
+      <main className="min-h-screen py-24 px-4 bg-gray-50 dark:bg-gray-900">
+        <div className="max-w-2xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
+          <h1 className="text-3xl font-bold mb-2">Contact Support</h1>
+          <p className="text-gray-500 mb-8">Send us a message and we'll get back to you shortly.</p>
 
-        {/* ════════════════════════════════
-            MAIN: INFO + FORM
-        ════════════════════════════════ */}
-        <section className="contact-main">
+          {success && (
+            <div className="bg-green-100 text-green-800 p-4 rounded-md mb-6">
+              Your message has been sent successfully!
+            </div>
+          )}
 
-          {/* Info Column */}
-          <div className="info-col">
-            <p className="section-label">Contact Information</p>
-            <h2 className="info-heading">Reach Us <em>Directly</em></h2>
+          {error && (
+            <div className="bg-red-100 text-red-800 p-4 rounded-md mb-6">
+              {error}
+            </div>
+          )}
 
-            <a href="mailto:hello@globalscholarpublishing.com" className="info-card">
-              <span className="info-photo">
-                <img src="https://images.unsplash.com/photo-1596526131083-e8c633c948d2?w=200&h=200&fit=crop&auto=format&q=85" alt="Email us" loading="lazy" />
-              </span>
-              <div>
-                <p className="info-label">Email Us</p>
-                <p className="info-value">hello@globalscholarpublishing.com</p>
-                <p className="info-value-sub">For general enquiries and submissions</p>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Name</label>
+                <Input 
+                  required 
+                  value={formData.name}
+                  onChange={e => setFormData({ ...formData, name: e.target.value })}
+                  placeholder="John Doe"
+                />
               </div>
-            </a>
-
-            <a href="tel:+442012345678" className="info-card">
-              <span className="info-photo">
-                <img src="https://images.unsplash.com/photo-1556656793-08538906a9f8?w=200&h=200&fit=crop&auto=format&q=85" alt="Call us" loading="lazy" />
-              </span>
-              <div>
-                <p className="info-label">Call Us</p>
-                <p className="info-value">+44 20 1234 5678</p>
-                <p className="info-value-sub">Mon–Fri, 9:00 AM – 5:30 PM GMT</p>
-              </div>
-            </a>
-
-            <a href="#map-location" className="info-card">
-              <span className="info-photo">
-                <img src="https://images.unsplash.com/photo-1486325212027-8081e485255e?w=200&h=200&fit=crop&auto=format&q=85" alt="Our office" loading="lazy" />
-              </span>
-              <div>
-                <p className="info-label">Visit Us</p>
-                <p className="info-value">124 City Road</p>
-                <p className="info-value-sub">London, EC1V 2NX, United Kingdom</p>
-              </div>
-            </a>
-
-            <div className="info-card" style={{ cursor: 'default' }}>
-              <span className="info-photo">
-                <img src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=200&h=200&fit=crop&auto=format&q=85" alt="Office hours" loading="lazy" />
-              </span>
-              <div>
-                <p className="info-label">Office Hours</p>
-                <p className="info-value">Monday – Friday</p>
-                <p className="info-value-sub">9:00 AM – 5:30 PM GMT</p>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Email</label>
+                <Input 
+                  required 
+                  type="email"
+                  value={formData.email}
+                  onChange={e => setFormData({ ...formData, email: e.target.value })}
+                  placeholder="john@example.com"
+                />
               </div>
             </div>
-
-            <div className="social-row">
-              <a href="#" className="social-btn">LinkedIn</a>
-              <a href="#" className="social-btn">Twitter / X</a>
-              <a href="#" className="social-btn">Instagram</a>
+            
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Subject</label>
+              <Input 
+                required 
+                value={formData.subject}
+                onChange={e => setFormData({ ...formData, subject: e.target.value })}
+                placeholder="How can we help?"
+              />
             </div>
-          </div>
 
-          {/* Form Column */}
-          <div className="form-col">
-            <h2 className="form-heading">Send Us a <em>Message</em></h2>
-            <p className="form-sub">Fill out the form below and our editorial team will get back to you shortly.</p>
-
-            <form id="contactForm" onSubmit={handleSubmit}>
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="firstName">First Name</label>
-                  <input type="text" id="firstName" placeholder="John" required />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="lastName">Last Name</label>
-                  <input type="text" id="lastName" placeholder="Doe" required />
-                </div>
-              </div>
-
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="email">Email Address</label>
-                  <input type="email" id="email" placeholder="john@example.com" required />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="phone">Phone Number</label>
-                  <input type="tel" id="phone" placeholder="+91 00000 00000" />
-                </div>
-              </div>
-
-              <div className="form-row">
-                <div className="form-group full">
-                  <label htmlFor="subject">I'm Reaching Out About</label>
-                  <select id="subject">
-                    <option>Publishing a Paper / Thesis</option>
-                    <option>Scholar Profile & Verification</option>
-                    <option>Partnerships & Institutions</option>
-                    <option>Media & Press</option>
-                    <option>Other</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="form-row">
-                <div className="form-group full">
-                  <label htmlFor="message">Your Message</label>
-                  <textarea id="message" placeholder="Tell us a bit about what you need..." required></textarea>
-                </div>
-              </div>
-
-              <button type="submit" className="submit-btn" disabled={buttonState !== 'idle'}>
-                {buttonState === 'idle' && 'Send Message'}
-                {buttonState === 'sending' && 'Sending...'}
-                {buttonState === 'sent' && 'Message Sent ✓'}
-              </button>
-              <p className="form-note">By submitting, you agree to our Privacy Policy. We'll never share your information.</p>
-            </form>
-          </div>
-
-        </section>
-
-        {/* ════════════════════════════════
-            MAP SECTION
-        ════════════════════════════════ */}
-        <section className="map-section" id="map-location">
-          <div className="map-wrap">
-            <iframe
-              src="https://www.google.com/maps?q=124+City+Road+London+UK&output=embed"
-              allowFullScreen={false} loading="lazy" referrerPolicy="no-referrer-when-downgrade"
-              title="GSP Office Location">
-            </iframe>
-            <div className="map-card">
-              <p className="map-card-label">Global Scholar Publications</p>
-              <p className="map-card-text">124 City Road<br/>London, EC1V 2NX, United Kingdom</p>
-              <a href="https://www.google.com/maps?q=124+City+Road+London+UK" target="_blank" className="map-card-link">
-                Get Directions
-              </a>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Message</label>
+              <Textarea 
+                required 
+                rows={6}
+                value={formData.message}
+                onChange={e => setFormData({ ...formData, message: e.target.value })}
+                placeholder="Please describe your issue or question..."
+              />
             </div>
-          </div>
-        </section>
+
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? 'Sending...' : 'Send Message'}
+            </Button>
+          </form>
+        </div>
       </main>
       <Footer />
     </>
-  );
+  )
 }

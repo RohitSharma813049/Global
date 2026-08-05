@@ -236,3 +236,22 @@ export const getFeaturedScholars = unstable_cache(
   ['cms-featured-scholars'],
   { revalidate: 60, tags: ['cms-featured-scholars'] }
 )
+
+
+export const getMagazines = unstable_cache(
+  async () => {
+    const magazines = await prisma.magazines.findMany({
+      orderBy: { created_at: 'desc' },
+      take: 100,
+      include: { users: { select: { profiles: { select: { full_name: true, avatar_url: true } } } } }
+    })
+    return magazines.map(m => ({
+      ...m,
+      author_name: m.users?.profiles?.full_name || 'Admin',
+      author_image: m.users?.profiles?.avatar_url || '/placeholder-user.png',
+      type: 'magazine'
+    }))
+  },
+  ['cms-magazines'],
+  { tags: ['cms-magazines'], revalidate: 60 }
+)

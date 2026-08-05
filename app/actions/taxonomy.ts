@@ -134,11 +134,11 @@ export async function getContentTypes() {
   return data
 }
 
-export async function createContentType(name: string, slug: string, icon_name: string) {
+export async function createContentType(name: string, slug: string, icon_name: string, image_url?: string) {
   await checkAdmin()
   const { data, error } = await supabaseAdmin
     .from('content_types')
-    .insert({ name, slug, icon_name })
+    .insert({ name, slug, icon_name, image_url: image_url || null })
     .select()
     .single()
   if (error) throw new Error(error.message)
@@ -147,11 +147,11 @@ export async function createContentType(name: string, slug: string, icon_name: s
   return data
 }
 
-export async function updateContentType(id: string, name: string, slug: string, icon_name: string) {
+export async function updateContentType(id: string, name: string, slug: string, icon_name: string, image_url?: string) {
   await checkAdmin()
   const { error } = await supabaseAdmin
     .from('content_types')
-    .update({ name, slug, icon_name })
+    .update({ name, slug, icon_name, image_url: image_url || null })
     .eq('id', id)
   if (error) throw new Error(error.message)
   revalidatePath('/dashboard/admin/content-types')

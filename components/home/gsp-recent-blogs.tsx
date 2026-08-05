@@ -11,7 +11,7 @@ interface ContentItem {
   slug: string
   cover_image: string | null
   created_at: Date | null
-  type: 'blog' | 'news'
+  type: 'blog' | 'news' | 'magazine'
   excerpt?: string
   author_name?: string
   author_image?: string

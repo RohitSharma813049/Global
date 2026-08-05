@@ -5,7 +5,7 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { revalidatePath } from "next/cache"
 import { prisma } from '@/lib/db'
-import { blogSchema, newsSchema, testimonialSchema } from '@/lib/validations/cms'
+import { blogSchema, newsSchema, testimonialSchema, magazineSchema } from '@/lib/validations/cms'
 
 // Note: For actual admin actions, we also verify session role.
 async function checkAdmin() {
@@ -442,4 +442,71 @@ export async function toggleScholarFeaturedStatus(id: string, is_featured: boole
   })
   revalidatePath('/')
   revalidatePath('/dashboard/admin/featured-scholars')
+}
+
+
+// ---- MAGAZINES ----
+
+export async function createMagazine(data: { title: string, slug: string, content: string, cover_image?: string }) {
+  const session = await checkAdmin()
+  const parsed = magazineSchema.safeParse(data)
+  if (!parsed.success) {
+    const firstError = Object.values(parsed.error.flatten().fieldErrors)[0]?.[0] || 'Validation failed'
+    throw new Error(firstError)
+  }
+  const { title, slug, content, cover_image } = parsed.data
+
+  const existing = await prisma.magazines.findUnique({ where: { slug } })
+  if (existing) throw new Error('A magazine with this slug already exists')
+
+  await prisma.magazines.create({
+    data: {
+      title,
+      slug,
+      content,
+      cover_image,
+      author_id: session.user.id
+    }
+  })
+  revalidatePath('/')
+  revalidatePath('/dashboard/admin/magazines')
+}
+
+export async function updateMagazine(id: string, data: { title: string, slug: string, content: string, cover_image?: string }) {
+  await checkAdmin()
+  const parsed = magazineSchema.safeParse(data)
+  if (!parsed.success) {
+    const firstError = Object.values(parsed.error.flatten().fieldErrors)[0]?.[0] || 'Validation failed'
+    throw new Error(firstError)
+  }
+  const { title, slug, content, cover_image } = parsed.data
+
+  const existing = await prisma.magazines.findUnique({ where: { slug } })
+  if (existing && existing.id !== id) throw new Error('A magazine with this slug already exists')
+
+  await prisma.magazines.update({
+    where: { id },
+    data: {
+      title,
+      slug,
+      content,
+      cover_image
+    }
+  })
+  revalidatePath('/')
+  revalidatePath('/dashboard/admin/magazines')
+}
+
+export async function deleteMagazine(id: string) {
+  await checkAdmin()
+  await prisma.magazines.delete({ where: { id } })
+  revalidatePath('/')
+  revalidatePath('/dashboard/admin/magazines')
+}
+
+export async function toggleMagazineFeaturedStatus(id: string, is_featured: boolean) {
+  await checkAdmin()
+  await prisma.magazines.update({ where: { id }, data: { is_featured } })
+  revalidatePath('/')
+  revalidatePath('/dashboard/admin/magazines')
 }

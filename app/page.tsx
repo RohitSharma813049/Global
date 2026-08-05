@@ -28,7 +28,7 @@ export default async function Page() {
   const [
     settings,
     blogsData,
-    newsData,
+    newsData,\n    magazinesData,
     statsData,
     testimonialsData,
     scholarsData,
@@ -39,7 +39,7 @@ export default async function Page() {
   ] = await Promise.all([
     getHomepageSettings(),
     getBlogs(),
-    getNews(),
+    getNews(),\n    getMagazines(),
     getPlatformStats(),
     getTestimonials(),
     getFeaturedScholars(),

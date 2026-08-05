@@ -5,12 +5,14 @@ import { getContentTypes, createContentType, updateContentType, deleteContentTyp
 import { MdEdit, MdDelete } from 'react-icons/md'
 import * as LucideIcons from 'lucide-react'
 import toast from 'react-hot-toast'
+import ImageUpload from '@/components/image-upload'
 
 interface ContentType {
   id: string
   name: string
   slug: string
   icon_name: string
+  image_url?: string
 }
 
 export default function ContentTypesAdminPage() {
@@ -18,7 +20,8 @@ export default function ContentTypesAdminPage() {
   const [loading, setLoading] = useState(true)
 
   const [isEditing, setIsEditing] = useState<string | null>(null)
-  const [formData, setFormData] = useState({ name: '', slug: '', icon_name: 'FileText' })
+  const [formData, setFormData] = useState({ name: '', slug: '', icon_name: 'FileText', image_url: '' })
+  const [isCustomSlug, setIsCustomSlug] = useState(false)
 
   const fetchContentTypes = async () => {
     try {
@@ -40,14 +43,15 @@ export default function ContentTypesAdminPage() {
     e.preventDefault()
     try {
       if (isEditing) {
-        await updateContentType(isEditing, formData.name, formData.slug, formData.icon_name)
+        await updateContentType(isEditing, formData.name, formData.slug, formData.icon_name, formData.image_url)
         toast.success("Content Type updated!")
       } else {
-        await createContentType(formData.name, formData.slug, formData.icon_name)
+        await createContentType(formData.name, formData.slug, formData.icon_name, formData.image_url)
         toast.success("Content Type created!")
       }
-      setFormData({ name: '', slug: '', icon_name: 'FileText' })
+      setFormData({ name: '', slug: '', icon_name: 'FileText', image_url: '' })
       setIsEditing(null)
+      setIsCustomSlug(false)
       fetchContentTypes()
     } catch (e: any) {
       toast.error(e.message)
@@ -67,7 +71,8 @@ export default function ContentTypesAdminPage() {
 
   const handleEdit = (ct: ContentType) => {
     setIsEditing(ct.id)
-    setFormData({ name: ct.name, slug: ct.slug, icon_name: ct.icon_name })
+    setFormData({ name: ct.name, slug: ct.slug, icon_name: ct.icon_name, image_url: ct.image_url || '' })
+    setIsCustomSlug(true)
   }
 
   return (
@@ -87,7 +92,15 @@ export default function ContentTypesAdminPage() {
               <input aria-label="Input field" 
                 type="text" 
                 value={formData.name} 
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                onChange={(e) => {
+                  const newName = e.target.value;
+                  if (!isCustomSlug) {
+                    const autoSlug = newName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+                    setFormData({ ...formData, name: newName, slug: autoSlug });
+                  } else {
+                    setFormData({ ...formData, name: newName });
+                  }
+                }}
                 required 
                 placeholder="e.g. Journal Article"
                 className="w-full p-2 border border-(--color-gsp-border-default) rounded focus:ring-2 focus:ring-indigo-500 outline-none"
@@ -95,14 +108,29 @@ export default function ContentTypesAdminPage() {
             </div>
             <div>
               <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Slug</label>
-              <input aria-label="Input field" 
-                type="text" 
-                value={formData.slug} 
-                onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                required 
-                placeholder="e.g. journal-article"
-                className="w-full p-2 border border-(--color-gsp-border-default) rounded focus:ring-2 focus:ring-indigo-500 outline-none"
-              />
+              <div className="flex bg-white rounded border border-gray-300 focus-within:ring-2 focus-within:ring-indigo-500 overflow-hidden">
+                <input aria-label="Input field" 
+                  type="text" 
+                  value={formData.slug} 
+                  onChange={(e) => {
+                    setFormData({ ...formData, slug: e.target.value })
+                    setIsCustomSlug(true)
+                  }}
+                  required 
+                  placeholder="e.g. journal-article"
+                  className="w-full p-2 outline-none"
+                />
+                <button 
+                  type="button" 
+                  onClick={() => {
+                    setIsCustomSlug(false);
+                    setFormData({ ...formData, slug: formData.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') })
+                  }}
+                  className="px-3 bg-gray-100 border-l border-gray-300 text-xs font-medium text-gray-600 hover:bg-gray-200"
+                >
+                  Auto
+                </button>
+              </div>
             </div>
             <div>
               <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Icon Name (Lucide React)</label>
@@ -117,12 +145,20 @@ export default function ContentTypesAdminPage() {
               <p className="text-xs text-(--color-gsp-text-secondary) mt-1">Check lucide.dev/icons for names.</p>
             </div>
             
+            <div className="mt-2">
+              <ImageUpload 
+                label="Cover Image (Optional)"
+                value={formData.image_url} 
+                onChange={(url) => setFormData({ ...formData, image_url: url })}
+              />
+            </div>
+            
             <div className="flex gap-2 pt-2">
               <button type="submit" className="flex-1 bg-(--color-gsp-text-inverse) text-white py-2 rounded font-medium hover:bg-indigo-700">
                 {isEditing ? 'Save Changes' : 'Add Type'}
               </button>
               {isEditing && (
-                <button type="button" onClick={() => { setIsEditing(null); setFormData({ name: '', slug: '', icon_name: 'FileText' }) }} className="flex-1 bg-gray-200 text-(--color-gsp-text-primary) py-2 rounded font-medium hover:bg-gray-300">
+                <button type="button" onClick={() => { setIsEditing(null); setFormData({ name: '', slug: '', icon_name: 'FileText', image_url: '' }); setIsCustomSlug(false); }} className="flex-1 bg-gray-200 text-(--color-gsp-text-primary) py-2 rounded font-medium hover:bg-gray-300">
                   Cancel
                 </button>
               )}
