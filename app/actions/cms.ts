@@ -510,3 +510,9 @@ export async function toggleMagazineFeaturedStatus(id: string, is_featured: bool
   revalidatePath('/')
   revalidatePath('/dashboard/admin/magazines')
 }
+
+import { getMagazines } from '@/app/queries/cms'
+
+export async function fetchMagazines() {
+  return await getMagazines()
+}

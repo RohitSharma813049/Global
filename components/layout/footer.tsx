@@ -11,6 +11,7 @@ const footerLinks = {
     { name: 'Features', href: '/features' },
     { name: 'About', href: '/about' },
     { name: 'Contact', href: '/contact' },
+    { name: 'Help', href: '/help' },
   ],
   'Publication Types': [
     { name: 'Books', href: '/publications?category=books' },
@@ -37,7 +38,6 @@ const footerLinks = {
     { name: 'Privacy Policy', href: '/privacy' },
     { name: 'Terms of Service', href: '/terms' },
     { name: 'Cookie Policy', href: '/privacy' },
-    { name: 'Accessibility', href: '/privacy' },
   ],
 }
 

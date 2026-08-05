@@ -1,8 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { createMagazine, updateMagazine, deleteMagazine, toggleMagazineFeaturedStatus } from '@/app/actions/cms'
-import { getMagazines } from '@/app/queries/cms'
+import { fetchMagazines, createMagazine, updateMagazine, deleteMagazine, toggleMagazineFeaturedStatus } from '@/app/actions/cms'
 import toast from 'react-hot-toast'
 import ImageUpload from '@/components/image-upload'
 import { MoreVertical, Trash2, Edit2, Star, StarOff } from 'lucide-react'
@@ -37,7 +36,7 @@ export default function MagazinesManager() {
   const loadMagazines = async () => {
     try {
       setLoading(true)
-      const data = await getMagazines()
+      const data = await fetchMagazines()
       setMagazines(data)
     } catch (e: any) {
       toast.error('Failed to load magazines')
@@ -206,7 +205,11 @@ export default function MagazinesManager() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium mb-1">Title</label>
-                <input aria-label="Input field" type="text" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="w-full border rounded-(--radius-lg) p-2" required />
+                <input aria-label="Input field" type="text" value={formData.title} onChange={e => {
+                  const title = e.target.value
+                  const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '')
+                  setFormData({...formData, title, slug})
+                }} className="w-full border rounded-(--radius-lg) p-2" required />
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1">Slug (URL)</label>
