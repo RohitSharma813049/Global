@@ -36,14 +36,7 @@ export async function getAdvancedSearchData(params: SearchParams) {
     }
 
     if (params.types && params.types.length > 0) {
-      // Exclude 'magazine' from publications query if it's there
-      const pubTypes = params.types.filter(t => t.toLowerCase() !== 'magazine');
-      if (pubTypes.length > 0) {
-        whereClause.content_type = { in: pubTypes, mode: 'insensitive' };
-      } else {
-        // If ONLY magazine is selected, publications shouldn't match anything
-        whereClause.id = 'no-match'; 
-      }
+      whereClause.content_type = { in: params.types, mode: 'insensitive' };
     }
 
     if (params.authors && params.authors.length > 0) {
@@ -82,19 +75,7 @@ export async function getAdvancedSearchData(params: SearchParams) {
       }
     }
 
-    // MAGAZINE LOGIC
-    let includeMagazines = true;
-    if (params.types && params.types.length > 0) {
-      includeMagazines = params.types.some(t => t.toLowerCase() === 'magazine');
-    }
-    const magazineWhere: any = {};
-    if (params.query) {
-      magazineWhere.OR = [
-        { title: { contains: params.query, mode: 'insensitive' } },
-        { content: { contains: params.query, mode: 'insensitive' } },
-      ];
-    }
-    // Note: Authors and categories aren't directly on magazines right now, so we skip filtering them for magazines
+
 
     let orderBy: any = { created_at: 'desc' };
     if (params.sort === 'oldest') orderBy = { created_at: 'asc' };
@@ -102,7 +83,7 @@ export async function getAdvancedSearchData(params: SearchParams) {
     if (params.sort === 'downloads') orderBy = { downloads: 'desc' };
 
     // Fetch all for pagination in memory to merge correctly
-    const [allPubs, allMags, catsResponse, typesResponse, allScholarsResponse, uniqueAuthorNames, pubTypeCounts, magCount] = await Promise.all([
+    const [allPubs, catsResponse, typesResponse, allScholarsResponse, uniqueAuthorNames, pubTypeCounts] = await Promise.all([
       prisma.publications.findMany({
         where: whereClause,
         orderBy,
@@ -113,10 +94,7 @@ export async function getAdvancedSearchData(params: SearchParams) {
           }
         }
       }),
-      includeMagazines ? prisma.magazines.findMany({
-        where: magazineWhere,
-        orderBy: { created_at: params.sort === 'oldest' ? 'asc' : 'desc' }
-      }) : Promise.resolve([]),
+
       prisma.categories.findMany({ orderBy: { name: 'asc' }, select: { id: true, name: true } }),
       prisma.content_types.findMany({ orderBy: { name: 'asc' } }),
       prisma.scholars.findMany({
@@ -132,8 +110,7 @@ export async function getAdvancedSearchData(params: SearchParams) {
         by: ['content_type'],
         _count: { id: true },
         where: { status: 'published', deleted_at: null }
-      }),
-      prisma.magazines.count({ where: magazineWhere })
+      })
     ]);
 
     const formattedPublications = allPubs.map((p) => ({
@@ -164,29 +141,7 @@ export async function getAdvancedSearchData(params: SearchParams) {
       } : null
     }));
 
-    const mappedMagazines = allMags.map((m) => ({
-      id: m.id,
-      title: m.title,
-      abstract: m.content,
-      content_type: 'magazine',
-      created_at: m.created_at?.toISOString() || new Date().toISOString(),
-      views: 0,
-      downloads: 0,
-      file_url: null,
-      cover_image: m.cover_image,
-      banner_image: null,
-      gallery_images: [],
-      doi: null,
-      video_url: null,
-      author_name: 'Admin',
-      institution: null,
-      email_address: null,
-      status: 'published',
-      categories: null,
-      scholars: null
-    }));
-
-    let mergedData = [...formattedPublications, ...mappedMagazines];
+    let mergedData = [...formattedPublications];
     
     // In-memory sort
     if (params.sort === 'oldest') {
@@ -228,7 +183,7 @@ export async function getAdvancedSearchData(params: SearchParams) {
       return acc;
     }, {} as Record<string, number>);
     
-    formattedTypeCounts['magazine'] = (formattedTypeCounts['magazine'] || 0) + magCount;
+
 
     return {
       publications: paginatedData,
