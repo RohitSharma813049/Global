@@ -69,14 +69,14 @@ export default function Contact() {
               </div>
             </a>
 
-            <a href="tel:+911234567890" className="info-card">
+            <a href="tel:+442012345678" className="info-card">
               <span className="info-photo">
                 <img src="https://images.unsplash.com/photo-1556656793-08538906a9f8?w=200&h=200&fit=crop&auto=format&q=85" alt="Call us" loading="lazy" />
               </span>
               <div>
                 <p className="info-label">Call Us</p>
-                <p className="info-value">+91 12345 67890</p>
-                <p className="info-value-sub">Mon–Fri, 9:00 AM – 6:30 PM IST</p>
+                <p className="info-value">+44 20 1234 5678</p>
+                <p className="info-value-sub">Mon–Fri, 9:00 AM – 5:30 PM GMT</p>
               </div>
             </a>
 
@@ -86,8 +86,8 @@ export default function Contact() {
               </span>
               <div>
                 <p className="info-label">Visit Us</p>
-                <p className="info-value">Crown Interiorz Mall, Sector 88</p>
-                <p className="info-value-sub">Faridabad, Haryana 121002, India</p>
+                <p className="info-value">124 City Road</p>
+                <p className="info-value-sub">London, EC1V 2NX, United Kingdom</p>
               </div>
             </a>
 
@@ -98,7 +98,7 @@ export default function Contact() {
               <div>
                 <p className="info-label">Office Hours</p>
                 <p className="info-value">Monday – Friday</p>
-                <p className="info-value-sub">9:00 AM – 6:30 PM IST</p>
+                <p className="info-value-sub">9:00 AM – 5:30 PM GMT</p>
               </div>
             </div>
 
@@ -174,14 +174,14 @@ export default function Contact() {
         <section className="map-section" id="map-location">
           <div className="map-wrap">
             <iframe
-              src="https://www.google.com/maps?q=Crown+Interiorz+Mall+Sector+88+Faridabad&output=embed"
+              src="https://www.google.com/maps?q=124+City+Road+London+UK&output=embed"
               allowFullScreen={false} loading="lazy" referrerPolicy="no-referrer-when-downgrade"
               title="GSP Office Location">
             </iframe>
             <div className="map-card">
-              <p className="map-card-label">Global Scholar Publishing</p>
-              <p className="map-card-text">Crown Interiorz Mall, Sector 88<br/>Faridabad, Haryana 121002</p>
-              <a href="https://www.google.com/maps?q=Crown+Interiorz+Mall+Sector+88+Faridabad" target="_blank" className="map-card-link">
+              <p className="map-card-label">Global Scholar Publications</p>
+              <p className="map-card-text">124 City Road<br/>London, EC1V 2NX, United Kingdom</p>
+              <a href="https://www.google.com/maps?q=124+City+Road+London+UK" target="_blank" className="map-card-link">
                 Get Directions
               </a>
             </div>

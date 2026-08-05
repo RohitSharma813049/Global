@@ -36,17 +36,19 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="bg-background overflow-x-hidden max-w-[100vw]">
-      <body suppressHydrationWarning className={`${spaceGrotesk.variable} ${cormorantGaramond.variable} font-sans antialiased text-foreground overflow-x-hidden min-h-screen`}>
-        <Providers>
-          <CopyProtection />
-          <Header/>
-          <main className="pb-16 md:pb-0 flex-1 flex flex-col">
-            {children}
-          </main>
-          {process.env.NODE_ENV === 'production' && <Analytics />}
-          <Toaster position="bottom-right" />
-        </Providers>
+    <html lang="en" className="bg-background">
+      <body suppressHydrationWarning className={`${spaceGrotesk.variable} ${cormorantGaramond.variable} font-sans antialiased text-foreground min-h-[100dvh]`}>
+        <div className="flex flex-col min-h-[100dvh] w-full overflow-x-hidden relative">
+          <Providers>
+            <CopyProtection />
+            <Header/>
+            <main className="pb-16 md:pb-0 flex-1 flex flex-col">
+              {children}
+            </main>
+            {process.env.NODE_ENV === 'production' && <Analytics />}
+            <Toaster position="bottom-right" />
+          </Providers>
+        </div>
       </body>
     </html>
   )
