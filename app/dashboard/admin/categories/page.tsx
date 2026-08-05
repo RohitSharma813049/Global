@@ -87,7 +87,7 @@ export default function CategoriesAdminPage() {
       image_url: cat.image_url || ''
     })
     setIsCustomSlug(true)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    document.getElementById('category-form')?.scrollIntoView({ behavior: 'smooth' })
   }
 
   const handleDelete = async (id: string) => {
@@ -178,7 +178,7 @@ export default function CategoriesAdminPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Form */}
-        <div className="lg:col-span-1 bg-(--color-gsp-surface-muted) p-6 rounded-(--radius-xl) shadow border border-(--color-gsp-border-muted) h-fit">
+        <div id="category-form" className="lg:col-span-1 bg-(--color-gsp-surface-muted) p-6 rounded-(--radius-xl) shadow border border-(--color-gsp-border-muted) h-fit">
           <h2 className="text-xl font-bold mb-4">{isEditing ? 'Edit Category' : 'Create Category'}</h2>
           
           <div className="flex bg-gray-100 p-1 rounded-(--radius-lg) mb-6">
