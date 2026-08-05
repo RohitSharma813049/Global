@@ -198,19 +198,19 @@ export default function ExploreClient({
 
               <div className="ph-stats" aria-label="Repository statistics">
                 <div className="ph-stat">
-                  <div className="ph-stat-n">{getCountForType('article')}</div>
+                  <div className="ph-stat-n font-sans">{getCountForType('article')}</div>
                   <div className="ph-stat-l">ARTICLES</div>
                 </div>
                 <div className="ph-stat">
-                  <div className="ph-stat-n">{getCountForType('thesis')}</div>
+                  <div className="ph-stat-n font-sans">{getCountForType('thesis')}</div>
                   <div className="ph-stat-l">THESES</div>
                 </div>
                 <div className="ph-stat">
-                  <div className="ph-stat-n">{getCountForType('ebook')}</div>
+                  <div className="ph-stat-n font-sans">{getCountForType('ebook')}</div>
                   <div className="ph-stat-l">EBOOKS</div>
                 </div>
                 <div className="ph-stat">
-                  <div className="ph-stat-n">{getCountForType('magazine')}</div>
+                  <div className="ph-stat-n font-sans">{getCountForType('magazine')}</div>
                   <div className="ph-stat-l">MAGAZINES</div>
                 </div>
               </div>
@@ -438,9 +438,9 @@ export default function ExploreClient({
                 <strong>{publications.length}</strong> publications found
               </p>
 
-              <div className="sort-wrap">
+              <div className="sort-wrap ml-auto flex items-center">
                 <select 
-                  className="sort-sel w-full md:w-auto" 
+                  className="sort-sel pr-8" 
                   aria-label="Sort results"
                   value={sortOrder}
                   onChange={(e) => setSortOrder(e.target.value as any)}
