@@ -6,6 +6,7 @@ import AboutHero from "@/components/about/AboutHero";
 import VisionMission from "@/components/about/VisionMission";
 import WhyChooseUs from "@/components/about/WhyChooseUs";
 import OurProcess from "@/components/about/OurProcess";
+import AboutCTA from "@/components/about/AboutCTA";
 
 export default function About() {
   useEffect(() => {
@@ -31,6 +32,7 @@ export default function About() {
       <VisionMission />
       <WhyChooseUs />
       <OurProcess />
+      <AboutCTA />
       <Footer />
     </>
   );

@@ -291,12 +291,12 @@ export default function Header() {
                   <SheetClose asChild><Link href="/contact" className="text-base font-medium px-2 py-2 rounded-md hover:text-indigo-600 hover:bg-indigo-50 transition-colors">Contact Us</Link></SheetClose>
                 </div>
 
-                <div className="mt-auto pt-8">
+                <div className="mt-auto pt-8 px-4 pb-4">
                   {!session ? (
                     <div className="flex flex-col gap-3">
                       <SheetClose asChild>
                         <Link href="/signup">
-                          <Button className="w-full bg-indigo-600 text-white">Create Account</Button>
+                          <Button className="w-full rounded-md bg-indigo-600 text-white">Create Account</Button>
                         </Link>
                       </SheetClose>
                       <SheetClose asChild>

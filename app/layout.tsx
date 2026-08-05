@@ -36,7 +36,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="bg-background">
+    <html lang="en" className="bg-background overflow-x-hidden max-w-[100vw]">
       <body suppressHydrationWarning className={`${spaceGrotesk.variable} ${cormorantGaramond.variable} font-sans antialiased text-foreground overflow-x-hidden min-h-screen`}>
         <Providers>
           <CopyProtection />

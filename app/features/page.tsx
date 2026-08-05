@@ -1,18 +1,19 @@
 import Footer from "@/components/layout/footer"
 import { BackButton } from "@/components/back-button"
+import FeatureRequestForm from "./FeatureRequestForm"
+import Header from "@/components/layout/header"
 
 export default function FeaturesPage() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      <BackButton />
-      <main className="flex-1 max-w-5xl mx-auto w-full px-6 py-12 text-center">
-        <div className="inline-flex items-center rounded-full border border-indigo-100 bg-indigo-50/50 px-4 py-1.5 text-sm font-medium text-indigo-800 shadow-sm mb-8">
-          Coming Soon
-        </div>
+      <Header />
+      <main className="flex-1 max-w-5xl mx-auto w-full px-6 py-12 pt-28 text-center">
         <h1 className="text-5xl font-extrabold text-gray-900 mb-6">Platform Features</h1>
-        <p className="text-xl text-gray-600 leading-relaxed max-w-2xl mx-auto">
-          Discover the powerful tools we offer to scholars and academic institutions.
+        <p className="text-xl text-gray-600 leading-relaxed max-w-2xl mx-auto mb-8">
+          Discover the powerful tools we offer to scholars and academic institutions. Or request a new feature you'd like to see!
         </p>
+        
+        <FeatureRequestForm />
       </main>
       <Footer />
     </div>
