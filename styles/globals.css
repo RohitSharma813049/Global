@@ -317,6 +317,8 @@
   box-shadow: var(--card-shadow);
   transition: transform 0.35s ease, box-shadow 0.35s ease;
   cursor: pointer;
+  transform: translateZ(0); /* Fix Safari overflow glitch during child scale */
+  will-change: transform;
 }
 @media (hover: hover) {
   .gsp-cat-card:hover {

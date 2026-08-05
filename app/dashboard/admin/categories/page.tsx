@@ -76,6 +76,31 @@ export default function CategoriesAdminPage() {
     return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [])
 
+  const handleEdit = (cat: Category) => {
+    setIsEditing(cat.id)
+    setCategoryType(cat.parent_id ? 'sub' : 'parent')
+    setFormData({
+      name: cat.name,
+      slug: cat.slug,
+      parent_id: cat.parent_id || '',
+      content_types: cat.content_types || [],
+      image_url: cat.image_url || ''
+    })
+    setIsCustomSlug(true)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this category?')) return
+    try {
+      await deleteCategory(id)
+      toast.success('Category deleted!')
+      fetchCategories()
+    } catch (e: any) {
+      toast.error(e.message)
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
@@ -239,21 +264,43 @@ export default function CategoriesAdminPage() {
             )}
             
             <div>
-              <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Allowed Content Types (Optional)</label>
-              <select aria-label="Select field" 
-                multiple
-                value={formData.content_types} 
-                onChange={(e) => {
-                  const options = Array.from(e.target.selectedOptions, option => option.value);
-                  setFormData({ ...formData, content_types: options });
-                }}
-                className="w-full p-2 border border-(--color-gsp-border-default) rounded focus:ring-2 focus:ring-indigo-500 outline-none h-32"
-              >
+              <div className="flex justify-between items-center mb-1">
+                <label className="block text-sm font-medium text-(--color-gsp-text-primary)">Allowed Content Types (Optional)</label>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (formData.content_types.length === contentTypes.length) {
+                      setFormData({ ...formData, content_types: [] });
+                    } else {
+                      setFormData({ ...formData, content_types: contentTypes.map(ct => ct.slug) });
+                    }
+                  }}
+                  className="text-xs text-indigo-600 hover:text-indigo-800 font-medium"
+                >
+                  {formData.content_types.length === contentTypes.length ? 'Deselect All' : 'Select All'}
+                </button>
+              </div>
+              <div className="border border-(--color-gsp-border-default) rounded-md p-3 max-h-40 overflow-y-auto bg-white grid grid-cols-2 gap-2">
                 {contentTypes.map(ct => (
-                  <option key={ct.id} value={ct.slug}>{ct.name}</option>
+                  <label key={ct.id} className="flex items-center space-x-2 cursor-pointer p-1.5 hover:bg-gray-50 rounded">
+                    <input
+                      type="checkbox"
+                      checked={formData.content_types.includes(ct.slug)}
+                      onChange={(e) => {
+                        const isChecked = e.target.checked;
+                        if (isChecked) {
+                          setFormData({ ...formData, content_types: [...formData.content_types, ct.slug] });
+                        } else {
+                          setFormData({ ...formData, content_types: formData.content_types.filter(slug => slug !== ct.slug) });
+                        }
+                      }}
+                      className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                    />
+                    <span className="text-sm text-gray-700">{ct.name}</span>
+                  </label>
                 ))}
-              </select>
-              <p className="text-xs text-(--color-gsp-text-secondary) mt-1">Hold Ctrl/Cmd to select multiple. These types will be available when scholars upload to this category.</p>
+              </div>
+              <p className="text-xs text-(--color-gsp-text-secondary) mt-1">Select the types of content scholars can upload to this category.</p>
             </div>
             
             <div className="mt-2">

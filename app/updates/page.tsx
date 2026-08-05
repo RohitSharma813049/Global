@@ -20,11 +20,26 @@ export default async function UpdatesPage() {
     where: { status: 'published' },
     orderBy: { published_at: 'desc' }
   })
+  
+  const magazinesData = await prisma.publications.findMany({
+    where: { status: 'published', content_type: { equals: 'Magazine', mode: 'insensitive' } },
+    orderBy: { created_at: 'desc' }
+  })
 
   // Combine and sort
   const allItems = [
-    ...(blogsData || []).map(b => ({ ...b, type: 'blog' as const, dateToSort: b.created_at })),
-    ...(newsData || []).map(n => ({ ...n, type: 'news' as const, dateToSort: n.published_at || n.created_at }))
+    ...(blogsData || []).map(b => ({ ...b, type: 'blog' as const, dateToSort: b.created_at, link: `/blog/${b.slug}` })),
+    ...(newsData || []).map(n => ({ ...n, type: 'news' as const, dateToSort: n.published_at || n.created_at, link: `/news/${n.slug}` })),
+    ...(magazinesData || []).map(m => ({ 
+      id: m.id, 
+      title: m.title, 
+      content: m.abstract, 
+      cover_image: m.cover_image, 
+      is_featured: m.is_featured, 
+      type: 'magazine' as const, 
+      dateToSort: m.created_at, 
+      link: m.file_url || `/explore?type=Magazine`
+    }))
   ].sort((a, b) => {
     const timeB = b.dateToSort ? new Date(b.dateToSort).getTime() : 0;
     const timeA = a.dateToSort ? new Date(a.dateToSort).getTime() : 0;
@@ -66,7 +81,7 @@ export default async function UpdatesPage() {
                     {featuredItems.map((featured) => (
                       <Link 
                         key={`${featured.type}-${featured.id}`}
-                        href={`/${featured.type === 'blog' ? 'blog' : 'news'}/${featured.slug}`}
+                        href={featured.link}
                         className={`group ${featuredItems.length === 1 ? 'grid grid-cols-1 md:grid-cols-2' : 'flex flex-col'} bg-white rounded-2xl shadow-[0_12px_36px_rgba(0,0,0,0.08)] hover:shadow-[0_20px_48px_rgba(47,17,93,0.16)] border border-rule hover:border-violet/20 overflow-hidden transition-all duration-300 hover:-translate-y-1`}
                       >
                         <div className={`relative w-full bg-gray-100 overflow-hidden shrink-0 ${featuredItems.length === 1 ? 'h-64 md:h-full' : 'h-56'}`}>
@@ -83,8 +98,8 @@ export default async function UpdatesPage() {
                             </div>
                           )}
                           <div className="absolute top-4 left-4 z-10">
-                            <span className={`px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-md shadow-sm ${featured.type === 'blog' ? 'bg-violet text-white' : 'bg-gold text-white'}`}>
-                              {featured.type === 'blog' ? 'Featured Blog' : 'Featured News'}
+                            <span className={`px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-md shadow-sm ${featured.type === 'blog' ? 'bg-violet text-white' : featured.type === 'magazine' ? 'bg-emerald-600 text-white' : 'bg-gold text-white'}`}>
+                              {featured.type === 'blog' ? 'Featured Blog' : featured.type === 'magazine' ? 'Featured Magazine' : 'Featured News'}
                             </span>
                           </div>
                         </div>
@@ -122,7 +137,7 @@ export default async function UpdatesPage() {
                   <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                     {restItems.map((item) => (
                       <Link 
-                        href={`/${item.type === 'blog' ? 'blog' : 'news'}/${item.slug}`} 
+                        href={item.link} 
                         key={`${item.type}-${item.id}`}
                         className="group flex flex-col bg-white rounded-2xl shadow-[0_12px_36px_rgba(0,0,0,0.08)] hover:shadow-[0_20px_48px_rgba(47,17,93,0.16)] border border-rule hover:border-violet/20 overflow-hidden transition-all duration-300 hover:-translate-y-1"
                       >
@@ -140,8 +155,8 @@ export default async function UpdatesPage() {
                             </div>
                           )}
                           <div className="absolute top-4 left-4 z-10">
-                            <span className={`px-2.5 py-1 text-[9px] font-bold tracking-wider uppercase rounded-md shadow-sm ${item.type === 'blog' ? 'bg-violet/90 text-white' : 'bg-gold/90 text-white'} backdrop-blur-sm`}>
-                              {item.type === 'blog' ? 'Blog' : 'News'}
+                            <span className={`px-2.5 py-1 text-[9px] font-bold tracking-wider uppercase rounded-md shadow-sm ${item.type === 'blog' ? 'bg-violet/90 text-white' : item.type === 'magazine' ? 'bg-emerald-600/90 text-white' : 'bg-gold/90 text-white'} backdrop-blur-sm`}>
+                              {item.type === 'blog' ? 'Blog' : item.type === 'magazine' ? 'Magazine' : 'News'}
                             </span>
                           </div>
                         </div>
