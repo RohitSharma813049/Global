@@ -129,24 +129,6 @@ export default function CategoriesAdminPage() {
     }
   }
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this category?')) return
-    try {
-      await deleteCategory(id)
-      toast.success("Category deleted!")
-      fetchCategories()
-    } catch (e: any) {
-      toast.error(e.message)
-    }
-  }
-
-  const handleEdit = (cat: Category) => {
-    setIsEditing(cat.id)
-    setCategoryType(cat.parent_id ? 'sub' : 'parent')
-    setFormData({ name: cat.name, slug: cat.slug, parent_id: cat.parent_id || '', content_types: cat.content_types || [], image_url: cat.image_url || '' })
-    setIsCustomSlug(true)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
 
   const filteredCategories = categories.filter(c => 
     c.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
