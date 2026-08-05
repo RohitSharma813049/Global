@@ -40,7 +40,8 @@ export default function GspExploreCategories({ title, subtitle, categories }: Gs
     // Fallback to gap calculation if necessary
     const cardWidth = (cards[0] as HTMLElement).offsetWidth + 14; 
     const idx = Math.round(scrollLeft / cardWidth);
-    setActiveDot(Math.min(idx, 3)); // 4 dots
+    const maxIdx = Math.max(0, (categories?.length || 1) - 1);
+    setActiveDot(Math.min(idx, maxIdx));
   };
 
   return (
@@ -77,7 +78,7 @@ export default function GspExploreCategories({ title, subtitle, categories }: Gs
         </div>
 
         <div className="gsp-carousel-dots">
-          {[0, 1, 2, 3].map(idx => (
+          {Array.from({ length: categories?.length || 0 }).map((_, idx) => (
             <div key={idx} className={`gsp-cdot ${activeDot === idx ? 'on' : ''}`}></div>
           ))}
         </div>

@@ -441,25 +441,34 @@ export default function HomepageSettings() {
                 </div>
               </div>
               <div className="flex items-center justify-between pb-2 mb-4 border-b">
-                <h3 className="font-semibold text-(--color-gsp-text-primary)">Category Background Images</h3>
+                <h3 className="font-semibold text-(--color-gsp-text-primary)">Publication Categories</h3>
+                <button type="button" onClick={addExploreCategory} className="text-sm bg-(--color-gsp-primary) text-white px-3 py-1.5 rounded-md hover:bg-purple-800 transition-colors">
+                  + Add Category
+                </button>
               </div>
               <div className="p-4 bg-violet-soft border border-indigo-100 rounded-(--radius-lg) text-sm text-indigo-700 mb-6">
-                <p><strong>Auto Live Formats is ON.</strong> The homepage will automatically generate cards for Research Articles, eBooks, Magazines, and Theses with their respective live counts. You can change their background images below.</p>
+                <p><strong>Featured Publication Formats.</strong> Configure the publication format categories (e.g. Research Articles, eBooks, Magazines) shown on the homepage. You can add, edit, or remove formats below.</p>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              {(settings.explore_categories || []).slice(0, 4).map((cat, index) => {
-                const labels = ["Research Articles", "eBooks", "Magazines", "Theses"];
+              {(settings.explore_categories || []).map((cat, index) => {
                 return (
-                  <div key={index} className="bg-(--color-gsp-surface-muted) p-5 rounded-(--radius-xl) border border-(--color-gsp-border-muted) shadow-(--shadow-1) relative">
-                    <div className="mb-4 space-y-3">
+                  <div key={index} className="bg-(--color-gsp-surface-muted) p-5 rounded-(--radius-xl) border border-(--color-gsp-border-muted) shadow-(--shadow-1) relative group">
+                    <button type="button" onClick={() => removeExploreCategory(index)} className="absolute top-3 right-3 text-red-500 opacity-0 group-hover:opacity-100 transition-opacity bg-red-50 hover:bg-red-100 p-1.5 rounded-md" title="Remove category">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                    </button>
+                    <div className="mb-4 space-y-3 mt-4">
                       <div>
                         <label className="block text-xs font-medium text-(--color-gsp-text-secondary) mb-1">Title</label>
-                        <input type="text" value={cat.title || ''} onChange={(e) => handleExploreChange(index, 'title', e.target.value)} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm" placeholder={labels[index]} />
+                        <input type="text" value={cat.title || ''} onChange={(e) => handleExploreChange(index, 'title', e.target.value)} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm" placeholder="e.g. Research Articles" />
                       </div>
                       <div>
                         <label className="block text-xs font-medium text-(--color-gsp-text-secondary) mb-1">Link URL</label>
                         <input type="text" value={cat.link || ''} onChange={(e) => handleExploreChange(index, 'link', e.target.value)} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm" placeholder="/explore" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-(--color-gsp-text-secondary) mb-1">Count (Optional text)</label>
+                        <input type="text" value={cat.count || ''} onChange={(e) => handleExploreChange(index, 'count', e.target.value)} className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm" placeholder="e.g. 100+ Papers" />
                       </div>
                     </div>
                     <ImageUpload 
