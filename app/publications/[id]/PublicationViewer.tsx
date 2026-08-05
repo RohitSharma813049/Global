@@ -77,15 +77,21 @@ export default function PublicationViewer({ publication, isVideo }: PublicationV
           const arrayBuffer = await response.arrayBuffer();
 
           const pdfjsLib = await import('pdfjs-dist');
+          // For iOS compatibility, try using min.js if possible, or fallback to min.mjs if necessary.
+          // PDF.js 4+ requires mjs, but if it causes issues on some devices, limiting the parse count helps most with memory crashes.
           pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
           
           const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
           let fullText = "";
-          for (let i = 1; i <= pdf.numPages; i++) {
+          const maxPages = Math.min(pdf.numPages, 50); // Limit to 50 pages to prevent memory crash on mobile devices
+          for (let i = 1; i <= maxPages; i++) {
             const page = await pdf.getPage(i);
             const content = await page.getTextContent();
             const pageText = content.items.map((item: any) => item.str).join(" ");
             fullText += `<p class="mb-4">${pageText}</p>`;
+          }
+          if (pdf.numPages > 50) {
+             fullText += `<p class="text-center italic text-zinc-500 my-8">... End of preview. Please download the full PDF to read the remaining ${pdf.numPages - 50} pages.</p>`;
           }
           setDocxContent(fullText);
         }

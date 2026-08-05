@@ -2,9 +2,17 @@
 
 import React from 'react'
 import { trackPublicationDownload } from '@/app/actions/history'
+import { useRouter } from 'next/navigation'
 
-export default function DownloadButton({ publicationId, fileUrl, isVideo }: { publicationId: string, fileUrl: string, isVideo: boolean }) {
-  const handleDownload = () => {
+export default function DownloadButton({ publicationId, fileUrl, isVideo, isLoggedIn = true }: { publicationId: string, fileUrl: string, isVideo: boolean, isLoggedIn?: boolean }) {
+  const router = useRouter()
+  
+  const handleDownload = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!isLoggedIn) {
+      e.preventDefault();
+      router.push('/signin');
+      return;
+    }
     // Fire and forget server action to track download
     trackPublicationDownload(publicationId).catch(console.error)
   }

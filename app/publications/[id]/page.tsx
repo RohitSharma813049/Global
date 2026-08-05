@@ -156,6 +156,7 @@ export default async function PublicationDetailPage({ params }: Props) {
                 publicationId={publication.id} 
                 fileUrl={publication.file_url} 
                 isVideo={isVideo} 
+                isLoggedIn={!!session}
               />
             ) : (
               <button disabled className="abtn bg-gray-200 border-gray-300 text-gray-500">
