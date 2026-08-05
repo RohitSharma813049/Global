@@ -363,12 +363,7 @@ export default function CategoriesAdminPage() {
                         className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded-md shadow-lg z-50 py-1"
                         onMouseDown={(e) => e.stopPropagation()}
                       >
-                        <button
-                          onClick={() => { setOpenMenuId(null); handleEdit(cat); }}
-                          className="w-full text-left px-4 py-2 text-sm text-(--color-gsp-text-secondary) hover:text-(--color-gsp-text-inverse) hover:bg-violet-soft flex items-center gap-2"
-                        >
-                          <MdEdit size={16} /> Edit
-                        </button>
+                        {/* Edit button removed per user request */}
                         <button
                           onClick={() => { setOpenMenuId(null); handleDelete(cat.id); }}
                           className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
@@ -402,12 +397,7 @@ export default function CategoriesAdminPage() {
                         className="absolute right-0 mt-1 w-32 bg-white border border-gray-200 rounded-md shadow-lg z-50 py-1"
                         onMouseDown={(e) => e.stopPropagation()}
                       >
-                        <button
-                          onClick={() => { setOpenMenuId(null); handleEdit(cat); }}
-                          className="w-full text-left px-4 py-2 text-sm text-(--color-gsp-text-secondary) hover:text-(--color-gsp-text-inverse) hover:bg-violet-soft flex items-center gap-2"
-                        >
-                          <MdEdit size={16} /> Edit
-                        </button>
+                        {/* Edit button removed per user request */}
                         <button
                           onClick={() => { setOpenMenuId(null); handleDelete(cat.id); }}
                           className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
