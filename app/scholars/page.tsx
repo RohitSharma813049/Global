@@ -53,10 +53,10 @@ export default async function ScholarsListingPage({
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-[#F8F7FC] pt-28 pb-16">
+      <main className="min-h-screen bg-surface pt-28 pb-16">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-6xl font-['Cormorant_Garamond'] font-bold text-[#0A0A0A] mb-4">
+            <h1 className="text-4xl md:text-6xl font-['Cormorant_Garamond'] font-bold text-ink mb-4">
               Our Distinguished Scholars
             </h1>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-8">
@@ -81,9 +81,9 @@ export default async function ScholarsListingPage({
                 const pubCount = scholar._count?.publications || 0
 
                 return (
-                  <Link href={`/scholars/${scholar.username || scholar.id}`} key={scholar.id} className="bg-white rounded-2xl p-6 border border-[#ECEAF4] shadow-sm hover:shadow-md hover:border-violet transition-all group flex flex-col">
+                  <Link href={`/scholars/${scholar.username || scholar.id}`} key={scholar.id} className="bg-white rounded-2xl p-6 border border-rule shadow-sm hover:shadow-md hover:border-violet transition-all group flex flex-col">
                     <div className="flex items-start gap-4 mb-4">
-                      <div className="w-16 h-16 rounded-full overflow-hidden bg-primary/10 flex-shrink-0 flex items-center justify-center text-primary font-bold text-xl relative">
+                      <div className="w-16 h-16 rounded-full overflow-hidden bg-primary/10 shrink-0 flex items-center justify-center text-primary font-bold text-xl relative">
                         {avatar ? (
                           <Image 
                             src={avatar} 
@@ -122,7 +122,7 @@ export default async function ScholarsListingPage({
         
         {/* Featured Scholars Section */}
         {featuredScholars.length > 0 && (
-          <div className="border-t border-[#ECEAF4] pt-16 bg-white">
+          <div className="border-t border-rule pt-16 bg-white">
             <GspFeaturedScholars 
               title="Featured Scholars" 
               subtitle="Meet our top contributors" 

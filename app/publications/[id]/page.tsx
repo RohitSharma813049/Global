@@ -191,7 +191,7 @@ export default async function PublicationDetailPage({ params }: Props) {
                       />
                    </div>
                 ) : (
-                   <div className="w-full aspect-[21/9] md:aspect-[3/1] bg-zinc-100 rounded-lg overflow-hidden relative">
+                   <div className="relative w-full aspect-21/9 md:aspect-3/1 bg-zinc-100 rounded-lg overflow-hidden">
                       <Image 
                         src={publication.banner_image || publication.cover_image || ''} 
                         alt="Banner" 
@@ -253,7 +253,7 @@ export default async function PublicationDetailPage({ params }: Props) {
               <div className="sb-head">About the Author</div>
               <div className="sb-body">
                 <div className="au-hero">
-                  <div className="au-av overflow-hidden flex items-center justify-center bg-[#F8F7FC] border-0.5 border-white shadow-sm">
+                  <div className="au-av overflow-hidden flex items-center justify-center bg-surface border-0.5 border-white shadow-sm">
                     {authorImg && authorImg !== "/placeholder-user.png" ? (
                       <img src={authorImg} alt={authorName} className="object-cover w-full h-full" />
                     ) : (

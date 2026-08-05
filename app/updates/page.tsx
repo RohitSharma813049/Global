@@ -37,14 +37,14 @@ export default async function UpdatesPage() {
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-[#F8F7FC] pt-12 pb-24">
+      <div className="min-h-screen bg-surface pt-12 pb-24">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16 border-b border-[#ECEAF4] pb-10">
-            <p className="inline-flex items-center gap-2 text-[10.5px] font-semibold tracking-[0.2em] uppercase text-[#2F115D] mb-4">
-              <span className="w-8 h-[1.5px] bg-[#2F115D]"></span>
+          <div className="text-center mb-16 border-b border-rule pb-10">
+            <p className="inline-flex items-center gap-2 text-[10.5px] font-semibold tracking-[0.2em] uppercase text-violet mb-4">
+              <span className="w-8 h-[1.5px] bg-violet"></span>
               Global Scholar Magazine
             </p>
-            <h1 className="font-serif text-4xl md:text-6xl font-bold text-[#0A0A0A] tracking-tight leading-tight">
+            <h1 className="font-serif text-4xl md:text-6xl font-bold text-ink tracking-tight leading-tight">
               Insights & <em>Perspectives</em>
             </h1>
             <p className="mt-4 text-[14.5px] font-light text-black/60 max-w-2xl mx-auto leading-relaxed">
@@ -53,7 +53,7 @@ export default async function UpdatesPage() {
           </div>
 
           {allItems.length === 0 ? (
-            <div className="text-center py-20 bg-white rounded-2xl shadow-[0_12px_36px_rgba(0,0,0,0.08)] border border-[#ECEAF4]">
+            <div className="text-center py-20 bg-white rounded-2xl shadow-[0_12px_36px_rgba(0,0,0,0.08)] border border-rule">
               <h3 className="text-xl font-medium text-gray-900">No updates found</h3>
               <p className="mt-2 text-gray-500">Check back later for new blogs and news.</p>
             </div>
@@ -62,10 +62,10 @@ export default async function UpdatesPage() {
               {/* Featured Section */}
               {featured && (
                 <section>
-                  <h2 className="text-2xl font-serif font-bold text-[#0A0A0A] mb-6">Featured Story</h2>
+                  <h2 className="text-2xl font-serif font-bold text-ink mb-6">Featured Story</h2>
                   <Link 
                     href={`/${featured.type === 'blog' ? 'blog' : 'news'}/${featured.slug}`}
-                    className="group grid grid-cols-1 md:grid-cols-2 bg-white rounded-2xl shadow-[0_12px_36px_rgba(0,0,0,0.08)] hover:shadow-[0_20px_48px_rgba(47,17,93,0.16)] border border-[#ECEAF4] hover:border-[#2F115D]/20 overflow-hidden transition-all duration-300"
+                    className="group grid grid-cols-1 md:grid-cols-2 bg-white rounded-2xl shadow-[0_12px_36px_rgba(0,0,0,0.08)] hover:shadow-[0_20px_48px_rgba(47,17,93,0.16)] border border-rule hover:border-violet/20 overflow-hidden transition-all duration-300"
                   >
                     <div className="relative h-64 md:h-full w-full bg-gray-100 overflow-hidden">
                       {featured.cover_image ? (
@@ -81,26 +81,26 @@ export default async function UpdatesPage() {
                         </div>
                       )}
                       <div className="absolute top-6 left-6 z-10">
-                        <span className={`px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-md shadow-sm ${featured.type === 'blog' ? 'bg-[#2F115D] text-white' : 'bg-[#B8893E] text-white'}`}>
+                        <span className={`px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-md shadow-sm ${featured.type === 'blog' ? 'bg-violet text-white' : 'bg-gold text-white'}`}>
                           {featured.type === 'blog' ? 'Featured Blog' : 'Top News'}
                         </span>
                       </div>
                     </div>
                     
                     <div className="p-8 md:p-12 flex flex-col justify-center">
-                      <div className="flex items-center text-xs font-semibold text-[#2F115D] mb-4 tracking-wider uppercase">
+                      <div className="flex items-center text-xs font-semibold text-violet mb-4 tracking-wider uppercase">
                         <time dateTime={featured.dateToSort ? new Date(featured.dateToSort).toISOString() : ''}>
                           {featured.dateToSort ? formatDistanceToNow(new Date(featured.dateToSort), { addSuffix: true }) : 'Recently'}
                         </time>
                       </div>
-                      <h3 className="text-3xl font-serif font-bold text-[#0A0A0A] mb-4 group-hover:text-[#2F115D] transition-colors leading-tight">
+                      <h3 className="text-3xl font-serif font-bold text-ink mb-4 group-hover:text-violet transition-colors leading-tight">
                         {featured.title}
                       </h3>
                       <div 
                         className="text-black/60 text-[14.5px] font-light leading-relaxed mb-8 line-clamp-4"
                         dangerouslySetInnerHTML={{ __html: featured.content.substring(0, 300) + '...' }}
                       />
-                      <div className="mt-auto inline-flex items-center gap-2 text-[13px] font-medium text-[#2F115D] border-b-[1.5px] border-transparent hover:border-[#2F115D] pb-1 w-max transition-all group-hover:gap-3">
+                      <div className="mt-auto inline-flex items-center gap-2 text-[13px] font-medium text-violet border-b-[1.5px] border-transparent hover:border-violet pb-1 w-max transition-all group-hover:gap-3">
                         Read Full Story
                         <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                           <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -114,13 +114,13 @@ export default async function UpdatesPage() {
               {/* Latest Stories Grid */}
               {restItems.length > 0 && (
                 <section>
-                  <h2 className="text-2xl font-serif font-bold text-[#0A0A0A] mb-6">Latest Stories</h2>
+                  <h2 className="text-2xl font-serif font-bold text-ink mb-6">Latest Stories</h2>
                   <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                     {restItems.map((item) => (
                       <Link 
                         href={`/${item.type === 'blog' ? 'blog' : 'news'}/${item.slug}`} 
                         key={`${item.type}-${item.id}`}
-                        className="group flex flex-col bg-white rounded-[16px] shadow-[0_12px_36px_rgba(0,0,0,0.08)] hover:shadow-[0_20px_48px_rgba(47,17,93,0.16)] border border-[#ECEAF4] hover:border-[#2F115D]/20 overflow-hidden transition-all duration-300 hover:-translate-y-1"
+                        className="group flex flex-col bg-white rounded-2xl shadow-[0_12px_36px_rgba(0,0,0,0.08)] hover:shadow-[0_20px_48px_rgba(47,17,93,0.16)] border border-rule hover:border-violet/20 overflow-hidden transition-all duration-300 hover:-translate-y-1"
                       >
                         <div className="relative h-48 w-full bg-gray-100 overflow-hidden shrink-0">
                           {item.cover_image ? (
@@ -136,26 +136,26 @@ export default async function UpdatesPage() {
                             </div>
                           )}
                           <div className="absolute top-4 left-4 z-10">
-                            <span className={`px-2.5 py-1 text-[9px] font-bold tracking-wider uppercase rounded-md shadow-sm ${item.type === 'blog' ? 'bg-[#2F115D]/90 text-white' : 'bg-[#B8893E]/90 text-white'} backdrop-blur-sm`}>
+                            <span className={`px-2.5 py-1 text-[9px] font-bold tracking-wider uppercase rounded-md shadow-sm ${item.type === 'blog' ? 'bg-violet/90 text-white' : 'bg-gold/90 text-white'} backdrop-blur-sm`}>
                               {item.type === 'blog' ? 'Blog' : 'News'}
                             </span>
                           </div>
                         </div>
                         
                         <div className="p-6 flex flex-col grow">
-                          <div className="flex items-center text-[10px] font-semibold text-[#2F115D] mb-3 tracking-wider uppercase">
+                          <div className="flex items-center text-[10px] font-semibold text-violet mb-3 tracking-wider uppercase">
                             <time dateTime={item.dateToSort ? new Date(item.dateToSort).toISOString() : ''}>
                               {item.dateToSort ? formatDistanceToNow(new Date(item.dateToSort), { addSuffix: true }) : 'Recently'}
                             </time>
                           </div>
-                          <h3 className="text-[19px] font-serif font-bold text-[#0A0A0A] mb-3 group-hover:text-[#2F115D] transition-colors line-clamp-2 leading-snug">
+                          <h3 className="text-[19px] font-serif font-bold text-ink mb-3 group-hover:text-violet transition-colors line-clamp-2 leading-snug">
                             {item.title}
                           </h3>
                           <div 
                             className="text-black/50 text-[12.5px] font-light leading-relaxed mb-6 line-clamp-3"
                             dangerouslySetInnerHTML={{ __html: item.content.substring(0, 150) + '...' }}
                           />
-                          <div className="mt-auto inline-flex items-center gap-1.5 text-[12px] font-medium text-[#2F115D] transition-all group-hover:gap-2.5">
+                          <div className="mt-auto inline-flex items-center gap-1.5 text-[12px] font-medium text-violet transition-all group-hover:gap-2.5">
                             Read more 
                             <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
                               <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>

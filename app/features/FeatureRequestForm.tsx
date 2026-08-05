@@ -73,7 +73,7 @@ export default function FeatureRequestForm() {
             value={requestText}
             onChange={(e) => setRequestText(e.target.value)}
             placeholder="Describe the feature in detail..."
-            className="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet min-h-[120px]"
+            className="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet min-h-30"
             required
           />
           {error && <p className="text-red-500 text-sm">{error}</p>}

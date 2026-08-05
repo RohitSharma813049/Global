@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react'
 import { 
-  Facebook, 
   Users, 
   CheckCircle2, 
   Clock, 
@@ -14,6 +13,7 @@ import {
   ChevronDown,
   AlertTriangle
 } from 'lucide-react'
+import { FaFacebook } from 'react-icons/fa'
 
 export default function FbLeadsPage() {
   const [expandedCampaign, setExpandedCampaign] = useState<string | null>('09-July-2026 Channel Partner')
@@ -33,7 +33,7 @@ export default function FbLeadsPage() {
       <div className="w-full md:w-64 shrink-0 space-y-6">
         <div className="flex items-center gap-3 mb-2">
           <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white">
-            <Facebook className="w-5 h-5" />
+            <FaFacebook className="w-5 h-5" />
           </div>
           <h2 className="font-bold text-lg text-slate-800">Meta Ads</h2>
         </div>

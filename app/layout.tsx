@@ -37,8 +37,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="bg-background">
-      <body suppressHydrationWarning className={`${spaceGrotesk.variable} ${cormorantGaramond.variable} font-sans antialiased text-foreground min-h-[100dvh]`}>
-        <div className="flex flex-col min-h-[100dvh] w-full overflow-x-hidden relative">
+      <body suppressHydrationWarning className={`${spaceGrotesk.variable} ${cormorantGaramond.variable} font-sans antialiased text-foreground min-h-dvh`}>
+        <div className="flex flex-col min-h-dvh w-full overflow-x-hidden relative">
           <Providers>
             <CopyProtection />
             <Header/>
