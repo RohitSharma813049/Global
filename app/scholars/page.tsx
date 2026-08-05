@@ -17,6 +17,12 @@ export default async function ScholarsListingPage({
   // Fetch scholars with publication counts
   const scholars = await prisma.scholars.findMany({
     where: {
+      publications: {
+        some: {
+          status: 'published',
+          deleted_at: null
+        }
+      },
       OR: [
         { username: { contains: query, mode: 'insensitive' } },
         { 
@@ -29,7 +35,7 @@ export default async function ScholarsListingPage({
     include: {
       users: true,
       _count: {
-        select: { publications: { where: { status: 'published' } } }
+        select: { publications: { where: { status: 'published', deleted_at: null } } }
       }
     },
     orderBy: { users: { created_at: 'desc' } }
