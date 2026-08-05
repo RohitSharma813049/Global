@@ -1,7 +1,8 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { getMagazines, createMagazine, updateMagazine, deleteMagazine, toggleMagazineFeaturedStatus } from '@/app/actions/cms'
+import { createMagazine, updateMagazine, deleteMagazine, toggleMagazineFeaturedStatus } from '@/app/actions/cms'
+import { getMagazines } from '@/app/queries/cms'
 import toast from 'react-hot-toast'
 import ImageUpload from '@/components/image-upload'
 import { MoreVertical, Trash2, Edit2, Star, StarOff } from 'lucide-react'

@@ -1,6 +1,15 @@
 'use server'
 
-import { checkSuperAdmin } from './auth'
+import { getServerSession } from "next-auth/next"
+import { authOptions } from "@/app/api/auth/[...nextauth]/route"
+
+async function checkSuperAdmin() {
+  const session = await getServerSession(authOptions)
+  if (session?.user?.role !== 'super_admin') {
+    throw new Error("Unauthorized: Super Admin access required.")
+  }
+  return session
+}
 import { prisma } from '@/lib/db'
 import { revalidatePath } from 'next/cache'
 import nodemailer from 'nodemailer'

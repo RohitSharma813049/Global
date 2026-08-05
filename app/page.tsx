@@ -15,7 +15,7 @@ const Footer = dynamic(() => import("@/components/layout/footer"))
 const RecentNewsBlogs = dynamic(() => import("@/components/home/gsp-recent-blogs"))
 const FaqSection = dynamic(() => import("@/components/shared/faq-section"))
 const CtaBanner = dynamic(() => import("@/components/shared/cta-banner"))
-import { getHomepageSettings, getBlogs, getNews, getTestimonials, getFeaturedScholars } from '@/app/queries/cms'
+import { getHomepageSettings, getBlogs, getNews, getTestimonials, getFeaturedScholars, getMagazines } from '@/app/queries/cms'
 import { getPlatformStats } from '@/app/actions/stats'
 
 import ScrollAnimation from "@/components/shared/scroll-animation"
@@ -28,7 +28,8 @@ export default async function Page() {
   const [
     settings,
     blogsData,
-    newsData,\n    magazinesData,
+    newsData,
+    magazinesData,
     statsData,
     testimonialsData,
     scholarsData,
@@ -39,7 +40,8 @@ export default async function Page() {
   ] = await Promise.all([
     getHomepageSettings(),
     getBlogs(),
-    getNews(),\n    getMagazines(),
+    getNews(),
+    getMagazines(),
     getPlatformStats(),
     getTestimonials(),
     getFeaturedScholars(),
