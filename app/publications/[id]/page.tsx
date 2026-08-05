@@ -230,15 +230,20 @@ export default async function PublicationDetailPage({ params }: Props) {
                     <Link href={`/publications/${pub.id}`} key={pub.id} className="rel-card">
                       <div className="rel-img">
                         {pub.cover_image ? (
-                          <img src={pub.cover_image} alt="" loading="lazy" />
+                          <img src={pub.cover_image} alt="" loading="lazy" className="object-cover w-full h-full" />
                         ) : (
-                          <div className="w-full h-full bg-zinc-100" />
+                          <div className="w-full h-full bg-zinc-100 flex items-center justify-center text-zinc-300">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                          </div>
                         )}
                         <span className="rel-type">{pub.content_type}</span>
                       </div>
                       <div className="rel-body">
                         <p className="rel-subj">{pub.content_type}</p>
                         <h4 className="rel-title">{pub.title}</h4>
+                        <div className="text-xs text-gray-500 mt-2 line-clamp-2">
+                          {pub.abstract?.replace(/<[^>]+>/g, '') || "No description available."}
+                        </div>
                       </div>
                     </Link>
                   ))}

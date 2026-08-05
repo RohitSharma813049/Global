@@ -416,10 +416,10 @@ export default function PublicationViewer({ publication, isVideo }: PublicationV
                 ) : (
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
                 )}
-                <span className="text-2.5 uppercase tracking-wider whitespace-nowrap">{isReading ? 'Turn Off' : 'Turn On'}</span>
+                <span className="text-xs font-semibold uppercase tracking-wider whitespace-nowrap">{isReading ? 'Turn Off' : 'Turn On'}</span>
               </button>
               <select 
-                className="text-2.5 bg-transparent border-none outline-none text-zinc-500 font-medium max-w-20 truncate cursor-pointer hidden sm:block"
+                className="text-xs bg-transparent border-none outline-none text-zinc-500 font-medium max-w-32 truncate cursor-pointer hidden sm:block"
                 value={selectedVoice}
                 onChange={(e) => setSelectedVoice(e.target.value)}
                 title="Select Voice"
@@ -466,10 +466,10 @@ export default function PublicationViewer({ publication, isVideo }: PublicationV
                 ) : (
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
                 )}
-                <span className="text-2.5 uppercase tracking-wider">{isReading ? 'Turn Off' : 'Turn On'}</span>
+                <span className="text-xs font-semibold uppercase tracking-wider whitespace-nowrap">{isReading ? 'Turn Off' : 'Turn On'}</span>
               </button>
               <select 
-                className="text-2.5 bg-transparent border-none outline-none text-zinc-500 font-medium max-w-20 truncate cursor-pointer hidden sm:block"
+                className="text-xs bg-transparent border-none outline-none text-zinc-500 font-medium max-w-32 truncate cursor-pointer hidden sm:block"
                 value={selectedVoice}
                 onChange={(e) => setSelectedVoice(e.target.value)}
                 title="Select Voice"

@@ -491,7 +491,7 @@ export default function ExploreClient({
                         author: (pub as any).author_name || (pub.scholars?.users?.raw_user_meta_data as any)?.name || (pub.scholars?.users?.raw_user_meta_data as any)?.full_name || 'Unknown Scholar',
                         url: `/publications/${pub.id}`,
                         cover_image: pub.cover_image || "/placeholder-user.png",
-                        abstract: pub.abstract,
+                        abstract: pub.abstract?.replace(/<[^>]*>?/gm, ''),
                         author_avatar: (pub.scholars?.users?.raw_user_meta_data as any)?.avatar_url || (pub.scholars?.users?.raw_user_meta_data as any)?.picture || (pub.scholars?.users?.raw_user_meta_data as any)?.image || "/placeholder-user.png",
                         subject: pub.categories?.name || 'GENERAL'
                       }} 
@@ -518,7 +518,7 @@ export default function ExploreClient({
                       </span>
                     </div>
                     <div className="pc-desc">
-                      <p>{pub.abstract}</p>
+                      <p>{pub.abstract?.replace(/<[^>]*>?/gm, '')}</p>
                     </div>
                     <div className="pc-footer">
                       <span className="pc-read">Read Full Publication →</span>

@@ -329,11 +329,11 @@ export default function GSPFeaturedScholars({ title, subtitle, scholars = [], au
                 </div>
               </div>
               <div className="sc-body">
-                <p className="sc-cred"><span className="sc-dot"></span>{scholar.credential}</p>
-                <p className="sc-institution">{scholar.institution}</p>
-                <div className="sc-footer">
-                  <span className="sc-field-tag">{scholar.field}</span>
-                  <span className="sc-view">View Profile
+                {scholar.credential && <p className="sc-cred"><span className="sc-dot"></span>{scholar.credential}</p>}
+                {scholar.institution && <p className="sc-institution">{scholar.institution}</p>}
+                <div className="sc-footer mt-auto pt-4">
+                  {scholar.field && <span className="sc-field-tag">{scholar.field}</span>}
+                  <span className="sc-view ml-auto">View Profile
                     <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 5.5h7M6 2.5l3 3-3 3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg>
                   </span>
                 </div>

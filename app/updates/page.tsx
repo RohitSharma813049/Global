@@ -51,6 +51,12 @@ export default async function UpdatesPage() {
 
   return (
     <>
+      <div className="bc-bar">
+        <div className="bc-inner">
+          <Link href="/">Home</Link><span className="bc-sep">›</span>
+          <span style={{ color: 'var(--mid)' }}>News & Insights</span>
+        </div>
+      </div>
       <div className="min-h-screen bg-surface pt-12 pb-24">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16 border-b border-rule pb-10">
@@ -115,7 +121,7 @@ export default async function UpdatesPage() {
                           </h3>
                           <div 
                             className="text-black/60 text-[14.5px] font-light leading-relaxed mb-8 line-clamp-4"
-                            dangerouslySetInnerHTML={{ __html: featured.content.substring(0, 300) + '...' }}
+                            dangerouslySetInnerHTML={{ __html: (featured.content || "").substring(0, 300) + '...' }}
                           />
                           <div className="mt-auto inline-flex items-center gap-2 text-[13px] font-medium text-violet border-b-[1.5px] border-transparent hover:border-violet pb-1 w-max transition-all group-hover:gap-3">
                             Read Full Story
@@ -172,7 +178,7 @@ export default async function UpdatesPage() {
                           </h3>
                           <div 
                             className="text-black/50 text-[12.5px] font-light leading-relaxed mb-6 line-clamp-3"
-                            dangerouslySetInnerHTML={{ __html: item.content.substring(0, 150) + '...' }}
+                            dangerouslySetInnerHTML={{ __html: (item.content || "").substring(0, 150) + '...' }}
                           />
                           <div className="mt-auto inline-flex items-center gap-1.5 text-[12px] font-medium text-violet transition-all group-hover:gap-2.5">
                             Read more 
