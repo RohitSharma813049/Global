@@ -98,36 +98,7 @@ export default async function Page() {
     image: cat.image_url || "/placeholder-user.png"
   }));
 
-  const dynamicExploreCategories = [
-    {
-      title: 'Research Articles',
-      count: `${statsData.articleCount}+ Papers`,
-      image: settings.explore_categories?.[0]?.image || '/placeholder-user.png',
-      link: '/explore?type=article'
-    },
-    {
-      title: 'eBooks',
-      count: `${statsData.ebookCount}+ Books`,
-      image: settings.explore_categories?.[1]?.image || '/placeholder-user.png',
-      link: '/explore?type=ebook'
-    },
-    {
-      title: 'Magazines',
-      count: `${statsData.magazineCount}+ Issues`,
-      image: settings.explore_categories?.[2]?.image || '/placeholder-user.png',
-      link: '/explore?type=magazine'
-    },
-    {
-      title: 'Theses',
-      count: `${statsData.thesisCount}+ Papers`,
-      image: settings.explore_categories?.[3]?.image || '/placeholder-user.png',
-      link: '/explore?type=thesis'
-    }
-  ];
-
-  const exploreCategoriesToUse = settings.enable_dynamic_explore_categories !== false 
-    ? dynamicExploreCategories 
-    : settings.explore_categories;
+  const exploreCategoriesToUse = settings.explore_categories || [];
 
   console.log("Rendering homepage with dynamic categories", formattedCategories);
 
