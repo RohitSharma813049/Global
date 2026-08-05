@@ -190,65 +190,65 @@ export default function Header() {
         <div className="flex justify-around items-center">
           <Link
             href="/"
-            className={`flex flex-col items-center justify-center w-16 h-12 rounded-lg transition-colors ${pathname === '/' ? "text-indigo-600" : "text-gray-500 hover:text-indigo-500 hover:bg-indigo-50/50"}`}
+            className={`flex flex-col items-center justify-center flex-1 h-12 rounded-lg transition-colors ${pathname === '/' ? "text-indigo-600" : "text-gray-500 hover:text-indigo-500 hover:bg-indigo-50/50"}`}
           >
             <div className={`p-1 rounded-full ${pathname === '/' ? "bg-indigo-100/50" : ""}`}>
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-6 w-6 ${pathname === '/' ? 'scale-110' : ''}`}><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>
             </div>
-            <span className={`text-2.5 mt-0.5 font-medium truncate w-full text-center ${pathname === '/' ? "text-indigo-700" : ""}`}>Home</span>
+            <span className={`text-[10px] mt-0.5 font-medium truncate w-full text-center ${pathname === '/' ? "text-indigo-700" : ""}`}>Home</span>
           </Link>
 
           <Link
             href="/explore"
-            className={`flex flex-col items-center justify-center w-16 h-12 rounded-lg transition-colors ${pathname === '/explore' ? "text-indigo-600" : "text-gray-500 hover:text-indigo-500 hover:bg-indigo-50/50"}`}
+            className={`flex flex-col items-center justify-center flex-1 h-12 rounded-lg transition-colors ${pathname === '/explore' ? "text-indigo-600" : "text-gray-500 hover:text-indigo-500 hover:bg-indigo-50/50"}`}
           >
             <div className={`p-1 rounded-full ${pathname === '/explore' ? "bg-indigo-100/50" : ""}`}>
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-6 w-6 ${pathname === '/explore' ? 'scale-110' : ''}`}><circle cx="12" cy="12" r="10" /><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" /></svg>
             </div>
-            <span className={`text-2.5 mt-0.5 font-medium truncate w-full text-center ${pathname === '/explore' ? "text-indigo-700" : ""}`}>Explore</span>
+            <span className={`text-[10px] mt-0.5 font-medium truncate w-full text-center ${pathname === '/explore' ? "text-indigo-700" : ""}`}>Explore</span>
           </Link>
 
           {session && (
             <Link
               href="/library"
-              className={`flex flex-col items-center justify-center w-16 h-12 rounded-lg transition-colors ${pathname === '/library' ? "text-indigo-600" : "text-gray-500 hover:text-indigo-500 hover:bg-indigo-50/50"}`}
+              className={`flex flex-col items-center justify-center flex-1 h-12 rounded-lg transition-colors ${pathname === '/library' ? "text-indigo-600" : "text-gray-500 hover:text-indigo-500 hover:bg-indigo-50/50"}`}
             >
               <div className={`p-1 rounded-full ${pathname === '/library' ? "bg-indigo-100/50" : ""}`}>
                 <BookMarked className={`h-6 w-6 ${pathname === '/library' ? 'scale-110' : ''}`} />
               </div>
-              <span className={`text-2.5 mt-0.5 font-medium truncate w-full text-center ${pathname === '/library' ? "text-indigo-700" : ""}`}>Library</span>
+              <span className={`text-[10px] mt-0.5 font-medium truncate w-full text-center ${pathname === '/library' ? "text-indigo-700" : ""}`}>Library</span>
             </Link>
           )}
 
           {session ? (
             <Link
               href="/dashboard"
-              className={`flex flex-col items-center justify-center w-16 h-12 rounded-lg transition-colors ${pathname === '/dashboard' ? "text-indigo-600" : "text-gray-500 hover:text-indigo-500 hover:bg-indigo-50/50"}`}
+              className={`flex flex-col items-center justify-center flex-1 h-12 rounded-lg transition-colors ${pathname === '/dashboard' ? "text-indigo-600" : "text-gray-500 hover:text-indigo-500 hover:bg-indigo-50/50"}`}
             >
               <div className={`p-1 rounded-full ${pathname === '/dashboard' ? "bg-indigo-100/50" : ""}`}>
                 <MdDashboard className={`h-6 w-6 ${pathname === '/dashboard' ? 'scale-110' : ''}`} />
               </div>
-              <span className={`text-2.5 mt-0.5 font-medium truncate w-full text-center ${pathname === '/dashboard' ? "text-indigo-700" : ""}`}>Dashboard</span>
+              <span className={`text-[10px] mt-0.5 font-medium truncate w-full text-center ${pathname === '/dashboard' ? "text-indigo-700" : ""}`}>Dashboard</span>
             </Link>
           ) : (
             <Link
               href="/signin"
-              className={`flex flex-col items-center justify-center w-16 h-12 rounded-lg transition-colors ${pathname === '/signin' ? "text-indigo-600" : "text-gray-500 hover:text-indigo-500 hover:bg-indigo-50/50"}`}
+              className={`flex flex-col items-center justify-center flex-1 h-12 rounded-lg transition-colors ${pathname === '/signin' ? "text-indigo-600" : "text-gray-500 hover:text-indigo-500 hover:bg-indigo-50/50"}`}
             >
               <div className={`p-1 rounded-full ${pathname === '/signin' ? "bg-indigo-100/50" : ""}`}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-6 w-6 ${pathname === '/signin' ? 'scale-110' : ''}`}><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" /><polyline points="10 17 15 12 10 7" /><line x1="15" x2="3" y1="12" y2="12" /></svg>
               </div>
-              <span className={`text-2.5 mt-0.5 font-medium truncate w-full text-center ${pathname === '/signin' ? "text-indigo-700" : ""}`}>Sign In</span>
+              <span className={`text-[10px] mt-0.5 font-medium truncate w-full text-center ${pathname === '/signin' ? "text-indigo-700" : ""}`}>Sign In</span>
             </Link>
           )}
 
           <Sheet>
             <SheetTrigger asChild>
-              <button className="flex flex-col items-center justify-center w-16 h-12 rounded-lg transition-colors text-gray-500 hover:text-indigo-500 hover:bg-indigo-50/50">
+              <button className="flex flex-col items-center justify-center flex-1 h-12 rounded-lg transition-colors text-gray-500 hover:text-indigo-500 hover:bg-indigo-50/50">
                 <div className="p-1 rounded-full">
                   <Menu className="h-6 w-6" />
                 </div>
-                <span className="text-2.5 mt-0.5 font-medium truncate w-full text-center">Menu</span>
+                <span className="text-[10px] mt-0.5 font-medium truncate w-full text-center">Menu</span>
               </button>
             </SheetTrigger>
             <SheetContent side="left" className="w-75 sm:w-100 flex flex-col pt-16 z-100 font-sans antialiased">

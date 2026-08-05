@@ -6,7 +6,6 @@ import Header from "@/components/layout/header"
 export default function FeaturesPage() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      <Header />
       <main className="flex-1 max-w-5xl mx-auto w-full px-6 py-12 pt-28 text-center">
         <h1 className="text-5xl font-extrabold text-gray-900 mb-6">Platform Features</h1>
         <p className="text-xl text-gray-600 leading-relaxed max-w-2xl mx-auto mb-8">

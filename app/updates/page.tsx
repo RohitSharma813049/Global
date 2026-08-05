@@ -36,7 +36,6 @@ export default async function UpdatesPage() {
 
   return (
     <>
-      <Header />
       <div className="min-h-screen bg-surface pt-12 pb-24">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16 border-b border-rule pb-10">

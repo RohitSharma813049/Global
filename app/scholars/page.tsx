@@ -52,7 +52,6 @@ export default async function ScholarsListingPage({
 
   return (
     <>
-      <Header />
       <main className="min-h-screen bg-surface pt-28 pb-16">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-12">

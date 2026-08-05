@@ -62,14 +62,14 @@ export default function DashboardBottomNav() {
             <Link 
               key={link.name} 
               href={link.href}
-              className={`flex flex-col items-center justify-center w-16 h-12 rounded-lg transition-colors ${
+              className={`flex flex-col items-center justify-center flex-1 h-12 rounded-lg transition-colors ${
                 isActive ? "text-indigo-600" : "text-gray-500 hover:text-indigo-500 hover:bg-indigo-50/50"
               }`}
             >
               <div className={`p-1 rounded-full ${isActive ? "bg-indigo-100/50" : ""}`}>
                 <Icon className={`text-2xl ${isActive ? "scale-110" : ""}`} />
               </div>
-              <span className={`text-2.5 mt-0.5 font-medium truncate w-full text-center ${isActive ? "text-indigo-700" : ""}`}>
+              <span className={`text-[10px] mt-0.5 font-medium truncate w-full text-center ${isActive ? "text-indigo-700" : ""}`}>
                 {link.name}
               </span>
             </Link>
