@@ -45,10 +45,30 @@ export default async function ScholarProfilePage({ params }: Props) {
       where: { author_id: scholar.user_id, status: 'published' }
     }) : Promise.resolve([]),
     prisma.scholars.findMany({
-      where: { id: { not: scholar.id } },
+      where: { 
+        id: { not: scholar.id },
+        publications: {
+          some: {
+            status: 'published',
+            deleted_at: null
+          }
+        }
+      },
       take: 4,
       orderBy: { total_views: 'desc' },
-      include: { users: true }
+      include: { 
+        users: true,
+        _count: { 
+          select: { 
+            publications: {
+              where: {
+                status: 'published',
+                deleted_at: null
+              }
+            } 
+          } 
+        }
+      }
     })
   ]);
 
@@ -135,35 +155,8 @@ export default async function ScholarProfilePage({ params }: Props) {
     }
   ];
 
-  const formattedOtherScholars = rawOtherScholars.map((s: any) => {
-    const rawMetaData = s.users?.raw_user_meta_data as any || {};
-    const name = rawMetaData.name || s.users?.email?.split('@')[0] || 'Unknown';
-    const initials = (() => {
-      const nameParts = name.split(' ');
-      if (nameParts.length >= 2) {
-        return (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase();
-      }
-      return nameParts[0].substring(0, 2).toUpperCase();
-    })();
-
-    return {
-      id: s.id,
-      name: name,
-      initials: initials,
-      professional_role: s.qualification || s.institution || 'Scholar',
-      country: rawMetaData.country || 'Global',
-      country_code: 'UN',
-      flag_emoji: '🌐',
-      domain: s.specialization || 'General Research',
-      description: s.bio || '',
-      is_honorary: false,
-      is_verified: s.verified ?? false,
-      is_featured: s.is_featured ?? false,
-      total_views: s.total_views ?? 0,
-      total_downloads: s.total_downloads ?? 0,
-      avatar_url: s.profile_photo_url || rawMetaData.avatar_url || rawMetaData.picture || rawMetaData.image || ''
-    };
-  });
+  // Pass rawOtherScholars directly so GSPFeaturedScholars can correctly map the properties
+  const formattedOtherScholars = rawOtherScholars;
 
   return (
     <>

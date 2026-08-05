@@ -60,7 +60,7 @@ interface Props {
   videos?: ScholarVideo[];
   publications?: ScholarPublication[];
   reviews?: ScholarReview[];
-  allScholars?: Scholar[];
+  allScholars?: any[];
   isOwner?: boolean;
 }
 
