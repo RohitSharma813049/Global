@@ -93,14 +93,14 @@ export default function DashboardSidebar() {
       >
       <div className={`p-5 border-b border-(--color-gsp-border-muted) flex items-center ${isExpanded ? 'justify-between' : 'justify-center'} overflow-hidden h-20`}>
         {isExpanded ? (
-          <div className="whitespace-nowrap flex flex-col justify-center transition-opacity duration-300 w-full px-2 mt-2">
+          <Link href="/" className="whitespace-nowrap flex flex-col justify-center transition-opacity duration-300 w-full px-2 mt-2 hover:opacity-80 transition-opacity">
             <img src="/logo1.png" alt="Global Scholar" className="h-10 w-auto object-contain object-left mb-1" />
-            <span className="text-2.5 font-bold text-(--color-gsp-text-inverse) uppercase tracking-wider ml-1">{role.replace('_', ' ')} Dashboard</span>
-          </div>
+            <span className="text-[10px] font-bold text-(--color-gsp-text-inverse) uppercase tracking-wider ml-1">{role.replace('_', ' ')} Dashboard</span>
+          </Link>
         ) : (
-          <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0">
+          <Link href="/" className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 hover:opacity-80 transition-opacity">
             <img src="/favicon.png" alt="Global Scholar" className="w-full h-full object-contain" />
-          </div>
+          </Link>
         )}
         
         {isExpanded && (

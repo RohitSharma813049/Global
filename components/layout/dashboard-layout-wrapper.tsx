@@ -3,7 +3,7 @@ import React from "react";
 import DashboardSidebar from "@/components/layout/dashboard-sidebar";
 import DashboardBottomNav from "@/components/layout/dashboard-bottom-nav";
 import { useSidebar } from "@/components/sidebar-context";
-import { MdLogout, MdMenu, MdSettings, MdSwapHoriz } from "react-icons/md";
+import { MdLogout, MdMenu, MdSettings, MdSwapHoriz, MdHome } from "react-icons/md";
 import { signOut, useSession } from "next-auth/react";
 import { NotificationsDropdown } from "@/components/notifications-dropdown";
 import { useState, useEffect } from "react";
@@ -101,6 +101,12 @@ export function DashboardLayoutWrapper({ children }: { children: React.ReactNode
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/" className="cursor-pointer flex items-center py-2 px-3 text-sm rounded-md hover:bg-gray-50 outline-none">
+                    <MdHome className="mr-3 h-4 w-4 text-gray-500" />
+                    <span>Back to Home</span>
+                  </Link>
+                </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link href="/dashboard/settings" className="cursor-pointer flex items-center py-2 px-3 text-sm rounded-md hover:bg-gray-50 outline-none">
                     <MdSettings className="mr-3 h-4 w-4 text-gray-500" />
