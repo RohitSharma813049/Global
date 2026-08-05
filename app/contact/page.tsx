@@ -1,18 +1,30 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { submitHelpRequest } from '@/app/actions/help'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import Header from '@/components/layout/header'
 import Footer from '@/components/layout/footer'
+import { useSession } from 'next-auth/react'
 
 export default function ContactPage() {
+  const { data: session } = useSession()
   const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' })
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
+
+  useEffect(() => {
+    if (session?.user) {
+      setFormData(prev => ({
+        ...prev,
+        name: session.user.name || '',
+        email: session.user.email || '',
+      }))
+    }
+  }, [session])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -58,6 +70,8 @@ export default function ContactPage() {
                   value={formData.name}
                   onChange={e => setFormData({ ...formData, name: e.target.value })}
                   placeholder="John Doe"
+                  readOnly={!!session?.user?.name}
+                  className={session?.user?.name ? "bg-gray-100 cursor-not-allowed" : ""}
                 />
               </div>
               <div className="space-y-2">
@@ -68,6 +82,8 @@ export default function ContactPage() {
                   value={formData.email}
                   onChange={e => setFormData({ ...formData, email: e.target.value })}
                   placeholder="john@example.com"
+                  readOnly={!!session?.user?.email}
+                  className={session?.user?.email ? "bg-gray-100 cursor-not-allowed" : ""}
                 />
               </div>
             </div>
