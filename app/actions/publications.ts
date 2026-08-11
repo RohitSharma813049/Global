@@ -14,8 +14,8 @@ import { prisma } from "@/lib/db"
 import { publicationSchema, updatePublicationSchema } from "@/lib/validations/publication"
 import { z } from 'zod'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co'
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'placeholder-key'
 const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
 
 export async function getAllCategories() {
