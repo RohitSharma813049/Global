@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db"
+import { cacheOrFetch } from "@/lib/redis-cache"
 
 export interface SearchParams {
   query?: string;
@@ -22,10 +23,20 @@ export async function getAdvancedSearchData(params: SearchParams) {
     };
 
     if (params.query) {
-      const matchingScholars = await prisma.scholars.findMany({
-        include: { users: { select: { raw_user_meta_data: true, email: true } } }
-      });
       const qLower = params.query.toLowerCase();
+      
+      const matchingScholars = await cacheOrFetch(
+        `scholars-search-list`,
+        120,
+        async () => {
+          return await prisma.scholars.findMany({
+            where: { deleted_at: null },
+            include: { users: { select: { raw_user_meta_data: true, email: true } } }
+          })
+        },
+        ['scholars-search-list']
+      );
+
       const matchingScholarIds = matchingScholars
         .filter(s => {
           const meta = s.users?.raw_user_meta_data as any;
@@ -68,10 +79,18 @@ export async function getAdvancedSearchData(params: SearchParams) {
       
       if (authorNames.length > 0) {
         const lowerAuthors = authorNames.map(a => a.toLowerCase());
-        const allScholarsForFilter = await prisma.scholars.findMany({
-          where: { deleted_at: null },
-          select: { id: true, users: { select: { raw_user_meta_data: true } } }
-        });
+        const allScholarsForFilter = await cacheOrFetch(
+          `scholars-filter-list`,
+          120,
+          async () => {
+            return await prisma.scholars.findMany({
+              where: { deleted_at: null },
+              select: { id: true, users: { select: { raw_user_meta_data: true } } }
+            });
+          },
+          ['scholars-filter-list']
+        );
+
         const validScholarIds = allScholarsForFilter.filter(s => {
           const name = (s.users?.raw_user_meta_data as any)?.full_name || (s.users?.raw_user_meta_data as any)?.name;
           return name && lowerAuthors.includes(name.toLowerCase());
@@ -90,18 +109,18 @@ export async function getAdvancedSearchData(params: SearchParams) {
       }
     }
 
-
-
     let orderBy: any = { created_at: 'desc' };
     if (params.sort === 'oldest') orderBy = { created_at: 'asc' };
     if (params.sort === 'views') orderBy = { views: 'desc' };
     if (params.sort === 'downloads') orderBy = { downloads: 'desc' };
 
-    // Fetch all for pagination in memory to merge correctly
-    const [allPubs, catsResponse, typesResponse, allScholarsResponse, uniqueAuthorNames, pubTypeCounts] = await Promise.all([
+    // Execute queries in parallel with DB-level pagination & metadata caching
+    const [paginatedPubs, totalCount, catsResponse, typesResponse, allScholarsResponse, uniqueAuthorNames, pubTypeCounts] = await Promise.all([
       prisma.publications.findMany({
         where: whereClause,
         orderBy,
+        skip,
+        take: limit,
         include: {
           categories: { select: { name: true, slug: true } },
           scholars: {
@@ -110,25 +129,41 @@ export async function getAdvancedSearchData(params: SearchParams) {
         }
       }),
 
-      prisma.categories.findMany({ orderBy: { name: 'asc' }, select: { id: true, name: true } }),
-      prisma.content_types.findMany({ orderBy: { name: 'asc' } }),
-      prisma.scholars.findMany({
-        where: { deleted_at: null, publications: { some: { status: 'published', deleted_at: null } } },
-        select: { id: true, users: { select: { raw_user_meta_data: true } } }
-      }),
-      prisma.publications.findMany({
-        where: { status: 'published', deleted_at: null },
-        select: { author_name: true },
-        distinct: ['author_name']
-      }),
-      prisma.publications.groupBy({
-        by: ['content_type'],
-        _count: { id: true },
-        where: { status: 'published', deleted_at: null }
-      })
+      prisma.publications.count({ where: whereClause }),
+
+      cacheOrFetch('search-categories', 120, async () => {
+        return await prisma.categories.findMany({ orderBy: { name: 'asc' }, select: { id: true, name: true } })
+      }, ['search-categories']),
+
+      cacheOrFetch('search-types', 120, async () => {
+        return await prisma.content_types.findMany({ orderBy: { name: 'asc' } })
+      }, ['search-types']),
+
+      cacheOrFetch('search-scholars-authors', 120, async () => {
+        return await prisma.scholars.findMany({
+          where: { deleted_at: null, publications: { some: { status: 'published', deleted_at: null } } },
+          select: { id: true, users: { select: { raw_user_meta_data: true } } }
+        })
+      }, ['search-scholars-authors']),
+
+      cacheOrFetch('search-unique-authors', 120, async () => {
+        return await prisma.publications.findMany({
+          where: { status: 'published', deleted_at: null },
+          select: { author_name: true },
+          distinct: ['author_name']
+        })
+      }, ['search-unique-authors']),
+
+      cacheOrFetch('search-type-counts', 120, async () => {
+        return await prisma.publications.groupBy({
+          by: ['content_type'],
+          _count: { id: true },
+          where: { status: 'published', deleted_at: null }
+        })
+      }, ['search-type-counts'])
     ]);
 
-    const formattedPublications = allPubs.map((p) => ({
+    const formattedPublications = paginatedPubs.map((p) => ({
       id: p.id,
       title: p.title,
       abstract: p.abstract,
@@ -156,23 +191,6 @@ export async function getAdvancedSearchData(params: SearchParams) {
       } : null
     }));
 
-    let mergedData = [...formattedPublications];
-    
-    // In-memory sort
-    if (params.sort === 'oldest') {
-      mergedData.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
-    } else if (params.sort === 'views') {
-      mergedData.sort((a, b) => b.views - a.views);
-    } else if (params.sort === 'downloads') {
-      mergedData.sort((a, b) => b.downloads - a.downloads);
-    } else {
-      // newest
-      mergedData.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-    }
-
-    const totalCount = mergedData.length;
-    const paginatedData = mergedData.slice(skip, skip + limit);
-
     const scholarsMapped = allScholarsResponse.map(s => {
       const name = (s.users?.raw_user_meta_data as any)?.full_name || (s.users?.raw_user_meta_data as any)?.name || 'Unknown';
       return { id: s.id, name };
@@ -197,11 +215,9 @@ export async function getAdvancedSearchData(params: SearchParams) {
       acc[typeKey] = (acc[typeKey] || 0) + curr._count.id;
       return acc;
     }, {} as Record<string, number>);
-    
-
 
     return {
-      publications: paginatedData,
+      publications: formattedPublications,
       totalCount,
       categories: catsResponse || [],
       contentTypes: typesResponse || [],

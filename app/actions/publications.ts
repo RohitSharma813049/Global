@@ -4,6 +4,8 @@ import { createClient } from "@supabase/supabase-js"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { revalidatePath } from "next/cache"
+import { invalidateCache } from "@/lib/redis-cache"
+
 import { createWriteStream } from "fs"
 import { Readable } from 'stream'
 import { pipeline } from 'stream/promises'
@@ -241,8 +243,12 @@ export async function uploadPublication(formData: FormData) {
       throw dbError
     }
 
+    await invalidateCache(['cms-recent-publications', 'cms-featured-publications', 'cms-hero-publications', 'explore-data', 'search-type-counts'])
     revalidatePath('/dashboard/scholar/publications')
     revalidatePath('/dashboard/admin/publications')
+    revalidatePath('/')
+    revalidatePath('/explore')
+
     
     return { success: true }
   } catch (error: any) {

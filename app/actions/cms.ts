@@ -4,7 +4,9 @@ import { createClient } from "@supabase/supabase-js"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { revalidatePath } from "next/cache"
+import { invalidateCache } from "@/lib/redis-cache"
 import { prisma } from '@/lib/db'
+
 import { blogSchema, newsSchema, testimonialSchema, magazineSchema } from '@/lib/validations/cms'
 
 // Note: For actual admin actions, we also verify session role.
@@ -163,9 +165,11 @@ export async function updateHomepageSettings(newSettings: any) {
     })
   }
   
+  await invalidateCache(['cms-homepage-settings', 'cms-blogs', 'cms-news', 'cms-featured-scholars'])
   revalidatePath('/')
   revalidatePath('/dashboard/admin/settings')
   return { success: true }
+
 }
 
 // ---- BLOGS ----

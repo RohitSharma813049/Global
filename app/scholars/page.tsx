@@ -3,7 +3,8 @@ import Footer from "@/components/layout/footer"
 import ScholarsClient from "./ScholarsClient"
 import { Metadata } from "next"
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60; // Cache for 60 seconds
+
 
 export const metadata: Metadata = {
   title: "Distinguished Scholars & Researchers | Global Scholar Publications",

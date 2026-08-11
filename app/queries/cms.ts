@@ -1,8 +1,9 @@
 import { prisma } from '@/lib/db'
-import { unstable_cache } from 'next/cache'
+import { cacheOrFetch } from '@/lib/redis-cache'
 
-export const getHomepageSettings = unstable_cache(
-  async () => {
+export async function getHomepageSettings() {
+  return cacheOrFetch('cms-homepage-settings', 60, async () => {
+
     const defaultSettings = {
       show_home_hero: true,
       hero_title: 'Advancing Global<br /><em>Scholarly Excellence</em>',
@@ -161,46 +162,38 @@ export const getHomepageSettings = unstable_cache(
       pinned_scholars: Array.isArray(dbSettings.pinned_scholars) ? dbSettings.pinned_scholars : defaultSettings.pinned_scholars,
       pinned_blogs: Array.isArray(dbSettings.pinned_blogs) ? dbSettings.pinned_blogs : defaultSettings.pinned_blogs
     }
-  },
-  ['cms-homepage-settings'],
-  { revalidate: 60, tags: ['cms-homepage-settings'] }
-)
+  }, ['cms-homepage-settings']);
+}
 
-export const getBlogs = unstable_cache(
-  async () => {
+export async function getBlogs() {
+  return cacheOrFetch('cms-blogs', 60, async () => {
     return await prisma.blogs.findMany({
       orderBy: { created_at: 'desc' },
       take: 500
     })
-  },
-  ['cms-blogs'],
-  { revalidate: 60, tags: ['cms-blogs'] }
-)
+  }, ['cms-blogs'])
+}
 
-export const getNews = unstable_cache(
-  async () => {
+export async function getNews() {
+  return cacheOrFetch('cms-news', 60, async () => {
     return await prisma.news.findMany({
       orderBy: { created_at: 'desc' },
       take: 500
     })
-  },
-  ['cms-news'],
-  { revalidate: 60, tags: ['cms-news'] }
-)
+  }, ['cms-news'])
+}
 
-export const getTestimonials = unstable_cache(
-  async () => {
+export async function getTestimonials() {
+  return cacheOrFetch('cms-testimonials', 60, async () => {
     return await prisma.testimonials.findMany({
       orderBy: { created_at: 'desc' },
       take: 500
     })
-  },
-  ['cms-testimonials'],
-  { revalidate: 60, tags: ['cms-testimonials'] }
-)
+  }, ['cms-testimonials'])
+}
 
-export const getFeaturedScholars = unstable_cache(
-  async () => {
+export async function getFeaturedScholars() {
+  return cacheOrFetch('cms-featured-scholars', 60, async () => {
     const scholars = await prisma.scholars.findMany({
       where: { 
         is_featured: true,
@@ -227,19 +220,13 @@ export const getFeaturedScholars = unstable_cache(
       take: 20
     });
 
-    // Randomize the scholars array
     const shuffled = scholars.sort(() => 0.5 - Math.random());
-    
-    // Return top 6 random scholars
     return shuffled.slice(0, 6);
-  },
-  ['cms-featured-scholars'],
-  { revalidate: 60, tags: ['cms-featured-scholars'] }
-)
+  }, ['cms-featured-scholars'])
+}
 
-
-export const getMagazines = unstable_cache(
-  async () => {
+export async function getMagazines() {
+  return cacheOrFetch('cms-magazines', 60, async () => {
     const magazines = await prisma.magazines.findMany({
       orderBy: { created_at: 'desc' },
       take: 100,
@@ -254,7 +241,6 @@ export const getMagazines = unstable_cache(
         type: 'magazine'
       }
     })
-  },
-  ['cms-magazines'],
-  { tags: ['cms-magazines'], revalidate: 60 }
-)
+  }, ['cms-magazines'])
+}
+

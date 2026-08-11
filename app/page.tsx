@@ -1,7 +1,8 @@
 import nextDynamic from 'next/dynamic'
 import HomeHero from "@/components/home/home-hero"
 
-export const dynamic = 'force-dynamic';
+// ISR Caching enabled via revalidate = 60
+
 
 // Lazy load below-the-fold components
 const FeaturedContent = nextDynamic(() => import("@/components/home/featured-content"))
