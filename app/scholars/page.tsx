@@ -44,7 +44,7 @@ export default async function ScholarsListingPage({
         select: { publications: { where: { status: 'published', deleted_at: null } } }
       }
     },
-    orderBy: { created_at: 'desc' }
+    orderBy: { is_featured: 'desc' }
   })
 
   const formattedScholars = rawScholars.map(s => ({
