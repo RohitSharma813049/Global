@@ -15,6 +15,9 @@ export default function GspFeaturedContent({ title, subtitle, description, autop
   const [filter, setFilter] = useState('All')
   const gridRef = useRef<HTMLDivElement>(null)
   const [activeDot, setActiveDot] = useState(0)
+  const isDragging = useRef(false)
+  const startX = useRef(0)
+  const scrollLeftStart = useRef(0)
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -103,6 +106,47 @@ export default function GspFeaturedContent({ title, subtitle, description, autop
         return pSub.includes(filter);
       });
 
+  useEffect(() => {
+    if (!autoplay || !filteredPublications || filteredPublications.length === 0) return;
+    const interval = setInterval(() => {
+      if (gridRef.current) {
+        const { scrollLeft, scrollWidth, clientWidth } = gridRef.current;
+        if (scrollLeft + clientWidth >= scrollWidth - 35) {
+          gridRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+          const prevScroll = gridRef.current.scrollLeft;
+          gridRef.current.scrollBy({ left: 320, behavior: 'smooth' });
+          setTimeout(() => {
+            if (gridRef.current && gridRef.current.scrollLeft === prevScroll && gridRef.current.scrollLeft > 0) {
+              gridRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+            }
+          }, 400);
+        }
+      }
+    }, 4500);
+
+    return () => clearInterval(interval);
+  }, [autoplay, filteredPublications]);
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!gridRef.current) return;
+    isDragging.current = true;
+    startX.current = e.pageX - gridRef.current.offsetLeft;
+    scrollLeftStart.current = gridRef.current.scrollLeft;
+  };
+
+  const handleMouseLeaveOrUp = () => {
+    isDragging.current = false;
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging.current || !gridRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - gridRef.current.offsetLeft;
+    const walk = (x - startX.current) * 1.5;
+    gridRef.current.scrollLeft = scrollLeftStart.current - walk;
+  };
+
   return (
     <section className="gsp-section gsp-section-container" id="featured">
       <div className="gsp-section-inner">
@@ -132,7 +176,15 @@ export default function GspFeaturedContent({ title, subtitle, description, autop
           ))}
         </div>
 
-        <div className="gsp-pub-grid" ref={gridRef} onScroll={handleScroll}>
+        <div 
+          className="gsp-pub-grid cursor-grab active:cursor-grabbing select-none" 
+          ref={gridRef} 
+          onScroll={handleScroll}
+          onMouseDown={handleMouseDown}
+          onMouseLeave={handleMouseLeaveOrUp}
+          onMouseUp={handleMouseLeaveOrUp}
+          onMouseMove={handleMouseMove}
+        >
           {filteredPublications.map((pub, idx) => (
             <Link href={pub.link} prefetch={false} className="gsp-pub-card" key={idx} style={{transitionDelay: `${idx * 100}ms`}}>
               <div className="gsp-pub-card-media">
@@ -144,12 +196,14 @@ export default function GspFeaturedContent({ title, subtitle, description, autop
                 <h3 className="gsp-pub-card-title">{pub.title}</h3>
                 <div className="gsp-pub-card-author">
                   <div className="gsp-pub-card-avatar">
-                    { }
                     <img src={pub.authorImg} alt={pub.author}/>
                   </div>
                   <span className="gsp-pub-card-author-name">{pub.author}</span>
                 </div>
-                <p className="gsp-pub-card-desc">{pub.desc}</p>
+                <div 
+                  className="gsp-pub-card-desc [&_p]:mb-1 [&_p:last-child]:mb-0"
+                  dangerouslySetInnerHTML={{ __html: pub.desc || '' }}
+                />
                 <div className="gsp-pub-card-footer">
                   <span className="gsp-pub-card-read">
                     Read Full Publication
@@ -164,7 +218,16 @@ export default function GspFeaturedContent({ title, subtitle, description, autop
 
         <div className="gsp-carousel-dots">
           {filteredPublications.map((_, idx) => (
-            <div key={idx} className={`gsp-cdot ${activeDot === idx ? 'on' : ''}`}></div>
+            <div 
+              key={idx} 
+              className={`gsp-cdot ${activeDot === idx ? 'on' : ''}`}
+              onClick={() => {
+                if (gridRef.current && gridRef.current.children[idx]) {
+                  gridRef.current.children[idx].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+                }
+              }}
+              style={{ cursor: 'pointer' }}
+            ></div>
           ))}
         </div>
       </div>

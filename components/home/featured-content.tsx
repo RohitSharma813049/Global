@@ -58,6 +58,10 @@ interface FeaturedContentProps {
 
 export default function FeaturedContent({ title, subtitle, autoplay = true, publications = featuredContent }: FeaturedContentProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [touchStart, setTouchStart] = useState<number | null>(null)
+  const [touchEnd, setTouchEnd] = useState<number | null>(null)
+  const [isMouseDown, setIsMouseDown] = useState(false)
+  const [dragStartX, setDragStartX] = useState(0)
   
   const displayItems = publications && publications.length > 0 ? publications : featuredContent;
 
@@ -67,6 +71,43 @@ export default function FeaturedContent({ title, subtitle, autoplay = true, publ
 
   const next = () => {
     setCurrentIndex((prev) => (prev === displayItems.length - 1 ? 0 : prev + 1))
+  }
+
+  const minSwipeDistance = 30
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null)
+    setTouchStart(e.targetTouches[0].clientX)
+  }
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX)
+  }
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return
+    const distance = touchStart - touchEnd
+    if (distance > minSwipeDistance) {
+      next()
+    } else if (distance < -minSwipeDistance) {
+      previous()
+    }
+  }
+
+  const onMouseDown = (e: React.MouseEvent) => {
+    setIsMouseDown(true)
+    setDragStartX(e.clientX)
+  }
+
+  const onMouseUp = (e: React.MouseEvent) => {
+    if (!isMouseDown) return
+    setIsMouseDown(false)
+    const distance = dragStartX - e.clientX
+    if (distance > minSwipeDistance) {
+      next()
+    } else if (distance < -minSwipeDistance) {
+      previous()
+    }
   }
 
   useEffect(() => {
@@ -129,9 +170,17 @@ export default function FeaturedContent({ title, subtitle, autoplay = true, publ
           </div>
         </div>
 
-        <div className="grid gap-10 lg:gap-12 lg:grid-cols-2 items-center">
+        <div 
+          className="grid gap-10 lg:gap-12 lg:grid-cols-2 items-center select-none cursor-grab active:cursor-grabbing"
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
+          onMouseDown={onMouseDown}
+          onMouseUp={onMouseUp}
+          onMouseLeave={() => setIsMouseDown(false)}
+        >
           {/* Image Container */}
-          <div className="group relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gray-100 shadow-xl transition-all duration-700 cursor-pointer">
+          <div className="group relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gray-100 shadow-xl transition-all duration-700">
             <Image
               src={current.image || '/placeholder-user.png'}
               alt={current.title}
@@ -160,9 +209,10 @@ export default function FeaturedContent({ title, subtitle, autoplay = true, publ
               <p className="mt-3 sm:mt-4 text-sm sm:text-base font-medium text-gray-500 uppercase tracking-wide">
                 By <span className="text-gray-900">{current.author}</span>
               </p>
-              <p className="mt-4 sm:mt-6 text-base sm:text-lg md:text-xl leading-relaxed text-gray-600 line-clamp-3 min-h-20 sm:min-h-24">
-                {current.description}
-              </p>
+              <div 
+                className="mt-4 sm:mt-6 text-base sm:text-lg md:text-xl leading-relaxed text-gray-600 line-clamp-3 min-h-20 sm:min-h-24 [&_p]:mb-1 [&_p:last-child]:mb-0"
+                dangerouslySetInnerHTML={{ __html: current.description || '' }}
+              />
               
               <div className="mt-8 sm:mt-10">
                 <Button asChild className="h-10 sm:h-12 px-6 sm:px-8 w-full sm:w-auto bg-indigo-50 text-indigo-700 hover:bg-indigo-600 hover:text-white font-semibold rounded-lg sm:rounded-xl transition-all duration-300">

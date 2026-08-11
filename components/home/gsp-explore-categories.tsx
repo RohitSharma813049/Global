@@ -12,6 +12,9 @@ interface GspExploreCategoriesProps {
 export default function GspExploreCategories({ title, subtitle, categories }: GspExploreCategoriesProps) {
   const gridRef = useRef<HTMLDivElement>(null)
   const [activeDot, setActiveDot] = useState(0)
+  const isDragging = useRef(false)
+  const startX = useRef(0)
+  const scrollLeftStart = useRef(0)
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -36,10 +39,17 @@ export default function GspExploreCategories({ title, subtitle, categories }: Gs
     const interval = setInterval(() => {
       if (gridRef.current) {
         const { scrollLeft, scrollWidth, clientWidth } = gridRef.current;
-        if (scrollLeft + clientWidth >= scrollWidth - 10) {
+        // Check if reached or close to end (within 35px padding offset)
+        if (scrollLeft + clientWidth >= scrollWidth - 35) {
           gridRef.current.scrollTo({ left: 0, behavior: 'smooth' });
         } else {
+          const prevScroll = gridRef.current.scrollLeft;
           gridRef.current.scrollBy({ left: 300, behavior: 'smooth' });
+          setTimeout(() => {
+            if (gridRef.current && gridRef.current.scrollLeft === prevScroll && gridRef.current.scrollLeft > 0) {
+              gridRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+            }
+          }, 400);
         }
       }
     }, 4500);
@@ -53,11 +63,29 @@ export default function GspExploreCategories({ title, subtitle, categories }: Gs
     const cards = gridRef.current.children;
     if (cards.length === 0) return;
     
-    // Fallback to gap calculation if necessary
     const cardWidth = (cards[0] as HTMLElement).offsetWidth + 14; 
     const idx = Math.round(scrollLeft / cardWidth);
     const maxIdx = Math.max(0, (categories?.length || 1) - 1);
     setActiveDot(Math.min(idx, maxIdx));
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!gridRef.current) return;
+    isDragging.current = true;
+    startX.current = e.pageX - gridRef.current.offsetLeft;
+    scrollLeftStart.current = gridRef.current.scrollLeft;
+  };
+
+  const handleMouseLeaveOrUp = () => {
+    isDragging.current = false;
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging.current || !gridRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - gridRef.current.offsetLeft;
+    const walk = (x - startX.current) * 1.5;
+    gridRef.current.scrollLeft = scrollLeftStart.current - walk;
   };
 
   return (
@@ -77,7 +105,15 @@ export default function GspExploreCategories({ title, subtitle, categories }: Gs
           </Link>
         </div>
 
-        <div className="gsp-cat-grid" ref={gridRef} onScroll={handleScroll}>
+        <div 
+          className="gsp-cat-grid cursor-grab active:cursor-grabbing select-none" 
+          ref={gridRef} 
+          onScroll={handleScroll}
+          onMouseDown={handleMouseDown}
+          onMouseLeave={handleMouseLeaveOrUp}
+          onMouseUp={handleMouseLeaveOrUp}
+          onMouseMove={handleMouseMove}
+        >
           {(categories || []).map((cat, index) => (
             <Link key={index} href={cat.link} className="gsp-cat-card gsp-reveal" style={{transitionDelay: `${index * 100}ms`}}>
               <div className="gsp-cat-card-img" style={{backgroundImage: `url('${cat.image}')`}}></div>
@@ -95,7 +131,16 @@ export default function GspExploreCategories({ title, subtitle, categories }: Gs
 
         <div className="gsp-carousel-dots">
           {Array.from({ length: categories?.length || 0 }).map((_, idx) => (
-            <div key={idx} className={`gsp-cdot ${activeDot === idx ? 'on' : ''}`}></div>
+            <div 
+              key={idx} 
+              className={`gsp-cdot ${activeDot === idx ? 'on' : ''}`}
+              onClick={() => {
+                if (gridRef.current && gridRef.current.children[idx]) {
+                  gridRef.current.children[idx].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+                }
+              }}
+              style={{ cursor: 'pointer' }}
+            ></div>
           ))}
         </div>
       </div>

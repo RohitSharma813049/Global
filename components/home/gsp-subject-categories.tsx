@@ -238,10 +238,10 @@ export default function GSPSubjectCategories({ title, subtitle, categories, auto
       trackRef.current.style.transition = '';
     }
     
-    if (touchDeltaRef.current > 50 && index > 0) {
-      setIndex(index - 1);
-    } else if (touchDeltaRef.current < -50 && index < maxIndex) {
-      setIndex(index + 1);
+    if (touchDeltaRef.current > 50) {
+      setIndex(index === 0 ? maxIndex : index - 1);
+    } else if (touchDeltaRef.current < -50) {
+      setIndex(index >= maxIndex ? 0 : index + 1);
     } else {
       updateCarousel(index); // snap back
     }
@@ -279,15 +279,15 @@ export default function GSPSubjectCategories({ title, subtitle, categories, auto
         </div>
         <div className="sub-carousel-controls">
           <button 
-            className={`sub-car-btn ${index === 0 ? 'disabled' : ''}`} 
-            onClick={() => setIndex(prev => Math.max(0, prev - 1))}
+            className="sub-car-btn" 
+            onClick={() => setIndex(prev => (prev === 0 ? maxIndex : prev - 1))}
             aria-label="Previous categories"
           >
             <svg width="17" height="17" viewBox="0 0 17 17" fill="none"><path d="M10.5 13L6 8.5L10.5 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>
           </button>
           <button 
-            className={`sub-car-btn ${index >= maxIndex ? 'disabled' : ''}`} 
-            onClick={() => setIndex(prev => Math.min(maxIndex, prev + 1))}
+            className="sub-car-btn" 
+            onClick={() => setIndex(prev => (prev >= maxIndex ? 0 : prev + 1))}
             aria-label="Next categories"
           >
             <svg width="17" height="17" viewBox="0 0 17 17" fill="none"><path d="M6.5 4L11 8.5L6.5 13" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>

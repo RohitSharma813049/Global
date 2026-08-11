@@ -45,7 +45,10 @@ export default function FaqSection({
                   {faq.question}
                 </AccordionTrigger>
                 <AccordionContent className="text-gray-600 text-base leading-relaxed">
-                  {faq.answer}
+                  <div 
+                    className="prose max-w-none text-gray-600 text-base leading-relaxed [&_p]:mb-2 [&_p:last-child]:mb-0"
+                    dangerouslySetInnerHTML={{ __html: faq.answer || '' }}
+                  />
                 </AccordionContent>
               </AccordionItem>
             ))}

@@ -76,14 +76,14 @@ export default function GspRecentBlogs({ items, autoplay = true }: { items: Cont
   }, [autoplay, maxIndex]);
 
   const handlePrev = () => {
-    if (index > 0) setIndex(index - 1);
+    setIndex((prev) => (prev === 0 ? maxIndex : prev - 1));
   };
 
   const handleNext = () => {
-    if (index < maxIndex) setIndex(index + 1);
+    setIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
   };
 
-  // Touch handlers
+  // Touch and Mouse handlers
   const [startX, setStartX] = useState(0);
   const [deltaX, setDeltaX] = useState(0);
   const [dragging, setDragging] = useState(false);
@@ -100,8 +100,32 @@ export default function GspRecentBlogs({ items, autoplay = true }: { items: Cont
 
   const onTouchEnd = () => {
     setDragging(false);
-    if (deltaX > 50 && index > 0) setIndex(index - 1);
-    else if (deltaX < -50 && index < maxIndex) setIndex(index + 1);
+    if (deltaX > 40) {
+      setIndex(index === 0 ? maxIndex : index - 1);
+    } else if (deltaX < -40) {
+      setIndex(index >= maxIndex ? 0 : index + 1);
+    }
+    setDeltaX(0);
+  };
+
+  const onMouseDown = (e: React.MouseEvent) => {
+    setStartX(e.clientX);
+    setDragging(true);
+  };
+
+  const onMouseMove = (e: React.MouseEvent) => {
+    if (!dragging) return;
+    setDeltaX(e.clientX - startX);
+  };
+
+  const onMouseUpOrLeave = () => {
+    if (!dragging) return;
+    setDragging(false);
+    if (deltaX > 40) {
+      setIndex(index === 0 ? maxIndex : index - 1);
+    } else if (deltaX < -40) {
+      setIndex(index >= maxIndex ? 0 : index + 1);
+    }
     setDeltaX(0);
   };
 
@@ -123,17 +147,26 @@ export default function GspRecentBlogs({ items, autoplay = true }: { items: Cont
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
           </Link>
           <div className="gsp-carousel-controls">
-            <button className={`gsp-car-btn ${index === 0 ? 'disabled' : ''}`} onClick={handlePrev} aria-label="Previous posts">
+            <button className="gsp-car-btn" onClick={handlePrev} aria-label="Previous posts">
               <svg width="17" height="17" viewBox="0 0 17 17" fill="none"><path d="M10.5 13L6 8.5L10.5 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>
             </button>
-            <button className={`gsp-car-btn ${index >= maxIndex ? 'disabled' : ''}`} onClick={handleNext} aria-label="Next posts">
+            <button className="gsp-car-btn" onClick={handleNext} aria-label="Next posts">
               <svg width="17" height="17" viewBox="0 0 17 17" fill="none"><path d="M6.5 4L11 8.5L6.5 13" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>
             </button>
           </div>
         </div>
       </div>
 
-      <div className="gsp-carousel-viewport" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
+      <div 
+        className="gsp-carousel-viewport select-none cursor-grab active:cursor-grabbing" 
+        onTouchStart={onTouchStart} 
+        onTouchMove={onTouchMove} 
+        onTouchEnd={onTouchEnd}
+        onMouseDown={onMouseDown}
+        onMouseMove={onMouseMove}
+        onMouseUp={onMouseUpOrLeave}
+        onMouseLeave={onMouseUpOrLeave}
+      >
         <div 
           className="gsp-carousel-track" 
           ref={trackRef}

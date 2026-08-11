@@ -253,10 +253,10 @@ export default function GSPFeaturedScholars({ title, subtitle, scholars = [], au
       trackRef.current.style.transition = '';
     }
     
-    if (touchDeltaRef.current > 50 && index > 0) {
-      setIndex(index - 1);
-    } else if (touchDeltaRef.current < -50 && index < maxIndex) {
-      setIndex(index + 1);
+    if (touchDeltaRef.current > 40) {
+      setIndex(index === 0 ? maxIndex : index - 1);
+    } else if (touchDeltaRef.current < -40) {
+      setIndex(index >= maxIndex ? 0 : index + 1);
     } else {
       updateCarousel(index); // snap back
     }
@@ -265,10 +265,10 @@ export default function GSPFeaturedScholars({ title, subtitle, scholars = [], au
 
   const handleWheel = (e: React.WheelEvent) => {
     if (Math.abs(e.deltaX) > 15) {
-      if (e.deltaX > 0 && index < maxIndex) {
-        setIndex(prev => Math.min(maxIndex, prev + 1));
-      } else if (e.deltaX < 0 && index > 0) {
-        setIndex(prev => Math.max(0, prev - 1));
+      if (e.deltaX > 0) {
+        setIndex(prev => (prev >= maxIndex ? 0 : prev + 1));
+      } else if (e.deltaX < 0) {
+        setIndex(prev => (prev === 0 ? maxIndex : prev - 1));
       }
     }
   };
@@ -297,18 +297,17 @@ export default function GSPFeaturedScholars({ title, subtitle, scholars = [], au
   };
 
   const handleMouseUp = () => {
-    if (!isDraggingRef.current) return;
     isDraggingRef.current = false;
     if (trackRef.current) {
       trackRef.current.style.transition = '';
     }
 
-    if (touchDeltaRef.current > 40 && index > 0) {
-      setIndex(index - 1);
-    } else if (touchDeltaRef.current < -40 && index < maxIndex) {
-      setIndex(index + 1);
+    if (touchDeltaRef.current > 40) {
+      setIndex(index === 0 ? maxIndex : index - 1);
+    } else if (touchDeltaRef.current < -40) {
+      setIndex(index >= maxIndex ? 0 : index + 1);
     } else {
-      updateCarousel(index);
+      updateCarousel(index); // snap back
     }
     touchDeltaRef.current = 0;
   };
@@ -344,15 +343,15 @@ export default function GSPFeaturedScholars({ title, subtitle, scholars = [], au
         </div>
         <div className="scholars-carousel-controls">
           <button 
-            className={`scholars-car-btn ${index === 0 ? 'disabled' : ''}`} 
-            onClick={() => setIndex(prev => Math.max(0, prev - 1))}
+            className="scholars-car-btn" 
+            onClick={() => setIndex(prev => (prev === 0 ? maxIndex : prev - 1))}
             aria-label="Previous scholars"
           >
             <svg width="17" height="17" viewBox="0 0 17 17" fill="none"><path d="M10.5 13L6 8.5L10.5 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>
           </button>
           <button 
-            className={`scholars-car-btn ${index >= maxIndex ? 'disabled' : ''}`} 
-            onClick={() => setIndex(prev => Math.min(maxIndex, prev + 1))}
+            className="scholars-car-btn" 
+            onClick={() => setIndex(prev => (prev >= maxIndex ? 0 : prev + 1))}
             aria-label="Next scholars"
           >
             <svg width="17" height="17" viewBox="0 0 17 17" fill="none"><path d="M6.5 4L11 8.5L6.5 13" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>

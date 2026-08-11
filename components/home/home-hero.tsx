@@ -102,6 +102,46 @@ export default function HomeHero({
 
   const d = slides[cur] || slides[0]
 
+  const [heroTouchStart, setHeroTouchStart] = useState<number | null>(null);
+  const [heroTouchEnd, setHeroTouchEnd] = useState<number | null>(null);
+  const [heroMouseDown, setHeroMouseDown] = useState(false);
+  const [heroDragStartX, setHeroDragStartX] = useState(0);
+
+  const handleHeroTouchStart = (e: React.TouchEvent) => {
+    setHeroTouchEnd(null);
+    setHeroTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleHeroTouchMove = (e: React.TouchEvent) => {
+    setHeroTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleHeroTouchEnd = () => {
+    if (!heroTouchStart || !heroTouchEnd) return;
+    const distance = heroTouchStart - heroTouchEnd;
+    if (distance > 30) {
+      setCur((prev) => (prev + 1) % slides.length);
+    } else if (distance < -30) {
+      setCur((prev) => (prev - 1 + slides.length) % slides.length);
+    }
+  };
+
+  const handleHeroMouseDown = (e: React.MouseEvent) => {
+    setHeroMouseDown(true);
+    setHeroDragStartX(e.clientX);
+  };
+
+  const handleHeroMouseUp = (e: React.MouseEvent) => {
+    if (!heroMouseDown) return;
+    setHeroMouseDown(false);
+    const distance = heroDragStartX - e.clientX;
+    if (distance > 30) {
+      setCur((prev) => (prev + 1) % slides.length);
+    } else if (distance < -30) {
+      setCur((prev) => (prev - 1 + slides.length) % slides.length);
+    }
+  };
+
   const defaultTicker = [
     { prefix: 'New', text: 'ESG & Sustainable Finance — Dr. Priya Nair-Kapoor' },
     { prefix: 'Featured', text: 'GCC Economic Diversification — Prof. Khalid Al-Mansouri' },
@@ -202,7 +242,15 @@ export default function HomeHero({
           </div>
         </div>
 
-        <div className="hero-right">
+        <div 
+          className="hero-right select-none cursor-grab active:cursor-grabbing"
+          onTouchStart={handleHeroTouchStart}
+          onTouchMove={handleHeroTouchMove}
+          onTouchEnd={handleHeroTouchEnd}
+          onMouseDown={handleHeroMouseDown}
+          onMouseUp={handleHeroMouseUp}
+          onMouseLeave={() => setHeroMouseDown(false)}
+        >
           <div className="photo-carousel">
             {slides.map((s, i) => (
               <div 
