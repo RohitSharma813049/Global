@@ -1,20 +1,22 @@
-import dynamic from 'next/dynamic'
+import nextDynamic from 'next/dynamic'
 import HomeHero from "@/components/home/home-hero"
 
+export const dynamic = 'force-dynamic';
+
 // Lazy load below-the-fold components
-const FeaturedContent = dynamic(() => import("@/components/home/featured-content"))
-const ExploreCategories = dynamic(() => import("@/components/home/explore-categories"))
-const GspFeaturedContent = dynamic(() => import("@/components/home/gsp-featured-content"))
-const GspExploreCategories = dynamic(() => import("@/components/home/gsp-explore-categories"))
-const GspSubjectCategories = dynamic(() => import("@/components/home/gsp-subject-categories"))
-const GspFeaturedScholars = dynamic(() => import("@/components/scholars/gsp-featured-scholars"))
-const HowItWorks = dynamic(() => import("@/components/shared/how-it-works"))
-const FeaturedScholars = dynamic(() => import("@/components/scholars/featured-scholars"))
-const Testimonials = dynamic(() => import("@/components/shared/testimonials"))
-const Footer = dynamic(() => import("@/components/layout/footer"))
-const RecentNewsBlogs = dynamic(() => import("@/components/home/gsp-recent-blogs"))
-const FaqSection = dynamic(() => import("@/components/shared/faq-section"))
-const CtaBanner = dynamic(() => import("@/components/shared/cta-banner"))
+const FeaturedContent = nextDynamic(() => import("@/components/home/featured-content"))
+const ExploreCategories = nextDynamic(() => import("@/components/home/explore-categories"))
+const GspFeaturedContent = nextDynamic(() => import("@/components/home/gsp-featured-content"))
+const GspExploreCategories = nextDynamic(() => import("@/components/home/gsp-explore-categories"))
+const GspSubjectCategories = nextDynamic(() => import("@/components/home/gsp-subject-categories"))
+const GspFeaturedScholars = nextDynamic(() => import("@/components/scholars/gsp-featured-scholars"))
+const HowItWorks = nextDynamic(() => import("@/components/shared/how-it-works"))
+const FeaturedScholars = nextDynamic(() => import("@/components/scholars/featured-scholars"))
+const Testimonials = nextDynamic(() => import("@/components/shared/testimonials"))
+const Footer = nextDynamic(() => import("@/components/layout/footer"))
+const RecentNewsBlogs = nextDynamic(() => import("@/components/home/gsp-recent-blogs"))
+const FaqSection = nextDynamic(() => import("@/components/shared/faq-section"))
+const CtaBanner = nextDynamic(() => import("@/components/shared/cta-banner"))
 import { getHomepageSettings, getBlogs, getNews, getTestimonials, getFeaturedScholars, getMagazines } from '@/app/queries/cms'
 import { getPlatformStats } from '@/app/actions/stats'
 
