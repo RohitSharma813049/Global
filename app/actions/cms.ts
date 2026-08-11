@@ -177,7 +177,7 @@ export async function getBlogs() {
   
   const blogs = await prisma.blogs.findMany({
     orderBy: { created_at: 'desc' },
-    take: 500
+    take: 50
   })
   
   return blogs.map(b => ({
@@ -261,7 +261,7 @@ export async function getNews() {
   
   const news = await prisma.news.findMany({
     orderBy: { created_at: 'desc' },
-    take: 500
+    take: 50
   })
   
   return news.map(n => ({
@@ -345,7 +345,7 @@ export async function getTestimonials() {
 
   const test = await prisma.testimonials.findMany({
     orderBy: { created_at: 'desc' },
-    take: 500
+    take: 50
   })
 
   return test.map(t => ({
@@ -418,7 +418,7 @@ export async function getAllScholarsForAdmin() {
       _count: { select: { publications: true } }
     },
     orderBy: { total_views: 'desc' },
-    take: 500
+    take: 50
   })
 }
 

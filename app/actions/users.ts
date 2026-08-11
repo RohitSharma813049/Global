@@ -29,10 +29,76 @@ export async function getAllUsers() {
     email: u.email,
     created_at: u.created_at,
     role: u.user_metadata?.role || 'user',
-    name: u.user_metadata?.name || 'Unknown',
+    name: u.user_metadata?.name || u.email?.split('@')[0] || 'Unknown',
     banned_until: u.banned_until,
     is_blocked: !!u.banned_until && new Date(u.banned_until) > new Date()
   }))
+}
+
+export async function getUsersPaginated(page: number = 1, perPage: number = 10, search: string = '') {
+  await checkAdmin()
+  
+  if (search.trim()) {
+    const { data: usersData, error } = await supabaseAdmin.auth.admin.listUsers({
+      page: 1,
+      perPage: 1000,
+    })
+    if (error) throw new Error(error.message)
+    
+    const query = search.trim().toLowerCase()
+    const allFiltered = usersData.users.filter(u => {
+      const name = u.user_metadata?.name || u.email?.split('@')[0] || ''
+      const email = u.email || ''
+      return name.toLowerCase().includes(query) || email.toLowerCase().includes(query)
+    })
+
+    const total = allFiltered.length
+    const totalPages = Math.ceil(total / perPage) || 1
+    const startIndex = (page - 1) * perPage
+    const paginatedUsers = allFiltered.slice(startIndex, startIndex + perPage)
+
+    return {
+      users: paginatedUsers.map(u => ({
+        id: u.id,
+        email: u.email,
+        created_at: u.created_at,
+        role: u.user_metadata?.role || 'user',
+        name: u.user_metadata?.name || u.email?.split('@')[0] || 'Unknown',
+        banned_until: u.banned_until,
+        is_blocked: !!u.banned_until && new Date(u.banned_until) > new Date()
+      })),
+      total,
+      totalPages,
+      page
+    }
+  }
+
+  const { data: usersData, error } = await supabaseAdmin.auth.admin.listUsers({
+    page,
+    perPage
+  })
+  
+  if (error) throw new Error(error.message)
+
+  const users = usersData.users.map(u => ({
+    id: u.id,
+    email: u.email,
+    created_at: u.created_at,
+    role: u.user_metadata?.role || 'user',
+    name: u.user_metadata?.name || u.email?.split('@')[0] || 'Unknown',
+    banned_until: u.banned_until,
+    is_blocked: !!u.banned_until && new Date(u.banned_until) > new Date()
+  }))
+
+  const total = usersData.total ?? users.length
+  const totalPages = Math.ceil(total / perPage) || 1
+
+  return {
+    users,
+    total,
+    totalPages,
+    page
+  }
 }
 
 export async function blockUser(userId: string, isBlocked: boolean) {
@@ -58,13 +124,16 @@ export async function updateUserRole(userId: string, newRole: string) {
   } else if (session.user.role !== 'super_admin') {
     throw new Error('Unauthorized.')
   }
-  
+
+  const { data: userData } = await supabaseAdmin.auth.admin.getUserById(userId)
+  const existingMeta = userData?.user?.user_metadata || {}
+
   const { data, error } = await supabaseAdmin.auth.admin.updateUserById(userId, {
-    user_metadata: { role: newRole }
+    user_metadata: { ...existingMeta, role: newRole }
   })
   
   // Update the profiles table as well if it exists
-  await supabaseAdmin.from('profiles').update({ role: newRole }).eq('id', userId)
+  await supabaseAdmin.from('profiles').upsert({ id: userId, role: newRole })
   
   if (error) throw new Error(error.message)
 
@@ -79,6 +148,7 @@ export async function updateUserRole(userId: string, newRole: string) {
     if (!existingScholar) {
       await supabaseAdmin.from('scholars').insert({
         user_id: userId,
+        name: existingMeta.name || userData?.user?.email?.split('@')[0] || '',
         verified: true
       })
     }
@@ -88,10 +158,21 @@ export async function updateUserRole(userId: string, newRole: string) {
   return data
 }
 
-export async function createAdminUser(email: string, name: string, password?: string) {
+export async function createUserAccount(userDataParams: {
+  email: string
+  name: string
+  password?: string
+  role: string
+}) {
   const session = await checkAdmin()
-  if (session.user.role !== 'super_admin') {
-    throw new Error('Only Super Admins can create new administrators.')
+  const { email, name, password, role } = userDataParams
+
+  if (session.user.role === 'admin') {
+    if (role === 'admin' || role === 'super_admin') {
+      throw new Error('Unauthorized. Admins cannot create admin or super_admin accounts.')
+    }
+  } else if (session.user.role !== 'super_admin') {
+    throw new Error('Unauthorized.')
   }
 
   // Use provided password or generate a random secure one
@@ -101,21 +182,43 @@ export async function createAdminUser(email: string, name: string, password?: st
     email,
     password: finalPassword,
     email_confirm: true,
-    user_metadata: { name, role: 'admin' }
+    user_metadata: { name, role }
   })
 
   if (error) throw new Error(error.message)
+  if (!data.user) throw new Error('Failed to create user')
+
+  const userId = data.user.id
 
   // Add to profiles
-  if (data.user) {
-    await supabaseAdmin.from('profiles').insert({
-      id: data.user.id,
-      role: 'admin'
-    })
+  await supabaseAdmin.from('profiles').upsert({
+    id: userId,
+    role: role
+  })
+
+  // If scholar, create scholars entry
+  if (role === 'scholar') {
+    const { data: existingScholar } = await supabaseAdmin
+      .from('scholars')
+      .select('id')
+      .eq('user_id', userId)
+      .single()
+
+    if (!existingScholar) {
+      await supabaseAdmin.from('scholars').insert({
+        user_id: userId,
+        name: name,
+        verified: true
+      })
+    }
   }
 
   revalidatePath('/dashboard/admin/users')
   return data.user
+}
+
+export async function createAdminUser(email: string, name: string, password?: string) {
+  return createUserAccount({ email, name, password, role: 'admin' })
 }
 
 export async function deleteUser(userId: string, targetRole: string) {
@@ -148,15 +251,29 @@ export async function deleteUser(userId: string, targetRole: string) {
 }
 
 export async function updateUserDetails(userId: string, name: string, email: string) {
-  const session = await checkAdmin()
+  await checkAdmin()
   
+  // Fetch existing user metadata to preserve fields like role, avatar_url, etc.
+  const { data: userData, error: getUserError } = await supabaseAdmin.auth.admin.getUserById(userId)
+  if (getUserError || !userData?.user) {
+    throw new Error('User not found: ' + (getUserError?.message || ''))
+  }
+
+  const existingMeta = userData.user.user_metadata || {}
+
   const { data, error } = await supabaseAdmin.auth.admin.updateUserById(userId, {
     email: email,
-    user_metadata: { name: name }
+    user_metadata: { ...existingMeta, name: name }
   })
   
   if (error) {
     throw new Error('Failed to update user: ' + error.message)
+  }
+
+  // Also sync scholar profile if it exists
+  const { data: scholarRecord } = await supabaseAdmin.from('scholars').select('id').eq('user_id', userId).single()
+  if (scholarRecord) {
+    await supabaseAdmin.from('scholars').update({ name: name }).eq('user_id', userId)
   }
   
   revalidatePath('/dashboard/admin/users')

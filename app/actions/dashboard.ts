@@ -12,12 +12,10 @@ export async function getAdminStats() {
     throw new Error('Unauthorized')
   }
 
-  const { data: users, error } = await supabaseAdmin.auth.admin.listUsers({ page: 1, perPage: 1000 })
-  const totalReaders = users?.users?.filter((u: any) => !u.user_metadata?.role || u.user_metadata?.role === 'reader' || u.user_metadata?.role === 'user').length || 0
-
-  const [totalScholars, pendingPublications] = await Promise.all([
-    prisma.scholars.count(),
-    prisma.publications.count({ where: { status: 'pending' } })
+  const [totalScholars, totalReaders, pendingPublications] = await Promise.all([
+    prisma.scholars.count({ where: { deleted_at: null } }),
+    prisma.profiles.count({ where: { role: { in: ['reader', 'user'] } } }),
+    prisma.publications.count({ where: { status: 'pending', deleted_at: null } })
   ])
 
   return { totalScholars, totalReaders, pendingPublications }

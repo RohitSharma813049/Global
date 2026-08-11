@@ -45,7 +45,8 @@ export default async function AdminScholarsPage({
     },
     orderBy: {
       is_featured: 'desc'
-    } // Ordered by featured first to easily see who's on homepage
+    },
+    take: 50
   })
 
   // We filter by name in JS if we couldn't easily do it in Prisma JSON filter

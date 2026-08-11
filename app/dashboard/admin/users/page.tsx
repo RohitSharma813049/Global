@@ -1,19 +1,19 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { getAllUsers, blockUser, updateUserRole, createAdminUser, deleteUser, updateUserDetails } from '@/app/actions/users'
+import { getUsersPaginated, blockUser, updateUserRole, createUserAccount, deleteUser, updateUserDetails } from '@/app/actions/users'
 import toast from 'react-hot-toast'
 import { useSession } from 'next-auth/react'
-import { MoreVertical, Ban, Unlock, Trash2, Edit, Search } from 'lucide-react'
+import { MoreVertical, Ban, Unlock, Trash2, Edit, Search, UserPlus } from 'lucide-react'
 import Pagination from '@/components/shared/pagination'
 
 export default function AdminUsersPage() {
   const { data: session } = useSession()
   const [users, setUsers] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
-  const [showAddAdmin, setShowAddAdmin] = useState(false)
-  const [newAdmin, setNewAdmin] = useState({ name: '', email: '', password: '' })
-  const [addingAdmin, setAddingAdmin] = useState(false)
+  const [showAddUserModal, setShowAddUserModal] = useState(false)
+  const [newUser, setNewUser] = useState({ name: '', email: '', password: '', role: 'user' })
+  const [addingUser, setAddingUser] = useState(false)
   const [openMenuId, setOpenMenuId] = useState<string | null>(null)
   
   // Edit User State
@@ -21,22 +21,31 @@ export default function AdminUsersPage() {
   const [editingUser, setEditingUser] = useState<{ id: string, name: string, email: string } | null>(null)
   const [savingUser, setSavingUser] = useState(false)
 
-  // Search State
+  // Search State with Debounce
   const [searchQuery, setSearchQuery] = useState('')
+  const [debouncedSearch, setDebouncedSearch] = useState('')
 
   // Pagination State
   const [currentPage, setCurrentPage] = useState(1)
+  const [totalItems, setTotalItems] = useState(0)
+  const [totalPages, setTotalPages] = useState(1)
   const itemsPerPage = 10
-  const filteredUsers = users.filter(user => 
-    user.name?.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    user.email?.toLowerCase().includes(searchQuery.toLowerCase())
-  )
-  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage)
-  const paginatedUsers = filteredUsers.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+
+  // Debounce search input by 300ms to optimize network calls
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchQuery)
+      setCurrentPage(1)
+    }, 300)
+    return () => clearTimeout(timer)
+  }, [searchQuery])
 
   useEffect(() => {
-    function handleClickOutside() {
-      setOpenMenuId(null)
+    function handleClickOutside(event: MouseEvent) {
+      const target = event.target as HTMLElement
+      if (!target.closest('.user-action-menu')) {
+        setOpenMenuId(null)
+      }
     }
     document.addEventListener("mousedown", handleClickOutside)
     return () => document.removeEventListener("mousedown", handleClickOutside)
@@ -45,10 +54,12 @@ export default function AdminUsersPage() {
   const fetchUsers = async () => {
     try {
       setLoading(true)
-      const data = await getAllUsers()
-      setUsers(data)
+      const data = await getUsersPaginated(currentPage, itemsPerPage, debouncedSearch)
+      setUsers(data.users)
+      setTotalItems(data.total)
+      setTotalPages(data.totalPages)
     } catch (e: any) {
-      toast.error(e.message)
+      toast.error(e.message || 'Failed to fetch users')
     } finally {
       setLoading(false)
     }
@@ -56,7 +67,7 @@ export default function AdminUsersPage() {
 
   useEffect(() => {
     fetchUsers()
-  }, [])
+  }, [currentPage, debouncedSearch])
 
   const handleToggleBlock = async (userId: string, currentlyBlocked: boolean) => {
     if (!confirm(`Are you sure you want to ${currentlyBlocked ? 'unblock' : 'block'} this user?`)) return
@@ -94,23 +105,28 @@ export default function AdminUsersPage() {
   const isAdmin = session?.user?.role === 'admin'
   const canEditRoles = isSuperAdmin || isAdmin
 
-  const handleAddAdmin = async (e: React.FormEvent) => {
+  const handleAddUserSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!newAdmin.name || !newAdmin.email || !newAdmin.password) {
+    if (!newUser.name || !newUser.email || !newUser.password) {
       toast.error('Please provide name, email, and password')
       return
     }
-    setAddingAdmin(true)
+    setAddingUser(true)
     try {
-      await createAdminUser(newAdmin.email, newAdmin.name, newAdmin.password)
-      toast.success('Admin user created successfully!')
-      setShowAddAdmin(false)
-      setNewAdmin({ name: '', email: '', password: '' })
+      await createUserAccount({
+        email: newUser.email,
+        name: newUser.name,
+        password: newUser.password,
+        role: newUser.role
+      })
+      toast.success(`${newUser.role.charAt(0).toUpperCase() + newUser.role.slice(1)} account created successfully!`)
+      setShowAddUserModal(false)
+      setNewUser({ name: '', email: '', password: '', role: 'user' })
       fetchUsers()
     } catch (e: any) {
-      toast.error(e.message)
+      toast.error(e.message || 'Failed to create user')
     } finally {
-      setAddingAdmin(false)
+      setAddingUser(false)
     }
   }
 
@@ -138,12 +154,12 @@ export default function AdminUsersPage() {
           <h1 className="text-2xl font-bold">User Management</h1>
           <p className="text-(--color-gsp-text-secondary) text-sm mt-1">Manage user access, block accounts, and assign roles.</p>
         </div>
-        {isSuperAdmin && (
+        {canEditRoles && (
           <button
-            onClick={() => setShowAddAdmin(true)}
-            className="bg-(--color-gsp-text-inverse) text-white px-4 py-2 rounded-(--radius-lg) hover:bg-indigo-700 font-medium text-sm transition-colors"
+            onClick={() => setShowAddUserModal(true)}
+            className="bg-(--color-gsp-text-inverse) text-white px-4 py-2 rounded-(--radius-lg) hover:bg-indigo-700 font-medium text-sm transition-colors flex items-center gap-2 cursor-pointer"
           >
-            + Add Admin
+            <UserPlus className="w-4 h-4" /> Add User / Scholar
           </button>
         )}
       </div>
@@ -158,67 +174,78 @@ export default function AdminUsersPage() {
             className="block w-full pl-10 pr-3 py-2 border border-(--color-gsp-border-default) rounded-md leading-5 bg-(--color-gsp-surface-muted) placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             placeholder="Search users by name or email..."
             value={searchQuery}
-            onChange={(e) => {
-              setSearchQuery(e.target.value)
-              setCurrentPage(1)
-            }}
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
       </div>
 
-      {showAddAdmin && (
+      {showAddUserModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-(--color-gsp-surface-muted) rounded-(--radius-xl) shadow-xl max-w-md w-full p-6">
-            <h2 className="text-xl font-bold mb-4">Add New Administrator</h2>
-            <form onSubmit={handleAddAdmin} className="space-y-4">
+            <h2 className="text-xl font-bold mb-4 text-(--color-gsp-text-primary)">Add New User / Scholar</h2>
+            <form onSubmit={handleAddUserSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Name</label>
-                <input aria-label="Input field" 
+                <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Full Name</label>
+                <input 
                   type="text" 
-                  value={newAdmin.name} 
-                  onChange={(e) => setNewAdmin({ ...newAdmin, name: e.target.value })}
-                  className="w-full border border-(--color-gsp-border-default) rounded-(--radius-lg) p-2"
-                  placeholder="Admin Name"
+                  value={newUser.name} 
+                  onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
+                  className="w-full border border-(--color-gsp-border-default) rounded-(--radius-lg) p-2 text-sm bg-white"
+                  placeholder="Enter full name"
                   required 
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Email</label>
-                <input aria-label="Input field" 
+                <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Email Address</label>
+                <input 
                   type="email" 
-                  value={newAdmin.email} 
-                  onChange={(e) => setNewAdmin({ ...newAdmin, email: e.target.value })}
-                  className="w-full border border-(--color-gsp-border-default) rounded-(--radius-lg) p-2"
-                  placeholder="admin@example.com"
+                  value={newUser.email} 
+                  onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+                  className="w-full border border-(--color-gsp-border-default) rounded-(--radius-lg) p-2 text-sm bg-white"
+                  placeholder="user@example.com"
                   required 
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Password</label>
-                <input aria-label="Input field" 
+                <input 
                   type="password" 
-                  value={newAdmin.password} 
-                  onChange={(e) => setNewAdmin({ ...newAdmin, password: e.target.value })}
-                  className="w-full border border-(--color-gsp-border-default) rounded-(--radius-lg) p-2"
-                  placeholder="Secure password"
+                  value={newUser.password} 
+                  onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+                  className="w-full border border-(--color-gsp-border-default) rounded-(--radius-lg) p-2 text-sm bg-white"
+                  placeholder="Secure password (min 6 characters)"
                   required 
                   minLength={6}
                 />
               </div>
+              <div>
+                <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Account Role</label>
+                <select
+                  value={newUser.role}
+                  onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
+                  className="w-full border border-(--color-gsp-border-default) rounded-(--radius-lg) p-2 text-sm bg-white"
+                >
+                  <option value="user">User (Reader / General User)</option>
+                  <option value="scholar">Scholar (Verified Scholar Profile)</option>
+                  {isSuperAdmin && (
+                    <option value="admin">Administrator</option>
+                  )}
+                </select>
+              </div>
               <div className="flex justify-end gap-3 pt-4">
                 <button 
                   type="button" 
-                  onClick={() => setShowAddAdmin(false)}
-                  className="px-4 py-2 text-(--color-gsp-text-secondary) hover:text-(--color-gsp-text-primary)"
+                  onClick={() => setShowAddUserModal(false)}
+                  className="px-4 py-2 text-sm font-medium text-(--color-gsp-text-secondary) hover:text-(--color-gsp-text-primary) cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button 
                   type="submit"
-                  disabled={addingAdmin}
-                  className="bg-(--color-gsp-text-inverse) text-white px-4 py-2 rounded-(--radius-lg) hover:bg-indigo-700 disabled:opacity-50"
+                  disabled={addingUser}
+                  className="bg-(--color-gsp-text-inverse) text-white px-4 py-2 rounded-(--radius-lg) hover:bg-indigo-700 text-sm font-medium disabled:opacity-50 transition-colors cursor-pointer"
                 >
-                  {addingAdmin ? 'Creating...' : 'Create Admin'}
+                  {addingUser ? 'Creating...' : 'Create Account'}
                 </button>
               </div>
             </form>
@@ -229,26 +256,26 @@ export default function AdminUsersPage() {
       {showEditUser && editingUser && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-(--color-gsp-surface-muted) rounded-(--radius-xl) shadow-xl max-w-md w-full p-6">
-            <h2 className="text-xl font-bold mb-4">Edit User</h2>
+            <h2 className="text-xl font-bold mb-4 text-(--color-gsp-text-primary)">Edit User Details</h2>
             <form onSubmit={handleEditUserSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Name</label>
-                <input aria-label="Input field" 
+                <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Full Name</label>
+                <input 
                   type="text" 
                   value={editingUser.name} 
                   onChange={(e) => setEditingUser({ ...editingUser, name: e.target.value })}
-                  className="w-full border border-(--color-gsp-border-default) rounded-(--radius-lg) p-2"
+                  className="w-full border border-(--color-gsp-border-default) rounded-(--radius-lg) p-2 text-sm bg-white"
                   placeholder="User Name"
                   required 
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Email</label>
-                <input aria-label="Input field" 
+                <label className="block text-sm font-medium text-(--color-gsp-text-primary) mb-1">Email Address</label>
+                <input 
                   type="email" 
                   value={editingUser.email} 
                   onChange={(e) => setEditingUser({ ...editingUser, email: e.target.value })}
-                  className="w-full border border-(--color-gsp-border-default) rounded-(--radius-lg) p-2"
+                  className="w-full border border-(--color-gsp-border-default) rounded-(--radius-lg) p-2 text-sm bg-white"
                   placeholder="user@example.com"
                   required 
                 />
@@ -257,14 +284,14 @@ export default function AdminUsersPage() {
                 <button 
                   type="button" 
                   onClick={() => setShowEditUser(false)}
-                  className="px-4 py-2 text-(--color-gsp-text-secondary) hover:text-(--color-gsp-text-primary)"
+                  className="px-4 py-2 text-sm font-medium text-(--color-gsp-text-secondary) hover:text-(--color-gsp-text-primary) cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button 
                   type="submit"
                   disabled={savingUser}
-                  className="bg-(--color-gsp-text-inverse) text-white px-4 py-2 rounded-(--radius-lg) hover:bg-indigo-700 disabled:opacity-50"
+                  className="bg-(--color-gsp-text-inverse) text-white px-4 py-2 rounded-(--radius-lg) hover:bg-indigo-700 text-sm font-medium disabled:opacity-50 transition-colors cursor-pointer"
                 >
                   {savingUser ? 'Saving...' : 'Save Changes'}
                 </button>
@@ -277,7 +304,7 @@ export default function AdminUsersPage() {
       <div className="bg-(--color-gsp-surface-muted) rounded-(--radius-lg) shadow border border-(--color-gsp-border-muted) overflow-hidden">
         {loading ? (
           <div className="p-8 text-center text-(--color-gsp-text-secondary)">Loading users...</div>
-        ) : filteredUsers.length > 0 ? (
+        ) : users.length > 0 ? (
           <div className="w-full overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-(--color-gsp-surface-raised)">
@@ -291,7 +318,7 @@ export default function AdminUsersPage() {
                 </tr>
               </thead>
               <tbody className="bg-(--color-gsp-surface-muted) divide-y divide-gray-200">
-                {paginatedUsers.map((user, idx) => (
+                {users.map((user, idx) => (
                   <tr key={user.id}>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-(--color-gsp-text-secondary)">
                       {(currentPage - 1) * itemsPerPage + idx + 1}
@@ -307,7 +334,7 @@ export default function AdminUsersPage() {
                         <select
                           value={user.role}
                           onChange={(e) => handleRoleChange(user.id, e.target.value)}
-                          className="text-sm border-(--color-gsp-border-default) rounded-md"
+                          className="text-sm border-(--color-gsp-border-default) rounded-md p-1 bg-white"
                         >
                           <option value="user">User</option>
                           <option value="scholar">Scholar</option>
@@ -337,13 +364,13 @@ export default function AdminUsersPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       {session?.user?.id !== user.id && (
-                        <div className="relative inline-block text-left">
+                        <div className="relative inline-block text-left user-action-menu">
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
                               setOpenMenuId(openMenuId === user.id ? null : user.id);
                             }}
-                            className="p-1 rounded-md hover:bg-gray-100 transition-colors"
+                            className="p-1 rounded-md hover:bg-gray-100 transition-colors cursor-pointer"
                           >
                             <MoreVertical className="w-5 h-5 text-gray-500" />
                           </button>
@@ -351,18 +378,17 @@ export default function AdminUsersPage() {
                           {openMenuId === user.id && (
                             <div 
                               className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-md shadow-lg z-50 py-1"
-                              onMouseDown={(e) => e.stopPropagation()}
                             >
                               <button
                                 onClick={() => { setOpenMenuId(null); handleToggleBlock(user.id, user.is_blocked); }}
-                                className={`w-full text-left px-4 py-2 text-sm flex items-center gap-2 ${user.is_blocked ? 'text-green-700 hover:bg-green-50' : 'text-amber-700 hover:bg-amber-50'}`}
+                                className={`w-full text-left px-4 py-2 text-sm flex items-center gap-2 cursor-pointer ${user.is_blocked ? 'text-green-700 hover:bg-green-50' : 'text-amber-700 hover:bg-amber-50'}`}
                               >
                                 {user.is_blocked ? <><Unlock className="w-4 h-4" /> Unblock</> : <><Ban className="w-4 h-4" /> Block</>}
                               </button>
                               
                               <button
                                 onClick={() => { setOpenMenuId(null); setEditingUser({ id: user.id, name: user.name, email: user.email }); setShowEditUser(true); }}
-                                className="w-full text-left px-4 py-2 text-sm text-indigo-600 hover:bg-indigo-50 flex items-center gap-2"
+                                className="w-full text-left px-4 py-2 text-sm text-indigo-600 hover:bg-indigo-50 flex items-center gap-2 cursor-pointer"
                               >
                                 <Edit className="w-4 h-4" /> Edit
                               </button>
@@ -372,7 +398,7 @@ export default function AdminUsersPage() {
                                   <div className="border-t border-gray-100 my-1"></div>
                                   <button
                                     onClick={() => { setOpenMenuId(null); handleDeleteUser(user.id, user.role); }}
-                                    className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+                                    className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2 cursor-pointer"
                                   >
                                     <Trash2 className="w-4 h-4" /> Delete
                                   </button>
@@ -392,11 +418,11 @@ export default function AdminUsersPage() {
           <div className="p-8 text-center text-(--color-gsp-text-secondary)">No users found matching your criteria.</div>
         )}
         
-        {filteredUsers.length > 0 && (
+        {totalItems > 0 && (
           <Pagination 
             currentPage={currentPage}
             totalPages={totalPages}
-            totalItems={filteredUsers.length}
+            totalItems={totalItems}
             itemsPerPage={itemsPerPage}
             onPageChange={setCurrentPage}
           />

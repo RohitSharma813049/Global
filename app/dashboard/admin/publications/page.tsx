@@ -39,7 +39,7 @@ export default async function AdminPublications() {
     .neq('status', 'draft')
     .is('deleted_at', null)
     .order('created_at', { ascending: false })
-    .limit(500)
+    .limit(50)
 
   if (error) {
     console.error("Error fetching publications:", error)
