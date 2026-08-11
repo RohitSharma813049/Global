@@ -7,31 +7,29 @@ export async function searchScholarsQuery(query: string) {
 
   try {
     const scholars = await prisma.scholars.findMany({
-      where: {
-        OR: [
-          { username: { contains: query, mode: 'insensitive' } },
-          { 
-            users: { 
-              email: { contains: query, mode: 'insensitive' }
-            }
-          }
-        ]
-      },
       include: {
         users: true
       },
-      take: 5
+      take: 100
     })
 
     const filteredScholars = scholars.filter(scholar => {
       const meta = scholar.users?.raw_user_meta_data as any
       const name = meta?.name || meta?.full_name || ''
+      const email = scholar.users?.email || ''
+      const username = scholar.username || ''
+      const inst = scholar.institution || ''
+      const spec = scholar.specialization || ''
+      const qLower = query.toLowerCase()
+
       return (
-        (scholar.username && scholar.username.toLowerCase().includes(query.toLowerCase())) ||
-        (scholar.users?.email && scholar.users.email.toLowerCase().includes(query.toLowerCase())) ||
-        (name && name.toLowerCase().includes(query.toLowerCase()))
+        name.toLowerCase().includes(qLower) ||
+        username.toLowerCase().includes(qLower) ||
+        email.toLowerCase().includes(qLower) ||
+        inst.toLowerCase().includes(qLower) ||
+        spec.toLowerCase().includes(qLower)
       )
-    })
+    }).slice(0, 8)
 
     return filteredScholars.map(scholar => {
       const meta = scholar.users?.raw_user_meta_data as any

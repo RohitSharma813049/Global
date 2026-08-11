@@ -22,10 +22,25 @@ export async function getAdvancedSearchData(params: SearchParams) {
     };
 
     if (params.query) {
+      const matchingScholars = await prisma.scholars.findMany({
+        include: { users: { select: { raw_user_meta_data: true, email: true } } }
+      });
+      const qLower = params.query.toLowerCase();
+      const matchingScholarIds = matchingScholars
+        .filter(s => {
+          const meta = s.users?.raw_user_meta_data as any;
+          const name = meta?.name || meta?.full_name || '';
+          const email = s.users?.email || '';
+          const username = s.username || '';
+          return name.toLowerCase().includes(qLower) || username.toLowerCase().includes(qLower) || email.toLowerCase().includes(qLower);
+        })
+        .map(s => s.id);
+
       whereClause.OR = [
         { title: { contains: params.query, mode: 'insensitive' } },
         { abstract: { contains: params.query, mode: 'insensitive' } },
         { author_name: { contains: params.query, mode: 'insensitive' } },
+        ...(matchingScholarIds.length > 0 ? [{ scholar_id: { in: matchingScholarIds } }] : [])
       ];
     }
 

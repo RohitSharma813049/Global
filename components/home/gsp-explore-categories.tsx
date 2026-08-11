@@ -31,6 +31,22 @@ export default function GspExploreCategories({ title, subtitle, categories }: Gs
     };
   }, []);
 
+  useEffect(() => {
+    if (!categories || categories.length === 0) return;
+    const interval = setInterval(() => {
+      if (gridRef.current) {
+        const { scrollLeft, scrollWidth, clientWidth } = gridRef.current;
+        if (scrollLeft + clientWidth >= scrollWidth - 10) {
+          gridRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+          gridRef.current.scrollBy({ left: 300, behavior: 'smooth' });
+        }
+      }
+    }, 4500);
+
+    return () => clearInterval(interval);
+  }, [categories]);
+
   const handleScroll = () => {
     if (!gridRef.current) return;
     const scrollLeft = gridRef.current.scrollLeft;

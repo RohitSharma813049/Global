@@ -16,9 +16,49 @@ import { User } from "lucide-react"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 
 
+import { Metadata } from "next"
+
 interface Props {
-  params: {
+  params: Promise<{
     id: string
+  }>
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params
+  const publication = await prisma.publications.findUnique({
+    where: { id },
+    include: {
+      scholars: { include: { users: true } }
+    }
+  })
+
+  if (!publication) {
+    return {
+      title: "Publication Not Found | Global Scholar Publications"
+    }
+  }
+
+  const rawMeta = (publication.scholars?.users?.raw_user_meta_data as any) || {}
+  const authorName = rawMeta.name || publication.author_name || "Global Scholar"
+  const cleanAbstract = publication.abstract?.replace(/<[^>]+>/g, '').substring(0, 160) || ""
+
+  return {
+    title: `${publication.title} | ${authorName} | Global Scholar Publications`,
+    description: cleanAbstract,
+    openGraph: {
+      title: publication.title,
+      description: cleanAbstract,
+      type: "article",
+      url: `https://global-wine.vercel.app/publications/${publication.id}`,
+      images: publication.cover_image ? [{ url: publication.cover_image }] : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: publication.title,
+      description: cleanAbstract,
+      images: publication.cover_image ? [publication.cover_image] : [],
+    }
   }
 }
 
@@ -51,11 +91,12 @@ export default async function PublicationDetailPage({ params }: Props) {
   await trackPublicationView(id)
 
   // Fetch related publications (same category, excluding current)
-  const relatedPubs = await prisma.publications.findMany({
+  let relatedPubs = await prisma.publications.findMany({
     where: {
       content_type: publication.content_type,
       id: { not: id },
-      status: 'published'
+      status: 'published',
+      deleted_at: null
     },
     include: {
       scholars: {
@@ -64,6 +105,23 @@ export default async function PublicationDetailPage({ params }: Props) {
     },
     take: 4
   });
+
+  if (relatedPubs.length < 4) {
+    const additionalPubs = await prisma.publications.findMany({
+      where: {
+        id: { notIn: [id, ...relatedPubs.map(r => r.id)] },
+        status: 'published',
+        deleted_at: null
+      },
+      include: {
+        scholars: {
+          include: { users: true }
+        }
+      },
+      take: 4 - relatedPubs.length
+    });
+    relatedPubs = [...relatedPubs, ...additionalPubs];
+  }
 
   const isVideo = publication.content_type === 'video'
   const rawMetaData = (publication.scholars?.users?.raw_user_meta_data as any) || {};
@@ -81,8 +139,29 @@ export default async function PublicationDetailPage({ params }: Props) {
 
   const doiValue = publication.doi || `10.9876/gsp.${new Date().getFullYear()}.${publication.id.substring(0,8)}`;
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': publication.content_type === 'eBook' || publication.content_type === 'Book' ? 'Book' : 'ScholarlyArticle',
+    'headline': publication.title,
+    'name': publication.title,
+    'description': publication.abstract?.replace(/<[^>]+>/g, '') || '',
+    'author': {
+      '@type': 'Person',
+      'name': authorName
+    },
+    'datePublished': publication.created_at,
+    'publisher': {
+      '@type': 'Organization',
+      'name': publication.institution || 'Global Scholar Publications'
+    }
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="gsp-publication-page">
 
         {/* ══ BREADCRUMB ══ */}

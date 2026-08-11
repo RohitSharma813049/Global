@@ -21,13 +21,36 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: 'Global Scholar Publications - Empowering Global Research & Knowledge Sharing',
-  description: 'A leading platform for scholars, researchers, and academics to share and discover research, thesis, eBooks, and publications.',
-  generator: 'v0.app',
+  metadataBase: new URL('https://global-wine.vercel.app'),
+  title: {
+    default: 'Global Scholar Publications - Empowering Global Research & Knowledge Sharing',
+    template: '%s | Global Scholar Publications'
+  },
+  description: 'A leading platform for scholars, researchers, and academics to share and discover peer-reviewed research papers, doctoral theses, eBooks, and academic journals worldwide.',
+  keywords: ['Global Scholar', 'Research Papers', 'Open Access', 'Peer-Reviewed Journals', 'Doctoral Thesis', 'Academic Publications', 'Scholarly Articles', 'eBooks'],
+  authors: [{ name: 'Global Scholar Publications' }],
+  creator: 'Global Scholar Publications',
   icons: {
     icon: '/favicon.png',
     apple: '/favicon.png',
   },
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://global-wine.vercel.app',
+    siteName: 'Global Scholar Publications',
+    title: 'Global Scholar Publications - Empowering Global Research',
+    description: 'Explore peer-reviewed research papers, doctoral theses, eBooks, and academic journals worldwide.',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Global Scholar Publications - Empowering Global Research',
+    description: 'Explore peer-reviewed research papers, doctoral theses, eBooks, and academic journals worldwide.',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  }
 }
 
 export default function RootLayout({

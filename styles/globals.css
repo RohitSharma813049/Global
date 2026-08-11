@@ -241,7 +241,7 @@
    SHARED SECTION SCAFFOLDING
 ════════════════════════════════ */
 .gsp-section {
-  padding: 40px 56px;
+  padding: 36px 32px;
   border-bottom: 1px solid var(--rule);
   background: #fff;
 }
@@ -251,18 +251,18 @@
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 32px;
-  margin-bottom: 48px;
+  gap: 24px;
+  margin-bottom: 28px;
 }
 .gsp-section-head-left { max-width: 560px; }
 
-.gsp-eyebrow {
-  display: inline-flex; align-items: center; gap: 10px;
-  font-size: 10.5px; font-weight: 600; letter-spacing: 0.2em;
+.gsp-eyebrow, .eyebrow {
+  display: inline-flex; align-items: center; justify-content: flex-start; gap: 10px;
+  font-size: 10.5px; font-weight: 700; letter-spacing: 0.2em;
   text-transform: uppercase; color: var(--violet);
-  margin-bottom: 18px;
+  margin-bottom: 18px; text-align: left;
 }
-.gsp-eyebrow-line { width: 32px; height: 1.5px; background: var(--violet); }
+.gsp-eyebrow-line, .eyebrow-line { width: 24px; height: 2px; background: var(--violet); flex-shrink: 0; }
 
 .gsp-section-h2 {
   font-family: 'Cormorant Garamond', Georgia, serif;
@@ -589,7 +589,7 @@
 ════════════════════════════════ */
 .about-hero {
   position: relative;
-  padding: 90px 56px 80px;
+  padding: 48px 32px 40px;
   background: #FBFAFD;
   overflow: hidden;
   border-bottom: 1px solid var(--rule);
@@ -618,7 +618,7 @@
   margin: 0 auto;
   display: grid;
   grid-template-columns: 1.05fr 0.95fr;
-  gap: 56px;
+  gap: 36px;
   align-items: center;
   position: relative; z-index: 2;
 }
@@ -686,13 +686,13 @@
    2. VISION & MISSION
 ════════════════════════════════ */
 .vm-section {
-  padding: 96px 56px;
+  padding: 48px 32px;
   background: #fff;
 }
 .vm-head {
   text-align: center;
   max-width: 600px;
-  margin: 0 auto 52px;
+  margin: 0 auto 32px;
 }
 .vm-head .eyebrow { justify-content: center; }
 .vm-h2 {
@@ -751,7 +751,7 @@
    3. WHY CHOOSE US
 ════════════════════════════════ */
 .why-section {
-  padding: 96px 56px;
+  padding: 48px 32px;
   background: linear-gradient(180deg, #FBFAFD 0%, #fff 100%);
   position: relative;
   overflow: hidden;
@@ -766,7 +766,7 @@
 .why-head {
   text-align: center;
   max-width: 600px;
-  margin: 0 auto 52px;
+  margin: 0 auto 32px;
   position: relative; z-index: 2;
 }
 .why-head .eyebrow { justify-content: center; }

@@ -340,36 +340,82 @@ export default function GSPDistinguishedScholars({ scholar, videos = [], publica
 
         {/* Published works */}
         {publications.length > 0 && (
-          <div className="mb-24">
-            <h2 className="text-4.25 font-serif mb-6 text-black">Published works on Global Scholar Publications</h2>
-            <div className="flex flex-col gap-6 border-t border-[#F0F0F0] pt-6">
+          <div className="mb-10">
+            <h3 className="text-2xl md:text-3xl font-['Cormorant_Garamond'] font-bold text-ink mb-6 pb-3 border-b border-rule flex items-center justify-between">
+              <span>Published Works on Global Scholar Publications</span>
+              <span className="text-xs font-sans font-semibold text-violet bg-indigo-50 px-3 py-1 rounded-full border border-indigo-100">{publications.length} Works</span>
+            </h3>
+            <div className="flex flex-col gap-4">
               {publications.map((pub, i) => (
-                <div key={i} className="flex justify-between items-start gap-4 text-3.25">
+                <div key={i} className="p-4 md:p-5 rounded-xl border border-rule bg-white hover:border-violet hover:shadow-md transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 group">
                   <div>
-                    <a href={`/publications/${pub.id}`} className="text-[#0A66C2] hover:underline mb-1 inline-block">
+                    <a href={pub.url || `/publications/${pub.id}`} className="text-lg font-bold text-ink group-hover:text-violet transition-colors mb-1.5 block">
                       {pub.title}
                     </a>
-                    <p className="text-black">
-                      Global Scholar Publications · {new Date().getFullYear()} · DOI: 10.XXXX/gsp.2024.0{i+1}
+                    <p className="text-xs text-gray-500 font-mono">
+                      Global Scholar Publications · {new Date().getFullYear()} · DOI: 10.9876/gsp.2026.0{i+1}
                     </p>
                   </div>
-                  <span className="px-3 py-1 bg-[#E8F5E9] text-[#1B5E20] rounded-full text-2.5 font-medium whitespace-nowrap">
-                    {pub.tag || 'Article'}
-                  </span>
+                  <div className="flex items-center gap-3 shrink-0">
+                    <span className="px-3 py-1 bg-indigo-50 text-violet rounded-full text-xs font-semibold uppercase tracking-wider border border-indigo-100 whitespace-nowrap">
+                      {pub.tag || 'Article'}
+                    </span>
+                    <a href={pub.url || `/publications/${pub.id}`} className="px-4 py-1.5 rounded-lg bg-surface hover:bg-violet hover:text-white border border-rule text-xs font-bold text-violet transition-colors flex items-center gap-1.5">
+                      Read Work &rarr;
+                    </a>
+                  </div>
                 </div>
               ))}
             </div>
           </div>
         )}
 
-        {/* DISTINGUISHED SCHOLARS - RECOMMENDED ROW */}
-        <div className="mb-24">
-          <GSPFeaturedScholars 
-            title="Distinguished Scholars — 100 Leaders" 
-            subtitle="DISTINGUISHED SCHOLARS FROM AROUND THE WORLD" 
-            scholars={allScholars} 
-          />
-        </div>
+        {/* SIMILAR SCHOLARS & RESEARCHERS */}
+        {allScholars && allScholars.length > 0 && (
+          <div className="mb-12 pt-8 border-t border-rule">
+            <h3 className="text-2xl md:text-3xl font-['Cormorant_Garamond'] font-bold text-ink mb-6">
+              Similar Scholars & Researchers
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+              {allScholars.slice(0, 4).map((s: any, idx: number) => {
+                const meta = s.users?.raw_user_meta_data as any || {};
+                const name = s.name || meta.name || meta.full_name || s.users?.email?.split('@')[0] || 'Unknown';
+                const avatar = s.profile_photo_url || s.image || meta.avatar_url || meta.picture || '';
+                const initials = name.substring(0, 2).toUpperCase();
+                const pubCount = s._count?.publications || s.publications || 0;
+
+                return (
+                  <Link href={`/scholars/${s.username || s.id}`} key={idx} className="p-5 rounded-2xl border border-rule bg-white hover:border-violet hover:shadow-lg transition-all flex flex-col justify-between group">
+                    <div>
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-12 h-12 rounded-full overflow-hidden bg-indigo-50 border border-indigo-100 shrink-0 flex items-center justify-center text-violet font-bold text-base relative">
+                          {avatar ? (
+                            <Image src={avatar} alt={name} fill sizes="48px" className="object-cover" />
+                          ) : (
+                            initials
+                          )}
+                        </div>
+                        <div>
+                          <h4 className="font-['Cormorant_Garamond'] text-lg font-bold text-ink group-hover:text-violet transition-colors line-clamp-1">
+                            {name}
+                          </h4>
+                          {s.username && <p className="text-xs text-violet font-medium">@{s.username}</p>}
+                        </div>
+                      </div>
+                      <p className="text-xs text-gray-500 line-clamp-1 mb-1 font-medium">{s.qualification || s.institution || 'Scholar'}</p>
+                      <p className="text-xs text-emerald-700 line-clamp-1 mb-4 font-medium">{s.specialization || s.field || 'Research'}</p>
+                    </div>
+
+                    <div className="flex items-center justify-between pt-3 border-t border-rule text-xs">
+                      <span className="text-gray-500 font-medium">{pubCount} {pubCount === 1 ? 'Pub' : 'Pubs'}</span>
+                      <span className="font-bold text-violet group-hover:underline">View Profile &rarr;</span>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* HOW SCHOLARS SUBMIT THEIR EXPERIENCE VIDEO */}
         <div className="mb-16">

@@ -263,6 +263,56 @@ export default function GSPFeaturedScholars({ title, subtitle, scholars = [], au
     touchDeltaRef.current = 0;
   };
 
+  const handleWheel = (e: React.WheelEvent) => {
+    if (Math.abs(e.deltaX) > 15) {
+      if (e.deltaX > 0 && index < maxIndex) {
+        setIndex(prev => Math.min(maxIndex, prev + 1));
+      } else if (e.deltaX < 0 && index > 0) {
+        setIndex(prev => Math.max(0, prev - 1));
+      }
+    }
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    touchStartRef.current = e.clientX;
+    isDraggingRef.current = true;
+    if (trackRef.current) {
+      trackRef.current.style.transition = 'none';
+    }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDraggingRef.current || !trackRef.current) return;
+    touchDeltaRef.current = e.clientX - touchStartRef.current;
+
+    const cards = trackRef.current.children;
+    if (!cards.length) return;
+
+    const w = window.innerWidth;
+    const gap = w <= 860 ? (w <= 600 ? 16 : 20) : 28;
+    const cardWidth = (cards[0] as HTMLElement).getBoundingClientRect().width;
+    const baseOffset = index * (cardWidth + gap);
+
+    trackRef.current.style.transform = `translateX(-${baseOffset - touchDeltaRef.current}px)`;
+  };
+
+  const handleMouseUp = () => {
+    if (!isDraggingRef.current) return;
+    isDraggingRef.current = false;
+    if (trackRef.current) {
+      trackRef.current.style.transition = '';
+    }
+
+    if (touchDeltaRef.current > 40 && index > 0) {
+      setIndex(index - 1);
+    } else if (touchDeltaRef.current < -40 && index < maxIndex) {
+      setIndex(index + 1);
+    } else {
+      updateCarousel(index);
+    }
+    touchDeltaRef.current = 0;
+  };
+
   // Reveal-on-scroll animation
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -313,9 +363,14 @@ export default function GSPFeaturedScholars({ title, subtitle, scholars = [], au
       <div 
         className="scholars-carousel-viewport" 
         ref={viewportRef}
+        onWheel={handleWheel}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
       >
         <div className="scholars-carousel-track" id="scholars-track" ref={trackRef}>
           {displayScholars.map((scholar, i) => (

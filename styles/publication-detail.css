@@ -140,13 +140,15 @@
   z-index: 30;
   background: #fff;
   border-bottom: 1px solid var(--rule);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  margin-top: 4px;
   isolation: isolate;
 }
 .act-inner {
   max-width: var(--max); margin: 0 auto;
-  padding: 0 var(--px);
-  height: var(--bar-h);
-  display: flex; align-items: center; gap: 8px;
+  padding: 10px var(--px);
+  min-height: 58px;
+  display: flex; align-items: center; gap: 12px;
 }
 .act-title {
   flex: 1; min-width: 0;
