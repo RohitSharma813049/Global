@@ -3416,14 +3416,15 @@ a.pub-card { cursor: pointer; color: inherit; text-decoration: none; }
 
 /* Icon badge, glass, top-right */
 .sub-icon-badge {
-  position: absolute; top: 12px; right: 12px; z-index: 3;
-  width: 34px; height: 34px; border-radius: 10px;
-  background: rgba(255,255,255,0.14);
-  
-  border: 1px solid rgba(255,255,255,0.25);
+  position: absolute; top: 14px; right: 14px; z-index: 3;
+  width: 38px; height: 38px; border-radius: 12px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.35);
   display: flex; align-items: center; justify-content: center;
   color: #fff;
-  transition: background 0.3s, border-color 0.3s;
+  transition: background 0.3s, border-color 0.3s, transform 0.3s;
 }
 .sub-icon-badge svg { display: block; }
 
@@ -3450,20 +3451,21 @@ a.pub-card { cursor: pointer; color: inherit; text-decoration: none; }
 .subject-card:hover .sub-icon-badge { background: #B8924A; border-color: #B8924A; }
 
 /* ════════════════════════════════
-   DOTS (mobile / tablet pagination)
+   DOTS (pagination bar)
 ════════════════════════════════ */
 .sub-carousel-dots {
-  display: none;
+  display: flex;
   justify-content: center;
-  gap: 7px;
-  margin-top: 28px;
+  align-items: center;
+  gap: 8px;
+  margin-top: 36px;
 }
 .sub-cdot {
-  width: 6px; height: 6px; border-radius: 50%;
+  width: 8px; height: 8px; border-radius: 50%;
   background: #E2DFF0; border: none; cursor: pointer;
-  transition: background 0.3s, width 0.3s;
+  transition: background 0.3s ease, width 0.3s ease, border-radius 0.3s ease;
 }
-.sub-cdot.on { background: var(--violet); width: 20px; border-radius: 3px; }
+.sub-cdot.on { background: var(--violet); width: 28px; border-radius: 4px; }
 
 /* ════════════════════════════════
    ANIMATIONS
@@ -3495,7 +3497,6 @@ a.pub-card { cursor: pointer; color: inherit; text-decoration: none; }
   .subjects-head { flex-direction: column; align-items: flex-start; gap: 20px; }
   .subject-card { flex: 0 0 calc((100% - 18px) / 2); }
   .sub-carousel-track { gap: 18px; }
-  .sub-carousel-controls { align-self: flex-end; }
   .sub-name { font-size: 16px; }
 }
 @media (max-width: 520px) {
@@ -3503,8 +3504,6 @@ a.pub-card { cursor: pointer; color: inherit; text-decoration: none; }
   .subjects-h2 { font-size: clamp(28px, 8vw, 38px); }
   .subject-card { flex: 0 0 60%; }
   .sub-carousel-track { gap: 14px; }
-  .sub-carousel-dots { display: flex; }
-  .sub-carousel-controls { display: none; }
 }
 
 /* --- scholar-reviews.css --- */

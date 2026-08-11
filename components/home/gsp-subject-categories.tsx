@@ -277,22 +277,6 @@ export default function GSPSubjectCategories({ title, subtitle, categories, auto
           <p className="sub-eyebrow"><span className="sub-eyebrow-line"></span>{subtitle || 'Browse By Discipline'}</p>
           <h2 className="subjects-h2" dangerouslySetInnerHTML={{ __html: title || 'Academic <em>Categories</em>' }}></h2>
         </div>
-        <div className="sub-carousel-controls">
-          <button 
-            className="sub-car-btn" 
-            onClick={() => setIndex(prev => (prev === 0 ? maxIndex : prev - 1))}
-            aria-label="Previous categories"
-          >
-            <svg width="17" height="17" viewBox="0 0 17 17" fill="none"><path d="M10.5 13L6 8.5L10.5 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>
-          </button>
-          <button 
-            className="sub-car-btn" 
-            onClick={() => setIndex(prev => (prev >= maxIndex ? 0 : prev + 1))}
-            aria-label="Next categories"
-          >
-            <svg width="17" height="17" viewBox="0 0 17 17" fill="none"><path d="M6.5 4L11 8.5L6.5 13" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>
-          </button>
-        </div>
       </div>
 
       <div 
