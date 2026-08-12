@@ -67,3 +67,29 @@ export async function createScholar(formData: any) {
     return { error: error.message || 'Failed to create scholar' }
   }
 }
+
+export async function deleteScholar(id: string) {
+  const session = await getServerSession(authOptions)
+  if (!session || !['admin', 'super_admin'].includes(session.user?.role as string)) {
+    return { error: 'Unauthorized. Only admins can delete scholars.' }
+  }
+
+  try {
+    const { error } = await supabaseAdmin
+      .from('scholars')
+      .update({ deleted_at: new Date().toISOString() })
+      .eq('id', id)
+
+    if (error) throw error
+
+    revalidatePath('/dashboard/admin/scholars')
+    revalidatePath('/scholars')
+    revalidatePath('/')
+
+    return { success: true }
+  } catch (error: any) {
+    console.error('Error deleting scholar:', error)
+    return { error: error.message || 'Failed to delete scholar' }
+  }
+}
+

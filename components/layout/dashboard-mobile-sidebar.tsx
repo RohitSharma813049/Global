@@ -14,7 +14,8 @@ import {
   MdLogout,
   MdPendingActions,
   MdSchool,
-  MdMenu
+  MdMenu,
+  MdDeleteSweep
 } from "react-icons/md";
 import { BecomeScholarModal } from "@/components/become-scholar-modal";
 import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetTitle } from "@/components/ui/sheet";
@@ -42,6 +43,7 @@ export default function DashboardMobileSidebar() {
     { name: "Review Publications", href: "/dashboard/admin/publications", icon: MdPendingActions },
     { name: "Categories", href: "/dashboard/admin/categories", icon: MdBookmark },
     { name: "Content Types", href: "/dashboard/admin/content-types", icon: MdSettings },
+    { name: "Recycle Bin", href: "/dashboard/admin/recycle-bin", icon: MdDeleteSweep },
   ];
 
   const links = role === "super_admin" || role === "admin" 

@@ -180,6 +180,7 @@ export async function getBlogs() {
   const pinned = Array.isArray(settings.featured_blog_ids) ? settings.featured_blog_ids : []
   
   const blogs = await prisma.blogs.findMany({
+    where: { deleted_at: null },
     orderBy: { created_at: 'desc' },
     take: 50
   })
@@ -264,6 +265,7 @@ export async function getNews() {
   const pinned = Array.isArray(settings.featured_news_ids) ? settings.featured_news_ids : []
   
   const news = await prisma.news.findMany({
+    where: { deleted_at: null },
     orderBy: { created_at: 'desc' },
     take: 50
   })

@@ -24,6 +24,7 @@ export default async function AdminScholarsPage({
   // Fetch scholars using Prisma with correct relations
   const scholars = await prisma.scholars.findMany({
     where: {
+      deleted_at: null,
       OR: [
         { username: { contains: query, mode: 'insensitive' } },
         { 
