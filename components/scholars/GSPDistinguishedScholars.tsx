@@ -97,9 +97,9 @@ export default function GSPDistinguishedScholars({ scholar, videos = [], publica
           
           {/* Details */}
           <div className="flex flex-col justify-center pt-1">
-            <h1 className="text-7 font-serif text-black mb-1.5 leading-tight">
+            <h2 className="text-7 font-serif text-black mb-1.5 leading-tight">
               {scholar.name}{scholar.is_honorary ? ', Hon. D.B.A.' : ''}
-            </h1>
+            </h2>
             <p className="text-3.25 text-black mb-3 font-medium">
               {scholar.professional_role}
             </p>

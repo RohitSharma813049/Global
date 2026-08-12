@@ -271,7 +271,7 @@ export default function AuthUI({ initialScreen }: AuthUIProps) {
             {activeScreen === "signin" && (
               <div className="animate-fade-in-up">
                 <p className="form-eyebrow"><span className="form-eyebrow-line"></span>Welcome back</p>
-                <h1 className="form-title">Sign <em>In</em></h1>
+                <h2 className="form-title">Sign <em>In</em></h2>
                 <p className="form-sub">Access your GSP account to read, publish and connect with scholars worldwide.</p>
 
                 {/* Role tabs */}
@@ -406,7 +406,7 @@ export default function AuthUI({ initialScreen }: AuthUIProps) {
                   <div className="step-dot idle"></div>
                 </div>
                 <p className="form-eyebrow"><span className="form-eyebrow-line"></span>Create your account</p>
-                <h1 className="form-title">Join <em>GSP</em></h1>
+                <h2 className="form-title">Join <em>GSP</em></h2>
                 <p className="form-sub">Become part of a global community of scholars and readers.</p>
 
                 {/* Role tabs */}
@@ -578,7 +578,7 @@ export default function AuthUI({ initialScreen }: AuthUIProps) {
                   <div className="step-dot idle"></div>
                 </div>
                 <p className="form-eyebrow"><span className="form-eyebrow-line"></span>Step 2 of 3</p>
-                <h1 className="form-title">Check your <em>email</em></h1>
+                <h2 className="form-title">Check your <em>email</em></h2>
                 <p className="form-sub">We sent a 6-digit code to <strong>{formData.email}</strong>. Enter it below to continue.</p>
 
                 <form onSubmit={handleVerifyOTP}>
@@ -627,7 +627,7 @@ export default function AuthUI({ initialScreen }: AuthUIProps) {
                   Back to Sign In
                 </button>
                 <p className="form-eyebrow"><span className="form-eyebrow-line"></span>Account recovery</p>
-                <h1 className="form-title">Reset your <em>password</em></h1>
+                <h2 className="form-title">Reset your <em>password</em></h2>
                 <p className="form-sub">Enter the email associated with your GSP account and we'll send a reset link to your inbox.</p>
 
                 <form onSubmit={(e) => { e.preventDefault(); setActiveScreen("reset-sent"); }}>

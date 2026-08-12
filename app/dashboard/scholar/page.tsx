@@ -92,7 +92,7 @@ export default async function ScholarDashboard() {
     if (insertError || !newScholar) {
       return (
         <div className="p-6">
-          <h1 className="text-2xl font-bold mb-4 text-red-600">Profile Not Found</h1>
+          <h2 className="text-2xl font-bold mb-4 text-red-600">Profile Not Found</h2>
           <p className="text-(--color-gsp-text-secondary)">Your scholar profile could not be initialized. Please contact an administrator.</p>
         </div>
       )

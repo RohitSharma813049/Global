@@ -38,7 +38,7 @@ export default function SearchBar({ searchQuery, setSearchQuery }: SearchBarProp
   return (
     <section className="border-b border-border bg-white px-4 sm:px-6 py-6 sm:py-8">
       <div className="mx-auto max-w-7xl">
-        <h1 className="mb-4 text-2xl sm:text-3xl font-bold text-foreground">Explore Research</h1>
+        <h2 className="mb-4 text-2xl sm:text-3xl font-bold text-foreground">Explore Research</h2>
 
         <div className="relative">
           <div className="relative flex items-center gap-2">

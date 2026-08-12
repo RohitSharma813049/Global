@@ -94,7 +94,7 @@ export function CrmSidebar() {
               AI
             </div>
             <div>
-              <h1 className="font-bold text-slate-900 leading-tight">AI CRM</h1>
+              <span className="font-bold text-slate-900 leading-tight block">AI CRM</span>
               <p className="text-xs text-slate-500">Real Estate</p>
             </div>
           </div>
