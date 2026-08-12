@@ -21,6 +21,8 @@ export async function updateScholarProfile(formData: FormData) {
   }
 
   try {
+    const name = formData.get('name') as string
+    const username = formData.get('username') as string
     const bio = formData.get('bio') as string
     const institution = formData.get('institution') as string
     const qualification = formData.get('qualification') as string
@@ -116,6 +118,18 @@ export async function updateScholarProfile(formData: FormData) {
       linkedin_url,
       twitter_url,
       website_url
+    }
+
+    if (username) {
+      updateData.username = username.toLowerCase().replace(/[^a-z0-9_-]/g, '')
+    }
+
+    if (name) {
+      const { data: userData } = await supabaseAdmin.auth.admin.getUserById(session.user.id)
+      const existingMeta = userData?.user?.user_metadata || {}
+      await supabaseAdmin.auth.admin.updateUserById(session.user.id, {
+        user_metadata: { ...existingMeta, name }
+      })
     }
 
     if (profilePhotoUrl) {

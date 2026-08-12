@@ -31,7 +31,9 @@ export default async function AuditLogsPage() {
                     {log.created_at ? format(new Date(log.created_at), 'MMM d, yyyy HH:mm:ss') : 'N/A'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="font-medium text-(--color-gsp-text-primary)">{(log.users?.raw_user_meta_data as any)?.full_name || 'Unknown User'}</div>
+                    <div className="font-medium text-(--color-gsp-text-primary)">
+                      {(log.users?.raw_user_meta_data as any)?.name || (log.users?.raw_user_meta_data as any)?.full_name || log.users?.email?.split('@')[0] || 'Admin User'}
+                    </div>
                     <div className="text-xs text-(--color-gsp-text-secondary)">{log.users?.email}</div>
                   </td>
                   <td className="px-6 py-4">

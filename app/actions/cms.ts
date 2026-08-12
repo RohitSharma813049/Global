@@ -6,6 +6,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { revalidatePath } from "next/cache"
 import { invalidateCache } from "@/lib/redis-cache"
 import { prisma } from '@/lib/db'
+import { logAdminAction } from "./super-admin"
 
 import { blogSchema, newsSchema, testimonialSchema, magazineSchema } from '@/lib/validations/cms'
 
@@ -151,7 +152,7 @@ export async function getHomepageSettings() {
 }
 
 export async function updateHomepageSettings(newSettings: any) {
-  await checkAdmin()
+  const session = await checkAdmin()
   
   const existing = await prisma.homepage_settings.findFirst()
   if (existing) {
@@ -165,11 +166,12 @@ export async function updateHomepageSettings(newSettings: any) {
     })
   }
   
+  await logAdminAction(session.user.id, "Updated homepage settings", "homepage_settings", existing?.id || "new")
+
   await invalidateCache(['cms-homepage-settings', 'cms-blogs', 'cms-news', 'cms-featured-scholars'])
   revalidatePath('/')
   revalidatePath('/dashboard/admin/settings')
   return { success: true }
-
 }
 
 // ---- BLOGS ----
@@ -198,19 +200,20 @@ export async function createBlog(data: { title: string, slug: string, content: s
     const firstError = Object.values(parsed.error.flatten().fieldErrors)[0]?.[0] || 'Validation failed'
     throw new Error(firstError)
   }
-  await prisma.blogs.create({
+  const created = await prisma.blogs.create({
     data: {
       ...data,
       author_id: session.user.id,
       status: 'published'
     }
   })
+  await logAdminAction(session.user.id, `Created blog post: ${data.title}`, "blogs", created.id)
   revalidatePath('/blog')
   revalidatePath('/dashboard/admin/blogs')
 }
 
 export async function updateBlog(id: string, data: { title: string, slug: string, content: string, cover_image?: string }) {
-  await checkAdmin()
+  const session = await checkAdmin()
   const parsed = blogSchema.safeParse(data)
   if (!parsed.success) {
     const firstError = Object.values(parsed.error.flatten().fieldErrors)[0]?.[0] || 'Validation failed'
@@ -223,19 +226,21 @@ export async function updateBlog(id: string, data: { title: string, slug: string
       updated_at: new Date()
     }
   })
+  await logAdminAction(session.user.id, `Updated blog post: ${data.title}`, "blogs", id)
   revalidatePath('/blog')
   revalidatePath('/dashboard/admin/blogs')
 }
 
 export async function deleteBlog(id: string) {
-  await checkAdmin()
+  const session = await checkAdmin()
   await prisma.blogs.update({ where: { id }, data: { deleted_at: new Date() } })
+  await logAdminAction(session.user.id, `Soft-deleted blog post`, "blogs", id)
   revalidatePath('/blog')
   revalidatePath('/dashboard/admin/blogs')
 }
 
 export async function toggleBlogFeaturedStatus(id: string, is_featured: boolean) {
-  await checkAdmin()
+  const session = await checkAdmin()
   const existing = await prisma.homepage_settings.findFirst()
   let settings = (existing?.settings as any) || {}
   let pinned = Array.isArray(settings.featured_blog_ids) ? settings.featured_blog_ids : []
@@ -253,6 +258,7 @@ export async function toggleBlogFeaturedStatus(id: string, is_featured: boolean)
   } else {
     await prisma.homepage_settings.create({ data: { settings } })
   }
+  await logAdminAction(session.user.id, `Toggled blog featured status (${is_featured ? 'Pinned' : 'Unpinned'})`, "blogs", id)
   revalidatePath('/')
   revalidatePath('/dashboard/admin/blogs')
 }
@@ -277,25 +283,26 @@ export async function getNews() {
 }
 
 export async function createNews(data: { title: string, slug: string, content: string, cover_image?: string }) {
-  await checkAdmin()
+  const session = await checkAdmin()
   const parsed = newsSchema.safeParse(data)
   if (!parsed.success) {
     const firstError = Object.values(parsed.error.flatten().fieldErrors)[0]?.[0] || 'Validation failed'
     throw new Error(firstError)
   }
-  await prisma.news.create({
+  const created = await prisma.news.create({
     data: {
       ...data,
       published_at: new Date(),
       status: 'published'
     }
   })
+  await logAdminAction(session.user.id, `Created news article: ${data.title}`, "news", created.id)
   revalidatePath('/news')
   revalidatePath('/dashboard/admin/news')
 }
 
 export async function updateNews(id: string, data: { title: string, slug: string, content: string, cover_image?: string }) {
-  await checkAdmin()
+  const session = await checkAdmin()
   const parsed = newsSchema.safeParse(data)
   if (!parsed.success) {
     const firstError = Object.values(parsed.error.flatten().fieldErrors)[0]?.[0] || 'Validation failed'
@@ -308,13 +315,15 @@ export async function updateNews(id: string, data: { title: string, slug: string
       updated_at: new Date()
     }
   })
+  await logAdminAction(session.user.id, `Updated news article: ${data.title}`, "news", id)
   revalidatePath('/news')
   revalidatePath('/dashboard/admin/news')
 }
 
 export async function deleteNews(id: string) {
-  await checkAdmin()
+  const session = await checkAdmin()
   await prisma.news.update({ where: { id }, data: { deleted_at: new Date() } })
+  await logAdminAction(session.user.id, `Soft-deleted news article`, "news", id)
   revalidatePath('/news')
   revalidatePath('/dashboard/admin/news')
 }

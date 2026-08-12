@@ -4,6 +4,7 @@ import { createClient } from "@supabase/supabase-js"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { revalidatePath } from "next/cache"
+import { logAdminAction } from "./super-admin"
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co'
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'placeholder-key'
@@ -102,7 +103,7 @@ export async function getUsersPaginated(page: number = 1, perPage: number = 10, 
 }
 
 export async function blockUser(userId: string, isBlocked: boolean) {
-  await checkAdmin()
+  const session = await checkAdmin()
   const banDuration = isBlocked ? '87600h' : 'none' // 10 years or none
   
   const { data, error } = await supabaseAdmin.auth.admin.updateUserById(userId, {
@@ -110,6 +111,9 @@ export async function blockUser(userId: string, isBlocked: boolean) {
   })
   
   if (error) throw new Error(error.message)
+
+  await logAdminAction(session.user.id, `${isBlocked ? 'Blocked' : 'Unblocked'} user`, "users", userId)
+
   revalidatePath('/dashboard/admin/users')
   return data
 }
@@ -153,6 +157,8 @@ export async function updateUserRole(userId: string, newRole: string) {
       })
     }
   }
+
+  await logAdminAction(session.user.id, `Updated user role to ${newRole}`, "users", userId)
 
   revalidatePath('/dashboard/admin/users')
   return data
@@ -213,6 +219,8 @@ export async function createUserAccount(userDataParams: {
     }
   }
 
+  await logAdminAction(session.user.id, `Created user account (${role}): ${email}`, "users", userId)
+
   revalidatePath('/dashboard/admin/users')
   return data.user
 }
@@ -246,12 +254,14 @@ export async function deleteUser(userId: string, targetRole: string) {
     throw new Error('Failed to delete user: ' + error.message)
   }
   
+  await logAdminAction(session.user.id, `Deleted user account`, "users", userId)
+
   revalidatePath('/dashboard/admin/users')
   return data
 }
 
 export async function updateUserDetails(userId: string, name: string, email: string) {
-  await checkAdmin()
+  const session = await checkAdmin()
   
   // Fetch existing user metadata to preserve fields like role, avatar_url, etc.
   const { data: userData, error: getUserError } = await supabaseAdmin.auth.admin.getUserById(userId)
@@ -275,6 +285,8 @@ export async function updateUserDetails(userId: string, name: string, email: str
   if (scholarRecord) {
     await supabaseAdmin.from('scholars').update({ name: name }).eq('user_id', userId)
   }
+
+  await logAdminAction(session.user.id, `Updated user details (${name}, ${email})`, "users", userId)
   
   revalidatePath('/dashboard/admin/users')
   return data

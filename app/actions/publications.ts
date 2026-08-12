@@ -12,6 +12,7 @@ import { pipeline } from 'stream/promises'
 import path from "path"
 import { unlink } from "fs/promises"
 import { createNotification } from "./notifications"
+import { logAdminAction } from "./super-admin"
 import { prisma } from "@/lib/db"
 import { publicationSchema, updatePublicationSchema } from "@/lib/validations/publication"
 import { z } from 'zod'
@@ -471,7 +472,7 @@ export async function getPublication(id: string) {
   }
 }
 
-export async function updatePublicationContent(id: string, updates: { title?: string, abstract?: string, content_type?: string, category_id?: string | null, status?: string }) {
+export async function updatePublicationContent(id: string, updates: Record<string, any>) {
   const session = await getServerSession(authOptions)
   
   if (!session) {
@@ -515,7 +516,12 @@ export async function updatePublicationContent(id: string, updates: { title?: st
 
     if (error) throw error
 
+    if (isAdmin) {
+      await logAdminAction(session.user.id, `Updated publication: ${updates.title || id}`, "publications", id, updates)
+    }
+
     revalidatePath('/dashboard/admin/publications')
+    revalidatePath(`/dashboard/admin/publications/${id}/edit`)
     revalidatePath('/explore')
     return { success: true }
   } catch (error: any) {
@@ -532,7 +538,7 @@ export async function deletePublication(id: string) {
 
     const { data: pub, error: fetchError } = await supabaseAdmin
       .from('publications')
-      .select('scholar_id')
+      .select('scholar_id, title')
       .eq('id', id)
       .single()
 
@@ -558,6 +564,10 @@ export async function deletePublication(id: string) {
       .eq('id', id)
 
     if (deleteError) throw deleteError
+
+    if (['admin', 'super_admin'].includes(session.user.role)) {
+      await logAdminAction(session.user.id, `Soft-deleted publication: ${pub.title || id}`, "publications", id)
+    }
 
     revalidatePath('/dashboard/scholar/publications')
     revalidatePath('/dashboard/admin/publications')
@@ -604,6 +614,8 @@ export async function togglePublicationFeaturedStatus(id: string, is_featured: b
     throw new Error(error.message || 'Failed to update feature status')
   }
 
+  await logAdminAction(session.user.id, `Toggled publication featured status (${is_featured ? 'Featured' : 'Unfeatured'})`, "publications", id)
+
   revalidatePath('/dashboard/admin/publications')
   revalidatePath('/')
   revalidatePath('/explore')
@@ -624,6 +636,8 @@ export async function togglePublicationHeroStatus(id: string, is_hero: boolean) 
     console.error('Error toggling publication hero status:', error)
     throw new Error(error.message || 'Failed to update hero status')
   }
+
+  await logAdminAction(session.user.id, `Toggled publication hero status (${is_hero ? 'Pinned' : 'Unpinned'})`, "publications", id)
 
   revalidatePath('/dashboard/admin/publications')
   revalidatePath('/')

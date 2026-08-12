@@ -5,9 +5,15 @@ import PublicationActionButtons from "./PublicationActionButtons"
 import { Star, StarOff } from 'lucide-react'
 import { togglePublicationFeaturedStatus } from '@/app/actions/publications'
 import toast from 'react-hot-toast'
+import PdfViewerModal from '@/components/shared/PdfViewerModal'
 
 export default function AdminPublicationsClient({ publications }: { publications: any[] }) {
   const [isPending, startTransition] = useTransition()
+  const [pdfModal, setPdfModal] = useState<{ isOpen: boolean; url: string; title: string }>({
+    isOpen: false,
+    url: '',
+    title: ''
+  })
 
   const handleToggleFeature = async (id: string, currentlyFeatured: boolean) => {
     startTransition(async () => {
@@ -162,10 +168,13 @@ export default function AdminPublicationsClient({ publications }: { publications
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-(--color-gsp-text-inverse)">
-                  <a href={pub.file_url} target="_blank" rel="noopener noreferrer" className="hover:underline flex items-center">
-                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                  <button 
+                    onClick={() => setPdfModal({ isOpen: true, url: pub.file_url, title: pub.title })}
+                    className="hover:underline flex items-center text-purple-700 font-medium cursor-pointer"
+                  >
+                    <svg className="w-4 h-4 mr-1 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
                     View PDF
-                  </a>
+                  </button>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <div className="flex items-center justify-end gap-2">
@@ -233,6 +242,13 @@ export default function AdminPublicationsClient({ publications }: { publications
         </div>
       )}
       </div>
+
+      <PdfViewerModal
+        isOpen={pdfModal.isOpen}
+        onClose={() => setPdfModal({ ...pdfModal, isOpen: false })}
+        url={pdfModal.url}
+        title={pdfModal.title}
+      />
     </div>
   )
 }

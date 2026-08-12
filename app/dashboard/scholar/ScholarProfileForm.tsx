@@ -153,6 +153,32 @@ export default function ScholarProfileForm({ scholar }: { scholar: any }) {
         </div>
       )}
 
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label htmlFor="name" className="block text-3.75 font-semibold text-gray-800 mb-1.5">Full Name</label>
+          <input aria-label="Input field" 
+            type="text" 
+            name="name" 
+            id="name" 
+            defaultValue={scholar.users?.raw_user_meta_data?.name || scholar.users?.raw_user_meta_data?.full_name || ''}
+            placeholder="Dr. John Smith"
+            className="block w-full px-4 py-3 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 sm:text-sm bg-white" 
+          />
+        </div>
+
+        <div>
+          <label htmlFor="username" className="block text-3.75 font-semibold text-gray-800 mb-1.5">Username / Handle</label>
+          <input aria-label="Input field" 
+            type="text" 
+            name="username" 
+            id="username" 
+            defaultValue={scholar.username || ''}
+            placeholder="johnsmith"
+            className="block w-full px-4 py-3 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 sm:text-sm bg-white" 
+          />
+        </div>
+      </div>
+
       <div>
         <label htmlFor="bio" className="block text-3.75 font-semibold text-gray-800 mb-1.5">Biography</label>
         <textarea aria-label="Input field" 
@@ -160,7 +186,7 @@ export default function ScholarProfileForm({ scholar }: { scholar: any }) {
           id="bio" 
           rows={4} 
           defaultValue={scholar.bio || ''}
-          placeholder="Scholar profile generated."
+          placeholder="Scholar profile biography..."
           className="block w-full px-4 py-3 border border-gray-200 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 sm:text-sm bg-white"
         />
       </div>
