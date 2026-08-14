@@ -275,7 +275,7 @@ export default function GSPSubjectCategories({ title, subtitle, categories, auto
       <div className="subjects-head">
         <div>
           <p className="sub-eyebrow"><span className="sub-eyebrow-line"></span>{subtitle || 'Browse By Discipline'}</p>
-          <h2 className="subjects-h2" dangerouslySetInnerHTML={{ __html: title || 'Academic <em>Categories</em>' }}></h2>
+          <h2 className="subjects-h2 text-[#1E3A8A]" dangerouslySetInnerHTML={{ __html: title || 'Browse Academic <em>Disciplines</em>' }}></h2>
         </div>
       </div>
 

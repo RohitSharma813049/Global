@@ -84,6 +84,10 @@ export async function cacheOrFetch<T>(
  * Invalidate cache by tags or key patterns
  */
 export async function invalidateCache(tagsOrKeys: string[]): Promise<void> {
+  // Clear memory cache completely to ensure real-time fresh data
+  memoryCache.clear();
+  memoryCacheTags.clear();
+
   // 1. Clear Memory Cache by tags / keys
   tagsOrKeys.forEach(item => {
     memoryCache.delete(item);

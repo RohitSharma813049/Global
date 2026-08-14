@@ -29,7 +29,7 @@ export default function Testimonials({ title, subtitle, testimonials = [], autop
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const chunkSize = isMobile ? 2 : 4;
+  const chunkSize = isMobile ? 1 : 3;
   const chunkedTestimonials = [];
   for (let i = 0; i < testimonials.length; i += chunkSize) {
     chunkedTestimonials.push(testimonials.slice(i, i + chunkSize));
@@ -40,10 +40,10 @@ export default function Testimonials({ title, subtitle, testimonials = [], autop
       <div className="mx-auto max-w-7xl">
         <div className="mb-12 text-center">
           <p className="text-sm font-semibold tracking-wide text-primary uppercase">
-            {subtitle || 'Success Stories'}
+            {subtitle || 'Community Feedback'}
           </p>
-          <h2 className="mt-2 text-balance text-3xl font-bold text-foreground sm:text-4xl">
-            {title || 'What Scholars Say'}
+          <h2 className="mt-2 text-balance text-3xl font-bold text-[#1E3A8A] sm:text-4xl">
+            {title || 'What Scholars & Researchers Say'}
           </h2>
         </div>
 

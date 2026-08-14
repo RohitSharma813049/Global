@@ -169,7 +169,7 @@ export default function HomeHero({
 
       <section className="hero">
         <div className="hero-left">
-          <p className="eyebrow"><span className="eyebrow-line"></span>{eyebrow || 'Peer-Reviewed · Open Access · Global Impact'}</p>
+          <p className="eyebrow">{eyebrow || 'Peer-Reviewed · Open Access · Global Impact'}</p>
 
           <h1 className="hero-h1" dangerouslySetInnerHTML={{ __html: title || 'Advancing Global<br /><em>Scholarly Excellence</em>' }} />
 
@@ -185,7 +185,7 @@ export default function HomeHero({
               </svg>
             </span>
             <input className="search-input" type="text"
-              placeholder={searchPlaceholder || "Search journals, papers, authors, books…"}
+              placeholder={searchPlaceholder || "Search projects..."}
               aria-label="Search publications"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}

@@ -168,8 +168,8 @@ export async function updateHomepageSettings(newSettings: any) {
   
   await logAdminAction(session.user.id, "Updated homepage settings", "homepage_settings", existing?.id || "new")
 
-  await invalidateCache(['cms-homepage-settings', 'cms-blogs', 'cms-news', 'cms-featured-scholars'])
-  revalidatePath('/')
+  await invalidateCache(['cms-homepage-settings', 'cms-blogs', 'cms-news', 'cms-testimonials', 'cms-featured-scholars', 'cms-magazines'])
+  revalidatePath('/', 'layout')
   revalidatePath('/dashboard/admin/settings')
   return { success: true }
 }
@@ -208,6 +208,8 @@ export async function createBlog(data: { title: string, slug: string, content: s
     }
   })
   await logAdminAction(session.user.id, `Created blog post: ${data.title}`, "blogs", created.id)
+  await invalidateCache(['cms-blogs', 'cms-homepage-settings'])
+  revalidatePath('/', 'layout')
   revalidatePath('/blog')
   revalidatePath('/dashboard/admin/blogs')
 }
@@ -227,6 +229,8 @@ export async function updateBlog(id: string, data: { title: string, slug: string
     }
   })
   await logAdminAction(session.user.id, `Updated blog post: ${data.title}`, "blogs", id)
+  await invalidateCache(['cms-blogs', 'cms-homepage-settings'])
+  revalidatePath('/', 'layout')
   revalidatePath('/blog')
   revalidatePath('/dashboard/admin/blogs')
 }
@@ -235,6 +239,8 @@ export async function deleteBlog(id: string) {
   const session = await checkAdmin()
   await prisma.blogs.update({ where: { id }, data: { deleted_at: new Date() } })
   await logAdminAction(session.user.id, `Soft-deleted blog post`, "blogs", id)
+  await invalidateCache(['cms-blogs', 'cms-homepage-settings'])
+  revalidatePath('/', 'layout')
   revalidatePath('/blog')
   revalidatePath('/dashboard/admin/blogs')
 }
@@ -377,14 +383,16 @@ export async function createTestimonial(data: { quote: string, author: string, r
     throw new Error(firstError)
   }
   await prisma.testimonials.create({ data })
-  revalidatePath('/')
+  await invalidateCache(['cms-testimonials', 'cms-homepage-settings'])
+  revalidatePath('/', 'layout')
   revalidatePath('/dashboard/admin/testimonials')
 }
 
 export async function deleteTestimonial(id: string) {
   await checkAdmin()
   await prisma.testimonials.delete({ where: { id } })
-  revalidatePath('/')
+  await invalidateCache(['cms-testimonials', 'cms-homepage-settings'])
+  revalidatePath('/', 'layout')
   revalidatePath('/dashboard/admin/testimonials')
 }
 
@@ -407,7 +415,8 @@ export async function toggleTestimonialFeaturedStatus(id: string, is_featured: b
   } else {
     await prisma.homepage_settings.create({ data: { settings } })
   }
-  revalidatePath('/')
+  await invalidateCache(['cms-testimonials', 'cms-homepage-settings'])
+  revalidatePath('/', 'layout')
   revalidatePath('/dashboard/admin/testimonials')
 }
 
@@ -419,7 +428,8 @@ export async function updateTestimonial(id: string, data: { quote: string, autho
     throw new Error(firstError)
   }
   await prisma.testimonials.update({ where: { id }, data })
-  revalidatePath('/')
+  await invalidateCache(['cms-testimonials', 'cms-homepage-settings'])
+  revalidatePath('/', 'layout')
   revalidatePath('/dashboard/admin/testimonials')
 }
 

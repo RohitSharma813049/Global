@@ -339,7 +339,7 @@ export default function GSPFeaturedScholars({ title, subtitle, scholars = [], au
       <div className="scholars-head">
         <div>
           <p className="scholars-eyebrow"><span className="scholars-eyebrow-line"></span>{subtitle || 'Honorary Doctorates · Distinguished Faculty'}</p>
-          <h2 className="scholars-h2" dangerouslySetInnerHTML={{ __html: title || 'Featured <em>Scholars</em>' }}></h2>
+          <h2 className="scholars-h2 text-[#1E3A8A]" dangerouslySetInnerHTML={{ __html: title || 'Distinguished Global <em>Scholars</em>' }}></h2>
         </div>
         <div className="scholars-carousel-controls">
           <button 

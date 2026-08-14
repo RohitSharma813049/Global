@@ -136,7 +136,7 @@ export default function GspRecentBlogs({ items, autoplay = true }: { items: Cont
       <div className="gsp-blog-head">
         <div>
           <p className="gsp-eyebrow"><span className="gsp-eyebrow-line"></span>Insights · Interviews · Commentary</p>
-          <h2 className="gsp-blog-h2">From The <em>GSP Blog</em></h2>
+          <h2 className="gsp-blog-h2 text-[#1E3A8A]">Latest Insights & <em>Academic News</em></h2>
           <p className="gsp-blog-sub">
             Perspectives from scholars, editors, and researchers on the ideas shaping academia today.
           </p>

@@ -152,8 +152,8 @@ export default function GspFeaturedContent({ title, subtitle, description, autop
       <div className="gsp-section-inner">
         <div className="gsp-section-head">
           <div className="gsp-section-head-left gsp-reveal">
-            <p className="gsp-eyebrow"><span className="gsp-eyebrow-line"></span>{subtitle || 'Handpicked This Month'}</p>
-            <h2 className="gsp-section-h2" dangerouslySetInnerHTML={{ __html: title || 'Featured <em>Publications</em>' }} />
+            <p className="gsp-eyebrow"><span className="gsp-eyebrow-line"></span>{subtitle || 'Curated Content'}</p>
+            <h2 className="gsp-section-h2" dangerouslySetInnerHTML={{ __html: title || 'Featured <em>Research & Articles</em>' }} />
             <p className="gsp-section-sub">{description || 'A curated selection of distinguished research, eBooks and editorial work from scholars across 80 countries.'}</p>
           </div>
           <Link href="/publications" className="gsp-section-link gsp-reveal">

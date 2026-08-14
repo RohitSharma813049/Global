@@ -22,7 +22,7 @@ export async function getHomepageSettings() {
         { prefix: 'Featured', text: 'GCC Economic Diversification — Prof. Khalid Al-Mansouri' },
         { prefix: 'Open Access', text: 'Decolonising Knowledge Systems — Dr. Ngozi Adeyemi' }
       ],
-      hero_search_placeholder: 'Search journals, papers, authors, books…',
+      hero_search_placeholder: 'Search projects...',
       hero_search_filters: ['All', 'Agriculture', 'Computer Science', 'Business', 'Humanities', 'Scholars'],
       hero_top_pill: 'Open Access 2026',
       hero_cta_primary_text: 'Explore Publications',

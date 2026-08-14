@@ -94,7 +94,7 @@ export default function GspExploreCategories({ title, subtitle, categories }: Gs
         <div className="gsp-section-head">
           <div className="gsp-section-head-left gsp-reveal">
             <p className="gsp-eyebrow"><span className="gsp-eyebrow-line"></span>{subtitle || 'Browse By Format'}</p>
-            <h2 className="gsp-section-h2" dangerouslySetInnerHTML={{ __html: title || 'Publication <em>Categories</em>' }} />
+            <h2 className="gsp-section-h2" dangerouslySetInnerHTML={{ __html: title || 'Explore Publication <em>Categories</em>' }} />
             <p className="gsp-section-sub">Explore scholarly work across theses, research articles, eBooks and magazines — curated from 350+ peer-reviewed journals.</p>
           </div>
           <Link href="/explore" className="gsp-section-link gsp-reveal">

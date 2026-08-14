@@ -262,16 +262,16 @@
   text-transform: uppercase; color: var(--violet);
   margin-bottom: 18px; text-align: left;
 }
-.gsp-eyebrow-line, .eyebrow-line { width: 24px; height: 2px; background: var(--violet); flex-shrink: 0; }
+.gsp-eyebrow-line, .eyebrow-line { display: none !important; }
 
 .gsp-section-h2 {
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-weight: 700; line-height: 1.05; letter-spacing: -0.02em;
   font-size: clamp(32px, 3.2vw, 46px);
-  color: var(--ink);
+  color: #1E3A8A;
 }
 .gsp-section-h2 em {
-  font-style: italic; font-weight: 300; color: var(--violet);
+  font-style: italic; font-weight: 300; color: #2563EB;
 }
 .gsp-section-sub {
   font-size: 14.5px; font-weight: 300; line-height: 1.65;
@@ -303,14 +303,23 @@
    SECTION 1 — PUBLICATION CATEGORIES
 ════════════════════════════════ */
 .gsp-cat-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  overflow-y: visible;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding: 8px 4px 16px;
+  -webkit-overflow-scrolling: touch;
 }
+.gsp-cat-grid::-webkit-scrollbar { display: none; }
 
 .gsp-cat-card {
   position: relative;
   display: block;
+  flex: 0 0 calc(25% - 15px);
+  min-width: 260px;
+  scroll-snap-align: start;
   border-radius: 16px;
   overflow: hidden;
   height: 280px;
@@ -399,14 +408,23 @@
 }
 
 .gsp-pub-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 28px;
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  overflow-y: visible;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding: 8px 4px 16px;
+  -webkit-overflow-scrolling: touch;
 }
+.gsp-pub-grid::-webkit-scrollbar { display: none; }
 
 .gsp-pub-card {
   display: flex;
   flex-direction: column;
+  flex: 0 0 calc(25% - 15px);
+  min-width: 270px;
+  scroll-snap-align: start;
   background: #fff;
   border: 1px solid var(--rule);
   border-radius: 16px;
@@ -522,58 +540,49 @@
 /* ════════════════════════════════
    RESPONSIVE
 ════════════════════════════════ */
-@media (max-width: 1180px) {
-  .gsp-cat-grid { grid-template-columns: repeat(2, 1fr); }
-  .gsp-pub-grid { grid-template-columns: repeat(2, 1fr); }
+@media (max-width: 1024px) {
+  .gsp-cat-card { flex: 0 0 calc(33.333% - 14px); }
+  .gsp-pub-card { flex: 0 0 calc(33.333% - 14px); }
 }
 @media (max-width: 860px) {
   .gsp-section { padding: 64px 28px; }
   .gsp-section-head { flex-direction: column; align-items: flex-start; gap: 16px; }
 }
-/* ── MOBILE: convert grids to swipeable carousels ── */
-@media (max-width: 700px) {
+/* ── MOBILE: swipeable carousels ── */
+@media (max-width: 768px) {
   .gsp-cat-grid, .gsp-pub-grid {
-    display: flex;
-    grid-template-columns: none;
-    gap: 14px;
-    overflow-x: auto;
-    overflow-y: visible;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-    padding: 4px 28px 8px;
+    padding: 4px 28px 12px;
     margin: 0 -28px;
+    gap: 14px;
   }
-  .gsp-cat-grid::-webkit-scrollbar, .gsp-pub-grid::-webkit-scrollbar { display: none; }
-
   .gsp-cat-card {
-    flex: 0 0 78%;
-    scroll-snap-align: start;
+    flex: 0 0 84%;
+    min-width: unset;
     height: 240px;
   }
   .gsp-pub-card {
-    flex: 0 0 80%;
-    scroll-snap-align: start;
+    flex: 0 0 86%;
+    min-width: unset;
   }
-
-  .gsp-carousel-dots {
-    display: flex; justify-content: center; gap: 6px;
-    margin-top: 20px;
-  }
-  .gsp-cdot {
-    width: 6px; height: 6px; border-radius: 50%;
-    background: var(--rule);
-    transition: background 0.25s, width 0.25s;
-  }
-  .gsp-cdot.on { background: var(--violet); width: 20px; border-radius: 3px; }
 }
+
+.gsp-carousel-dots {
+  display: flex; justify-content: center; gap: 6px;
+  margin-top: 20px;
+}
+.gsp-cdot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--rule);
+  transition: background 0.25s, width 0.25s;
+  cursor: pointer;
+}
+.gsp-cdot.on { background: #1E3A8A; width: 22px; border-radius: 4px; }
+
 @media (max-width: 560px) {
-  .gsp-cat-card { flex-basis: 84%; height: 220px; }
-  .gsp-pub-card { flex-basis: 86%; }
+  .gsp-cat-card { flex-basis: 88%; height: 220px; }
+  .gsp-pub-card { flex-basis: 90%; }
   .gsp-pub-filter-row { gap: 6px; }
   .gsp-pfpill { padding: 6px 13px; font-size: 11px; }
-}
-@media (min-width: 701px) {
-  .gsp-carousel-dots { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {

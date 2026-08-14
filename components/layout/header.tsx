@@ -76,20 +76,20 @@ export default function Header() {
         </Link>
 
         <div className="hidden md:flex items-center gap-6">
-          <Link href="/" className="text-sm text-foreground/70 transition hover:text-foreground">
+          <Link href="/" className="text-sm text-[#1E3A8A] font-semibold transition hover:text-blue-600">
             Home
           </Link>
-          <Link href="/explore" className="text-sm text-foreground/70 transition hover:text-foreground">
+          <Link href="/explore" className="text-sm text-[#1E3A8A] font-semibold transition hover:text-blue-600">
             Explore
           </Link>
-          <Link href="/updates" className="text-sm text-foreground/70 transition hover:text-foreground">
+          <Link href="/updates" className="text-sm text-[#1E3A8A] font-semibold transition hover:text-blue-600">
             Blogs & News
           </Link>
           {/* Removed My Library link to save space */}
-          <Link href="/scholars" className="text-sm text-foreground/70 transition hover:text-foreground">
+          <Link href="/scholars" className="text-sm text-[#1E3A8A] font-semibold transition hover:text-blue-600">
             Scholars
           </Link>
-          <Link href="/about" className="text-sm text-foreground/70 transition hover:text-foreground">
+          <Link href="/about" className="text-sm text-[#1E3A8A] font-semibold transition hover:text-blue-600">
             About
           </Link>
 
@@ -255,24 +255,24 @@ export default function Header() {
               <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
               <nav className="flex flex-col gap-6 h-full overflow-y-auto pb-20">
                 <div className="flex flex-col space-y-1">
-                  <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider px-2 mb-2">Main</h4>
-                  <SheetClose asChild><Link href="/" className="text-base font-medium px-2 py-2 rounded-md hover:text-indigo-600 hover:bg-indigo-50 transition-colors">Home</Link></SheetClose>
-                  <SheetClose asChild><Link href="/explore" className="text-base font-medium px-2 py-2 rounded-md hover:text-indigo-600 hover:bg-indigo-50 transition-colors">Explore</Link></SheetClose>
-                  <SheetClose asChild><Link href="/updates" className="text-base font-medium px-2 py-2 rounded-md hover:text-indigo-600 hover:bg-indigo-50 transition-colors">Blogs & News</Link></SheetClose>
-                  <SheetClose asChild><Link href="/scholars" className="text-base font-medium px-2 py-2 rounded-md hover:text-indigo-600 hover:bg-indigo-50 transition-colors">Scholars</Link></SheetClose>
+                  <h4 className="text-xs font-bold text-blue-900 uppercase tracking-wider px-2 mb-2">Main</h4>
+                  <SheetClose asChild><Link href="/" className="text-base font-semibold px-2 py-2 rounded-md text-[#1E3A8A] hover:text-blue-700 hover:bg-blue-50 transition-colors">Home</Link></SheetClose>
+                  <SheetClose asChild><Link href="/explore" className="text-base font-semibold px-2 py-2 rounded-md text-[#1E3A8A] hover:text-blue-700 hover:bg-blue-50 transition-colors">Explore</Link></SheetClose>
+                  <SheetClose asChild><Link href="/updates" className="text-base font-semibold px-2 py-2 rounded-md text-[#1E3A8A] hover:text-blue-700 hover:bg-blue-50 transition-colors">Blogs & News</Link></SheetClose>
+                  <SheetClose asChild><Link href="/scholars" className="text-base font-semibold px-2 py-2 rounded-md text-[#1E3A8A] hover:text-blue-700 hover:bg-blue-50 transition-colors">Scholars</Link></SheetClose>
                   {session && (
                     <>
-                      <SheetClose asChild><Link href="/library" className="text-base font-medium px-2 py-2 rounded-md hover:text-indigo-600 hover:bg-indigo-50 transition-colors">My Library</Link></SheetClose>
+                      <SheetClose asChild><Link href="/library" className="text-base font-semibold px-2 py-2 rounded-md text-[#1E3A8A] hover:text-blue-700 hover:bg-blue-50 transition-colors">My Library</Link></SheetClose>
                     </>
                   )}
                   <SheetClose asChild>
-                    <Link href={session ? '/dashboard' : '/signin'} className="text-base font-medium px-2 py-2 rounded-md hover:text-indigo-600 hover:bg-indigo-50 transition-colors">
+                    <Link href={session ? '/dashboard' : '/signin'} className="text-base font-semibold px-2 py-2 rounded-md text-[#1E3A8A] hover:text-blue-700 hover:bg-blue-50 transition-colors">
                       {session ? 'Dashboard' : 'Scholars Portal'}
                     </Link>
                   </SheetClose>
                   {(role === 'admin' || role === 'super_admin') && (
                     <SheetClose asChild>
-                      <Link href="/dashboard/admin/users" className="text-base font-medium px-2 py-2 rounded-md text-indigo-600 hover:bg-indigo-50 transition-colors">
+                      <Link href="/dashboard/admin/users" className="text-base font-semibold px-2 py-2 rounded-md text-[#1E3A8A] hover:bg-indigo-50 transition-colors">
                         Admin Panel
                       </Link>
                     </SheetClose>
@@ -280,15 +280,15 @@ export default function Header() {
                 </div>
 
                 <div className="flex flex-col space-y-1 mt-6">
-                  <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider px-2 mb-2">Platform</h4>
-                  <SheetClose asChild><Link href="/about" className="text-base font-medium px-2 py-2 rounded-md hover:text-indigo-600 hover:bg-indigo-50 transition-colors">About Us</Link></SheetClose>
-                  <SheetClose asChild><Link href="/features" className="text-base font-medium px-2 py-2 rounded-md hover:text-indigo-600 hover:bg-indigo-50 transition-colors">Features</Link></SheetClose>
+                  <h4 className="text-xs font-bold text-blue-900 uppercase tracking-wider px-2 mb-2">Platform</h4>
+                  <SheetClose asChild><Link href="/about" className="text-base font-semibold px-2 py-2 rounded-md text-[#1E3A8A] hover:text-blue-700 hover:bg-blue-50 transition-colors">About Us</Link></SheetClose>
+                  <SheetClose asChild><Link href="/features" className="text-base font-semibold px-2 py-2 rounded-md text-[#1E3A8A] hover:text-blue-700 hover:bg-blue-50 transition-colors">Features</Link></SheetClose>
                 </div>
 
                 <div className="flex flex-col space-y-1 mt-6">
-                  <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider px-2 mb-2">Support</h4>
-                  <SheetClose asChild><Link href="/help" className="text-base font-medium px-2 py-2 rounded-md hover:text-indigo-600 hover:bg-indigo-50 transition-colors">Help Center</Link></SheetClose>
-                  <SheetClose asChild><Link href="/contact" className="text-base font-medium px-2 py-2 rounded-md hover:text-indigo-600 hover:bg-indigo-50 transition-colors">Contact Us</Link></SheetClose>
+                  <h4 className="text-xs font-bold text-blue-900 uppercase tracking-wider px-2 mb-2">Support</h4>
+                  <SheetClose asChild><Link href="/help" className="text-base font-semibold px-2 py-2 rounded-md text-[#1E3A8A] hover:text-blue-700 hover:bg-blue-50 transition-colors">Help Center</Link></SheetClose>
+                  <SheetClose asChild><Link href="/contact" className="text-base font-semibold px-2 py-2 rounded-md text-[#1E3A8A] hover:text-blue-700 hover:bg-blue-50 transition-colors">Contact Us</Link></SheetClose>
                 </div>
 
                 <div className="mt-auto pt-8 px-4 pb-4">
