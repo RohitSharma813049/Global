@@ -270,7 +270,7 @@ export default function AuthUI({ initialScreen }: AuthUIProps) {
             {/* ══════ SCREEN: SIGN IN ══════ */}
             {activeScreen === "signin" && (
               <div className="animate-fade-in-up">
-                <p className="form-eyebrow"><span className="form-eyebrow-line"></span>Welcome back</p>
+                <p className="form-eyebrow">Welcome back</p>
                 <h2 className="form-title">Sign <em>In</em></h2>
                 <p className="form-sub">Access your GSP account to read, publish and connect with scholars worldwide.</p>
 
@@ -405,7 +405,7 @@ export default function AuthUI({ initialScreen }: AuthUIProps) {
                   <div className="step-dot idle"></div>
                   <div className="step-dot idle"></div>
                 </div>
-                <p className="form-eyebrow"><span className="form-eyebrow-line"></span>Create your account</p>
+                <p className="form-eyebrow">Create your account</p>
                 <h2 className="form-title">Join <em>GSP</em></h2>
                 <p className="form-sub">Become part of a global community of scholars and readers.</p>
 
