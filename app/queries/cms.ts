@@ -138,109 +138,139 @@ export async function getHomepageSettings() {
       pinned_blogs: []
     }
 
-    const settingsRow = await prisma.homepage_settings.findFirst({
-      orderBy: { created_at: 'desc' }
-    })
-    
-    if (!settingsRow) {
-      return defaultSettings
-    }
-    
-    const dbSettings = settingsRow.settings as any;
-    return { 
-      ...defaultSettings, 
-      ...dbSettings,
-      faqs: Array.isArray(dbSettings.faqs) ? dbSettings.faqs : defaultSettings.faqs,
-      explore_categories: Array.isArray(dbSettings.explore_categories) ? dbSettings.explore_categories : defaultSettings.explore_categories,
-      subject_categories: Array.isArray(dbSettings.subject_categories) ? dbSettings.subject_categories : defaultSettings.subject_categories,
-      hero_slides: Array.isArray(dbSettings.hero_slides) ? dbSettings.hero_slides : defaultSettings.hero_slides,
-      hero_ticker_items: Array.isArray(dbSettings.hero_ticker_items) ? dbSettings.hero_ticker_items : defaultSettings.hero_ticker_items,
-      hero_trust_avatars: Array.isArray(dbSettings.hero_trust_avatars) ? dbSettings.hero_trust_avatars : defaultSettings.hero_trust_avatars,
-      hero_stats: Array.isArray(dbSettings.hero_stats) ? dbSettings.hero_stats : defaultSettings.hero_stats,
-      featured_publications: Array.isArray(dbSettings.featured_publications) ? dbSettings.featured_publications : defaultSettings.featured_publications,
-      how_it_works_steps: Array.isArray(dbSettings.how_it_works_steps) ? dbSettings.how_it_works_steps : defaultSettings.how_it_works_steps,
-      pinned_scholars: Array.isArray(dbSettings.pinned_scholars) ? dbSettings.pinned_scholars : defaultSettings.pinned_scholars,
-      pinned_blogs: Array.isArray(dbSettings.pinned_blogs) ? dbSettings.pinned_blogs : defaultSettings.pinned_blogs
+    try {
+      const settingsRow = await prisma.homepage_settings.findFirst({
+        orderBy: { created_at: 'desc' }
+      })
+      
+      if (!settingsRow) {
+        return defaultSettings
+      }
+      
+      const dbSettings = settingsRow.settings as any;
+      return { 
+        ...defaultSettings, 
+        ...dbSettings,
+        faqs: Array.isArray(dbSettings.faqs) ? dbSettings.faqs : defaultSettings.faqs,
+        explore_categories: Array.isArray(dbSettings.explore_categories) ? dbSettings.explore_categories : defaultSettings.explore_categories,
+        subject_categories: Array.isArray(dbSettings.subject_categories) ? dbSettings.subject_categories : defaultSettings.subject_categories,
+        hero_slides: Array.isArray(dbSettings.hero_slides) ? dbSettings.hero_slides : defaultSettings.hero_slides,
+        hero_ticker_items: Array.isArray(dbSettings.hero_ticker_items) ? dbSettings.hero_ticker_items : defaultSettings.hero_ticker_items,
+        hero_trust_avatars: Array.isArray(dbSettings.hero_trust_avatars) ? dbSettings.hero_trust_avatars : defaultSettings.hero_trust_avatars,
+        hero_stats: Array.isArray(dbSettings.hero_stats) ? dbSettings.hero_stats : defaultSettings.hero_stats,
+        featured_publications: Array.isArray(dbSettings.featured_publications) ? dbSettings.featured_publications : defaultSettings.featured_publications,
+        how_it_works_steps: Array.isArray(dbSettings.how_it_works_steps) ? dbSettings.how_it_works_steps : defaultSettings.how_it_works_steps,
+        pinned_scholars: Array.isArray(dbSettings.pinned_scholars) ? dbSettings.pinned_scholars : defaultSettings.pinned_scholars,
+        pinned_blogs: Array.isArray(dbSettings.pinned_blogs) ? dbSettings.pinned_blogs : defaultSettings.pinned_blogs
+      }
+    } catch (e) {
+      console.warn('[getHomepageSettings] Database query failed, returning default settings:', e);
+      return defaultSettings;
     }
   }, ['cms-homepage-settings']);
 }
 
 export async function getBlogs() {
   return cacheOrFetch('cms-blogs', 60, async () => {
-    return await prisma.blogs.findMany({
-      orderBy: { created_at: 'desc' },
-      take: 500
-    })
+    try {
+      return await prisma.blogs.findMany({
+        orderBy: { created_at: 'desc' },
+        take: 500
+      })
+    } catch (e) {
+      console.warn('[getBlogs] Database query failed:', e);
+      return [];
+    }
   }, ['cms-blogs'])
 }
 
 export async function getNews() {
   return cacheOrFetch('cms-news', 60, async () => {
-    return await prisma.news.findMany({
-      orderBy: { created_at: 'desc' },
-      take: 500
-    })
+    try {
+      return await prisma.news.findMany({
+        orderBy: { created_at: 'desc' },
+        take: 500
+      })
+    } catch (e) {
+      console.warn('[getNews] Database query failed:', e);
+      return [];
+    }
   }, ['cms-news'])
 }
 
 export async function getTestimonials() {
   return cacheOrFetch('cms-testimonials', 60, async () => {
-    return await prisma.testimonials.findMany({
-      orderBy: { created_at: 'desc' },
-      take: 500
-    })
+    try {
+      return await prisma.testimonials.findMany({
+        orderBy: { created_at: 'desc' },
+        take: 500
+      })
+    } catch (e) {
+      console.warn('[getTestimonials] Database query failed:', e);
+      return [];
+    }
   }, ['cms-testimonials'])
 }
 
 export async function getFeaturedScholars() {
   return cacheOrFetch('cms-featured-scholars', 60, async () => {
-    const scholars = await prisma.scholars.findMany({
-      where: { 
-        is_featured: true,
-        publications: {
-          some: {
-            status: 'published',
-            deleted_at: null
+    try {
+      const scholars = await prisma.scholars.findMany({
+        where: { 
+          is_featured: true,
+          publications: {
+            some: {
+              status: 'published',
+              deleted_at: null
+            }
           }
-        }
-      },
-      include: {
-        users: { select: { email: true, raw_user_meta_data: true } },
-        _count: { 
-          select: { 
-            publications: {
-              where: {
-                status: 'published',
-                deleted_at: null
-              }
+        },
+        include: {
+          users: { select: { email: true, raw_user_meta_data: true } },
+          _count: { 
+            select: { 
+              publications: {
+                where: {
+                  status: 'published',
+                  deleted_at: null
+                }
+              } 
             } 
-          } 
-        }
-      },
-      take: 20
-    });
+          }
+        },
+        take: 20
+      });
 
-    const shuffled = scholars.sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, 6);
+      const shuffled = scholars.sort(() => 0.5 - Math.random());
+      return shuffled.slice(0, 6);
+    } catch (e) {
+      console.warn('[getFeaturedScholars] Database query failed:', e);
+      return [];
+    }
   }, ['cms-featured-scholars'])
 }
 
 export async function getMagazines() {
   return cacheOrFetch('cms-magazines', 60, async () => {
-    const magazines = await prisma.magazines.findMany({
-      orderBy: { created_at: 'desc' },
-      take: 100,
-      include: { users: { select: { raw_user_meta_data: true } } }
-    })
-    return magazines.map(m => {
-      const meta = m.users?.raw_user_meta_data as any || {}
-      return {
-        ...m,
-        author_name: meta.name || meta.full_name || 'Admin',
-        author_image: meta.avatar_url || '/placeholder-user.png',
-        type: 'magazine'
-      }
-    })
+    try {
+      const magazines = await prisma.magazines.findMany({
+        orderBy: { created_at: 'desc' },
+        take: 100,
+        include: { users: { select: { raw_user_meta_data: true } } }
+      })
+      return magazines.map(m => {
+        const meta = m.users?.raw_user_meta_data as any || {}
+        return {
+          ...m,
+          author_name: meta.name || meta.full_name || 'Admin',
+          author_image: meta.avatar_url || '/placeholder-user.png',
+          type: 'magazine'
+        }
+      })
+    } catch (e) {
+      console.warn('[getMagazines] Database query failed:', e);
+      return [];
+    }
   }, ['cms-magazines'])
 }
 

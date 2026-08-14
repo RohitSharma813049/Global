@@ -13,6 +13,7 @@ import {
   CarouselNext,
 } from "@/components/ui/carousel"
 import Autoplay from "embla-carousel-autoplay"
+import ScholarCard from '@/components/scholars/scholar-card'
 
 interface Scholar {
   id: number
@@ -21,8 +22,6 @@ interface Scholar {
   publications: number
   image: string
 }
-
-
 
 interface FeaturedScholarsProps {
   title?: string;
@@ -74,37 +73,18 @@ export default function FeaturedScholars({ title, subtitle, scholars = [], autop
               const publicationsCount = scholar._count?.publications || 0
               const image = scholar.users?.raw_user_meta_data?.avatar_url || scholar.users?.raw_user_meta_data?.picture || scholar.users?.raw_user_meta_data?.image || '/placeholder-user.png'
               
+              const scholarData = {
+                id: scholar.id,
+                name,
+                field: domain,
+                publications: publicationsCount,
+                image,
+              }
+
               return (
-              <CarouselItem key={scholar.id} className="pl-4 sm:basis-1/2 lg:basis-1/4">
-                <Link
-                  href={`/scholars/${scholar.id}`}
-                  className="block group h-full relative rounded-3xl border border-gray-100 bg-white p-8 text-center shadow-sm transition-all duration-500 hover:shadow-2xl hover:shadow-indigo-100/50 hover:-translate-y-2 overflow-hidden cursor-pointer"
-                >
-                  <div className="absolute inset-0 bg-indigo-50/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                  
-                  <div className="relative mb-6 flex justify-center">
-                    <div className="relative h-28 w-28 rounded-full p-1 bg-indigo-500">
-                      <div className="h-full w-full rounded-full border-4 border-white bg-white overflow-hidden">
-                        <Image
-                          src={image}
-                          alt={name}
-                          width={120}
-                          height={120}
-                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <h3 className="relative z-10 text-xl font-bold text-gray-900 group-hover:text-indigo-700 transition-colors">{name}</h3>
-                  <p className="relative z-10 mt-2 text-xs font-bold uppercase tracking-widest text-indigo-500">{domain}</p>
-                  
-                  <div className="relative z-10 mt-6 inline-flex items-center rounded-full bg-gray-50 px-4 py-1.5 border border-gray-100 group-hover:bg-white group-hover:border-indigo-100 transition-colors">
-                    <span className="text-sm font-semibold text-gray-700 group-hover:text-indigo-700">
-                      {publicationsCount} <span className="font-medium text-gray-500">Publications</span>
-                    </span>
-                  </div>
-                </Link>
-              </CarouselItem>
+                <CarouselItem key={scholar.id} className="pl-4 sm:basis-1/2 lg:basis-1/4">
+                  <ScholarCard scholar={scholarData} variant="compact" />
+                </CarouselItem>
               )
             })}
           </CarouselContent>

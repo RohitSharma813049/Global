@@ -1,5 +1,6 @@
 'use client'
 
+import { memo } from 'react'
 import { Bookmark, Eye, Download, Star } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
@@ -47,7 +48,7 @@ function stripHtml(html: string): string {
   return html.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ');
 }
 
-export default function ContentCard({
+const ContentCard = memo(function ContentCard({
   item,
   viewMode,
   isBookmarked,
@@ -163,4 +164,6 @@ export default function ContentCard({
       </div>
     </Link>
   )
-}
+})
+
+export default ContentCard

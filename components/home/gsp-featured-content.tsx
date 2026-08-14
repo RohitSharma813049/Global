@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import Link from 'next/link'
 
 interface GspFeaturedContentProps {
@@ -48,7 +48,7 @@ export default function GspFeaturedContent({ title, subtitle, description, autop
     setActiveDot(Math.min(idx, cards.length - 1));
   };
 
-  const defaultPublications = [
+  const defaultPublications = useMemo(() => [
     {
       type: 'Thesis',
       subject: 'Computer Science · Ethics',
@@ -93,18 +93,24 @@ export default function GspFeaturedContent({ title, subtitle, description, autop
       views: '1.9k reads',
       link: '/explore?type=Magazine'
     }
-  ];
+  ], []);
 
-  const displayPublications = publications && publications.length > 0 ? publications : defaultPublications;
+  const displayPublications = useMemo(() => {
+    return publications && publications.length > 0 ? publications : defaultPublications;
+  }, [publications, defaultPublications]);
 
-  const dynamicFilters = ['All', ...Array.from(new Set(displayPublications.map(p => p.subject?.split(' · ')[0] || p.subject))).filter(Boolean).slice(0, 4)] as string[];
+  const dynamicFilters = useMemo(() => {
+    return ['All', ...Array.from(new Set(displayPublications.map(p => p.subject?.split(' · ')[0] || p.subject))).filter(Boolean).slice(0, 4)] as string[];
+  }, [displayPublications]);
 
-  const filteredPublications = filter === 'All' 
-    ? displayPublications 
-    : displayPublications.filter(p => {
-        const pSub = p.subject || '';
-        return pSub.includes(filter);
-      });
+  const filteredPublications = useMemo(() => {
+    return filter === 'All' 
+      ? displayPublications 
+      : displayPublications.filter(p => {
+          const pSub = p.subject || '';
+          return pSub.includes(filter);
+        });
+  }, [filter, displayPublications]);
 
   useEffect(() => {
     if (!autoplay || !filteredPublications || filteredPublications.length === 0) return;

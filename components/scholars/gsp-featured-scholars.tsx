@@ -1,8 +1,9 @@
 'use client'
 
-import { useEffect, useRef, useState, useCallback } from 'react'
+import { useEffect, useRef, useState, useCallback, useMemo } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import ScholarCard from '@/components/scholars/scholar-card'
 
 interface ScholarCardData {
   username?: string;
@@ -111,37 +112,39 @@ export default function GSPFeaturedScholars({ title, subtitle, scholars = [], au
   const trackRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
   
-  const hasValidScholars = scholars && scholars.length > 0;
-  const displayScholars = hasValidScholars ? scholars.map(s => {
-    // If it's a manual pinned scholar from settings
-    if (s.name && !s.users) {
+  const displayScholars = useMemo(() => {
+    const hasValidScholars = scholars && scholars.length > 0;
+    return hasValidScholars ? scholars.map(s => {
+      // If it's a manual pinned scholar from settings
+      if (s.name && !s.users) {
+        return {
+          username: '',
+          id: '',
+          name: s.name,
+          image: s.image || '/placeholder-user.png',
+          country: 'Global',
+          countryFlag: '🌍',
+          publications: Number(s.papers_count) || 0,
+          credential: s.credentials || '',
+          institution: s.university || '',
+          field: ''
+        };
+      }
+      // If it's from DB
       return {
-        username: '',
-        id: '',
-        name: s.name,
-        image: s.image || '/placeholder-user.png',
-        country: 'Global',
-        countryFlag: '🌍',
-        publications: Number(s.papers_count) || 0,
-        credential: s.credentials || '',
-        institution: s.university || '',
-        field: ''
+        username: s.username,
+        id: s.id,
+        name: s.users?.raw_user_meta_data?.name || s.users?.email || 'Unknown',
+        image: s.profile_photo_url || s.users?.raw_user_meta_data?.avatar_url || s.users?.raw_user_meta_data?.picture || s.users?.raw_user_meta_data?.image || '/placeholder-user.png',
+        country: s.users?.raw_user_meta_data?.country || 'Global',
+        countryFlag: s.users?.raw_user_meta_data?.countryFlag || '🌍',
+        publications: s._count?.publications || 0,
+        credential: s.qualification || 'Scholar',
+        institution: s.institution || 'Independent',
+        field: s.specialization || 'Research'
       };
-    }
-    // If it's from DB
-    return {
-      username: s.username,
-      id: s.id,
-      name: s.users?.raw_user_meta_data?.name || s.users?.email || 'Unknown',
-      image: s.profile_photo_url || s.users?.raw_user_meta_data?.avatar_url || s.users?.raw_user_meta_data?.picture || s.users?.raw_user_meta_data?.image || '/placeholder-user.png',
-      country: s.users?.raw_user_meta_data?.country || 'Global',
-      countryFlag: s.users?.raw_user_meta_data?.countryFlag || '🌍',
-      publications: s._count?.publications || 0,
-      credential: s.qualification || 'Scholar',
-      institution: s.institution || 'Independent',
-      field: s.specialization || 'Research'
-    };
-  }) : defaultScholars;
+    }) : defaultScholars;
+  }, [scholars]);
 
   const [index, setIndex] = useState(0);
   const [maxIndex, setMaxIndex] = useState(0);
@@ -373,26 +376,7 @@ export default function GSPFeaturedScholars({ title, subtitle, scholars = [], au
       >
         <div className="scholars-carousel-track" id="scholars-track" ref={trackRef}>
           {displayScholars.map((scholar, i) => (
-            <Link href={`/scholars/${scholar.username || scholar.id || '#'}`} key={i} className="scholar-card" data-name={scholar.name}>
-              <div className="sc-photo-wrap">
-                <Image src={scholar.image} alt={scholar.name} width={480} height={560} className="object-cover w-full h-full" />
-                <div className="sc-photo-gradient"></div>
-                <div className="sc-pub-badge"><span className="sc-pub-n">{scholar.publications}</span><span className="sc-pub-l">Papers</span></div>
-                <div className="sc-photo-info">
-                  <p className="sc-name-onphoto">{scholar.name}</p>
-                </div>
-              </div>
-              <div className="sc-body">
-                {scholar.credential && <p className="sc-cred"><span className="sc-dot"></span>{scholar.credential}</p>}
-                {scholar.institution && <p className="sc-institution">{scholar.institution}</p>}
-                <div className="sc-footer mt-auto pt-4">
-                  {scholar.field && <span className="sc-field-tag">{scholar.field}</span>}
-                  <span className="sc-view ml-auto">View Profile
-                    <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 5.5h7M6 2.5l3 3-3 3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                  </span>
-                </div>
-              </div>
-            </Link>
+            <ScholarCard key={i} scholar={scholar} variant="gsp" />
           ))}
         </div>
       </div>

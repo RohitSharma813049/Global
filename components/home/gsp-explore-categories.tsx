@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
+import CategoryCard from '@/components/home/category-card'
 
 interface GspExploreCategoriesProps {
   title?: string;
@@ -115,17 +116,7 @@ export default function GspExploreCategories({ title, subtitle, categories }: Gs
           onMouseMove={handleMouseMove}
         >
           {(categories || []).map((cat, index) => (
-            <Link key={index} href={cat.link} className="gsp-cat-card gsp-reveal" style={{transitionDelay: `${index * 100}ms`}}>
-              <div className="gsp-cat-card-img" style={{backgroundImage: `url('${cat.image}')`}}></div>
-              <div className="gsp-cat-card-overlay"></div>
-              <div className="gsp-cat-card-content">
-                <p className="gsp-cat-card-count">{cat.count}</p>
-                <h3 className="gsp-cat-card-title" dangerouslySetInnerHTML={{ __html: cat.title }}></h3>
-                <div className="gsp-cat-card-arrow">
-                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 11L11 3M5 3h6v6" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                </div>
-              </div>
-            </Link>
+            <CategoryCard key={index} category={cat} index={index} />
           ))}
         </div>
 

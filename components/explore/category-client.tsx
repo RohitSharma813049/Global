@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import SearchBar from '@/components/explore/search-bar'
 import FilterSidebar from '@/components/explore/filter-sidebar'
 import SortControls from '@/components/explore/sort-controls'
@@ -64,11 +64,11 @@ export default function CategoryClient({ initialData }: { initialData: any[] }) 
     return result
   }, [searchQuery, filters, sortBy, initialData])
 
-  const toggleBookmark = (id: string) => {
+  const toggleBookmark = useCallback((id: string) => {
     setBookmarks((prev) =>
       prev.includes(id) ? prev.filter((bid) => bid !== id) : [...prev, id]
     )
-  }
+  }, [])
 
   return (
     <main className="min-h-screen bg-background">
