@@ -54,9 +54,9 @@ export default function GspFeaturedContent({ title, subtitle, description, autop
       subject: 'Computer Science · Ethics',
       title: 'Artificial Intelligence Ethics in Cross-Cultural Research Environments',
       author: 'Prof. Li Wei, Ph.D.',
-      authorImg: '/placeholder-user.png',
+      authorImg: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&h=120&fit=crop&crop=face&auto=format&q=80',
       desc: 'A cross-cultural framework examining ethical accountability in AI systems deployed across divergent regulatory and academic research contexts.',
-      img: '/placeholder-user.png',
+      img: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&h=500&fit=crop&auto=format&q=80',
       views: '2.3k reads',
       link: '/explore?type=Thesis'
     },
@@ -65,9 +65,9 @@ export default function GspFeaturedContent({ title, subtitle, description, autop
       subject: 'Social Sciences · Education',
       title: 'Decolonising Knowledge Systems: Toward an African Academic Paradigm',
       author: 'Dr. Ngozi Adeyemi, FAAN',
-      authorImg: '/placeholder-user.png',
+      authorImg: 'https://images.unsplash.com/photo-1531123897727-8f129e1bf98c?w=120&h=120&fit=crop&crop=face&auto=format&q=80',
       desc: 'An incisive look at restructuring curricula and research methodology to center indigenous African epistemologies in higher education.',
-      img: '/placeholder-user.png',
+      img: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=800&h=500&fit=crop&auto=format&q=80',
       views: '4.1k reads',
       link: '/explore?type=Article'
     },
@@ -76,9 +76,9 @@ export default function GspFeaturedContent({ title, subtitle, description, autop
       subject: 'Economics · Public Policy',
       title: 'GCC Economic Diversification: Vision 2030 and Beyond',
       author: 'Prof. Khalid Al-Mansouri',
-      authorImg: '/placeholder-user.png',
+      authorImg: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=120&h=120&fit=crop&crop=face&auto=format&q=80',
       desc: "A comprehensive eBook tracing the GCC's structural shift away from hydrocarbon dependency through Vision 2030's policy levers.",
-      img: '/placeholder-user.png',
+      img: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800&h=500&fit=crop&auto=format&q=80',
       views: '3.7k reads',
       link: '/explore?type=Ebook'
     },
@@ -87,16 +87,89 @@ export default function GspFeaturedContent({ title, subtitle, description, autop
       subject: 'Environmental Policy',
       title: 'Climate Policy in Transition Economies: Pathways to Net Zero by 2050',
       author: 'Dr. Amira Al-Rashidi, D.Sc.',
-      authorImg: '/placeholder-user.png',
+      authorImg: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=120&h=120&fit=crop&crop=face&auto=format&q=80',
       desc: "GSP's exclusive interview series feature exploring realistic decarbonisation pathways for emerging and transition economies.",
-      img: '/placeholder-user.png',
+      img: 'https://images.unsplash.com/photo-1532619187608-e5375cab36aa?w=800&h=500&fit=crop&auto=format&q=80',
       views: '1.9k reads',
       link: '/explore?type=Magazine'
     }
   ], []);
 
+  const cleanSub = (subtitle || 'Curated Content').replace(/^[\s—\-\_]+/, '').trim();
+
+  const academicFallbackCovers = [
+    'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&h=500&fit=crop&auto=format&q=80',
+    'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=800&h=500&fit=crop&auto=format&q=80',
+    'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=800&h=500&fit=crop&auto=format&q=80',
+    'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=800&h=500&fit=crop&auto=format&q=80',
+    'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800&h=500&fit=crop&auto=format&q=80',
+    'https://images.unsplash.com/photo-1532619187608-e5375cab36aa?w=800&h=500&fit=crop&auto=format&q=80',
+    'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=800&h=500&fit=crop&auto=format&q=80'
+  ];
+
+  const getSanitizedAcademicImage = (url: string | undefined | null, type: string | undefined, idx: number) => {
+    if (!url || typeof url !== 'string') return academicFallbackCovers[idx % academicFallbackCovers.length];
+    const lower = url.toLowerCase();
+    if (
+      lower.includes('placeholder') || 
+      lower.includes('sahab') || 
+      lower.includes('luffy') || 
+      lower.includes('anime') || 
+      lower.includes('logo') || 
+      lower.includes('3d') || 
+      lower.includes('antigravity') || 
+      url.length < 5
+    ) {
+      return academicFallbackCovers[idx % academicFallbackCovers.length];
+    }
+    return url;
+  };
+
+  const authorFallbackAvatars = [
+    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&h=120&fit=crop&crop=face&auto=format&q=80',
+    'https://images.unsplash.com/photo-1531123897727-8f129e1bf98c?w=120&h=120&fit=crop&crop=face&auto=format&q=80',
+    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&h=120&fit=crop&crop=face&auto=format&q=80',
+    'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=120&h=120&fit=crop&crop=face&auto=format&q=80'
+  ];
+
+  const getSanitizedAuthorImage = (url: string | undefined | null, idx: number) => {
+    if (!url || typeof url !== 'string') return authorFallbackAvatars[idx % authorFallbackAvatars.length];
+    const lower = url.toLowerCase();
+    if (
+      lower.includes('placeholder') || 
+      lower.includes('user') || 
+      lower.includes('sahab') || 
+      lower.includes('luffy') || 
+      url.length < 5
+    ) {
+      return authorFallbackAvatars[idx % authorFallbackAvatars.length];
+    }
+    return url;
+  };
+
   const displayPublications = useMemo(() => {
-    return publications && publications.length > 0 ? publications : defaultPublications;
+    const raw = publications && publications.length > 0 ? publications : defaultPublications;
+    return raw.map((p, idx) => {
+      const type = p.type || p.content_type || 'Article';
+      const cleanImg = getSanitizedAcademicImage(p.img || p.cover_image, type, idx);
+      const cleanAuthorImg = getSanitizedAuthorImage(p.authorImg || p.author_image || p.author_avatar, idx);
+      const cleanLink = p.link && !p.link.toLowerCase().includes('.url') && !p.link.toLowerCase().includes('.docx') && p.link !== '#'
+        ? p.link
+        : `/publications/${p.id || ''}`;
+
+      return {
+        ...p,
+        img: cleanImg,
+        authorImg: cleanAuthorImg,
+        link: cleanLink,
+        type: type,
+        title: p.title || 'Scholarly Publication',
+        subject: p.subject || p.journal_name || 'Academic Research',
+        author: p.author || p.author_name || 'GSP Editorial Board',
+        desc: p.desc || p.abstract || p.description || 'Explore groundbreaking academic research and peer-reviewed scholarly insights in this publication.',
+        views: p.views || '1.5k reads'
+      };
+    });
   }, [publications, defaultPublications]);
 
   const dynamicFilters = useMemo(() => {
@@ -158,7 +231,7 @@ export default function GspFeaturedContent({ title, subtitle, description, autop
       <div className="gsp-section-inner">
         <div className="gsp-section-head">
           <div className="gsp-section-head-left gsp-reveal">
-            <p className="gsp-eyebrow"><span className="gsp-eyebrow-line"></span>{subtitle || 'Curated Content'}</p>
+            <p className="gsp-eyebrow">{cleanSub}</p>
             <h2 className="gsp-section-h2" dangerouslySetInnerHTML={{ __html: title || 'Featured <em>Research & Articles</em>' }} />
             <p className="gsp-section-sub">{description || 'A curated selection of distinguished research, eBooks and editorial work from scholars across 80 countries.'}</p>
           </div>
@@ -191,12 +264,17 @@ export default function GspFeaturedContent({ title, subtitle, description, autop
           onMouseUp={handleMouseLeaveOrUp}
           onMouseMove={handleMouseMove}
         >
-          {filteredPublications.map((pub, idx) => (
-            <Link href={pub.link} prefetch={false} className="gsp-pub-card" key={idx} style={{transitionDelay: `${idx * 100}ms`}}>
-              <div className="gsp-pub-card-media">
-                <span className="gsp-pub-card-type">{pub.type}</span>
-                <img src={pub.img || '/placeholder-user.png'} alt={pub.title} loading="lazy"/>
-              </div>
+          {filteredPublications.map((pub, idx) => {
+            const cleanLink = pub.link && !pub.link.toLowerCase().includes('.url') && !pub.link.toLowerCase().includes('.docx') && pub.link !== '#'
+              ? pub.link
+              : `/publications/${pub.id || ''}`;
+
+            return (
+              <Link href={cleanLink} prefetch={false} className="gsp-pub-card" key={idx} style={{transitionDelay: `${idx * 100}ms`}}>
+                <div className="gsp-pub-card-media">
+                  <span className="gsp-pub-card-type">{pub.type}</span>
+                  <img src={pub.img || '/placeholder-user.png'} alt={pub.title} loading="lazy"/>
+                </div>
               <div className="gsp-pub-card-body">
                 <p className="gsp-pub-card-subject">{pub.subject}</p>
                 <h3 className="gsp-pub-card-title">{pub.title}</h3>
@@ -218,8 +296,9 @@ export default function GspFeaturedContent({ title, subtitle, description, autop
                   <span className="gsp-pub-card-views">{pub.views}</span>
                 </div>
               </div>
-            </Link>
-          ))}
+              </Link>
+            );
+          })}
         </div>
 
         <div className="gsp-carousel-dots">
@@ -229,7 +308,8 @@ export default function GspFeaturedContent({ title, subtitle, description, autop
               className={`gsp-cdot ${activeDot === idx ? 'on' : ''}`}
               onClick={() => {
                 if (gridRef.current && gridRef.current.children[idx]) {
-                  gridRef.current.children[idx].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+                  const card = gridRef.current.children[idx] as HTMLElement;
+                  gridRef.current.scrollTo({ left: card.offsetLeft, behavior: 'smooth' });
                 }
               }}
               style={{ cursor: 'pointer' }}

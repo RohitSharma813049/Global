@@ -115,16 +115,17 @@ const ContentCard = memo(function ContentCard({
     )
   }
 
+  const cleanId = String(item.id || 'article').replace(/\.(url|docx|doc|pdf|zip|rar)$/i, '');
+  const cleanImg = item.imageUrl && !item.imageUrl.toLowerCase().includes('sahab') && !item.imageUrl.toLowerCase().includes('luffy') && !item.imageUrl.toLowerCase().includes('placeholder')
+    ? item.imageUrl
+    : 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=800&h=500&fit=crop&auto=format&q=80';
+
   // Grid view (Matches the jls.limo screenshot perfectly)
   return (
-    <Link href={`/publications/${item.id}`} className="group flex flex-col bg-white border border-gray-100 rounded-[2rem] overflow-hidden transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:border-gray-200 h-full">
+    <Link href={`/publications/${cleanId}`} className="group flex flex-col bg-white border border-gray-100 rounded-[2rem] overflow-hidden transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:border-gray-200 h-full">
       {/* Top Image Section */}
-      <div className="relative h-56 w-full bg-gray-50 overflow-hidden shrink-0">
-        {item.imageUrl ? (
-           <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-        ) : (
-           <div className="w-full h-full transition-transform duration-700 group-hover:scale-105" style={{ background: placeholderGradient }} />
-        )}
+      <div className="relative w-full bg-gray-50 overflow-hidden shrink-0 [height:var(--gsp-pub-card-media-height-desktop,14rem)] md:[height:var(--gsp-pub-card-media-height-desktop,14rem)] max-sm:[height:var(--gsp-pub-card-media-height-mobile,14rem)]">
+        <img src={cleanImg} alt={item.title} className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105" />
         
         {/* Featured Pill */}
         <div className="absolute top-4 left-4">

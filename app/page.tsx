@@ -25,6 +25,8 @@ import ScrollAnimation from "@/components/shared/scroll-animation"
 import { getAllCategories } from '@/app/queries/categories'
 import { getRecentPublishedPublications, getFeaturedPublications, getHeroPublications } from '@/app/queries/publications'
 
+import DynamicCardStyles from '@/components/shared/dynamic-card-styles'
+
 export const revalidate = 60 // Enable ISR caching (60 seconds)
 
 export default async function Page() {
@@ -54,20 +56,55 @@ export default async function Page() {
     getHeroPublications(5)
   ]);
 
-  const mapPublication = (pub: any) => ({
-    id: pub.id,
-    type: pub.content_type,
-    subject: pub.categories?.name || 'Uncategorized',
-    title: pub.title,
-    author: pub.author_name || pub.scholars?.users?.raw_user_meta_data?.full_name || 'Anonymous',
-    authorImg: pub.scholars?.users?.raw_user_meta_data?.avatar_url || pub.scholars?.users?.raw_user_meta_data?.picture || pub.scholars?.users?.raw_user_meta_data?.image || '/placeholder-user.png',
-    desc: pub.abstract,
-    description: pub.abstract,
-    img: pub.cover_image || '/placeholder-user.png',
-    image: pub.cover_image || '/placeholder-user.png',
-    views: `${pub.views || 0} reads`,
-    link: `/publications/${pub.id}`
-  });
+  const ACADEMIC_FALLBACK_IMAGES: Record<string, string> = {
+    Thesis: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&h=500&fit=crop&auto=format&q=80',
+    Article: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=800&h=500&fit=crop&auto=format&q=80',
+    eBook: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800&h=500&fit=crop&auto=format&q=80',
+    Ebook: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800&h=500&fit=crop&auto=format&q=80',
+    Magazine: 'https://images.unsplash.com/photo-1532619187608-e5375cab36aa?w=800&h=500&fit=crop&auto=format&q=80',
+    Blog: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=800&h=500&fit=crop&auto=format&q=80',
+    Default: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=800&h=500&fit=crop&auto=format&q=80'
+  };
+
+  const getSanitizedCoverImage = (url: string | null | undefined, type: string = 'Article'): string => {
+    if (!url || typeof url !== 'string') return ACADEMIC_FALLBACK_IMAGES[type] || ACADEMIC_FALLBACK_IMAGES.Default;
+    const lower = url.toLowerCase();
+    if (
+      lower.includes('sahab') || 
+      lower.includes('luffy') || 
+      lower.includes('anime') || 
+      lower.includes('placeholder') || 
+      lower.includes('logo') || 
+      lower.includes('3d') || 
+      lower.includes('antigravity') || 
+      lower.includes('smartwatch') || 
+      lower.includes('alexa') || 
+      lower.includes('gadget') || 
+      lower.includes('corrupted') || 
+      url.length < 5
+    ) {
+      return ACADEMIC_FALLBACK_IMAGES[type] || ACADEMIC_FALLBACK_IMAGES.Default;
+    }
+    return url;
+  };
+
+  const mapPublication = (pub: any) => {
+    const cover = getSanitizedCoverImage(pub.cover_image, pub.content_type);
+    return {
+      id: pub.id,
+      type: pub.content_type || 'Article',
+      subject: pub.categories?.name || 'Academic Research',
+      title: pub.title,
+      author: pub.author_name || pub.scholars?.users?.raw_user_meta_data?.full_name || 'Anonymous Scholar',
+      authorImg: pub.scholars?.users?.raw_user_meta_data?.avatar_url || pub.scholars?.users?.raw_user_meta_data?.picture || pub.scholars?.users?.raw_user_meta_data?.image || '/placeholder-user.png',
+      desc: pub.abstract,
+      description: pub.abstract,
+      img: cover,
+      image: cover,
+      views: `${pub.views || 0} reads`,
+      link: `/publications/${pub.id}`
+    };
+  };
 
   const formattedPublications = dbPublications.map(mapPublication);
   const formattedFeaturedPublications = dbFeaturedPublications.map(mapPublication);
@@ -166,6 +203,7 @@ export default async function Page() {
 
   return (
     <main className="w-full">
+      <DynamicCardStyles settings={settings} />
       {settings.show_home_hero && (
         <HomeHero 
           title={settings.hero_title}

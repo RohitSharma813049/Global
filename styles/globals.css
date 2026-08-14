@@ -262,7 +262,7 @@
   text-transform: uppercase; color: var(--violet);
   margin-bottom: 18px; text-align: left;
 }
-.gsp-eyebrow-line, .eyebrow-line { display: none !important; }
+.gsp-eyebrow-line, .eyebrow-line, .sub-eyebrow-line, .scholars-eyebrow-line { display: none !important; }
 
 .gsp-section-h2 {
   font-family: 'Cormorant Garamond', Georgia, serif;
@@ -308,9 +308,12 @@
   overflow-x: auto;
   overflow-y: visible;
   scroll-snap-type: x mandatory;
+  scroll-padding-left: 0px;
   scrollbar-width: none;
-  padding: 8px 4px 16px;
+  padding: 8px 0px 16px;
   -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  overscroll-behavior-x: contain;
 }
 .gsp-cat-grid::-webkit-scrollbar { display: none; }
 
@@ -322,7 +325,7 @@
   scroll-snap-align: start;
   border-radius: 16px;
   overflow: hidden;
-  height: 280px;
+  height: var(--gsp-cat-card-height-desktop, 280px);
   box-shadow: var(--card-shadow);
   transition: transform 0.35s ease, box-shadow 0.35s ease;
   cursor: pointer;
@@ -413,9 +416,12 @@
   overflow-x: auto;
   overflow-y: visible;
   scroll-snap-type: x mandatory;
+  scroll-padding-left: 0px;
   scrollbar-width: none;
-  padding: 8px 4px 16px;
+  padding: 8px 0px 16px;
   -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  overscroll-behavior-x: contain;
 }
 .gsp-pub-grid::-webkit-scrollbar { display: none; }
 
@@ -442,14 +448,14 @@
 
 .gsp-pub-card-media {
   position: relative;
-  height: 168px;
+  height: var(--gsp-pub-card-media-height-desktop, 180px);
   background-size: cover;
   background-position: center;
   flex-shrink: 0;
   overflow: hidden;
 }
 .gsp-pub-card-media img {
-  width: 100%; height: 100%; object-fit: cover;
+  width: 100%; height: 100%; object-fit: cover; object-position: center;
   display: block;
   transition: transform 0.5s ease;
 }
@@ -545,24 +551,34 @@
   .gsp-pub-card { flex: 0 0 calc(33.333% - 14px); }
 }
 @media (max-width: 860px) {
-  .gsp-section { padding: 64px 28px; }
+  :root {
+    --gsp-section-pad-x: 24px;
+  }
+  .gsp-section { padding: 56px var(--gsp-section-pad-x, 24px); }
   .gsp-section-head { flex-direction: column; align-items: flex-start; gap: 16px; }
 }
 /* ── MOBILE: swipeable carousels ── */
 @media (max-width: 768px) {
   .gsp-cat-grid, .gsp-pub-grid {
-    padding: 4px 28px 12px;
-    margin: 0 -28px;
+    padding: 8px 24px 16px 24px;
+    margin: 0 -24px;
+    scroll-padding-left: 24px;
     gap: 14px;
   }
   .gsp-cat-card {
     flex: 0 0 84%;
     min-width: unset;
-    height: 240px;
+    height: var(--gsp-cat-card-height-mobile, var(--gsp-cat-card-height-desktop, 280px));
   }
   .gsp-pub-card {
     flex: 0 0 86%;
     min-width: unset;
+  }
+  .gsp-pub-card-media {
+    height: var(--gsp-pub-card-media-height-mobile, var(--gsp-pub-card-media-height-desktop, 180px));
+  }
+  .sc-photo-wrap {
+    height: var(--gsp-scholar-card-media-height-mobile, var(--gsp-scholar-card-media-height-desktop, 220px));
   }
 }
 
@@ -579,8 +595,23 @@
 .gsp-cdot.on { background: #1E3A8A; width: 22px; border-radius: 4px; }
 
 @media (max-width: 560px) {
-  .gsp-cat-card { flex-basis: 88%; height: 220px; }
+  :root {
+    --gsp-section-pad-x: 18px;
+  }
+  .gsp-section { padding: 40px var(--gsp-section-pad-x, 18px); }
+  .gsp-cat-grid, .gsp-pub-grid {
+    padding: 8px 18px 16px 18px;
+    margin: 0 -18px;
+    scroll-padding-left: 18px;
+  }
+  .gsp-cat-card {
+    flex-basis: 88%;
+    height: var(--gsp-cat-card-height-mobile, var(--gsp-cat-card-height-desktop, 280px));
+  }
   .gsp-pub-card { flex-basis: 90%; }
+  .gsp-pub-card-media {
+    height: var(--gsp-pub-card-media-height-mobile, var(--gsp-pub-card-media-height-desktop, 180px));
+  }
   .gsp-pub-filter-row { gap: 6px; }
   .gsp-pfpill { padding: 6px 13px; font-size: 11px; }
 }
@@ -2748,7 +2779,7 @@ a.pub-card { cursor: pointer; color: inherit; text-decoration: none; }
   margin-bottom: 18px;
 }
 .scholars-eyebrow-line {
-  width: 32px; height: 1.5px; background: var(--violet);
+  display: none !important;
 }
 
 .scholars-h2 {
@@ -2842,13 +2873,13 @@ a.pub-card { cursor: pointer; color: inherit; text-decoration: none; }
 .sc-photo-wrap {
   position: relative;
   width: 100%;
-  aspect-ratio: 4 / 4.6;
+  height: var(--gsp-scholar-card-media-height-desktop, 260px);
   overflow: hidden;
   background: var(--violet);
 }
 .sc-photo-wrap img {
   width: 100%; height: 100%;
-  object-fit: cover;
+  object-fit: cover; object-position: center top;
   display: block;
   transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 }

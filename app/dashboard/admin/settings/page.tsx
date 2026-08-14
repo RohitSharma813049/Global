@@ -89,6 +89,14 @@ export default function HomepageSettings() {
     featured_blogs_mode: 'recent' as 'recent' | 'manual' | 'random',
     pinned_blogs: [] as any[],
     pinned_news: [] as any[],
+    card_image_height_desktop: '280px',
+    card_image_height_mobile: '280px',
+    sync_mobile_card_size: true,
+    pub_card_media_height_desktop: '180px',
+    pub_card_media_height_mobile: '180px',
+    scholar_card_media_height_desktop: '260px',
+    scholar_card_media_height_mobile: '220px',
+    sync_mobile_scholar_card_size: false,
   })
 
   const [recordOptions, setRecordOptions] = useState<RecordItem[]>([])
@@ -481,6 +489,128 @@ export default function HomepageSettings() {
                   </div>
                 )
               })}
+              </div>
+            </div>
+          </details>
+        </div>
+
+        {/* Card & Image Sizes (Desktop & Mobile) */}
+        <div className="border border-(--color-gsp-border-muted) rounded-(--radius-xl) overflow-hidden">
+          <details className="group">
+            <summary className="p-4 bg-(--color-gsp-surface-raised) font-semibold text-lg cursor-pointer flex justify-between items-center group-open:border-b">
+              Card & Image Sizes (Desktop & Mobile)
+              <span className="text-sm text-(--color-gsp-text-secondary) font-normal group-open:hidden">Click to expand</span>
+              <span className="text-sm text-(--color-gsp-text-secondary) font-normal hidden group-open:inline">Click to collapse</span>
+            </summary>
+            <div className="p-6 space-y-6">
+              <div className="p-4 bg-indigo-50 border border-indigo-100 rounded-(--radius-lg) text-sm text-indigo-800">
+                <p><strong>Card Dimension Settings:</strong> Configure image heights for Category Cards and Publication Cards across all pages. You can keep Desktop & Mobile sizes identical or specify distinct heights for mobile devices.</p>
+              </div>
+
+              <div className="flex items-center gap-3 p-3.5 bg-gray-50 rounded-lg border border-gray-200">
+                <input 
+                  type="checkbox" 
+                  id="sync_mobile_card_size" 
+                  name="sync_mobile_card_size" 
+                  checked={settings.sync_mobile_card_size !== false} 
+                  onChange={(e) => setSettings(prev => ({ ...prev, sync_mobile_card_size: e.target.checked }))} 
+                  className="h-4 w-4 text-indigo-600 rounded cursor-pointer"
+                />
+                <label htmlFor="sync_mobile_card_size" className="text-sm font-medium text-gray-900 cursor-pointer select-none">
+                  Keep image size identical on Desktop and Mobile (Recommended)
+                </label>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Category Card Size */}
+                <div className="p-4 border border-gray-200 rounded-xl bg-white space-y-4">
+                  <h4 className="font-semibold text-base border-b pb-2 text-indigo-950">Category Cards Height</h4>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">Desktop Card Height (e.g. 280px)</label>
+                    <input 
+                      type="text" 
+                      name="card_image_height_desktop" 
+                      value={settings.card_image_height_desktop || '280px'} 
+                      onChange={handleChange} 
+                      className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm" 
+                      placeholder="280px"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">
+                      Mobile Card Height {settings.sync_mobile_card_size !== false ? '(Synced with Desktop)' : '(Custom Mobile Height)'}
+                    </label>
+                    <input 
+                      type="text" 
+                      name="card_image_height_mobile" 
+                      value={settings.sync_mobile_card_size !== false ? (settings.card_image_height_desktop || '280px') : (settings.card_image_height_mobile || '280px')} 
+                      onChange={handleChange} 
+                      disabled={settings.sync_mobile_card_size !== false}
+                      className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm disabled:bg-gray-100 disabled:text-gray-500" 
+                      placeholder="240px or 280px"
+                    />
+                  </div>
+                </div>
+
+                {/* Publication Card Media Height */}
+                <div className="p-4 border border-gray-200 rounded-xl bg-white space-y-4">
+                  <h4 className="font-semibold text-base border-b pb-2 text-indigo-950">Publication Cards Media Height</h4>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">Desktop Media Height (e.g. 180px)</label>
+                    <input 
+                      type="text" 
+                      name="pub_card_media_height_desktop" 
+                      value={settings.pub_card_media_height_desktop || '180px'} 
+                      onChange={handleChange} 
+                      className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm" 
+                      placeholder="180px"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">
+                      Mobile Media Height {settings.sync_mobile_card_size !== false ? '(Synced with Desktop)' : '(Custom Mobile Height)'}
+                    </label>
+                    <input 
+                      type="text" 
+                      name="pub_card_media_height_mobile" 
+                      value={settings.sync_mobile_card_size !== false ? (settings.pub_card_media_height_desktop || '180px') : (settings.pub_card_media_height_mobile || '180px')} 
+                      onChange={handleChange} 
+                      disabled={settings.sync_mobile_card_size !== false}
+                      className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm disabled:bg-gray-100 disabled:text-gray-500" 
+                      placeholder="180px"
+                    />
+                  </div>
+                </div>
+
+                {/* Scholar Card Media Height */}
+                <div className="p-4 border border-gray-200 rounded-xl bg-white space-y-4">
+                  <h4 className="font-semibold text-base border-b pb-2 text-indigo-950">Scholar Cards Photo Height</h4>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">Desktop Photo Height (e.g. 260px)</label>
+                    <input 
+                      type="text" 
+                      name="scholar_card_media_height_desktop" 
+                      value={settings.scholar_card_media_height_desktop || '260px'} 
+                      onChange={handleChange} 
+                      className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm" 
+                      placeholder="260px"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">
+                      Mobile Photo Height {settings.sync_mobile_card_size !== false ? '(Synced with Desktop)' : '(Custom Mobile Height)'}
+                    </label>
+                    <input 
+                      type="text" 
+                      name="scholar_card_media_height_mobile" 
+                      value={settings.sync_mobile_card_size !== false ? (settings.scholar_card_media_height_desktop || '260px') : (settings.scholar_card_media_height_mobile || '220px')} 
+                      onChange={handleChange} 
+                      disabled={settings.sync_mobile_card_size !== false}
+                      className="w-full border border-(--color-gsp-border-default) rounded-md p-2 text-sm disabled:bg-gray-100 disabled:text-gray-500" 
+                      placeholder="220px"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </details>

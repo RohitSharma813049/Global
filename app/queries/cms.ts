@@ -110,10 +110,10 @@ export async function getHomepageSettings() {
       ],
 
       explore_categories: [
-        { title: 'Featured<br/>Agriculture', count: '1,240+ Papers', image: '/placeholder-user.png', link: '/explore?category=agriculture' },
-        { title: 'Trending<br/>Computer Science', count: '3,860+ Papers', image: '/placeholder-user.png', link: '/explore?category=computer-science-ai' },
-        { title: 'Latest<br/>Business', count: '980+ Papers', image: '/placeholder-user.png', link: '/explore?category=business-management' },
-        { title: 'Latest<br/>Humanities', count: '410+ Papers', image: '/placeholder-user.png', link: '/explore?category=humanities' }
+        { title: 'Featured<br/>Agriculture', count: '1,240+ Papers', image: 'https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?w=600&h=400&fit=crop&auto=format&q=80', link: '/explore?category=agriculture' },
+        { title: 'Trending<br/>Computer Science', count: '3,860+ Papers', image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=400&fit=crop&auto=format&q=80', link: '/explore?category=computer-science-ai' },
+        { title: 'Latest<br/>Business', count: '980+ Papers', image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&h=400&fit=crop&auto=format&q=80', link: '/explore?category=business-management' },
+        { title: 'Latest<br/>Humanities', count: '410+ Papers', image: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=600&h=400&fit=crop&auto=format&q=80', link: '/explore?category=humanities' }
       ],
 
       subject_categories: [
@@ -133,6 +133,15 @@ export async function getHomepageSettings() {
       show_cta_banner: true,
 
       enable_carousel_autoplay: true,
+
+      card_image_height_desktop: '280px',
+      card_image_height_mobile: '280px',
+      sync_mobile_card_size: true,
+      pub_card_media_height_desktop: '180px',
+      pub_card_media_height_mobile: '180px',
+      scholar_card_media_height_desktop: '260px',
+      scholar_card_media_height_mobile: '220px',
+      sync_mobile_scholar_card_size: false,
 
       featured_blogs_mode: 'dynamic', // 'dynamic', 'random', 'manual', 'hidden'
       pinned_blogs: []

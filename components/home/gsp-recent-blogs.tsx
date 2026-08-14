@@ -85,17 +85,23 @@ export default function GspRecentBlogs({ items, autoplay = true }: { items: Cont
 
   // Touch and Mouse handlers
   const [startX, setStartX] = useState(0);
+  const [startY, setStartY] = useState(0);
   const [deltaX, setDeltaX] = useState(0);
   const [dragging, setDragging] = useState(false);
 
   const onTouchStart = (e: React.TouchEvent) => {
     setStartX(e.touches[0].clientX);
+    setStartY(e.touches[0].clientY);
     setDragging(true);
   };
 
   const onTouchMove = (e: React.TouchEvent) => {
     if (!dragging) return;
-    setDeltaX(e.touches[0].clientX - startX);
+    const dX = e.touches[0].clientX - startX;
+    const dY = e.touches[0].clientY - startY;
+    if (Math.abs(dX) > Math.abs(dY)) {
+      setDeltaX(dX);
+    }
   };
 
   const onTouchEnd = () => {
@@ -135,7 +141,7 @@ export default function GspRecentBlogs({ items, autoplay = true }: { items: Cont
     <section className="gsp-blog-section">
       <div className="gsp-blog-head">
         <div>
-          <p className="gsp-eyebrow"><span className="gsp-eyebrow-line"></span>Insights · Interviews · Commentary</p>
+          <p className="gsp-eyebrow">Insights · Interviews · Commentary</p>
           <h2 className="gsp-blog-h2 text-[#1E3A8A]">Latest Insights & <em>Academic News</em></h2>
           <p className="gsp-blog-sub">
             Perspectives from scholars, editors, and researchers on the ideas shaping academia today.
@@ -176,23 +182,25 @@ export default function GspRecentBlogs({ items, autoplay = true }: { items: Cont
             gap: gap + 'px'
           }}
         >
-          {items.map((item, i) => (
-            <Link key={`${item.type}-${item.id}`} href={`/${item.type}/${item.slug}`} className="gsp-blog-card in-view" style={{ animationDelay: ((i % 3) * 0.09) + 's' }}>
-              <div className="gsp-bc-photo-wrap">
-                {item.cover_image ? (
-                  <Image src={item.cover_image} alt={item.title} fill className="object-cover" />
-                ) : (
-                  <div className="w-full h-full bg-violet-100 flex items-center justify-center">
-                    <span className="text-violet-500 font-bold text-4xl">{item.title.charAt(0)}</span>
-                  </div>
-                )}
-                <div className="gsp-bc-photo-gradient"></div>
-                <span className="gsp-bc-cat-pill">{item.type}</span>
-                <span className="gsp-bc-time-badge">
-                  <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><circle cx="5.5" cy="5.5" r="4.3" stroke="currentColor" strokeWidth="1.1"/><path d="M5.5 3v2.5l1.7 1" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round"/></svg>
-                  5 min
-                </span>
-              </div>
+          {items.map((item, i) => {
+            const rawType = item.type === 'news' ? 'news' : 'blog';
+            const cleanSlug = String(item.slug || item.id || 'article').replace(/\.(url|docx|doc|pdf|zip|rar)$/i, '');
+            const cardLink = `/${rawType}/${cleanSlug}`;
+            const cover = item.cover_image && !item.cover_image.toLowerCase().includes('sahab') && !item.cover_image.toLowerCase().includes('luffy') && !item.cover_image.toLowerCase().includes('placeholder')
+              ? item.cover_image
+              : 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=800&h=500&fit=crop&auto=format&q=80';
+
+            return (
+              <Link key={`${item.type}-${item.id}`} href={cardLink} className="gsp-blog-card in-view" style={{ animationDelay: ((i % 3) * 0.09) + 's' }}>
+                <div className="gsp-bc-photo-wrap">
+                  <Image src={cover} alt={item.title} fill className="object-cover object-center" unoptimized />
+                  <div className="gsp-bc-photo-gradient"></div>
+                  <span className="gsp-bc-cat-pill">{item.type}</span>
+                  <span className="gsp-bc-time-badge">
+                    <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><circle cx="5.5" cy="5.5" r="4.3" stroke="currentColor" strokeWidth="1.1"/><path d="M5.5 3v2.5l1.7 1" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round"/></svg>
+                    5 min
+                  </span>
+                </div>
               <div className="gsp-bc-body">
                 <div className="gsp-bc-meta-row">
                   <span>{item.created_at ? new Date(item.created_at).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }) : 'Recent'}</span>
@@ -218,7 +226,8 @@ export default function GspRecentBlogs({ items, autoplay = true }: { items: Cont
                 </div>
               </div>
             </Link>
-          ))}
+          );
+        })}
         </div>
       </div>
 

@@ -205,12 +205,14 @@ export default function GSPSubjectCategories({ title, subtitle, categories, auto
   }, [maxIndex, autoplay]);
 
   // Swipe support
-  const touchStartRef = useRef(0);
+  const touchStartXRef = useRef(0);
+  const touchStartYRef = useRef(0);
   const touchDeltaRef = useRef(0);
   const isDraggingRef = useRef(false);
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartRef.current = e.touches[0].clientX;
+    touchStartXRef.current = e.touches[0].clientX;
+    touchStartYRef.current = e.touches[0].clientY;
     isDraggingRef.current = true;
     if (trackRef.current) {
       trackRef.current.style.transition = 'none';
@@ -219,17 +221,22 @@ export default function GSPSubjectCategories({ title, subtitle, categories, auto
 
   const handleTouchMove = (e: React.TouchEvent) => {
     if (!isDraggingRef.current || !trackRef.current) return;
-    touchDeltaRef.current = e.touches[0].clientX - touchStartRef.current;
+    const deltaX = e.touches[0].clientX - touchStartXRef.current;
+    const deltaY = e.touches[0].clientY - touchStartYRef.current;
     
-    const cards = trackRef.current.children;
-    if (!cards.length) return;
-    
-    const w = window.innerWidth;
-    const gap = w <= 760 ? (w <= 520 ? 14 : 18) : 24;
-    const cardWidth = (cards[0] as HTMLElement).getBoundingClientRect().width;
-    const baseOffset = index * (cardWidth + gap);
-    
-    trackRef.current.style.transform = `translateX(-${baseOffset - touchDeltaRef.current}px)`;
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+      touchDeltaRef.current = deltaX;
+      
+      const cards = trackRef.current.children;
+      if (!cards.length) return;
+      
+      const w = window.innerWidth;
+      const gap = w <= 760 ? (w <= 520 ? 14 : 18) : 24;
+      const cardWidth = (cards[0] as HTMLElement).getBoundingClientRect().width;
+      const baseOffset = index * (cardWidth + gap);
+      
+      trackRef.current.style.transform = `translateX(-${baseOffset - touchDeltaRef.current}px)`;
+    }
   };
 
   const handleTouchEnd = () => {
@@ -274,7 +281,7 @@ export default function GSPSubjectCategories({ title, subtitle, categories, auto
     <section className="subjects-section">
       <div className="subjects-head">
         <div>
-          <p className="sub-eyebrow"><span className="sub-eyebrow-line"></span>{subtitle || 'Browse By Discipline'}</p>
+          <p className="sub-eyebrow">{subtitle || 'Browse By Discipline'}</p>
           <h2 className="subjects-h2 text-[#1E3A8A]" dangerouslySetInnerHTML={{ __html: title || 'Browse Academic <em>Disciplines</em>' }}></h2>
         </div>
       </div>

@@ -113,37 +113,67 @@ export default function GSPFeaturedScholars({ title, subtitle, scholars = [], au
   const viewportRef = useRef<HTMLDivElement>(null);
   
   const displayScholars = useMemo(() => {
-    const hasValidScholars = scholars && scholars.length > 0;
-    return hasValidScholars ? scholars.map(s => {
-      // If it's a manual pinned scholar from settings
-      if (s.name && !s.users) {
-        return {
-          username: '',
-          id: '',
-          name: s.name,
-          image: s.image || '/placeholder-user.png',
-          country: 'Global',
-          countryFlag: '🌍',
-          publications: Number(s.papers_count) || 0,
-          credential: s.credentials || '',
-          institution: s.university || '',
-          field: ''
-        };
+    const getSanitizedImage = (url: string | undefined | null, fallbackIdx: number) => {
+      if (!url || typeof url !== 'string') return defaultScholars[fallbackIdx % defaultScholars.length].image;
+      const lower = url.toLowerCase();
+      if (
+        lower.includes('placeholder') || 
+        lower.includes('smartwatch') || 
+        lower.includes('alexa') || 
+        lower.includes('gadget') || 
+        lower.includes('sahab') || 
+        lower.includes('logo') || 
+        lower.includes('3d') || 
+        lower.includes('antigravity') || 
+        lower.includes('luffy') || 
+        lower.includes('anime') || 
+        url.length < 5
+      ) {
+        return defaultScholars[fallbackIdx % defaultScholars.length].image;
       }
-      // If it's from DB
-      return {
-        username: s.username,
-        id: s.id,
-        name: s.users?.raw_user_meta_data?.name || s.users?.email || 'Unknown',
-        image: s.profile_photo_url || s.users?.raw_user_meta_data?.avatar_url || s.users?.raw_user_meta_data?.picture || s.users?.raw_user_meta_data?.image || '/placeholder-user.png',
-        country: s.users?.raw_user_meta_data?.country || 'Global',
-        countryFlag: s.users?.raw_user_meta_data?.countryFlag || '🌍',
-        publications: s._count?.publications || 0,
-        credential: s.qualification || 'Scholar',
-        institution: s.institution || 'Independent',
-        field: s.specialization || 'Research'
-      };
-    }) : defaultScholars;
+      return url;
+    };
+
+    let mappedDB: ScholarCardData[] = [];
+    if (scholars && scholars.length > 0) {
+      mappedDB = scholars.map((s, idx) => {
+        if (s.name && !s.users) {
+          return {
+            username: '',
+            id: '',
+            name: s.name,
+            image: getSanitizedImage(s.image, idx),
+            country: 'Global',
+            countryFlag: '🌍',
+            publications: Number(s.papers_count) || 0,
+            credential: s.credentials || 'Distinguished Scholar',
+            institution: s.university || 'Global Academic Network',
+            field: 'Research'
+          };
+        }
+        return {
+          username: s.username,
+          id: s.id,
+          name: s.users?.raw_user_meta_data?.name || s.users?.email || 'Unknown Scholar',
+          image: getSanitizedImage(s.profile_photo_url || s.users?.raw_user_meta_data?.avatar_url || s.users?.raw_user_meta_data?.picture || s.users?.raw_user_meta_data?.image, idx),
+          country: s.users?.raw_user_meta_data?.country || 'Global',
+          countryFlag: s.users?.raw_user_meta_data?.countryFlag || '🌍',
+          publications: s._count?.publications || 0,
+          credential: s.qualification || 'Distinguished Scholar',
+          institution: s.institution || 'Global Institute of Research',
+          field: s.specialization || 'Academic Research'
+        };
+      });
+    }
+
+    if (mappedDB.length >= 8) {
+      return mappedDB;
+    }
+
+    // Combine mappedDB with defaultScholars to guarantee at least 8 scholars
+    const existingNames = new Set(mappedDB.map(s => s.name.toLowerCase()));
+    const remaining = defaultScholars.filter(s => !existingNames.has(s.name.toLowerCase()));
+    return [...mappedDB, ...remaining].slice(0, 12);
   }, [scholars]);
 
   const [index, setIndex] = useState(0);
@@ -223,12 +253,14 @@ export default function GSPFeaturedScholars({ title, subtitle, scholars = [], au
   }, [maxIndex, autoplay]);
 
   // Swipe support
-  const touchStartRef = useRef(0);
+  const touchStartXRef = useRef(0);
+  const touchStartYRef = useRef(0);
   const touchDeltaRef = useRef(0);
   const isDraggingRef = useRef(false);
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartRef.current = e.touches[0].clientX;
+    touchStartXRef.current = e.touches[0].clientX;
+    touchStartYRef.current = e.touches[0].clientY;
     isDraggingRef.current = true;
     if (trackRef.current) {
       trackRef.current.style.transition = 'none';
@@ -237,17 +269,22 @@ export default function GSPFeaturedScholars({ title, subtitle, scholars = [], au
 
   const handleTouchMove = (e: React.TouchEvent) => {
     if (!isDraggingRef.current || !trackRef.current) return;
-    touchDeltaRef.current = e.touches[0].clientX - touchStartRef.current;
-    
-    const cards = trackRef.current.children;
-    if (!cards.length) return;
-    
-    const w = window.innerWidth;
-    const gap = w <= 860 ? (w <= 600 ? 16 : 20) : 28;
-    const cardWidth = (cards[0] as HTMLElement).getBoundingClientRect().width;
-    const baseOffset = index * (cardWidth + gap);
-    
-    trackRef.current.style.transform = `translateX(-${baseOffset - touchDeltaRef.current}px)`;
+    const deltaX = e.touches[0].clientX - touchStartXRef.current;
+    const deltaY = e.touches[0].clientY - touchStartYRef.current;
+
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+      touchDeltaRef.current = deltaX;
+      
+      const cards = trackRef.current.children;
+      if (!cards.length) return;
+      
+      const w = window.innerWidth;
+      const gap = w <= 860 ? (w <= 600 ? 16 : 20) : 28;
+      const cardWidth = (cards[0] as HTMLElement).getBoundingClientRect().width;
+      const baseOffset = index * (cardWidth + gap);
+      
+      trackRef.current.style.transform = `translateX(-${baseOffset - touchDeltaRef.current}px)`;
+    }
   };
 
   const handleTouchEnd = () => {
@@ -266,18 +303,8 @@ export default function GSPFeaturedScholars({ title, subtitle, scholars = [], au
     touchDeltaRef.current = 0;
   };
 
-  const handleWheel = (e: React.WheelEvent) => {
-    if (Math.abs(e.deltaX) > 15) {
-      if (e.deltaX > 0) {
-        setIndex(prev => (prev >= maxIndex ? 0 : prev + 1));
-      } else if (e.deltaX < 0) {
-        setIndex(prev => (prev === 0 ? maxIndex : prev - 1));
-      }
-    }
-  };
-
   const handleMouseDown = (e: React.MouseEvent) => {
-    touchStartRef.current = e.clientX;
+    touchStartXRef.current = e.clientX;
     isDraggingRef.current = true;
     if (trackRef.current) {
       trackRef.current.style.transition = 'none';
@@ -286,7 +313,7 @@ export default function GSPFeaturedScholars({ title, subtitle, scholars = [], au
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!isDraggingRef.current || !trackRef.current) return;
-    touchDeltaRef.current = e.clientX - touchStartRef.current;
+    touchDeltaRef.current = e.clientX - touchStartXRef.current;
 
     const cards = trackRef.current.children;
     if (!cards.length) return;
@@ -341,7 +368,7 @@ export default function GSPFeaturedScholars({ title, subtitle, scholars = [], au
     <section className="scholars-section">
       <div className="scholars-head">
         <div>
-          <p className="scholars-eyebrow"><span className="scholars-eyebrow-line"></span>{subtitle || 'Honorary Doctorates · Distinguished Faculty'}</p>
+          <p className="scholars-eyebrow">{(subtitle || 'Honorary Doctorates · Distinguished Faculty').replace(/^[\s—\-\_]+/, '').trim()}</p>
           <h2 className="scholars-h2 text-[#1E3A8A]" dangerouslySetInnerHTML={{ __html: title || 'Distinguished Global <em>Scholars</em>' }}></h2>
         </div>
         <div className="scholars-carousel-controls">
@@ -365,7 +392,6 @@ export default function GSPFeaturedScholars({ title, subtitle, scholars = [], au
       <div 
         className="scholars-carousel-viewport" 
         ref={viewportRef}
-        onWheel={handleWheel}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
