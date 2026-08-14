@@ -226,16 +226,16 @@ export default function AuthUI({ initialScreen }: AuthUIProps) {
     }
   };
 
-  const checkStrength = (pw: string) => {
+  const pwScore = React.useMemo(() => {
     let score = 0;
+    const pw = formData.password;
+    if (!pw) return 0;
     if (pw.length >= 8) score++;
     if (/[A-Z]/.test(pw)) score++;
     if (/[0-9]/.test(pw)) score++;
     if (/[^A-Za-z0-9]/.test(pw)) score++;
     return score;
-  };
-
-  const pwScore = checkStrength(formData.password);
+  }, [formData.password]);
 
   return (
     <div className="auth-root">
@@ -652,8 +652,8 @@ export default function AuthUI({ initialScreen }: AuthUIProps) {
             {/* ══════ SCREEN: RESET SENT ══════ */}
             {activeScreen === "reset-sent" && (
               <div className="animate-fade-in-up" style={{ textAlign: "center", padding: "16px 0 28px" }}>
-                <div style={{ width: "80px", height: "80px", borderRadius: "16px", overflow: "hidden", margin: "0 auto 20px", boxShadow: "0 8px 24px rgba(47,17,93,0.15)" }}>
-                  <img src="https://images.unsplash.com/photo-1596526131083-e8c633c948d2?w=160&h=160&fit=crop&auto=format&q=80" alt="Email sent" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                <div style={{ width: "80px", height: "80px", borderRadius: "16px", overflow: "hidden", margin: "0 auto 20px", boxShadow: "0 8px 24px rgba(47,17,93,0.15)", position: "relative" }}>
+                  <Image src="https://images.unsplash.com/photo-1596526131083-e8c633c948d2?w=160&h=160&fit=crop&auto=format&q=80" alt="Email sent" fill className="object-cover" />
                 </div>
                 <h2 className="form-title" style={{ fontSize: "28px", marginBottom: "10px" }}>Check your <em>inbox</em></h2>
                 <p className="form-sub" style={{ marginBottom: "28px" }}>We've sent a password reset link to your email address. The link expires in 15 minutes.</p>
@@ -682,8 +682,8 @@ export default function AuthUI({ initialScreen }: AuthUIProps) {
             Publishing with GSP transformed my career. My research on GCC economic policy reached scholars in 62 countries within a single week.
           </blockquote>
           <div className="ar-author">
-            <div className="ar-avatar">
-              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face&auto=format&q=80" alt="Prof. Khalid Al-Mansouri" />
+            <div className="ar-avatar" style={{ position: "relative", overflow: "hidden" }}>
+              <Image src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face&auto=format&q=80" alt="Prof. Khalid Al-Mansouri" width={40} height={40} className="object-cover" />
             </div>
             <div>
               <div className="ar-name">Prof. Khalid Al-Mansouri</div>

@@ -1,41 +1,40 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server';
+import { validateProxyUrl } from '@/lib/security-url';
 
 export async function GET(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams
-  const url = searchParams.get('url')
+  const searchParams = request.nextUrl.searchParams;
+  const rawUrl = searchParams.get('url');
 
-  if (!url) {
-    return new NextResponse('Missing URL parameter', { status: 400 })
+  if (!rawUrl) {
+    return new NextResponse('Missing URL parameter', { status: 400 });
+  }
+
+  const { isValid, parsedUrl, error } = validateProxyUrl(rawUrl, request.url);
+
+  if (!isValid || !parsedUrl) {
+    return new NextResponse(error || 'Forbidden target URL', { status: 403 });
   }
 
   try {
-    let absoluteUrl = url;
-    if (url.startsWith('/')) {
-      // Need absolute URL for fetch in Next.js backend
-      absoluteUrl = new URL(url, request.url).toString();
-    }
-    
-    const response = await fetch(absoluteUrl)
-    
+    const response = await fetch(parsedUrl.toString());
+
     if (!response.ok) {
-      return new NextResponse(`Failed to fetch PDF: ${response.statusText}`, { status: response.status })
+      return new NextResponse(`Failed to fetch PDF: ${response.statusText}`, { status: response.status });
     }
 
-    // Always force application/pdf so the browser renders it inline
-    // instead of downloading if the origin server returns application/octet-stream
-    const contentType = 'application/pdf'
-    const arrayBuffer = await response.arrayBuffer()
-    
-    // Force inline disposition
+    const contentType = 'application/pdf';
+    const arrayBuffer = await response.arrayBuffer();
+
     return new NextResponse(arrayBuffer, {
       headers: {
         'Content-Type': contentType,
         'Content-Disposition': 'inline; filename="document.pdf"',
-        'Cache-Control': 'public, max-age=31536000, immutable'
+        'Cache-Control': 'public, max-age=31536000, immutable',
+        'X-Content-Type-Options': 'nosniff',
       },
-    })
+    });
   } catch (error) {
-    console.error('PDF Proxy error:', error)
-    return new NextResponse('Internal Server Error while fetching PDF', { status: 500 })
+    console.error('PDF Proxy error:', error);
+    return new NextResponse('Internal Server Error while fetching PDF', { status: 500 });
   }
 }

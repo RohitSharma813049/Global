@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -65,14 +65,15 @@ interface Props {
 }
 
 export default function GSPDistinguishedScholars({ scholar, videos = [], publications = [], reviews = [], allScholars = [], isOwner = false }: Props) {
-  const allVideos = [
+  const allVideos = useMemo(() => [
     ...(videos.length > 0 ? [videos[0].video_url] : []),
     ...(scholar?.gallery_videos || [])
-  ];
+  ], [videos, scholar?.gallery_videos]);
   
   const [activeVideoUrl, setActiveVideoUrl] = useState<string | null>(allVideos.length > 0 ? allVideos[0] : null);
   const [activeImageUrl, setActiveImageUrl] = useState<string | null>(scholar?.gallery_images && scholar.gallery_images.length > 0 ? scholar.gallery_images[0] : null);
   const [showActionsMenu, setShowActionsMenu] = useState(false);
+
 
   if (!scholar) return null;
 
@@ -256,12 +257,12 @@ export default function GSPDistinguishedScholars({ scholar, videos = [], publica
             <h2 className="text-4.25 font-serif mb-6 text-black">Photo Gallery</h2>
             {/* Main Image View */}
             <div className="w-full aspect-video bg-gray-50 flex items-center justify-center relative group rounded-lg overflow-hidden mb-4 border border-gray-200 shadow-sm">
-              <img 
+              <Image 
                 src={activeImageUrl} 
                 alt="Featured gallery photo"
-                className="w-full h-full object-contain"
-                loading="lazy"
-                decoding="async"
+                fill
+                sizes="(max-width: 768px) 100vw, 800px"
+                className="object-contain"
               />
             </div>
             
@@ -270,12 +271,12 @@ export default function GSPDistinguishedScholars({ scholar, videos = [], publica
               <div className="grid grid-cols-4 md:grid-cols-5 gap-3">
                 {scholar.gallery_images.map((url, i) => (
                   <div key={i} onClick={() => setActiveImageUrl(url)} className={`aspect-square bg-gray-50 rounded-lg relative overflow-hidden border shadow-sm hover:shadow-md transition-all cursor-pointer ${activeImageUrl === url ? 'border-purple-500 ring-2 ring-purple-200' : 'border-gray-200 opacity-70 hover:opacity-100'}`}>
-                    <img 
+                    <Image 
                       src={url} 
                       alt={`Gallery photo ${i+1}`}
-                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                      loading="lazy"
-                      decoding="async"
+                      fill
+                      sizes="150px"
+                      className="object-cover hover:scale-105 transition-transform duration-300"
                     />
                   </div>
                 ))}

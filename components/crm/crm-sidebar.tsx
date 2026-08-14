@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { 
   Sparkles,
@@ -234,7 +235,7 @@ export function CrmSidebar() {
         <div className="flex items-center justify-between bg-white border border-slate-100 p-2 rounded-xl shadow-sm">
           <div className="flex items-center gap-3 overflow-hidden">
             {session?.user?.image ? (
-              <img src={session.user.image} alt={userName} className="w-9 h-9 rounded-full object-cover shrink-0" />
+              <Image src={session.user.image} alt={userName} width={36} height={36} className="w-9 h-9 rounded-full object-cover shrink-0" />
             ) : (
               <div className="w-9 h-9 bg-blue-600 rounded-full flex items-center justify-center text-white font-medium text-sm shrink-0">
                 {userInitial}

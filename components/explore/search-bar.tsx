@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef, useEffect } from 'react'
 import { Search, X } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -27,11 +27,23 @@ const suggestions = [
 
 export default function SearchBar({ searchQuery, setSearchQuery }: SearchBarProps) {
   const [isOpen, setIsOpen] = useState(false)
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setIsOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   const filteredSuggestions = useMemo(() => {
-    if (!searchQuery) return suggestions
+    const query = searchQuery.trim().toLowerCase()
+    if (!query) return suggestions
     return suggestions.filter((suggestion) =>
-      suggestion.toLowerCase().includes(searchQuery.toLowerCase())
+      suggestion.toLowerCase().includes(query)
     )
   }, [searchQuery])
 
@@ -40,7 +52,7 @@ export default function SearchBar({ searchQuery, setSearchQuery }: SearchBarProp
       <div className="mx-auto max-w-7xl">
         <h2 className="mb-4 text-2xl sm:text-3xl font-bold text-foreground">Explore Research</h2>
 
-        <div className="relative">
+        <div className="relative" ref={containerRef}>
           <div className="relative flex items-center gap-2">
             <Search className="absolute left-4 h-5 w-5 text-foreground/40" />
             <Input

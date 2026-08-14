@@ -3,7 +3,8 @@ import { prisma } from '@/lib/db';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const q = searchParams.get('q');
+  const rawQ = searchParams.get('q');
+  const q = rawQ ? rawQ.trim() : '';
 
   if (!q || q.length < 2) {
     return NextResponse.json({ results: [] });
@@ -92,7 +93,14 @@ export async function GET(request: Request) {
       }),
     ];
 
-    return NextResponse.json({ results });
+    return NextResponse.json(
+      { results },
+      {
+        headers: {
+          'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+        },
+      }
+    );
   } catch (error) {
     console.error('Search API Error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
